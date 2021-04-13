@@ -24,7 +24,7 @@
       
       <br><br><br>
       <!--display records-->
-      <input onclick = ""  id="button1" type="button" value="Search Database"/>
+      <input  id="button1" onclick = "searchDB()"  type="button" value="Search Database"/>
       <!--upload-->
       <input onclick = "uploadandProcessImage()" id="button2" type="button" value="upload"/>
       <!--display image-->
@@ -72,12 +72,11 @@ function refresh(){
 //button1  - index draw records
 
 
-    //<div id = div1>testing</div>
-    
+    function searchDB(){
      // var result = ""
      // var data1 = {"name":"John Doe"}
     $(document).ready(function () {
-      $('#button1').click(function () {
+      //$('#button1').click(function () {
           $.ajax({
               url: "http://localhost:8080/display",
               type: 'POST',
@@ -91,9 +90,9 @@ function refresh(){
                   $('#div1').html(result);
               }
           });
-      });
+      //});
   });
-
+    }
 
 //button2
 function uploadandProcessImage(){
