@@ -1,4 +1,4 @@
-<hrml>
+<html>
 
   <head>
 
@@ -21,49 +21,140 @@
 
   
     
-    <form
-      id="form"  target="upload_target"  
-      enctype="multipart/form-data"
-     
-      action="http://localhost:8080/upload"
-      method="GET"
-    >
-
-    
-      <input class="input file-input" type="file" name="file" multiple />
-      <button class="button" value="submit" type="submit">Submit</button>
-    </form>
-
-
-    <!--<p style="color:Tomato;" ><b>Images can not exceed 50 megabytes</p>-->
-      
-      <!-- change to jquery-->
-      <input id='button2'  type='button' value='Confirm Image'/>
-      
       
       <br><br><br>
-      <input id="button1" type="button" value="Search Database"/>
-
+      <!--display records-->
+      <input onclick = ""  id="button1" type="button" value="Search Database"/>
+      <!--upload-->
+      <input onclick = "uploadandProcessImage()" id="button2" type="button" value="upload"/>
+      <!--display image-->
+      <input onclick = "refresh()" id="button3" type="button" value="refresh"/>
       
-     search 
-    <div id = div1>testing</div>
-    <script>
+      
+      <!--not used right now-->
+      <input id="button5" type="button" value="try"/>
+      
+
+      <div id = "div1"><p> here</p> </div>
+      
+<script>
+
+    time = new Date($.now());
+    requestJSON = '{"Method":"GET","AppName":"Proline","ServiceURL":"http://localhost:8080/try","Properties":null,"Object":"","Timestamp":"'+time+'"}'
+   
+
+
+
+//try - not currently being  used
+function refresh(){
+
+  var result = ""
+      var data1 = {"name":"John Doe"}
+    $(document).ready(function () {
+      //$('#button5').click(function () {
+          $.ajax({
+              url: "http://localhost:8080/getMessages",
+              type: 'GET',
+              dataType: 'json',
+              contentType: "application/json; charset=utf-8",
+              crossDomain: true,
+             
+              success: function (data) {alert(data[0]);}
+               
+              
+          });
+      //});
+  });
+
+}
+ 
+
+//button1  - index draw records
+
+
+    //<div id = div1>testing</div>
+    
+     // var result = ""
+     // var data1 = {"name":"John Doe"}
     $(document).ready(function () {
       $('#button1').click(function () {
           $.ajax({
-              url: "http://localhost:8080/index",
+              url: "http://localhost:8080/display",
+              type: 'POST',
+              dataType: 'html',
+              contentType: "application/x-www-form-urlencoded",
+              crossDomain: true,
+              data: {post_data: 'hello world'},
+              success: function (result) {
+                
+                alert(result);
+                  $('#div1').html(result);
+              }
+          });
+      });
+  });
+
+
+//button2
+function uploadandProcessImage(){
+
+  
+      var result = ""
+      
+    $(document).ready(function () {
+      //$('#button2').click(function () {
+          $.ajax({
+              url: "http://localhost:8080/upload",
+              type: 'post',
+              dataType: 'html',
+              contentType: "application/x-www-form-urlencoded",
+              crossDomain: true,
+              data: {post_data: 'hello world'},
+              success: function (result) {
+                
+                alert(result);
+                  //$('#div1').html(result);
+              }
+          });
+      //});
+  });
+
+
+
+}
+//button 3
+
+
+/*
+//https://stackoverflow.com/questions/37412187/golang-ajax-how-to-return-slices-or-struct-in-a-success-function
+function refresh()
+{
+
+$(document).ready(function () {
+      $('#button3').click(function () {
+          $.ajax({
+              url: "http://localhost:8080/refresh",
               type: 'post',
               dataType: 'html',
               contentType: 'application/x-www-form-urlencoded',
               crossDomain: true,
               data: {post_data: 'hello world'},
               success: function (data) {
+                alert ("abc");
                   console.log(data);
                   $('#div1').html(data);
               }
           });
       });
   });
+
+
+
+}
+*/
+
+/////////
+
 </script>
 
 

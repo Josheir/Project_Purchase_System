@@ -3,19 +3,28 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
-	"time"
 
+	"context"
+
+	"github.com/go-session/session"
 	_ "github.com/go-sql-driver/mysql"
 )
+
+type Rectangle struct {
+	Length  int
+	breadth int
+	color   string
+}
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
 
 var string1 = ""
+
+type App struct {
+	Name string
+}
 
 type employee struct {
 	gKeyword1           string
@@ -47,7 +56,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 ////////
-func index(w http.ResponseWriter, r *http.Request) {
+func display(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Rrrrrrrrg ")
 	db := dbConn()
@@ -78,22 +87,23 @@ func index(w http.ResponseWriter, r *http.Request) {
 		}
 
 		///////////////////
-		string1 += "<form" +
+		string1 = string1 + "<form " +
 
 			"id=\"form\"" +
 			"enctype=\"multipart/form-data\"" +
-			"action=\"http://localhost:8080/upload\" " +
-			"method=\"POST\">" +
+			"action=\"localhost/uploadpage.go\" " +
+			"method=\"GET\">" +
 			"<input class=\"input file-input\" type=\"file\" name=\"file\" />" +
 			"<button class=\"button\" type=\"submit\">Submit</button>" +
 			"</form>" +
 
 			"<p style=\"color:Tomato;\" ><b>Images can not exceed 50 megabytes</p>" +
-			"<input id='button2' type='button' value='Confirm Image'>" +
+			"<input onclick = \"refresh()\" id='button2' type='button' value='Confirm Image'>" +
 			"<br><br><br>" +
+
 			"<input id='button1' type='button' value='Search Database'>"
 
-			///////////////////
+		///////////////////
 		counter = counter + 1
 		str := strconv.Itoa(counter)
 
@@ -105,7 +115,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
 
-		string1 += "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
+		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
 			"<div class=\"container\">" +
@@ -200,6 +210,7 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 		//data := r.FormValue("post_data")
 		r.FormValue("post_data")
 		fmt.Println("Receive ajax post data string ")
+
 		w.Header().Add("Content-Type", "application/html")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
@@ -207,14 +218,33 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(string1))
 
 	}
+
 }
 
 ////////
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("aaaa ")
-	db := dbConn()
+	//fmt.Fprint(w, "aaaaaaa")
+	//fmt.Println("aaaa ")
+
+	//////////////
+	store, err := session.Start(context.Background(), w, r)
+	if err != nil {
+		fmt.Fprint(w, err)
+		return
+	}
+
+	store.Set("foo", "bar")
+	err = store.Save()
+	if err != nil {
+		fmt.Fprint(w, err)
+		return
+	}
+
+	fmt.Println("upload handler")
+	////////
+	//***db := dbConn()
 
 	////////////
 	//	ProdID, ok := r.URL.Query()["ProductID"]
@@ -226,154 +256,171 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	//
 	//	var productID = ProdID[0]
 
-	var productID = 100
+	//***var productID = 100
 
-	var productID2 string
-	productID2 = strconv.Itoa(productID)
+	//***var productID2 string
+	//***productID2 = strconv.Itoa(productID)
 
 	////////////
 
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
+	/*/////////////////////////////
 
-	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
-	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-		http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
-		return
-	}
-	////////////
-	// The argument to FormFile must match the name attribute
-	// of the file input on the frontend
-	file, fileHeader, err := r.FormFile("file")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
 
-	defer file.Close()
 
-	//////////
-	buff := make([]byte, 512)
-	_, err = file.Read(buff)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 
-	filetype := http.DetectContentType(buff)
-	if filetype != "image/jpeg" && filetype != "image/png" {
-		http.Error(w, "The provided file format is not allowed. Please upload a JPEG or PNG image", http.StatusBadRequest)
-		return
-	}
+		if r.Method != "POST" {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
-	_, err = file.Seek(0, io.SeekStart)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+		r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
+		if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+			http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
+			return
+		}
+		////////////
+		// The argument to FormFile must match the name attribute
+		// of the file input on the frontend
+		file, fileHeader, err := r.FormFile("file")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		defer file.Close()
+
+		//////////
+		buff := make([]byte, 512)
+		_, err = file.Read(buff)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		filetype := http.Detect
+
+		ContentType(buff)
+		if filetype != "image/jpeg" && filetype != "image/png" {
+			http.Error(w, "The provided file format is not allowed. Please upload a JPEG or PNG image", http.StatusBadRequest)
+			return
+		}
+
+		_, err = file.Seek(0, io.SeekStart)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		/////////
+
+		////////
+		// Create the uploads folder if it doesn't
+		// already exist
+		err = os.MkdirAll("./uploads", os.ModePerm)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Create a new file in the uploads directory
+		dst, err := os.Create(fmt.Sprintf("./uploads/%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename)))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		defer dst.Close()
+
+		// Copy the uploaded file to the filesystem
+		// at the specified destination
+		_, err = io.Copy(dst, file)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		//image is saved, now save to database
+		fmt.Println("Received data string ")
+
+
+
+
+	//////////////////////*/
 
 	/////////
-
-	////////
-	// Create the uploads folder if it doesn't
-	// already exist
-	err = os.MkdirAll("./uploads", os.ModePerm)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Create a new file in the uploads directory
-	dst, err := os.Create(fmt.Sprintf("./uploads/%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename)))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	defer dst.Close()
-
-	// Copy the uploaded file to the filesystem
-	// at the specified destination
-	_, err = io.Copy(dst, file)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	//image is saved, now save to database
-	fmt.Println("Received data string ")
 
 	////////////
 
 	//db := dbConn()
 
-	var counter = 0
+	//***var counter = 0
 
 	//////////////////////////////////////////////////////////
 	//DATABASE BELOW HERE, ALREADY SAVED FILE
 	//////////////////////////////////////////////////////////
 
-	var ProductFilename string
-	var q0 = "SELECT ProductFilename FROM products WHERE ProductID = " + (productID2)
-	selDB, err := db.Query(q0)
-	if err != nil {
-		panic(err.Error())
-	}
-	//gets last number
-	for selDB.Next() {
+	/*
+		var ProductFilename string
+		var q0 = "SELECT ProductFilename FROM products WHERE ProductID = " + (productID2)
+		selDB, err := db.Query(q0)
+		if err != nil {
+			panic(err.Error())
+		}
+		//gets last number
+		for selDB.Next() {
 
-		counter = counter + 1
-		_ = selDB.Scan(ProductFilename)
-	}
+			counter = counter + 1
+			_ = selDB.Scan(ProductFilename)
+		}
 
-	if counter > 0 {
+		if counter > 0 {
 
-		//if is record
-		//delete
+			//if is record
+			//delete
 
-		var path = "/uploads" + ProductFilename
-		//err := os.Remove(path)
-		os.Remove(path)
-	}
+			var path = "/uploads" + ProductFilename
+			//err := os.Remove(path)
+			os.Remove(path)
+		}
 
-	//get latest number
-	var Number int
-	var q3 = "SELECT Number FROM  numbers"
-	selDB1, err := db.Query(q3)
-	if err != nil {
-		panic(err.Error())
-	}
-	//gets last number
-	for selDB1.Next() {
+		//get latest number
+		var Number int
+		var q3 = "SELECT Number FROM  numbers"
+		selDB1, err := db.Query(q3)
+		if err != nil {
+			panic(err.Error())
+		}
+		//gets last number
+		for selDB1.Next() {
 
-		_ = selDB1.Scan(Number)
-	}
+			_ = selDB1.Scan(Number)
+		}
 
-	var value1 = Number + 1
-	var value2 = strconv.Itoa(value1)
-	var Filename = "A" + (value2) + "." + filetype
+		var value1 = Number + 1
+		var value2 = strconv.Itoa(value1)
+		var Filename = "A" + (value2) + "." + filetype
 
-	//put in database
-	//var ProductID string
-	var q1 = "UPDATE products SET  ProductFilename = '" + Filename + "' WHERE ProductID = " + productID2
-	//selDB2, err := db.Query(q1)
-	_, err = db.Query(q1)
+		//put in database
+		//var ProductID string
+		var q1 = "UPDATE products SET  ProductFilename = '" + Filename + "' WHERE ProductID = " + productID2
+		//selDB2, err := db.Query(q1)
+		_, err = db.Query(q1)
 
-	if err != nil {
-		panic(err.Error())
-	}
+		if err != nil {
+			panic(err.Error())
+		}
 
-	//iterate - okay
-	var q2 = "UPDATE numbers SET Number = " + (value2)
+		//iterate - okay
+		var q2 = "UPDATE numbers SET Number = " + (value2)
 
-	//selDB3, err := db.Query(q2)
-	_, err = db.Query(q2)
+		//selDB3, err := db.Query(q2)
+		_, err = db.Query(q2)
 
-	if err != nil {
-		panic(err.Error())
-	}
+		if err != nil {
+			panic(err.Error())
+		}
+
+	*/
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
@@ -382,13 +429,60 @@ func submitfunc(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("aarg ")
 }
 
+/////////
+
+func getMessages(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	//fmt.Println("method:", r.Method)
+
+	////
+
+	fmt.Println("in get messages ")
+	fmt.Fprint(w, "or this")
+
+	store, err := session.Start(context.Background(), w, r)
+	if err != nil {
+		fmt.Fprint(w, err)
+		return
+	}
+
+	foo, ok := store.Get("foo")
+	if ok {
+		fmt.Fprintf(w, "foo:%s", foo)
+		return
+	}
+	fmt.Fprint(w, "does not exist")
+
+	/*
+		a := make([]string, 2)
+		a[0] = "John"
+		a[1] = "Sam"
+		j, err := json.Marshal(a)
+		if err != nil {
+			fmt.Printf("Error: %s", err.Error())
+		}
+
+		w.Write(j)
+	*/
+}
+
+//////
+
 func main() {
 
 	mux := http.NewServeMux()
 
+	//button1
+	mux.HandleFunc("/display", display)
+	//button2 - just make session right now
 	mux.HandleFunc("/upload", uploadHandler)
-	//form printout
-	mux.HandleFunc("/index", index)
+	//button3 - just read session for right now
+	mux.HandleFunc("/getMessages", getMessages)
+
 	http.ListenAndServe(":8080", mux)
 }
 
