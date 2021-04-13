@@ -1,0 +1,71 @@
+<hrml>
+
+  <head>
+
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <!DOCTYPE html>
+</head>  
+
+
+<body>
+
+  
+
+  <iframe id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
+
+  
+    
+    <form
+      id="form"  target="upload_target"  
+      enctype="multipart/form-data"
+     
+      action="http://localhost:8080/upload"
+      method="GET"
+    >
+
+    
+      <input class="input file-input" type="file" name="file" multiple />
+      <button class="button" value="submit" type="submit">Submit</button>
+    </form>
+
+
+    <!--<p style="color:Tomato;" ><b>Images can not exceed 50 megabytes</p>-->
+      
+      <!-- change to jquery-->
+      <input id='button2'  type='button' value='Confirm Image'/>
+      
+      
+      <br><br><br>
+      <input id="button1" type="button" value="Search Database"/>
+
+      
+     search 
+    <div id = div1>testing</div>
+    <script>
+    $(document).ready(function () {
+      $('#button1').click(function () {
+          $.ajax({
+              url: "http://localhost:8080/index",
+              type: 'post',
+              dataType: 'html',
+              contentType: 'application/x-www-form-urlencoded',
+              crossDomain: true,
+              data: {post_data: 'hello world'},
+              success: function (data) {
+                  console.log(data);
+                  $('#div1').html(data);
+              }
+          });
+      });
+  });
+</script>
+
+
+    </body>
+    </html>
