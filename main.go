@@ -1,16 +1,21 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
-
-	"context"
+	"time"
 
 	"github.com/go-session/session"
 	_ "github.com/go-sql-driver/mysql"
 )
+
+var ProductID = 0
 
 type Rectangle struct {
 	Length  int
@@ -77,7 +82,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 
 	for selDB.Next() {
 
-		var ProductID, ProductCost, ProductQuantity int
+		var ProductCost, ProductQuantity int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle string
 
 		err = selDB.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle)
@@ -87,14 +92,19 @@ func display(w http.ResponseWriter, r *http.Request) {
 		}
 
 		///////////////////
-		string1 = string1 + "<form " +
+		string1 = string1 +
 
+			"<iframe id=\"upload_target\" name=\"upload_target\"  style=\"width:0;height:0;border:0px solid #fff;\"></iframe>" +
+
+			"<form " +
+			"target = \"upload_target\" " +
 			"id=\"form\"" +
 			"enctype=\"multipart/form-data\"" +
-			"action=\"localhost/uploadpage.go\" " +
-			"method=\"GET\">" +
-			"<input class=\"input file-input\" type=\"file\" name=\"file\" />" +
-			"<button class=\"button\" type=\"submit\">Submit</button>" +
+			"action=\"http://localhost:8080/upload\"" +
+			"method=\"POST\">" +
+			"<input type=\"hidden\" id=\"custId\" name=\"custId\" value=\"3487\">" +
+			"<input class=\"file\" id = \"file\" type=\"file\" name=\"file\" multiple />" +
+			"<button class=\"button\" type=\"submit\">Submit for upload</button>" +
 			"</form>" +
 
 			"<p style=\"color:Tomato;\" ><b>Images can not exceed 50 megabytes</p>" +
@@ -226,24 +236,9 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Fprint(w, "aaaaaaa")
-	//fmt.Println("aaaa ")
+	//fmt.Println("upload handler1 ")
 
-	//////////////
-	store, err := session.Start(context.Background(), w, r)
-	if err != nil {
-		fmt.Fprint(w, err)
-		return
-	}
-
-	store.Set("foo", "bar")
-	err = store.Save()
-	if err != nil {
-		fmt.Fprint(w, err)
-		return
-	}
-
-	fmt.Println("upload handler")
-	////////
+	//fmt.Fprint(w, ProductID)
 	//***db := dbConn()
 
 	////////////
@@ -263,89 +258,81 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	////////////
 
-	/*/////////////////////////////
+	/////////////////////////////
 
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
+	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
+	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
+		http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
+		return
+	}
+	////////////
+	// The argument to FormFile must match the name attribute
+	// of the file input on the frontend
+	file, fileHeader, err := r.FormFile("file")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
+	defer file.Close()
 
-		if r.Method != "POST" {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
+	//////////
+	buff := make([]byte, 512)
+	_, err = file.Read(buff)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-		r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
-		if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-			http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
-			return
-		}
-		////////////
-		// The argument to FormFile must match the name attribute
-		// of the file input on the frontend
-		file, fileHeader, err := r.FormFile("file")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+	filetype := http.DetectContentType(buff)
+	if filetype != "image/jpeg" && filetype != "image/png" {
+		http.Error(w, "The provided file format is not allowed. Please upload a JPEG or PNG image", http.StatusBadRequest)
+		return
+	}
 
-		defer file.Close()
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-		//////////
-		buff := make([]byte, 512)
-		_, err = file.Read(buff)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	/////////
 
-		filetype := http.Detect
+	////////
+	// Create the uploads folder if it doesn't
+	// already exist
+	err = os.MkdirAll("./uploads", os.ModePerm)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-		ContentType(buff)
-		if filetype != "image/jpeg" && filetype != "image/png" {
-			http.Error(w, "The provided file format is not allowed. Please upload a JPEG or PNG image", http.StatusBadRequest)
-			return
-		}
+	// Create a new file in the uploads directory
+	dst, err := os.Create(fmt.Sprintf("./uploads/%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename)))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-		_, err = file.Seek(0, io.SeekStart)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	defer dst.Close()
 
-		/////////
+	// Copy the uploaded file to the filesystem
+	// at the specified destination
+	_, err = io.Copy(dst, file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-		////////
-		// Create the uploads folder if it doesn't
-		// already exist
-		err = os.MkdirAll("./uploads", os.ModePerm)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	//image is saved, now save to database
+	fmt.Println("Received data string ")
 
-		// Create a new file in the uploads directory
-		dst, err := os.Create(fmt.Sprintf("./uploads/%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename)))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		defer dst.Close()
-
-		// Copy the uploaded file to the filesystem
-		// at the specified destination
-		_, err = io.Copy(dst, file)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		//image is saved, now save to database
-		fmt.Println("Received data string ")
-
-
-
-
-	//////////////////////*/
+	//////////////////////
 
 	/////////
 
@@ -358,8 +345,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	//////////////////////////////////////////////////////////
 	//DATABASE BELOW HERE, ALREADY SAVED FILE
 	//////////////////////////////////////////////////////////
-
 	/*
+
 		var ProductFilename string
 		var q0 = "SELECT ProductFilename FROM products WHERE ProductID = " + (productID2)
 		selDB, err := db.Query(q0)
@@ -481,7 +468,7 @@ func main() {
 	//button2 - just make session right now
 	mux.HandleFunc("/upload", uploadHandler)
 	//button3 - just read session for right now
-	mux.HandleFunc("/getMessages", getMessages)
+	//	mux.HandleFunc("/getMessages", getMessages)
 
 	http.ListenAndServe(":8080", mux)
 }

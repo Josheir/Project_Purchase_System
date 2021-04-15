@@ -21,10 +21,31 @@
 
   
     
-      
+  ///////////
+  <!-- 
+  <form
+      id="form"
+      enctype="multipart/form-data"
+      action="http://localhost:8080/upload"
+      method="POST"
+    >
+      <input class="input file-input" type="file2" name="file2" multiple />
+      <button class="button" type="fix">Submit</button>
+    </form>
+  -->
+
+
+  ///////////
+
+
+
+
+
+
+
       <br><br><br>
       <!--display records-->
-      <input  id="button1" onclick = "searchDB()"  type="button" value="Search Database"/>
+      <input   id="button1" type="button" value="Search Database1"/>
       <!--upload-->
       <input onclick = "uploadandProcessImage()" id="button2" type="button" value="upload"/>
       <!--display image-->
@@ -39,10 +60,10 @@
       
 <script>
 
-    time = new Date($.now());
-    requestJSON = '{"Method":"GET","AppName":"Proline","ServiceURL":"http://localhost:8080/try","Properties":null,"Object":"","Timestamp":"'+time+'"}'
+    //time = new Date($.now());
+    //requestJSON = '{"Method":"GET","AppName":"Proline","ServiceURL":"http://localhost:8080/try","Properties":null,"Object":"","Timestamp":"'+time+'"}'
    
-
+    //<input class="input file-input" type="file" name="file" id = "file" />
 
 
 //try - not currently being  used
@@ -72,11 +93,12 @@ function refresh(){
 //button1  - index draw records
 
 
-    function searchDB(){
+    //<div id = div1>testing</div>
+    
      // var result = ""
      // var data1 = {"name":"John Doe"}
     $(document).ready(function () {
-      //$('#button1').click(function () {
+      $('#button1').click(function () {
           $.ajax({
               url: "http://localhost:8080/display",
               type: 'POST',
@@ -90,35 +112,52 @@ function refresh(){
                   $('#div1').html(result);
               }
           });
-      //});
+      });
   });
-    }
+
 
 //button2
 function uploadandProcessImage(){
 
   
-      var result = ""
-      
-    $(document).ready(function () {
-      //$('#button2').click(function () {
-          $.ajax({
-              url: "http://localhost:8080/upload",
-              type: 'post',
-              dataType: 'html',
-              contentType: "application/x-www-form-urlencoded",
-              crossDomain: true,
-              data: {post_data: 'hello world'},
-              success: function (result) {
-                
-                alert(result);
-                  //$('#div1').html(result);
-              }
-          });
-      //});
-  });
+ //     var result = ""
+ //     
+ //   $(document).ready(function () {
+ //     //$('#button2').click(function () {
+ //         $.ajax({
+ //             url: "http://localhost:8080/upload",
+ //             type: 'post',
+ //             dataType: 'html',
+ //             contentType: "application/x-www-form-urlencoded",
+ //             crossDomain: true,
+ //             data: {post_data: 'hello world'},
+ //             success: function (result) {
+ //               
+ //               alert(result);
+ //                 //$('#div1').html(result);
+ //             }
+ //         });
+ //     //});
+ // });
+
+///////////////////////////////////
+//https://stackoverflow.com/questions/25493706/ajax-upload-file-to-golang-server-with-content-type-multipart
+var xhr = new XMLHttpRequest();
+    //boundary=Math.random().toString().substr(2);
 
 
+    var input = document.querySelector('input[type=file]'),
+    file = input.files[0];
+
+    
+var formdata = new FormData();
+formdata.append("file", file);
+//xhr.open("POST", $id("upload").action, true);
+xhr.open("POST", "localhost:8080/upload", true);
+//xhr.setRequestHeader("content-type", "multipart/form-data; charset=utf-8; boundary=" + boundary);
+xhr.send(formdata);
+
+///////////////////////////////////
 
 }
 //button 3
