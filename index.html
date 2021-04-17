@@ -49,7 +49,7 @@
       <!--upload-->
       <input onclick = "uploadandProcessImage()" id="button2" type="button" value="upload"/>
       <!--display image-->
-      <input onclick = "refresh()" id="button3" type="button" value="refresh"/>
+      <!--<input onclick = "refresh()" id="button3" type="button" value="refresh"/>-->
       
       
       <!--not used right now-->
@@ -69,19 +69,25 @@
 //try - not currently being  used
 function refresh(){
 
+
+  //var fileInput = document.getElementById('file');   
+  //var filename = fileInput.files[0].name;
+
+  //let url = `http://localhost:8080/getMessages?filename=${filename}`;
+  //alert (url);
   var result = ""
-      var data1 = {"name":"John Doe"}
+     
     $(document).ready(function () {
       //$('#button5').click(function () {
           $.ajax({
-              url: "http://localhost:8080/getMessages",
+              url: 'http://localhost:8080/getMessages',
               type: 'GET',
               dataType: 'json',
               contentType: "application/json; charset=utf-8",
               crossDomain: true,
-             
-              success: function (data) {alert(data[0]);}
-               
+              //success: function (data) {alert(data[0]);
+              success: function (data){
+               alert("success!");}
               
           });
       //});

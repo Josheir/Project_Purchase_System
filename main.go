@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"io"
@@ -9,11 +8,14 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/go-session/session"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/sessions"
 )
+
+var Test = 1
 
 var ProductID = 0
 
@@ -63,6 +65,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 ////////
 func display(w http.ResponseWriter, r *http.Request) {
 
+	//var filename = "filename"
 	fmt.Println("Rrrrrrrrg ")
 	db := dbConn()
 
@@ -108,10 +111,8 @@ func display(w http.ResponseWriter, r *http.Request) {
 			"</form>" +
 
 			"<p style=\"color:Tomato;\" ><b>Images can not exceed 50 megabytes</p>" +
-			"<input onclick = \"refresh()\" id='button2' type='button' value='Confirm Image'>" +
-			"<br><br><br>" +
-
-			"<input id='button1' type='button' value='Search Database'>"
+			"<input onclick = \"refresh(   )\" id='button2' type='button' value='Confirm Image'>" +
+			"<br><br><br>"
 
 		///////////////////
 		counter = counter + 1
@@ -233,8 +234,11 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 
 ////////
 
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
+	//r.ParseMultipartForm()
 	//fmt.Fprint(w, "aaaaaaa")
 	//fmt.Println("upload handler1 ")
 
@@ -260,6 +264,27 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	/////////////////////////////
 
+	////////////
+
+	// Get a session. We're ignoring the error resulted from decoding an
+	// existing session: Get() always returns a session, even if empty.
+
+	session, _ := store.Get(r, "session-name")
+	// Set some session values.
+	session.Values["foo"] = "bar"
+	session.Values[42] = 43
+	// Save it before we write to the response/return from the handler.
+	err := session.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var a = session.Values["foo"]
+
+	fmt.Println(a)
+
+	//////////////
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -338,76 +363,70 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	////////////
 
-	//db := dbConn()
-
-	//***var counter = 0
+	db := dbConn()
 
 	//////////////////////////////////////////////////////////
 	//DATABASE BELOW HERE, ALREADY SAVED FILE
 	//////////////////////////////////////////////////////////
-	/*
 
-		var ProductFilename string
-		var q0 = "SELECT ProductFilename FROM products WHERE ProductID = " + (productID2)
-		selDB, err := db.Query(q0)
-		if err != nil {
-			panic(err.Error())
-		}
+	var productFilename string
+
+	var productFilename1 string
+
+	var q0 = "SELECT ProductFilename FROM products WHERE ProductID = " + strconv.Itoa(ProductID)
+	selDB, err := db.Query(q0)
+	if err != nil {
+		panic(err.Error())
+	}
+	//gets last number
+	//for selDB.Next() {
+
+	for selDB.Next() {
+		_ = selDB.Scan(&productFilename)
+	}
+
+	productFilename1 = strings.ReplaceAll(productFilename, "image/", "")
+
+	var path = "/uploads/" + productFilename1
+	//err := os.Remove(path)
+	os.Remove(path)
+
+	//get latest number
+	var Number int
+	var q3 = "SELECT Number FROM  numbers"
+	selDB1, err := db.Query(q3)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for selDB1.Next() {
 		//gets last number
-		for selDB.Next() {
+		_ = selDB1.Scan(&Number)
+	}
+	//var value1 = strconv.Itoa(Number)
 
-			counter = counter + 1
-			_ = selDB.Scan(ProductFilename)
-		}
+	var value2 = strconv.Itoa(Number + 1)
 
-		if counter > 0 {
+	var Filename = "A" + (value2) + "." + filetype
+	productFilename1 = strings.ReplaceAll(Filename, "image/", "")
 
-			//if is record
-			//delete
+	//put in database
+	//stmt, e := db.Prepare("UPDATE products SET  ProductFilename = '" + Filename + "' WHERE ProductID = " +  strconv.Itoa(ProductID)
+	stmt, e := db.Prepare("UPDATE products SET  ProductFilename = ? WHERE ProductID = ?")
+	//selDB2, err := db.Query(q1)
+	if e != nil {
+		panic(err.Error())
+	}
+	stmt.Exec(productFilename1, ProductID)
 
-			var path = "/uploads" + ProductFilename
-			//err := os.Remove(path)
-			os.Remove(path)
-		}
+	stmt, e = db.Prepare("UPDATE numbers SET Number =  ?")
 
-		//get latest number
-		var Number int
-		var q3 = "SELECT Number FROM  numbers"
-		selDB1, err := db.Query(q3)
-		if err != nil {
-			panic(err.Error())
-		}
-		//gets last number
-		for selDB1.Next() {
+	if e != nil {
+		panic(err.Error())
+	}
 
-			_ = selDB1.Scan(Number)
-		}
+	stmt.Exec(value2)
 
-		var value1 = Number + 1
-		var value2 = strconv.Itoa(value1)
-		var Filename = "A" + (value2) + "." + filetype
-
-		//put in database
-		//var ProductID string
-		var q1 = "UPDATE products SET  ProductFilename = '" + Filename + "' WHERE ProductID = " + productID2
-		//selDB2, err := db.Query(q1)
-		_, err = db.Query(q1)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		//iterate - okay
-		var q2 = "UPDATE numbers SET Number = " + (value2)
-
-		//selDB3, err := db.Query(q2)
-		_, err = db.Query(q2)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-	*/
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
@@ -430,19 +449,6 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("in get messages ")
 	fmt.Fprint(w, "or this")
-
-	store, err := session.Start(context.Background(), w, r)
-	if err != nil {
-		fmt.Fprint(w, err)
-		return
-	}
-
-	foo, ok := store.Get("foo")
-	if ok {
-		fmt.Fprintf(w, "foo:%s", foo)
-		return
-	}
-	fmt.Fprint(w, "does not exist")
 
 	/*
 		a := make([]string, 2)
@@ -468,7 +474,7 @@ func main() {
 	//button2 - just make session right now
 	mux.HandleFunc("/upload", uploadHandler)
 	//button3 - just read session for right now
-	//	mux.HandleFunc("/getMessages", getMessages)
+	mux.HandleFunc("/getMessages", getMessages)
 
 	http.ListenAndServe(":8080", mux)
 }
