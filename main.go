@@ -129,9 +129,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
-			"<div class=\"container\">" +
 			"<div class=\"row\" >" +
-
 			"<div class=\"col\">" +
 			"<h4><center><p id = \"\">Image</p></center></h4>" +
 			"<center><p id = \"\"> image </p></center>" +
@@ -159,7 +157,6 @@ func display(w http.ResponseWriter, r *http.Request) {
 			"</div>" +
 			"</div>" +
 
-			"<div class=\"container\">" +
 			"<div class=\"row\" >" +
 
 			"<div class=\"col\">" +
@@ -186,10 +183,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 			"</div>" +
 
 			"<br><br>" +
-			"</div>" +
-			"</div>" +
 
-			"<div class=\"container\">" +
 			"<div class=\"row\" >" +
 
 			"<div class=\"col\">" +
@@ -205,7 +199,6 @@ func display(w http.ResponseWriter, r *http.Request) {
 			"</div>" +
 			"<br><br>" +
 
-			"</div>" +
 			"</div>" +
 
 			" <br><br><br><br>"
