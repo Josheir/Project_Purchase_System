@@ -129,38 +129,6 @@ func display(w http.ResponseWriter, r *http.Request) {
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
 
-		///////////
-
-		//////////
-
-		//////////
-
-		string1 = string1 + "<div class = \"col\">" +
-
-			"<iframe id=\"upload_target\" name=\"upload_target\"  style=\"width:0;height:0;border:0px solid #fff;\"></iframe>" +
-
-			"<div class=\"text-left\">" +
-
-			"<form   target=\"upload_target\"  method = \"POST\" action = \"upload2a.php\" enctype=\"multipart/form-data\">" +
-
-			"<input type=hidden id=\"$productID\" name= \"productID\" value=\"$productID\">" +
-
-			"<input type=hidden id=\"$filenameID\" name=\"filename\" value=\"$filename\">" +
-
-			"<input  type = \"file\" name = \"file\" id = \"$fileID\" >" +
-			"<br><br>" +
-			"<button    value = \"Submit\" type = \"submit\"  >submit it</button>" +
-
-			"</form>" +
-
-			"<div id = \"text-left\">" +
-			"<button    onclick = \"imageRefresh( '{$filename}', '{$imageID}')\" >Confirm</button><br><br>" +
-			"</div>" +
-
-			"</div>"
-
-		//////////
-
 		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
