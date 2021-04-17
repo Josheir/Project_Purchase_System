@@ -235,6 +235,9 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
+func processSearch(w http.ResponseWriter, r *http.Request) {
+
+}
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	//r.ParseMultipartForm()
@@ -474,6 +477,7 @@ func main() {
 	mux.HandleFunc("/upload", uploadHandler)
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
+	mux.HandleFunc("/processSearch", processSearch)
 
 	http.ListenAndServe(":8080", mux)
 }
