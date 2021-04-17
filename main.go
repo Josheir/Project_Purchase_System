@@ -71,7 +71,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 
 	//add products.ProductCatTitle = \"$titleOfSelectedDropDown\"
 	var q = "SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
-		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle " +
+		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
 		"((products.ProductKeyWord1 = \"apple1\") OR " +
 		"(products.ProductKeyWord2 = \"apple1\") or (products.ProductKeyWord3 = \"apple1\" ))"
@@ -86,33 +86,36 @@ func display(w http.ResponseWriter, r *http.Request) {
 	for selDB.Next() {
 
 		var ProductCost, ProductQuantity int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle string
+		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
 
-		err = selDB.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle)
+		err = selDB.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
 		if err != nil {
 			panic(err.Error())
 		}
 
 		///////////////////
-		string1 = string1 +
+		/*string1 = string1 +
 
-			"<iframe id=\"upload_target\" name=\"upload_target\"  style=\"width:0;height:0;border:0px solid #fff;\"></iframe>" +
+		"<iframe id=\"upload_target\" name=\"upload_target\"  style=\"width:0;height:0;border:0px solid #fff;\"></iframe>" +
 
-			"<form " +
-			"target = \"upload_target\" " +
-			"id=\"form\"" +
-			"enctype=\"multipart/form-data\"" +
-			"action=\"http://localhost:8080/upload\"" +
-			"method=\"POST\">" +
-			"<input type=\"hidden\" id=\"custId\" name=\"custId\" value=\"3487\">" +
-			"<input class=\"file\" id = \"file\" type=\"file\" name=\"file\" multiple />" +
-			"<button class=\"button\" type=\"submit\">Submit for upload</button>" +
-			"</form>" +
+		"<form " +
+		"target = \"upload_target\" " +
+		"id=\"form\"" +
+		"enctype=\"multipart/form-data\"" +
+		"action=\"http://localhost:8080/upload\"" +
+		"method=\"POST\">" +
+		"<input type=\"hidden\" id=\"custId\" name=\"custId\" value=\"3487\">" +
+		"<input class=\"file\" id = \"file\" type=\"file\" name=\"file\" multiple />" +
+		"<button class=\"button\" type=\"submit\">Submit for upload</button>" +
+		"</form>" +
 
-			"<p style=\"color:Tomato;\" ><b>Images can not exceed 50 megabytes</p>" +
-			"<input onclick = \"refresh(   )\" id='button2' type='button' value='Confirm Image'>" +
-			"<br><br><br>"
+		"<p style=\"color:Tomato;\" ><b>Images can not exceed 50 megabytes</p>" +
+		"<input onclick = \"refresh(   )\" id='button2' type='button' value='Confirm Image'>" +
+		"<br><br><br>"
+		*/
+
+		//////////////////
 
 		///////////////////
 		counter = counter + 1
@@ -126,13 +129,48 @@ func display(w http.ResponseWriter, r *http.Request) {
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
 
+		///////////
+
+		//////////
+
+		//////////
+
+		string1 = string1 + "<div class = \"col\">" +
+
+			"<iframe id=\"upload_target\" name=\"upload_target\"  style=\"width:0;height:0;border:0px solid #fff;\"></iframe>" +
+
+			"<div class=\"text-left\">" +
+
+			"<form   target=\"upload_target\"  method = \"POST\" action = \"upload2a.php\" enctype=\"multipart/form-data\">" +
+
+			"<input type=hidden id=\"$productID\" name= \"productID\" value=\"$productID\">" +
+
+			"<input type=hidden id=\"$filenameID\" name=\"filename\" value=\"$filename\">" +
+
+			"<input  type = \"file\" name = \"file\" id = \"$fileID\" >" +
+			"<br><br>" +
+			"<button    value = \"Submit\" type = \"submit\"  >submit it</button>" +
+
+			"</form>" +
+
+			"<div id = \"text-left\">" +
+			"<button    onclick = \"imageRefresh( '{$filename}', '{$imageID}')\" >Confirm</button><br><br>" +
+			"</div>" +
+
+			"</div>"
+
+		//////////
+
 		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
 			"<div class=\"row\" >" +
 			"<div class=\"col\">" +
 			"<h4><center><p id = \"\">Image</p></center></h4>" +
-			"<center><p id = \"\"> image </p></center>" +
+			//"<center><p id = \"\"> image </p></center>" +
+
+			"<img  height=\"100\" width=\"100\"  src= /golangproj/uploads/" + ProductFilename + " alt=\"no product image\">" +
+
 			"</div>" +
 
 			"<div class=\"col\">" +
