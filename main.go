@@ -15,6 +15,7 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+var globKeyword = ""
 var Test = 1
 
 var ProductID = 0
@@ -63,32 +64,122 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 ////////
-func display(w http.ResponseWriter, r *http.Request) {
 
-	//var filename = "filename"
-	fmt.Println("Rrrrrrrrg ")
+func receiveAjax(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+
+		//data := r.FormValue("post_data")
+		r.FormValue("post_data")
+		fmt.Println("Receive ajax post data string ")
+
+		w.Header().Add("Content-Type", "application/html")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		w.Write([]byte(string1))
+
+	}
+
+}
+
+////////https://stackoverflow.com/questions/21520244/how-to-simply-send-a-request-parameter-with-jquery-form-submit
+
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
+//this is for testin, not used anympre
+func processSearch(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Fprintf(w, "got here1!")
+
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Println("error")
+
+	}
+	fmt.Fprintf(w, "got here2!")
+	fmt.Fprintln(w, "search :", r.Form.Get("search"))
+
+	globKeyword = r.Form.Get("search")
+	fmt.Println("here")
+	//httpServletRequest.getParameter("myparam")
+
+}
+
+/////////
+func display1(w http.ResponseWriter, r *http.Request) {
+
+	/*
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println("error")
+
+		}
+
+		fmt.Fprintf(w, "got here1!")
+		fmt.Fprintln(w, "search :", r.Form.Get("search"))
+	*/
+	fmt.Println("in display 1")
+	//fmt.Fprintf(w, "got here1!")
+	//Var1 := "apple1"
 	db := dbConn()
 
+	///////////////////////////////////
+
+	//https://dwahyudi.github.io/2020/05/15/mysql-where-in-query-with-golang.html
+	//https://stackoverflow.com/questions/59005026/how-to-make-an-sql-query-in-golang-with-multiple-values-in-the-where-clause
+
+	/*
+	   	for results.Next() {
+	   		var vehicle Vehicle
+	   		err = results.Scan(&vehicle.ID, &vehicle.ProductionYear, &vehicle.Brand)
+	   		panicError(err)
+	   		fmt.Println(vehicle.ProductionYear)
+	   		fmt.Println(vehicle.Brand)
+	   		fmt.Println("=================")
+	   	}
+	   stmt, err := db.Prepare("select * from someTable where age = ? and hairColor = ?")
+	   rows, err := stmt.Query(age,hairColor)
+	*/
+	////////////////////////////////////////
+
 	//add products.ProductCatTitle = \"$titleOfSelectedDropDown\"
-	var q = "SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+	//var q = "SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+	//	"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
+	//	"FROM products WHERE " +
+	//	"((products.ProductKeyWord1 = " + Var1 + ") OR " +
+	//	"(products.ProductKeyWord2 = " + Var1 + ") OR (products.ProductKeyWord3 = " + Var1 + " ))"
+	//add products.ProductCatTitle = \"$titleOfSelectedDropDown\"
+
+	//var q = "SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+	//	"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle, products.ProductFilename " +
+	//	//	"FROM products WHERE " +
+	//	"FROM products WHERE " +
+	//	"((products.ProductKeyWord1 = \"apple1\") OR " +
+	//	"(products.ProductKeyWord2 = \"apple1\") OR (products.ProductKeyWord3 = \"apple1\" ))"
+
+	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
-		"((products.ProductKeyWord1 = \"apple1\") OR " +
-		"(products.ProductKeyWord2 = \"apple1\") or (products.ProductKeyWord3 = \"apple1\" ))"
+		"((products.ProductKeyWord1 = ?) OR " +
+		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? ))")
+	if err != nil {
+		panic(err.Error())
+	}
 
-	selDB, err := db.Query(q)
+	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
+
 	if err != nil {
 		panic(err.Error())
 	}
 
 	counter := 0
 
-	for selDB.Next() {
+	for rows.Next() {
 
 		var ProductCost, ProductQuantity int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
 
-		err = selDB.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
+		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
 		if err != nil {
 			panic(err.Error())
@@ -214,30 +305,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 	receiveAjax(w, r)
 }
 
-func receiveAjax(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-
-		//data := r.FormValue("post_data")
-		r.FormValue("post_data")
-		fmt.Println("Receive ajax post data string ")
-
-		w.Header().Add("Content-Type", "application/html")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-		w.Write([]byte(string1))
-
-	}
-
-}
-
-////////
-
-var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-
-func processSearch(w http.ResponseWriter, r *http.Request) {
-
-}
+///////
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	//r.ParseMultipartForm()
@@ -472,12 +540,17 @@ func main() {
 	mux := http.NewServeMux()
 
 	//button1
-	mux.HandleFunc("/display", display)
+
 	//button2 - just make session right now
+
+	mux.HandleFunc("/processSearch", processSearch)
+
 	mux.HandleFunc("/upload", uploadHandler)
+
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
-	mux.HandleFunc("/processSearch", processSearch)
+	//not used
+	mux.HandleFunc("/display", display1)
 
 	http.ListenAndServe(":8080", mux)
 }

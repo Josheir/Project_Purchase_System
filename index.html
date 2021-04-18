@@ -17,8 +17,7 @@
 
   
 
-  <iframe id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
-
+  
   
     
   ///////////
@@ -39,19 +38,34 @@
 
 
 
+<script>
 
+
+let var1 = "apple1";
+
+</script>
 
 
 
       <br><br><br>
       <!--display records-->
+     
+     
+      <iframe id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
+
+      <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="http://localhost:8080/processSearch">
+     
+      <center><input   name = "search" type="text" id="search" name="search" value="search"/></center>
+     
       
-      <form>
-      <center><input  onclick = "/processSearch" type="text" id="search" name="search" value=""></center>
-      <br><br>
-      <center><input   id="button1" type="submit" value="Search Database"/></center>
+      
+      
+      <input   id="button2" type="submit" value="Get Inputs"/>
       </form>
+    
+      <input   id="button1" type="submit" value="Search Database"/>
       
+
       <!--upload-->
       <!--<input onclick = "uploadandProcessImage()" id="button2" type="button" value="upload"/>-->
       <!-- display image-->
@@ -102,13 +116,7 @@ function refresh(){
 }
  
 
-//button1  - index draw records
 
-
-    //<div id = div1>testing</div>
-    
-     // var result = ""
-     // var data1 = {"name":"John Doe"}
     $(document).ready(function () {
       $('#button1').click(function () {
           $.ajax({
