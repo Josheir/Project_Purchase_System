@@ -41,7 +41,7 @@
 <script>
 
 
-let var1 = "apple1";
+//let var1 = "apple1";
 
 </script>
 
@@ -113,8 +113,10 @@ function refresh(){
               data: {post_data: 'hello world'},
               success: function (result) {
                 
-                alert(result);
-                  $('#div1').html(result);
+                //alert(result);
+                
+                $('#div1').html("");
+                $('#div1').html(result);
               }
           });
       });

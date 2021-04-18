@@ -104,6 +104,8 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	string1 = ""
+
 	/*
 		err := r.ParseForm()
 		if err != nil {
