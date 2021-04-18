@@ -3,13 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
-	"strings"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
@@ -186,29 +182,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 		///////////////////
-		/*string1 = string1 +
-
-		"<iframe id=\"upload_target\" name=\"upload_target\"  style=\"width:0;height:0;border:0px solid #fff;\"></iframe>" +
-
-		"<form " +
-		"target = \"upload_target\" " +
-		"id=\"form\"" +
-		"enctype=\"multipart/form-data\"" +
-		"action=\"http://localhost:8080/upload\"" +
-		"method=\"POST\">" +
-		"<input type=\"hidden\" id=\"custId\" name=\"custId\" value=\"3487\">" +
-		"<input class=\"file\" id = \"file\" type=\"file\" name=\"file\" multiple />" +
-		"<button class=\"button\" type=\"submit\">Submit for upload</button>" +
-		"</form>" +
-
-		"<p style=\"color:Tomato;\" ><b>Images can not exceed 50 megabytes</p>" +
-		"<input onclick = \"refresh(   )\" id='button2' type='button' value='Confirm Image'>" +
-		"<br><br><br>"
-		*/
-
-		//////////////////
-
-		///////////////////
 		counter = counter + 1
 		str := strconv.Itoa(counter)
 
@@ -226,7 +199,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			"<div class=\"row\" >" +
 			"<div class=\"col\">" +
 			"<h4><center><p id = \"\">Image</p></center></h4>" +
-			//"<center><p id = \"\"> image </p></center>" +
 
 			"<img  height=\"100\" width=\"100\"  src= /golangproj/uploads/" + ProductFilename + " alt=\"no product image\">" +
 
@@ -285,14 +257,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			"<div class=\"col\">" +
 
-			//<!--THIS LINE IS THE MAIN PROBLEM, THE FIRST PARAMETER WORKS BUT THE IDS HAVE A VALUE OF HTMLOBJECT
-			//deleteFlag + "); , mainDiv , strconv.Itoa(ProductID) , titleID , descID,costID,quantityID ,key1ID,key2ID,key3ID
 			"<center><button id = \"\" onclick = \"SaveProductItems(" + strconv.Itoa(ProductID) + ", " + titleID + ", " + descID + " )\">Submit</button></center>" +
 
-			//<!--flag for determining if record delete will effect" sessioncount, 0 is no.-->
-			//"<center><button id = \"\" onclick = \"deleteRecord( 1,  mainDiv, strconv.Itoa(ProductID) )\">Delete</button></center>" +
-			//"<p><a href=\"#add\">To Add</a></p>" +
-			//-->
 			"</div>" +
 			"<br><br>" +
 
@@ -303,200 +269,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	} //for selDB.Next()
 
 	receiveAjax(w, r)
-}
-
-///////
-func uploadHandler(w http.ResponseWriter, r *http.Request) {
-
-	//r.ParseMultipartForm()
-	//fmt.Fprint(w, "aaaaaaa")
-	//fmt.Println("upload handler1 ")
-
-	//fmt.Fprint(w, ProductID)
-	//***db := dbConn()
-
-	////////////
-	//	ProdID, ok := r.URL.Query()["ProductID"]
-	//
-	//	if !ok || len(ProdID[0]) < 1 {
-	//		log.Println("Url Param 'key' is missing")
-	//		return
-	//	}
-	//
-	//	var productID = ProdID[0]
-
-	//***var productID = 100
-
-	//***var productID2 string
-	//***productID2 = strconv.Itoa(productID)
-
-	////////////
-
-	/////////////////////////////
-
-	////////////
-
-	// Get a session. We're ignoring the error resulted from decoding an
-	// existing session: Get() always returns a session, even if empty.
-
-	session, _ := store.Get(r, "session-name")
-	// Set some session values.
-	session.Values["foo"] = "bar"
-	session.Values[42] = 43
-	// Save it before we write to the response/return from the handler.
-	err := session.Save(r, w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	var a = session.Values["foo"]
-
-	fmt.Println(a)
-
-	//////////////
-	if r.Method != "POST" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
-	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-		http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
-		return
-	}
-	////////////
-	// The argument to FormFile must match the name attribute
-	// of the file input on the frontend
-	file, fileHeader, err := r.FormFile("file")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	defer file.Close()
-
-	//////////
-	buff := make([]byte, 512)
-	_, err = file.Read(buff)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	filetype := http.DetectContentType(buff)
-	if filetype != "image/jpeg" && filetype != "image/png" {
-		http.Error(w, "The provided file format is not allowed. Please upload a JPEG or PNG image", http.StatusBadRequest)
-		return
-	}
-
-	_, err = file.Seek(0, io.SeekStart)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	/////////
-
-	////////
-	// Create the uploads folder if it doesn't
-	// already exist
-	err = os.MkdirAll("./uploads", os.ModePerm)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Create a new file in the uploads directory
-	dst, err := os.Create(fmt.Sprintf("./uploads/%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename)))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	defer dst.Close()
-
-	// Copy the uploaded file to the filesystem
-	// at the specified destination
-	_, err = io.Copy(dst, file)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	//image is saved, now save to database
-	fmt.Println("Received data string ")
-
-	//////////////////////
-
-	/////////
-
-	////////////
-
-	db := dbConn()
-
-	//////////////////////////////////////////////////////////
-	//DATABASE BELOW HERE, ALREADY SAVED FILE
-	//////////////////////////////////////////////////////////
-
-	var productFilename string
-
-	var productFilename1 string
-
-	var q0 = "SELECT ProductFilename FROM products WHERE ProductID = " + strconv.Itoa(ProductID)
-	selDB, err := db.Query(q0)
-	if err != nil {
-		panic(err.Error())
-	}
-	//gets last number
-	//for selDB.Next() {
-
-	for selDB.Next() {
-		_ = selDB.Scan(&productFilename)
-	}
-
-	productFilename1 = strings.ReplaceAll(productFilename, "image/", "")
-
-	var path = "/uploads/" + productFilename1
-	//err := os.Remove(path)
-	os.Remove(path)
-
-	//get latest number
-	var Number int
-	var q3 = "SELECT Number FROM  numbers"
-	selDB1, err := db.Query(q3)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	for selDB1.Next() {
-		//gets last number
-		_ = selDB1.Scan(&Number)
-	}
-	//var value1 = strconv.Itoa(Number)
-
-	var value2 = strconv.Itoa(Number + 1)
-
-	var Filename = "A" + (value2) + "." + filetype
-	productFilename1 = strings.ReplaceAll(Filename, "image/", "")
-
-	//put in database
-	//stmt, e := db.Prepare("UPDATE products SET  ProductFilename = '" + Filename + "' WHERE ProductID = " +  strconv.Itoa(ProductID)
-	stmt, e := db.Prepare("UPDATE products SET  ProductFilename = ? WHERE ProductID = ?")
-	//selDB2, err := db.Query(q1)
-	if e != nil {
-		panic(err.Error())
-	}
-	stmt.Exec(productFilename1, ProductID)
-
-	stmt, e = db.Prepare("UPDATE numbers SET Number =  ?")
-
-	if e != nil {
-		panic(err.Error())
-	}
-
-	stmt.Exec(value2)
-
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
@@ -514,8 +286,6 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	//fmt.Println("method:", r.Method)
-
-	////
 
 	fmt.Println("in get messages ")
 	fmt.Fprint(w, "or this")
@@ -539,17 +309,11 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	//button1
-
-	//button2 - just make session right now
-
 	mux.HandleFunc("/processSearch", processSearch)
-
-	mux.HandleFunc("/upload", uploadHandler)
 
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
-	//not used
+
 	mux.HandleFunc("/display", display1)
 
 	http.ListenAndServe(":8080", mux)
