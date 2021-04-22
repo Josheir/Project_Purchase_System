@@ -53,11 +53,11 @@
 
       <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="http://localhost:8080/processSearch">
      
-      <center><input   name = "search" type="text" id="search" name="search" value="search"/></center>
+      <center><input   name = "search" type="text" id="search" name="search" placeholder= "apple1" value="apple1"/></center>
      
       
       
-      
+      <input   id="button3" type="button" onclick = "testJSON()" value="Test JSON"/>
       <input   id="button2" type="submit" value="Get Inputs"/>
       </form>
     
@@ -71,28 +71,56 @@
 <script>
 
     
-//try - not currently being  used
-function refresh(){
-
-
+//try - not currently being  used : TEST
+//function refresh(){
+ function testJSON()
+{
   //var fileInput = document.getElementById('file');   
   //var filename = fileInput.files[0].name;
 
   //let url = `http://localhost:8080/getMessages?filename=${filename}`;
   //alert (url);
-  var result = ""
-     
-    $(document).ready(function () {
+  var result = "test1"
+   
+  var obj1 = [{ name: "John", age: 30, city: "New York" }];
+  var testing = JSON.stringify(obj1);
+    $(document).ready(function (obj) {
       //$('#button5').click(function () {
+
+        //https://stackoverflow.com/questions/8951810/how-to-parse-json-data-with-jquery-javascript
+       // https://stackoverflow.com/questions/5061310/jquery-returning-parsererror-for-ajax-request
           $.ajax({
               url: 'http://localhost:8080/getMessages',
-              type: 'GET',
-              dataType: 'json',
-              contentType: "application/json; charset=utf-8",
+              type: 'POST',
+              dataType: 'text',
+              contentType: "application/json",
+              data: { name: "John", age: 30, city: "New York" },
               crossDomain: true,
               //success: function (data) {alert(data[0]);
-              success: function (data){
-               alert("success!");}
+               
+               
+               // complete: function(response, textStatus) {
+  //  return alert("Hey: " + textStatus);
+ // }
+            success: function (data) {
+              json = $.parseJSON(data);
+              $(json).each(function (i, val) {
+              $.each(val, function (k, v) {
+              alert(k)
+              alert(v)
+              // console.log(k + " : " + v);
+              });
+            }); 
+            //alert(output);
+                //alert(data);
+            }
+
+            //    success: function (data){
+            //    alert("success!");
+            //    alert(data);
+             //   json.parse(data)
+             //   alert("success!");
+             // }
               
           });
       //});

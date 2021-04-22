@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 
+	"encoding/json"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
 )
@@ -93,10 +95,14 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 
 	}
 	fmt.Fprintf(w, "got here2!")
-	fmt.Fprintln(w, "search :", r.Form.Get("search"))
+	//fmt.Fprintln(w, "search :", r.Form.Get("search"))
 
-	globKeyword = r.Form.Get("search")
-	fmt.Println("here")
+	globKeyword = r.Form.Get("a")
+	fmt.Println("-----")
+	fmt.Println("globKeyword")
+	fmt.Println("-----")
+
+	//fmt.Println("here")
 	//httpServletRequest.getParameter("myparam")
 
 }
@@ -198,9 +204,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
-			"<div class=\"row\" >" +
+			"<div class=\"row\" > " +
 			"<div class=\"col\">" +
-			"<h4><center><p id = \"\">Image</p></center></h4>" +
+
+			"<h4><center><p id = \"\">Imagejjjjjjjjjjjjjjjjjjjj</p></center></h4>" +
 
 			"<img  height=\"100\" width=\"100\"  src= /golangproj/uploads/" + ProductFilename + " alt=\"no product image\">" +
 
@@ -225,7 +232,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			"</div>" +
 
-			"</div>" +
 			"</div>" +
 
 			"<div class=\"row\" >" +
@@ -252,21 +258,22 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			"<center><p>	<input id =   " + key3ID + "  value = " + gKeyword3 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
 
 			"</div>" +
-
+			"</div>" +
 			"<br><br>" +
 
 			"<div class=\"row\" >" +
 
 			"<div class=\"col\">" +
 
+			"<br><br><br><br>" +
 			"<center><button id = \"\" onclick = \"SaveProductItems(" + strconv.Itoa(ProductID) + ", " + titleID + ", " + descID + " )\">Submit</button></center>" +
 
 			"</div>" +
-			"<br><br>" +
 
-			"</div>" +
+			" <br><br><br><br>" +
+			"<hr>" +
 
-			" <br><br><br><br>"
+			"</div>"
 
 	} //for selDB.Next()
 
@@ -281,6 +288,8 @@ func submitfunc(w http.ResponseWriter, r *http.Request) {
 
 /////////
 
+//send from client to server and
+//send form server to client
 func getMessages(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
@@ -289,20 +298,79 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	//fmt.Println("method:", r.Method)
 
-	fmt.Println("in get messages ")
-	fmt.Fprint(w, "or this")
+	//fmt.Fprintf(w, "got here1!")
 
-	/*
-		a := make([]string, 2)
-		a[0] = "John"
-		a[1] = "Sam"
-		j, err := json.Marshal(a)
-		if err != nil {
-			fmt.Printf("Error: %s", err.Error())
-		}
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Println("error")
 
-		w.Write(j)
-	*/
+	}
+	//fmt.Fprintf(w, "got here2!")
+	//fmt.Fprintln(w, "search :", r.Form.Get("search"))
+
+	globKeyword = r.Form.Get("name")
+
+	for key, values := range r.Form {
+		//for _, value := range values {
+		//fmt.Printf("%s = %s\n", key, value)
+		fmt.Println(key, values)
+		//fmt.Printf("%s\n", key)
+		//}
+	}
+
+	var trythis [12]string
+
+	fmt.Println("-----")
+	//fmt.Println(globKeyword)
+	//fmt.Println("-----")
+
+	var i = -1
+	for _, values := range r.Form {
+		i++
+		trythis[i] = (values[0])
+
+		fmt.Println(trythis[i])
+	}
+
+	//Excellant, passes string back
+
+	//a := make([]string, 2)
+	//a[0] = "John"
+	//a[1] = "Sam"
+
+	//results := Results{Total: 100}
+	//var a [2]string
+	//a[0] = "Hello"
+	//a[1] = "World"
+	//into json string
+
+	//j, err := json.Marshal(a)
+	//if err != nil {
+	//	fmt.Printf("Error: %s", err.Error())
+	//	fmt.Println("---qqq--")
+	//}
+	fmt.Println("--wwww---")
+
+	type User struct {
+		Name string `json:"name"`
+		Age  int    `json:"age"`
+		City string `json:"city"`
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	user := User{
+
+		Name: "John Doe",
+		Age:  10,
+		City: "richmond"}
+
+	json.NewEncoder(w).Encode(user)
+
+	//w.Header().Set("Content-Type", "application/json")
+	//w.Write(j)
+	fmt.Println("--wwww---")
+
 }
 
 //////
