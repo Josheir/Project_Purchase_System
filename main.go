@@ -89,18 +89,19 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "got here1!")
 
-	err := r.ParseForm()
-	if err != nil {
-		fmt.Println("error")
+	//parse like this not used with json - unmarshal instead?
+	//err := r.ParseForm()
+	//if err != nil {
+	//	fmt.Println("error")
 
-	}
-	fmt.Fprintf(w, "got here2!")
+	//}
+	//fmt.Fprintf(w, "got here2!")
 	//fmt.Fprintln(w, "search :", r.Form.Get("search"))
 
-	globKeyword = r.Form.Get("a")
-	fmt.Println("-----")
-	fmt.Println("globKeyword")
-	fmt.Println("-----")
+	//globKeyword = r.Form.Get("a")
+	//fmt.Println("-----")
+	//fmt.Println("globKeyword")
+	//fmt.Println("-----")
 
 	//fmt.Println("here")
 	//httpServletRequest.getParameter("myparam")
@@ -161,6 +162,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//	"((products.ProductKeyWord1 = \"apple1\") OR " +
 	//	"(products.ProductKeyWord2 = \"apple1\") OR (products.ProductKeyWord3 = \"apple1\" ))"
 
+	globKeyword = "apple1"
+
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
@@ -169,7 +172,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-
+	//globKeyword
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
 	if err != nil {
@@ -193,6 +196,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		counter = counter + 1
 		str := strconv.Itoa(counter)
 
+		var inputID = "inputID" + str
+		var mainDiv = "mainDiv" + str
 		var titleID = "titleID" + str
 		var descID = "descID" + str
 		var costID = "costID" + str
@@ -204,6 +209,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
+			"<div id = \"mainDiv>\"" +
 			"<div class=\"row\" > " +
 			"<div class=\"col\">" +
 
@@ -266,14 +272,17 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			"<div class=\"col\">" +
 
 			"<br><br><br><br>" +
-			"<center><button id = \"\" onclick = \"SaveProductItems(" + strconv.Itoa(ProductID) + ", " + titleID + ", " + descID + " )\">Submit</button></center>" +
+			//inputID is the quant amount  to purchase
+			"<center><p>	<input id =   " + inputID + " type=\"number\" \" placeholder=\"\">		</p></center>" +
+			"<center><button id = \"\" onclick = \"Purchase(" + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + "," + mainDiv + ")\">Purchase</button></center>" +
 
 			"</div>" +
 
 			" <br><br><br><br>" +
 			"<hr>" +
 
-			"</div>"
+			"</div>" +
+			"</div>" //maindiv end tag
 
 	} //for selDB.Next()
 
@@ -296,47 +305,18 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	//fmt.Println("method:", r.Method)
-
-	//fmt.Fprintf(w, "got here1!")
 
 	err := r.ParseForm()
 	if err != nil {
 		fmt.Println("error")
 
 	}
-	//fmt.Fprintf(w, "got here2!")
-	//fmt.Fprintln(w, "search :", r.Form.Get("search"))
 
-	globKeyword = r.Form.Get("name")
-
+	//doesn't work
 	for key, values := range r.Form {
-		//for _, value := range values {
-		//fmt.Printf("%s = %s\n", key, value)
 		fmt.Println(key, values)
-		//fmt.Printf("%s\n", key)
-		//}
+
 	}
-
-	var trythis [12]string
-
-	fmt.Println("-----")
-	//fmt.Println(globKeyword)
-	//fmt.Println("-----")
-
-	var i = -1
-	for _, values := range r.Form {
-		i++
-		trythis[i] = (values[0])
-
-		fmt.Println(trythis[i])
-	}
-
-	//Excellant, passes string back
-
-	//a := make([]string, 2)
-	//a[0] = "John"
-	//a[1] = "Sam"
 
 	//results := Results{Total: 100}
 	//var a [2]string
