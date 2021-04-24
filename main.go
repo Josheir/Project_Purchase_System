@@ -197,7 +197,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		str := strconv.Itoa(counter)
 
 		var inputID = "inputID" + str
-		var mainDiv = "mainDiv" + str
+		//mainDivID = "mainDivID" + str
 		var titleID = "titleID" + str
 		var descID = "descID" + str
 		var costID = "costID" + str
@@ -205,11 +205,12 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var key1ID = "key1ID" + str
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
+		var m = "key3ID1" + str
 
 		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
 			"<p>category id  : " + ProductCatTitle + "</p>" +
 
-			"<div id = \"mainDiv>\"" +
+			"<div id = \"\" >" +
 			"<div class=\"row\" > " +
 			"<div class=\"col\">" +
 
@@ -274,15 +275,18 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			"<br><br><br><br>" +
 			//inputID is the quant amount  to purchase
 			"<center><p>	<input id =   " + inputID + " type=\"number\" \" placeholder=\"\">		</p></center>" +
-			"<center><button id = \"\" onclick = \"Purchase(" + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + "," + mainDiv + ")\">Purchase</button></center>" +
+			//"<button id = \"\" onclick = \"Purchase(" + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + " )\">  Purchase</button>" +
+			"<button id=\"\" onclick=\"Purchase(" + m + "," + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + "		 )\">  Purchase</button>" +
 
-			"</div>" +
+			//"," + quantityID + "," + mainDiv + "")\">Purchase</button></center>" + -->
+
+			//"</div>"+
 
 			" <br><br><br><br>" +
 			"<hr>" +
 
-			"</div>" +
-			"</div>" //maindiv end tag
+			"</div></div></div>"
+		//maindiv end tag
 
 	} //for selDB.Next()
 
