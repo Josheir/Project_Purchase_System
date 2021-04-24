@@ -70,20 +70,76 @@
       
 <script>
 
-var obj1 = [];
-function insert(name, age, city) {
-    obj1.push({
-        name: name,
-        age: age,
-        city: city
+var array1 = [];
+function insert(pid, quantLeft) {
+    array1.push({
+        pid: pid,
+        quant: quant,
+       
     });        
 }
 
+//Global Array
+
+//check this when purchasing so if there is a purchase is stored in an array
+//if called and pid has some reductions already will keep track of how many
+//left.  Used here to prevent more than total being reduced, and for if chosen
+//again with a seperate search 
+function savePIDAndQuantInArray(PID, quantLeft, quantityID){
+
+  for (i=0;i< array1.length ;i++ )
+  {
+      
+    //already has a key pid
+    if(array1[i] == PID)
+      {
+          array1[i].quant =  array1[i].quant - quantLeft;
+          
+          string = "foundPIDandQuantChanged";
+          break;
+      }
+    }
+    //no pid with PID insert new record
+    if (string != "foundPIDandQuantChanged")
+      {
+        insert(PID, quantLeft);
+      }
+    setMaxQuantityInRecord(PID, quantLeft, QuantityID);
+
+
+  }
+
+function setMaxQuantityInRecord(PID, quantLeft, QuantityID)
+{
+  document.getElementById(QuantityID) = quantLeft;
+}
 
 ////"Purchase(" + strconv.Itoa(ProductID) + ", " + quantityID + ", " + mainDiv + " )
-function Purchase(chosenQuant, productID, QuantityID, maiDiv){
+function Purchase(mainDiv2,chosenQuant, productID, quantityID){
 
+  //quant left for purchasing
+  var quantmax = document.getElementById(QuantityID);
+  //less or equal to stor in database
+  if (chosenQuant > 0 && chosenQuant <= quantmax )
+  {
+    var quantLeftInSupply = quantmax - chosenQuant;
+    //make box display amount left
+    setMaxQuantityInRecord(ProductID, quantLeft, QuantityID)
+    //clears record:
+    document.getElementById(mainDiv2).innerHTML = "" ;
+    //stores in array, quant left ;  if another search and uses same record, the array will keep track of total reductions
+    savePIDAndQuantInArray(productID, quantLeftInSupply, QuantityID);
+
+
+  }
+  //quant is greater than availbe so do nothing
+  else{
+    
+    return(1);
+
+  }
   alert("here");
+
 }
 
 
