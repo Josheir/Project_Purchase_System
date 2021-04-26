@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"encoding/json"
+	"html/template"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
@@ -181,6 +182,30 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	counter := 0
 
+	templ1 := forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
+		quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, inputID}
+
+	type forTemplate struct {
+		MainDiv string
+		TitleID string
+		//ProductFilename    string
+		ProductName        string
+		DescID             string
+		ProductDescription string
+		CostID             string
+		ProductCost        int
+		QuantityID         string
+		ProductQuantity    int
+		Key1ID             string
+		GKeyword1          string
+		Key2ID             string
+		GKeyword2          string
+		Key3ID             string
+		GKeyword3          string
+		InputID            string
+		//ProductID int
+	}
+
 	for rows.Next() {
 
 		var ProductCost, ProductQuantity int
@@ -195,9 +220,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		///////////////////
 		counter = counter + 1
 		str := strconv.Itoa(counter)
+		//Str := strconv.Itoa(counter)
 
 		var inputID = "inputID" + str
-		//mainDivID = "mainDivID" + str
+		var mainDiv = "mainDivID" + str
 		var titleID = "titleID" + str
 		var descID = "descID" + str
 		var costID = "costID" + str
@@ -205,92 +231,126 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var key1ID = "key1ID" + str
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
-		var m = "key3ID1" + str
+		//var m = "m" + str
 
-		string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
-			"<p>category id  : " + ProductCatTitle + "</p>" +
+		// add:  ProductFilename
+		templ1 := forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
+			quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, inputID}
 
-			"<div id = \"\" >" +
-			"<div class=\"row\" > " +
-			"<div class=\"col\">" +
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-			"<h4><center><p id = \"\">Imagejjjjjjjjjjjjjjjjjjjj</p></center></h4>" +
+		t, err1 := template.ParseFiles("index1.html")
+		if err1 != nil {
+			fmt.Println("A--------------")
+			fmt.Println(err1.Error())
 
-			"<img  height=\"100\" width=\"100\"  src= /golangproj/uploads/" + ProductFilename + " alt=\"no product image\">" +
+			panic(err1.Error())
+		}
 
-			"</div>" +
+		// standard output to print merged data
 
-			"<div class=\"col\">" +
-			"<h4><center><p id =\"\"  >Title</p></center></h4>" +
+		fmt.Println("w")
+		//err1 = fmt.Fprint(w, templ1)
 
-			"<center>      <p  >      <input id = " + titleID + " value = " + ProductName + " type=\"text\" name=\"title\" placeholder=\"\"></p></center>" +
-			"</div>" +
+		err1 = t.Execute(w, templ1)
 
-			"<div class=\"col\">" +
+		//fmt.Fprint(w, templ1)
+		if err1 != nil {
+			fmt.Println("B---------------")
+			fmt.Println(err1.Error())
 
-			"<h4><center><p id = \"\">Desc</p></center></h4>" +
+			panic(err1.Error())
 
-			"<center><textarea wrap id = " + descID + "   value = " + ProductDescription + "  type=\"text\" rows=\"5\" cols=\"34\"></textarea></center>" +
-			"</div>" +
+		}
 
-			"<div class=\"col\">" +
-			"<h4><center><p id = \"\" >Cost</p></center></h4>" +
-			"<center><p>	<input id = " + costID + " value =  " + strconv.Itoa(ProductCost) + "   type=\"number\" name=\"title\" placeholder=\"\">		</p></center>" +
+		/*
+			string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
+				"<p>category id  : " + ProductCatTitle + "</p>" +
 
-			"</div>" +
+				"<div id=" + m + " >" +
+				"<div class=\"row\" > " +
+				"<div class=\"col\">" +
 
-			"</div>" +
+				"<h4><center><p id = \"\">Image</p></center></h4>" +
 
-			"<div class=\"row\" >" +
+				"<img  height=\"100\" width=\"100\"  src= /golangproj/uploads/" + ProductFilename + " alt=\"no product image\">" +
 
-			"<div class=\"col\">" +
-			"<h4><center><p id = \"\" >Quantity</p></center></h4>" +
-			"<center><p> <input id = " + quantityID + " value = " + strconv.Itoa(ProductQuantity) + "  type=\"number\" name=\"title\" placeholder=\"\">	</p></center>" +
-			"</div>" +
+				"</div>" +
 
-			"<div class=\"col\">" +
-			"<h4><center><p id = \"\" >Keyword 1</p></center></h4>" +
-			"<center><p>	<input id = " + key1ID + " value = " + gKeyword1 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
+				"<div class=\"col\">" +
+				"<h4><center><p id =\"\"  >Title</p></center></h4>" +
 
-			"</div>" +
+				"<center>      <p  >      <input id = " + titleID + " value = " + ProductName + " type=\"text\" name=\"title\" placeholder=\"\"></p></center>" +
+				"</div>" +
 
-			"<div class=\"col\">" +
-			"<h4><center><p id = \"\" >Keyword 2</p></center></h4>" +
-			"<center><p>	<input id = " + key2ID + " value = " + gKeyword2 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
+				"<div class=\"col\">" +
 
-			"</div>" +
+				"<h4><center><p id = \"\">Desc</p></center></h4>" +
 
-			"<div class=\"col\">" +
-			"<h4><center><p id = \"\" >Keyword 3</p></center></h4>" +
-			"<center><p>	<input id =   " + key3ID + "  value = " + gKeyword3 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
+				"<center><textarea wrap id = " + descID + "   value = " + ProductDescription + "  type=\"text\" rows=\"5\" cols=\"34\"></textarea></center>" +
+				"</div>" +
 
-			"</div>" +
-			"</div>" +
-			"<br><br>" +
+				"<div class=\"col\">" +
+				"<h4><center><p id = \"\" >Cost</p></center></h4>" +
+				"<center><p>	<input id = " + costID + " value =  " + strconv.Itoa(ProductCost) + "   type=\"number\" name=\"title\" placeholder=\"\">		</p></center>" +
 
-			"<div class=\"row\" >" +
+				"</div>" +
 
-			"<div class=\"col\">" +
+				"</div>" +
 
-			"<br><br><br><br>" +
-			//inputID is the quant amount  to purchase
-			"<center><p>	<input id =   " + inputID + " type=\"number\" \" placeholder=\"\">		</p></center>" +
-			//"<button id = \"\" onclick = \"Purchase(" + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + " )\">  Purchase</button>" +
-			"<button id=\"\" onclick=\"Purchase(" + m + "," + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + "		 )\">  Purchase</button>" +
+				"<div class=\"row\" >" +
 
-			//"," + quantityID + "," + mainDiv + "")\">Purchase</button></center>" + -->
+				"<div class=\"col\">" +
+				"<h4><center><p id = \"\" >Quantity</p></center></h4>" +
+				"<center><p> <input id = " + quantityID + " value = " + strconv.Itoa(ProductQuantity) + "  type=\"text\" name=\"title\" placeholder=\"\">	</p></center>" +
+				"</div>" +
 
-			//"</div>"+
+				"<div class=\"col\">" +
+				"<h4><center><p id = \"\" >Keyword 1</p></center></h4>" +
+				"<center><p>	<input id = " + key1ID + " value = " + gKeyword1 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
 
-			" <br><br><br><br>" +
-			"<hr>" +
+				"</div>" +
 
-			"</div></div></div>"
-		//maindiv end tag
+				"<div class=\"col\">" +
+				"<h4><center><p id = \"\" >Keyword 2</p></center></h4>" +
+				"<center><p>	<input id = " + key2ID + " value = " + gKeyword2 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
+
+				"</div>" +
+
+				"<div class=\"col\">" +
+				"<h4><center><p id = \"\" >Keyword 3</p></center></h4>" +
+				"<center><p>	<input id =   " + key3ID + "  value = " + gKeyword3 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
+
+				"</div>" +
+				"</div>" +
+				"<br><br>" +
+
+				"<div class=\"row\" >" +
+
+				"<div class=\"col\">" +
+
+				"<br><br><br><br>" +
+				//inputID is the quant amount  to purchase
+				"<center><p>	<input id =" + inputID + " type=\"number\" \" placeholder=\"\">		</p></center>" +
+				//"<button id = \"\" onclick = \"Purchase(" + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + " )\">  Purchase</button>" +
+				"<button id=\"\" onclick=\"Purchase(" + m + "," + strconv.Itoa(ProductID) + ",'" + key1ID + "'," + inputID + ")\">Purchase</button>" +
+
+				//"," + quantityID + "," + mainDiv + "")\">Purchase</button></center>" + -->
+
+				//"</div>"+
+
+				" <br><br><br><br>" +
+				"<hr>" +
+
+				"</div></div></div>"
+			//maindiv end tag
+
+
+		*/
 
 	} //for selDB.Next()
 
-	receiveAjax(w, r)
+	//receiveAjax(w, r)
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
