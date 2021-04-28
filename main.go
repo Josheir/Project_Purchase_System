@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 
 	"encoding/json"
 	"html/template"
@@ -109,59 +108,80 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type forTemplate struct {
+	ProductID       string
+	ProductCatTitle string
+	MainDiv         string
+	TitleID         string
+	//ProductFilename    string
+	ProductName        string
+	DescID             string
+	ProductDescription string
+	CostID             string
+	ProductCost        int
+	QuantityID         string
+	ProductQuantity    int
+	Key1ID             string
+	GKeyword1          string
+	Key2ID             string
+	GKeyword2          string
+	Key3ID             string
+	GKeyword3          string
+	//InputID            string
+	//ProductID int
+}
+
+type Name struct {
+	FName string
+	LName string
+}
+
+func HelloWorld(w http.ResponseWriter, r *http.Request) {
+	name := Name{"mindorks", "Subject"}
+	template, _ := template.ParseFiles("index2.html")
+	template.Execute(w, name)
+}
+
+func Hello(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	name := Name{"mindorks2", "Subject2"}
+	template, _ := template.ParseFiles("index2.html")
+	template.Execute(w, name)
+}
+
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	//temp := forTemplate{ProductName: "test"}
+
+	//var templ1 = forTemplate{"a", "a", "a", "a", "a", "a", 1, "a", 1, "a", "a", "a", "a", "a", "a"}
+
+	//fmt.Println(templ1)
+
+	//w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	//t, _ := template.New("test").Parse("{{.ProductName}} is name")
+
+	//http.HandleFunc("/", HelloWorld)
+	//name := Name{"hello"}
+
+	//t := template.Must(template.ParseFiles("index2.html"))
+	//if err1 != nil {
+	//	fmt.Println("A--------------")
+	//	fmt.Println(err1.Error())
+	//
+	//			panic(err1.Error())
+	//		}
+
+	//template.Execute(w , "")
+	//_ = t.Execute(os.Stdout, name)
+
 	string1 = ""
 
-	/*
-		err := r.ParseForm()
-		if err != nil {
-			fmt.Println("error")
-
-		}
-
-		fmt.Fprintf(w, "got here1!")
-		fmt.Fprintln(w, "search :", r.Form.Get("search"))
-	*/
 	fmt.Println("in display 1")
-	//fmt.Fprintf(w, "got here1!")
-	//Var1 := "apple1"
+
 	db := dbConn()
-
-	///////////////////////////////////
-
-	//https://dwahyudi.github.io/2020/05/15/mysql-where-in-query-with-golang.html
-	//https://stackoverflow.com/questions/59005026/how-to-make-an-sql-query-in-golang-with-multiple-values-in-the-where-clause
-
-	/*
-	   	for results.Next() {
-	   		var vehicle Vehicle
-	   		err = results.Scan(&vehicle.ID, &vehicle.ProductionYear, &vehicle.Brand)
-	   		panicError(err)
-	   		fmt.Println(vehicle.ProductionYear)
-	   		fmt.Println(vehicle.Brand)
-	   		fmt.Println("=================")
-	   	}
-	   stmt, err := db.Prepare("select * from someTable where age = ? and hairColor = ?")
-	   rows, err := stmt.Query(age,hairColor)
-	*/
-	////////////////////////////////////////
-
-	//add products.ProductCatTitle = \"$titleOfSelectedDropDown\"
-	//var q = "SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
-	//	"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
-	//	"FROM products WHERE " +
-	//	"((products.ProductKeyWord1 = " + Var1 + ") OR " +
-	//	"(products.ProductKeyWord2 = " + Var1 + ") OR (products.ProductKeyWord3 = " + Var1 + " ))"
-	//add products.ProductCatTitle = \"$titleOfSelectedDropDown\"
-
-	//var q = "SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
-	//	"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle, products.ProductFilename " +
-	//	//	"FROM products WHERE " +
-	//	"FROM products WHERE " +
-	//	"((products.ProductKeyWord1 = \"apple1\") OR " +
-	//	"(products.ProductKeyWord2 = \"apple1\") OR (products.ProductKeyWord3 = \"apple1\" ))"
 
 	globKeyword = "apple1"
 
@@ -173,38 +193,14 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	//globKeyword
+
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	counter := 0
-
-	templ1 := forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
-		quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, inputID}
-
-	type forTemplate struct {
-		MainDiv string
-		TitleID string
-		//ProductFilename    string
-		ProductName        string
-		DescID             string
-		ProductDescription string
-		CostID             string
-		ProductCost        int
-		QuantityID         string
-		ProductQuantity    int
-		Key1ID             string
-		GKeyword1          string
-		Key2ID             string
-		GKeyword2          string
-		Key3ID             string
-		GKeyword3          string
-		InputID            string
-		//ProductID int
-	}
+	//counter := 0
 
 	for rows.Next() {
 
@@ -218,43 +214,40 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 		///////////////////
-		counter = counter + 1
-		str := strconv.Itoa(counter)
-		//Str := strconv.Itoa(counter)
+		//	counter = counter + 1
+		//	str := strconv.Itoa(counter)
 
-		var inputID = "inputID" + str
-		var mainDiv = "mainDivID" + str
-		var titleID = "titleID" + str
-		var descID = "descID" + str
-		var costID = "costID" + str
-		var quantityID = "quantityID" + str
-		var key1ID = "key1ID" + str
-		var key2ID = "key2ID" + str
-		var key3ID = "key3ID" + str
-		//var m = "m" + str
+		//var inputID = "inputID" + str
+		//	var mainDiv = "mainDivID" + str
+		//	var titleID = "titleID" + str
+		//	var descID = "descID" + str
+		//	var costID = "costID" + str
+		//	var quantityID = "quantityID" + str
+		//	var key1ID = "key1ID" + str
+		//	var key2ID = "key2ID" + str
+		//	var key3ID = "key3ID" + str
 
 		// add:  ProductFilename
-		templ1 := forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
-			quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, inputID}
+		//var templ1 = forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
+		//	quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3}
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		var templ1 = forTemplate{"a", "a", "a", "a", "a", "a", "a", "a", 1, "a", 1, "a", "a", "a", "a", "a", "a"}
 
-		t, err1 := template.ParseFiles("index1.html")
-		if err1 != nil {
-			fmt.Println("A--------------")
-			fmt.Println(err1.Error())
+		fmt.Println(templ1)
 
-			panic(err1.Error())
-		}
+		//w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		//t, _ := template.New("test").Parse("{{.ProductName}} is name")
+		t := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
+		//if err1 != nil {
+		//	fmt.Println("A--------------")
+		//	fmt.Println(err1.Error())
+		//
+		//			panic(err1.Error())
+		//		}
 
-		// standard output to print merged data
+		//template.Execute(w , "")
+		err1 := t.Execute(w, templ1)
 
-		fmt.Println("w")
-		//err1 = fmt.Fprint(w, templ1)
-
-		err1 = t.Execute(w, templ1)
-
-		//fmt.Fprint(w, templ1)
 		if err1 != nil {
 			fmt.Println("B---------------")
 			fmt.Println(err1.Error())
@@ -428,7 +421,11 @@ func main() {
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
 
-	mux.HandleFunc("/display", display1)
+	//works
+	//mux.HandleFunc("/Hello", Hello)
+	mux.HandleFunc("/Hello", display1)
+
+	//mux.HandleFunc("/", HelloWorld)
 
 	http.ListenAndServe(":8080", mux)
 }
@@ -436,3 +433,6 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World!")
 }
+
+//https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
+//http://localhost:8080/golangproj/

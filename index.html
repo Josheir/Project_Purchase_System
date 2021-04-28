@@ -46,7 +46,7 @@
 </script>
 
 
-
+      <div id ="buttons">
       <br><br><br>
      
       <iframe id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
@@ -63,6 +63,9 @@
     
       <input   id="button1" type="submit" value="Search Database"/>
       
+      <input   id="button6"  type="button" value="template"/>
+
+      </div>
 
       
 
@@ -109,26 +112,26 @@ function savePIDAndQuantInArray(PID, quantLeft, quantityID){
 
   }
 
-function setMaxQuantityInRecord(PID, quantLeft, QuantityID)
+function setMaxQuantityInRecord(PID, quantLeft, quantityID)
 {
   document.getElementById(QuantityID) = quantLeft;
 }
 
 ////"Purchase(" + strconv.Itoa(ProductID) + ", " + quantityID + ", " + mainDiv + " )
-function Purchase(mainDiv2,chosenQuant, productID, quantityID){
+function Purchase(mainDiv2, productID, quantityID, chosenQuant){
 
   //quant left for purchasing
-  var quantmax = document.getElementById(QuantityID);
+  var quantmax = document.getElementById(quantityID).value;
   //less or equal to stor in database
   if (chosenQuant > 0 && chosenQuant <= quantmax )
   {
     var quantLeftInSupply = quantmax - chosenQuant;
     //make box display amount left
-    setMaxQuantityInRecord(ProductID, quantLeft, QuantityID)
+    setMaxQuantityInRecord(productID, quantLeft, quantityID)
     //clears record:
     document.getElementById(mainDiv2).innerHTML = "" ;
     //stores in array, quant left ;  if another search and uses same record, the array will keep track of total reductions
-    savePIDAndQuantInArray(productID, quantLeftInSupply, QuantityID);
+    savePIDAndQuantInArray(productID, quantLeftInSupply, quantityID);
 
 
   }
@@ -215,9 +218,9 @@ var dataB = JSON.stringify(dataA);
 
 
     $(document).ready(function () {
-      $('#button1').click(function () {
+      $('#button6').click(function () {
           $.ajax({
-              url: "http://localhost:8080/display",
+              url: "http://localhost:8080/Hello",
               type: 'POST',
               dataType: 'html',
               contentType: "application/x-www-form-urlencoded",
@@ -228,7 +231,7 @@ var dataB = JSON.stringify(dataA);
                 alert(result);
                 
                 //$('#div1').html("");
-                $('#div1').html(result);
+                $('#buttons').html(result);
               }
           });
       });
