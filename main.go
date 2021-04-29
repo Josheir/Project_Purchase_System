@@ -13,6 +13,10 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+//cited
+//https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
+//http://localhost:8080/golangproj/
+
 var globKeyword = ""
 var Test = 1
 
@@ -154,28 +158,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//temp := forTemplate{ProductName: "test"}
-
-	//var templ1 = forTemplate{"a", "a", "a", "a", "a", "a", 1, "a", 1, "a", "a", "a", "a", "a", "a"}
-
-	//fmt.Println(templ1)
-
 	//w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	//t, _ := template.New("test").Parse("{{.ProductName}} is name")
-
-	//http.HandleFunc("/", HelloWorld)
-	//name := Name{"hello"}
-
-	//t := template.Must(template.ParseFiles("index2.html"))
-	//if err1 != nil {
-	//	fmt.Println("A--------------")
-	//	fmt.Println(err1.Error())
-	//
-	//			panic(err1.Error())
-	//		}
-
-	//template.Execute(w , "")
-	//_ = t.Execute(os.Stdout, name)
 
 	string1 = ""
 
@@ -235,17 +218,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(templ1)
 
-		//w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		//t, _ := template.New("test").Parse("{{.ProductName}} is name")
 		t := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
-		//if err1 != nil {
-		//	fmt.Println("A--------------")
-		//	fmt.Println(err1.Error())
-		//
-		//			panic(err1.Error())
-		//		}
 
-		//template.Execute(w , "")
 		err1 := t.Execute(w, templ1)
 
 		if err1 != nil {
@@ -256,94 +230,9 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		/*
-			string1 = string1 + "<p id = \"link1\">product id   : " + strconv.Itoa(ProductID) + " </p>" +
-				"<p>category id  : " + ProductCatTitle + "</p>" +
-
-				"<div id=" + m + " >" +
-				"<div class=\"row\" > " +
-				"<div class=\"col\">" +
-
-				"<h4><center><p id = \"\">Image</p></center></h4>" +
-
-				"<img  height=\"100\" width=\"100\"  src= /golangproj/uploads/" + ProductFilename + " alt=\"no product image\">" +
-
-				"</div>" +
-
-				"<div class=\"col\">" +
-				"<h4><center><p id =\"\"  >Title</p></center></h4>" +
-
-				"<center>      <p  >      <input id = " + titleID + " value = " + ProductName + " type=\"text\" name=\"title\" placeholder=\"\"></p></center>" +
-				"</div>" +
-
-				"<div class=\"col\">" +
-
-				"<h4><center><p id = \"\">Desc</p></center></h4>" +
-
-				"<center><textarea wrap id = " + descID + "   value = " + ProductDescription + "  type=\"text\" rows=\"5\" cols=\"34\"></textarea></center>" +
-				"</div>" +
-
-				"<div class=\"col\">" +
-				"<h4><center><p id = \"\" >Cost</p></center></h4>" +
-				"<center><p>	<input id = " + costID + " value =  " + strconv.Itoa(ProductCost) + "   type=\"number\" name=\"title\" placeholder=\"\">		</p></center>" +
-
-				"</div>" +
-
-				"</div>" +
-
-				"<div class=\"row\" >" +
-
-				"<div class=\"col\">" +
-				"<h4><center><p id = \"\" >Quantity</p></center></h4>" +
-				"<center><p> <input id = " + quantityID + " value = " + strconv.Itoa(ProductQuantity) + "  type=\"text\" name=\"title\" placeholder=\"\">	</p></center>" +
-				"</div>" +
-
-				"<div class=\"col\">" +
-				"<h4><center><p id = \"\" >Keyword 1</p></center></h4>" +
-				"<center><p>	<input id = " + key1ID + " value = " + gKeyword1 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
-
-				"</div>" +
-
-				"<div class=\"col\">" +
-				"<h4><center><p id = \"\" >Keyword 2</p></center></h4>" +
-				"<center><p>	<input id = " + key2ID + " value = " + gKeyword2 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
-
-				"</div>" +
-
-				"<div class=\"col\">" +
-				"<h4><center><p id = \"\" >Keyword 3</p></center></h4>" +
-				"<center><p>	<input id =   " + key3ID + "  value = " + gKeyword3 + " type=\"text\" name=\"title\" placeholder=\"\">		</p></center>" +
-
-				"</div>" +
-				"</div>" +
-				"<br><br>" +
-
-				"<div class=\"row\" >" +
-
-				"<div class=\"col\">" +
-
-				"<br><br><br><br>" +
-				//inputID is the quant amount  to purchase
-				"<center><p>	<input id =" + inputID + " type=\"number\" \" placeholder=\"\">		</p></center>" +
-				//"<button id = \"\" onclick = \"Purchase(" + inputID + "," + strconv.Itoa(ProductID) + "," + quantityID + " )\">  Purchase</button>" +
-				"<button id=\"\" onclick=\"Purchase(" + m + "," + strconv.Itoa(ProductID) + ",'" + key1ID + "'," + inputID + ")\">Purchase</button>" +
-
-				//"," + quantityID + "," + mainDiv + "")\">Purchase</button></center>" + -->
-
-				//"</div>"+
-
-				" <br><br><br><br>" +
-				"<hr>" +
-
-				"</div></div></div>"
-			//maindiv end tag
-
-
-		*/
-
 	} //for selDB.Next()
 
-	//receiveAjax(w, r)
+	//display was here
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
@@ -351,8 +240,6 @@ func submitfunc(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("aarg ")
 	fmt.Println("aarg ")
 }
-
-/////////
 
 //send from client to server and
 //send form server to client
@@ -362,31 +249,6 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-
-	err := r.ParseForm()
-	if err != nil {
-		fmt.Println("error")
-
-	}
-
-	//doesn't work
-	for key, values := range r.Form {
-		fmt.Println(key, values)
-
-	}
-
-	//results := Results{Total: 100}
-	//var a [2]string
-	//a[0] = "Hello"
-	//a[1] = "World"
-	//into json string
-
-	//j, err := json.Marshal(a)
-	//if err != nil {
-	//	fmt.Printf("Error: %s", err.Error())
-	//	fmt.Println("---qqq--")
-	//}
-	fmt.Println("--wwww---")
 
 	type User struct {
 		Name string `json:"name"`
@@ -421,18 +283,12 @@ func main() {
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
 
-	//works
+	//wored
 	//mux.HandleFunc("/Hello", Hello)
+
 	mux.HandleFunc("/Hello", display1)
 
 	//mux.HandleFunc("/", HelloWorld)
 
 	http.ListenAndServe(":8080", mux)
 }
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
-}
-
-//https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
-//http://localhost:8080/golangproj/
