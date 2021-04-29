@@ -113,11 +113,11 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 type forTemplate struct {
-	ProductID       string
-	ProductCatTitle string
-	MainDiv         string
-	TitleID         string
-	//ProductFilename    string
+	ProductID          string
+	ProductCatTitle    string
+	MainDiv            string
+	TitleID            string
+	ProductFilename    string
 	ProductName        string
 	DescID             string
 	ProductDescription string
@@ -214,7 +214,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//var templ1 = forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
 		//	quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3}
 
-		var templ1 = forTemplate{"a", "a", "a", "a", "a", "a", "a", "a", 1, "a", 1, "a", "a", "a", "a", "a", "a"}
+		var templ1 = forTemplate{"a", "a", "a", "a", ProductFilename, "a", "a", ProductDescription, "a", 1, "a", 1, "a", "a", "a", "a", "a", "a"}
 
 		fmt.Println(templ1)
 
