@@ -1,24 +1,30 @@
             
-
+			
+	<body>
            <!DOCTYPE html>
            <html lang="en">
-           
-           
+           <head>
+			<style>
+				.test100 {
+  				visibility: hidden;
+				}
 
-			<div id=" {{.}} " > 
-
-
+				</style>   
+			</head>
 			
+			<iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
 
-
+			<div></div>
+			<div id  = "test100" class = "test100 " Value = "test100 " name = "test100 ">  
 			<div class="row" > 
 			<div class="col">
-
-			
-
-            <p id = "">product id   : {{.ProductID}} </p>" 
+			 <p id = "">product id   : {{.ProductID}} </p>" 
 			<p>category id  : {{.ProductCatTitle}}</p>
 
+
+		
+
+      <form target = "upload_target"  enctype="multipart/form-data" method = "POST" action="/updateForm/?idproducts={{.ProductID}}">
 			<h4><center><p id = "">Image</p></center></h4>
 
 
@@ -29,24 +35,19 @@
 			<div class="col">
 			<h4><center><p id =""  >Title</p></center></h4>
 
-			<center>      <p  >      <input id = " {{.TitleID}} " value = " {{.ProductName}} " type="text" name="title" placeholder=""></p></center>
+			<center>      <p  >      <input id = " {{.TitleID}} " value = " {{.ProductName}} " type="text" name="title" placeholder="" readonly></p></center>
 			</div>
 
 			<div class="col">
 
 			<h4><center><p id = "">Desc</p></center></h4>
 
-			<center><textarea wrap id = " {{.DescID}} "   value = " {{.ProductDescription}} "  type="text" rows="5" cols="34"></textarea></center>
+			<center><textarea wrap id = " {{.DescID}} "   value = " {{.ProductDescription}} "  type="text" rows="5" cols="34" readonly></textarea></center>
 			</div>
 
 			<div class="col">" 
-
-			
-			
-				
-				
 			<h4><center><p id = "" >Cost</p></center></h4>
-			<center><p>	<input id = "  {{.CostID}}  " value =    {{.ProductCost}}     type="number" name="title" placeholder="">		</p></center>
+			<center><p>	<input id = "  {{.CostID}}  " value =    {{.ProductCost}}     type="number" name="title" placeholder="" readonly>		</p></center>
 		
 			</div>
 			</div>
@@ -54,36 +55,42 @@
 			<div class="col">
 			
 			<h4><center><p id = "" >Quantity</p></center></h4>
-			<center><p> <input id = "  {{.QuantityID}}  " value =  {{.ProductQuantity}}  type="number" name="title" placeholder="">	</p></center>
+			<center><p> <input id = "  {{.QuantityID}}  " value =  {{.ProductQuantity}}  type="number" name="title" placeholder="" readonly>	</p></center>
 			</div>
 			
-		
-			
-
-				
 			<div class="col">
 
 			
 				
 			<h4><center><p id = "" >Keyword 1</p></center></h4>
-			<center><p>	<input id = " {{.Key1ID}} " value = " {{.GKeyword1}} " type="text" name="title" placeholder="">		</p></center>
+			<center><p>	<input id = " {{.Key1ID}} " value = " {{.GKeyword1}} " type="text" name="title" placeholder="" readonly>		</p></center>
 
 			</div>
 
 			<div class="col">
 			<h4><center><p id = "" >Keyword 2</p></center></h4>
-			<center><p>	<input id = " {{.Key2ID}} " value = " {{.GKeyword2}} " type="text" name="title" placeholder="">		</p></center>
+			<center><p>	<input id = " {{.Key2ID}} " value = " {{.GKeyword2}} " type="text" name="title" placeholder="" readonly>		</p></center>
 
 			</div>
 
 			<div class="col">
 			<h4><center><p id = "" >Keyword 3</p></center></h4>
-			<center><p>	<input id =   " {{.Key3ID}} "  value = " {{.GKeyword3}} " type="text" name="title" placeholder="">		</p></center>
+			<center><p>	<input id =   " {{.Key3ID}} "  value = " {{.GKeyword3}} " type="text" name="title" placeholder="" readonly>		</p></center>
 
 			</div>
+
+			
+			
+			
+				<input type="submit" value = "a"/>
+			  
+
+			</form>
 			</div>
 
 			</div>
+			</html>
+			</body>
 			
 			
 			<br><br><br><br><br>
