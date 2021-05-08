@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 
 	"encoding/json"
 	"html/template"
@@ -35,6 +36,8 @@ var string1 = ""
 type App struct {
 	Name string
 }
+
+var tpl *template.Template
 
 type employee struct {
 	gKeyword1           string
@@ -91,6 +94,7 @@ var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 //this is for testin, not used anympre
 func processSearch(w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println("Rrrrrrraarg ")
 	fmt.Fprintf(w, "got here1!")
 
 	//parse like this not used with json - unmarshal instead?
@@ -113,7 +117,7 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 type forTemplate struct {
-	ProductID          string
+	ProductID          int
 	ProductCatTitle    string
 	MainDiv            string
 	TitleID            string
@@ -131,7 +135,7 @@ type forTemplate struct {
 	GKeyword2          string
 	Key3ID             string
 	GKeyword3          string
-	//InputID            string
+
 	//ProductID int
 }
 
@@ -151,6 +155,86 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	name := Name{"mindorks2", "Subject2"}
 	template, _ := template.ParseFiles("index2.html")
 	template.Execute(w, name)
+}
+
+func updateForm(w http.ResponseWriter, r *http.Request) {
+
+	//first, get the value of how many are available, if less than amount wanted create a message
+	//parses all the values by id which is firtst value -  puts amount in form by parsing the amount with deduction
+	//parses input as blank
+
+	//first, get number available
+
+	var ProductQuantity, amountPurchased int
+	db := dbConn()
+
+	//how many currently available in database
+	stmt, err := db.Prepare("SELECT * FROM products WHERE ProductID = ?") 
+		
+	if err != nil {
+		panic(err.Error())
+	}
+
+
+	//PRODUCT FILENAME LOOK AT THIS
+	
+	//var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, 
+	//costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
+
+	rows, err := stmt.Query(r.FormValue("productID"));
+
+	if err != nil {
+		panic(err.Error())
+	}
+	var1 = r.FormValue("")
+	var2 = r.FormValue("")
+	var3 = r.FormValue("")
+	var4 = r.FormValue("")
+	var5 = r.FormValue("")
+	var6 = r.FormValue("")
+	var7 = r.FormValue("")
+	var8 = r.FormValue("")
+	var9 = r.FormValue("")
+	var10 = r.FormValue("")
+	var11 = r.FormValue("")
+	var12 = r.FormValue("")
+	var13 = r.FormValue("")
+	var14 = r.FormValue("")
+	var15 = r.FormValue("")
+	var16 = r.FormValue("")
+	var17 = r.FormValue("")
+	var18 = r.FormValue("")
+
+
+	err = rows.Scan(&ProductQuantity)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+
+		//enough product
+		if (amountPurchased <=  ProductQuantity){
+		
+			productLeft = ProductQuantity - amounPurchased;
+			
+		}
+		else 
+		{
+			return 1;
+		}
+
+		
+
+
+	//r.ParseForm()
+	//id := r.FormValue("ProductID")
+	//row := db.QureryRow("SELECT * from eccomerce WHERE ProducID  = ?;", id);
+	//var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
+
+	var templ2 = forTemplate{0, "", "", "", "", "", "", "", "", 0, "", 0, "", "", "", "", "", ""}
+	tpl.ExecuteTemplate(w, "deleteRecord.html", templ2)
+
 }
 
 /////////
@@ -185,6 +269,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//counter := 0
 
+	var counter = 0
+
 	for rows.Next() {
 
 		var ProductCost, ProductQuantity int
@@ -196,25 +282,28 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 
-		///////////////////
-		//	counter = counter + 1
-		//	str := strconv.Itoa(counter)
+		/////////////////
+
+		counter = counter + 1
+		str := strconv.Itoa(counter)
 
 		//var inputID = "inputID" + str
-		//	var mainDiv = "mainDivID" + str
-		//	var titleID = "titleID" + str
-		//	var descID = "descID" + str
-		//	var costID = "costID" + str
-		//	var quantityID = "quantityID" + str
-		//	var key1ID = "key1ID" + str
-		//	var key2ID = "key2ID" + str
-		//	var key3ID = "key3ID" + str
+		var mainDiv = "mainDivID" + str
+		var titleID = "titleID" + str
+		var descID = "descID" + str
+		var costID = "costID" + str
+		var quantityID = "quantityID" + str
+		var key1ID = "key1ID" + str
+		var key2ID = "key2ID" + str
+		var key3ID = "key3ID" + str
 
 		// add:  ProductFilename
 		//var templ1 = forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
 		//	quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3}
 
-		var templ1 = forTemplate{"a", "a", "a", "a", ProductFilename, "a", "a", ProductDescription, "a", 1, "a", 1, "a", "a", "a", "a", "a", "a"}
+		var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
+
+		//////////
 
 		fmt.Println(templ1)
 
@@ -278,17 +367,14 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	//has an id value passed in url
+	mux.HandleFunc("/updateForm/", updateForm)
 	mux.HandleFunc("/processSearch", processSearch)
 
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
 
-	//wored
-	//mux.HandleFunc("/Hello", Hello)
-
 	mux.HandleFunc("/Hello", display1)
-
-	//mux.HandleFunc("/", HelloWorld)
 
 	http.ListenAndServe(":8080", mux)
 }
