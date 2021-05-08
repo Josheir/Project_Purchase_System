@@ -156,7 +156,7 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	template, _ := template.ParseFiles("index2.html")
 	template.Execute(w, name)
 }
-
+ 
 func updateForm(w http.ResponseWriter, r *http.Request) {
 
 	//first, get the value of how many are available, if less than amount wanted create a message
@@ -177,7 +177,7 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 
 
 	//PRODUCT FILENAME LOOK AT THIS
-	
+
 	//var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, 
 	//costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
 
