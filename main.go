@@ -18,6 +18,7 @@ import (
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
 //http://localhost:8080/golangproj/
 
+var globt *template.Template
 var globKeyword = ""
 var Test = 1
 
@@ -87,8 +88,6 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 
 }
 
-////////https://stackoverflow.com/questions/21520244/how-to-simply-send-a-request-parameter-with-jquery-form-submit
-
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 
 //this is for testin, not used anympre
@@ -97,31 +96,14 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Rrrrrrraarg ")
 	fmt.Fprintf(w, "got here1!")
 
-	//parse like this not used with json - unmarshal instead?
-	//err := r.ParseForm()
-	//if err != nil {
-	//	fmt.Println("error")
-
-	//}
-	//fmt.Fprintf(w, "got here2!")
-	//fmt.Fprintln(w, "search :", r.Form.Get("search"))
-
-	//globKeyword = r.Form.Get("a")
-	//fmt.Println("-----")
-	//fmt.Println("globKeyword")
-	//fmt.Println("-----")
-
-	//fmt.Println("here")
-	//httpServletRequest.getParameter("myparam")
-
 }
 
 type forTemplate struct {
-	ProductID          int
-	ProductCatTitle    string
-	MainDiv            string
-	TitleID            string
-	ProductFilename    string
+	ProductID       int
+	ProductCatTitle string
+	MainDiv         string
+	TitleID         string
+	//ProductFilename    string
 	ProductName        string
 	DescID             string
 	ProductDescription string
@@ -135,8 +117,6 @@ type forTemplate struct {
 	GKeyword2          string
 	Key3ID             string
 	GKeyword3          string
-
-	//ProductID int
 }
 
 type Name struct {
@@ -156,84 +136,47 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	template, _ := template.ParseFiles("index2.html")
 	template.Execute(w, name)
 }
- 
+
 func updateForm(w http.ResponseWriter, r *http.Request) {
 
-	//first, get the value of how many are available, if less than amount wanted create a message
-	//parses all the values by id which is firtst value -  puts amount in form by parsing the amount with deduction
-	//parses input as blank
+	var var1 = r.FormValue("productID")
+	var var18 = r.FormValue("ProductCatTitle")
+	var var2 = r.FormValue("mainDiv")
+	var var3 = r.FormValue("titleID")
+	var var4 = r.FormValue("ProductName")
+	var var5 = r.FormValue("descID")
+	var var6 = r.FormValue("ProductDescription")
+	var var7 = r.FormValue("costID")
+	var var8 = r.FormValue("ProductCost")
+	var var9 = r.FormValue("quantityID")
+	var var10 = r.FormValue("ProductQuantity")
+	var var11 = r.FormValue("key1ID")
+	var var12 = r.FormValue("globKeyword")
+	var var13 = r.FormValue("key2ID")
+	var var14 = r.FormValue("globKeyword")
+	var var15 = r.FormValue("key3ID")
+	var var16 = r.FormValue("globKeyword")
+	var var17 = r.FormValue("amountPurchased")
 
-	//first, get number available
+	//enough product
 
-	var ProductQuantity, amountPurchased int
-	db := dbConn()
+	str, _ := strconv.Atoi(var17)
+	str2, _ := strconv.Atoi(var10)
+	str3, _ := strconv.Atoi(var1)
+	str4, _ := strconv.Atoi(var8)
 
-	//how many currently available in database
-	stmt, err := db.Prepare("SELECT * FROM products WHERE ProductID = ?") 
-		
-	if err != nil {
-		panic(err.Error())
+	if str <= str2 {
+
+		var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
+
+		fmt.Println(templ1)
+
+		_ = globt.Execute(w, templ1)
+
+	} else {
+
+		return
 	}
-
-
-	//PRODUCT FILENAME LOOK AT THIS
-
-	//var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, 
-	//costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
-
-	rows, err := stmt.Query(r.FormValue("productID"));
-
-	if err != nil {
-		panic(err.Error())
-	}
-	var1 = r.FormValue("")
-	var2 = r.FormValue("")
-	var3 = r.FormValue("")
-	var4 = r.FormValue("")
-	var5 = r.FormValue("")
-	var6 = r.FormValue("")
-	var7 = r.FormValue("")
-	var8 = r.FormValue("")
-	var9 = r.FormValue("")
-	var10 = r.FormValue("")
-	var11 = r.FormValue("")
-	var12 = r.FormValue("")
-	var13 = r.FormValue("")
-	var14 = r.FormValue("")
-	var15 = r.FormValue("")
-	var16 = r.FormValue("")
-	var17 = r.FormValue("")
-	var18 = r.FormValue("")
-
-
-	err = rows.Scan(&ProductQuantity)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-
-		//enough product
-		if (amountPurchased <=  ProductQuantity){
-		
-			productLeft = ProductQuantity - amounPurchased;
-			
-		}
-		else 
-		{
-			return 1;
-		}
-
-		
-
-
-	//r.ParseForm()
-	//id := r.FormValue("ProductID")
-	//row := db.QureryRow("SELECT * from eccomerce WHERE ProducID  = ?;", id);
-	//var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
-
-	var templ2 = forTemplate{0, "", "", "", "", "", "", "", "", 0, "", 0, "", "", "", "", "", ""}
-	tpl.ExecuteTemplate(w, "deleteRecord.html", templ2)
 
 }
 
@@ -241,8 +184,6 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 func display1(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	//w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	string1 = ""
 
@@ -267,9 +208,9 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 
-	//counter := 0
-
 	var counter = 0
+
+	var templ1 forTemplate
 
 	for rows.Next() {
 
@@ -281,8 +222,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-
-		/////////////////
 
 		counter = counter + 1
 		str := strconv.Itoa(counter)
@@ -297,19 +236,20 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
 
-		// add:  ProductFilename
-		//var templ1 = forTemplate{mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost,
-		//	quantityID, ProductQuantity, key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3}
-
-		var templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductFilename, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
-
-		//////////
+		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
 
 		fmt.Println(templ1)
 
-		t := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
+		globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
 
-		err1 := t.Execute(w, templ1)
+		err1 := globt.Execute(w, templ1)
+
+		//My idea was to update the template this way, however creates a new record.
+		ProductName = "this is a test"
+
+		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
+
+		err1 = globt.Execute(w, templ1)
 
 		if err1 != nil {
 			fmt.Println("B---------------")
@@ -319,9 +259,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-	} //for selDB.Next()
-
-	//display was here
+	}
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
