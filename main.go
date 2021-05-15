@@ -117,6 +117,7 @@ type forTemplate struct {
 	GKeyword2          string
 	Key3ID             string
 	GKeyword3          string
+	ProductFilename    string
 }
 
 type Name struct {
@@ -166,46 +167,47 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateForm(w http.ResponseWriter, r *http.Request) {
+	/*
+		var var1 = r.FormValue("productID")
+		var var18 = r.FormValue("ProductCatTitle")
+		var var2 = r.FormValue("mainDiv")
+		var var3 = r.FormValue("titleID")
+		var var4 = r.FormValue("ProductName")
+		var var5 = r.FormValue("descID")
+		var var6 = r.FormValue("ProductDescription")
+		var var7 = r.FormValue("costID")
+		var var8 = r.FormValue("ProductCost")
+		var var9 = r.FormValue("quantityID")
+		var var10 = r.FormValue("ProductQuantity")
+		var var11 = r.FormValue("key1ID")
+		var var12 = r.FormValue("globKeyword")
+		var var13 = r.FormValue("key2ID")
+		var var14 = r.FormValue("globKeyword")
+		var var15 = r.FormValue("key3ID")
+		var var16 = r.FormValue("globKeyword")
+		var var17 = r.FormValue("amountPurchased")
+		var var19 = r.FormValue("ProductFilename")
 
-	var var1 = r.FormValue("productID")
-	var var18 = r.FormValue("ProductCatTitle")
-	var var2 = r.FormValue("mainDiv")
-	var var3 = r.FormValue("titleID")
-	var var4 = r.FormValue("ProductName")
-	var var5 = r.FormValue("descID")
-	var var6 = r.FormValue("ProductDescription")
-	var var7 = r.FormValue("costID")
-	var var8 = r.FormValue("ProductCost")
-	var var9 = r.FormValue("quantityID")
-	var var10 = r.FormValue("ProductQuantity")
-	var var11 = r.FormValue("key1ID")
-	var var12 = r.FormValue("globKeyword")
-	var var13 = r.FormValue("key2ID")
-	var var14 = r.FormValue("globKeyword")
-	var var15 = r.FormValue("key3ID")
-	var var16 = r.FormValue("globKeyword")
-	var var17 = r.FormValue("amountPurchased")
+		//enough product
 
-	//enough product
+		str, _ := strconv.Atoi(var17)
+		str2, _ := strconv.Atoi(var10)
+		str3, _ := strconv.Atoi(var1)
+		str4, _ := strconv.Atoi(var8)
 
-	str, _ := strconv.Atoi(var17)
-	str2, _ := strconv.Atoi(var10)
-	str3, _ := strconv.Atoi(var1)
-	str4, _ := strconv.Atoi(var8)
+		if str <= str2 {
 
-	if str <= str2 {
+			var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
 
-		var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
+			fmt.Println(templ1)
 
-		fmt.Println(templ1)
+			_ = globt.Execute(w, templ1)
 
-		_ = globt.Execute(w, templ1)
+		} else {
 
-	} else {
-
-		return
-	}
-
+			return
+		}
+	*/
 }
 
 /////////
@@ -264,7 +266,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
 
-		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
+		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename}
 
 		fmt.Println(templ1)
 
