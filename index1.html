@@ -53,7 +53,7 @@
 			<div class="col">
 			<h4><center><p id =""  >Title</p></center></h4>
 
-			<center>      <p  >      <input id = "" value = "{{.ProductName}}" type="text" name="title" placeholder="" ></p></center>
+			<center><p><input id = "" value = "{{.ProductName}}" type="text" name="title" placeholder="" ></p></center>
 			</div>
 
 			<div class="col">
@@ -95,11 +95,25 @@
 			<h4><center><p id = "" >Keyword 3</p></center></h4>
 			<center><p>	<input id =   "{{.Key3ID}}"  value = " {{.GKeyword3}} " type="text" name="{{.Key3ID}}" placeholder="" >	</p></center>
 			</div>
-			<button onclick="changeField('{{.QuantityID}}' )">submit</button>
 			</div>
-
+			<div class="row">
+			<div class="col">
+				
+			<h4><center><p id = "" >Amount to purchase</p></center></h4>
+			<center><p><input id = "{{.AmountToPurchaseID}}" value = "" type="number" name="title" placeholder="" ></p></center>
+			</div>
+		    </div>
+			<div class="row">
+			<div class="col">
+			<center><button onclick="changeFields('{{.QuantityID}}' )">submit</button></center>
+			</div>
+			</div>
+			</div>
+		    </div>
+			
+			
 			<script>
-			function changeField(a)
+			function changeFields(quantity)
 			{
 				
 
@@ -110,7 +124,7 @@
 				//console.log(elem);
 				//elem.value = "block";
 				alert(a);
-				document.getElementById(a).value = 30;
+				document.getElementById(quantity).value = 30;
 				//alert("{{.Key3ID}}");
 				
 			}

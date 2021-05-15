@@ -118,6 +118,7 @@ type forTemplate struct {
 	Key3ID             string
 	GKeyword3          string
 	ProductFilename    string
+	AmountToPurchaseID string
 }
 
 type Name struct {
@@ -245,7 +246,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 
 		var ProductCost, ProductQuantity int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
+		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID string
 
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
@@ -265,9 +266,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var key1ID = "key1ID" + str
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
+		AmountToPurchaseID = "amountID" + str
 
 		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename}
+			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID}
 
 		fmt.Println(templ1)
 
