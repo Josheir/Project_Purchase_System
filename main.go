@@ -124,10 +124,38 @@ type Name struct {
 	LName string
 }
 
+type VAR1 struct {
+	Var1 string
+}
+
+//var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
+
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	name := Name{"mindorks", "Subject"}
-	template, _ := template.ParseFiles("index2.html")
-	template.Execute(w, name)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	var Var1 = "abc"
+	var var2 = VAR1{Var1}
+	//w.Header().Add("Content-Type", "application/html")
+
+	//w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	//w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	//data := VAR{"testname"}
+	//var var1 = VAR{var2}
+
+	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
+
+	err1 := globt.Execute(w, var2)
+
+	if err1 != nil {
+		fmt.Println("B---------------")
+		fmt.Println(err1.Error())
+
+		panic(err1.Error())
+
+	}
+
+	//t, _ := template.ParseFiles("index1.html")
+	//var t = template.Must(template.New("").Parse("index1.html"))
+	//globt.Execute(w, "a")
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
@@ -245,11 +273,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		err1 := globt.Execute(w, templ1)
 
 		//My idea was to update the template this way, however creates a new record.
-		ProductName = "this is a test"
+		//ProductName = "this is a test"
 
-		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
+		//templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
 
-		err1 = globt.Execute(w, templ1)
+		//err1 = globt.Execute(w, templ1)
 
 		if err1 != nil {
 			fmt.Println("B---------------")
@@ -313,6 +341,8 @@ func main() {
 	mux.HandleFunc("/getMessages", getMessages)
 
 	mux.HandleFunc("/Hello", display1)
+
+	mux.HandleFunc("/HelloWorld", HelloWorld)
 
 	http.ListenAndServe(":8080", mux)
 }

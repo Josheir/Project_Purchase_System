@@ -1,8 +1,26 @@
-            
-			
-	<body>
-           <!DOCTYPE html>
-           <html lang="en">
+
+<!DOCTYPE html>
+<html lang="en">
+
+<html>
+
+	<head>
+
+		<title>Bootstrap Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	  <!DOCTYPE html>
+	</head>  
+
+<body>
+	
+	<div>
+		
+	
            <head>
 			<style>
 				.test100 {
@@ -14,8 +32,8 @@
 			
 			<iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
 
-			<div></div>
-			<div id  = "test100" class = "test100 " Value = "test100 " name = "test100 ">  
+			<div id = "">zzzz</div>
+			<div id  = "" class = "test100_" Value = "" name = "">  
 			<div class="row" > 
 			<div class="col">
 			 <p id = "">product id   : {{.ProductID}} </p>" 
@@ -35,14 +53,14 @@
 			<div class="col">
 			<h4><center><p id =""  >Title</p></center></h4>
 
-			<center>      <p  >      <input id = " {{.TitleID}} " value = " {{.ProductName}} " type="text" name="title" placeholder="" readonly></p></center>
+			<center>      <p  >      <input id = "" value = "{{.ProductName}}" type="text" name="title" placeholder="" ></p></center>
 			</div>
 
 			<div class="col">
 
 			<h4><center><p id = "">Desc</p></center></h4>
 
-			<center><textarea wrap id = " {{.DescID}} "   value = " {{.ProductDescription}} "  type="text" rows="5" cols="34" readonly></textarea></center>
+			<center><textarea wrap id = " {{.DescID}} "   value = " {{.ProductDescription}} "  type="text" rows="5" cols="34"></textarea></center>
 			</div>
 
 			<div class="col">" 
@@ -75,23 +93,91 @@
 
 			<div class="col">
 			<h4><center><p id = "" >Keyword 3</p></center></h4>
-			<center><p>	<input id =   " {{.Key3ID}} "  value = " {{.GKeyword3}} " type="text" name="title" placeholder="" readonly>		</p></center>
-
+			<center><p>	<input id =   "{{.Key3ID}}"  value = " {{.GKeyword3}} " type="text" name="{{.Key3ID}}" placeholder="" >	</p></center>
+			</div>
+			<button onclick="changeField('{{.QuantityID}}' )">submit</button>
 			</div>
 
-			
-			
-			
-				<input type="submit" value = "a"/>
-			  
+			<script>
+			function changeField(a)
+			{
+				
 
-			</form>
+				//console.log("test");
+				//console.log("{{.Key3ID}}");
+				//console.log(document.getElementById("{{.Key3ID}}"));
+				//var elem = document.getElementById("{{.Key3ID}}");
+				//console.log(elem);
+				//elem.value = "block";
+				alert(a);
+				document.getElementById(a).value = 30;
+				//alert("{{.Key3ID}}");
+				
+			}
+			//check this when purchasing so if there is a purchase is stored in an array
+//if called and pid has some reductions already will keep track of how many
+//left.  Used here to prevent more than total being reduced, and for if chosen
+//again with a seperate search 
+function savePIDAndQuantInArray(PID, quantLeft, quantityID){
+
+
+//let keys = Object.keys(sessionStorage);
+//for(let key of keys) {
+//  //console.log(`${key}: ${sessionStorage.getItem(key)}`);
+//}
+
+sessionStroage.setItem(PID, quantTaking);
+
+
+
+document.getElementById(quantityID) = quantLeft;
+
+
+
+
+//function setMaxQuantityInRecord(PID, quantLeft, quantityID)
+//{
+//document.getElementById(QuantityID) = quantLeft;
+//}
+
+////"Purchase(" + strconv.Itoa(ProductID) + ", " + quantityID + ", " + mainDiv + " )
+function Purchase(mainDiv2, productID, quantityID, chosenQuant){
+
+//quant left for purchasing
+var quantmax = document.getElementById(quantityID).value;
+//less or equal to stor in database
+if (chosenQuant > 0 && chosenQuant <= quantmax )
+{
+  var quantLeftInSupply = quantmax - chosenQuant;
+  //make box display amount left
+  setMaxQuantityInRecord(productID, quantLeft, quantityID)
+  //clears record:
+  document.getElementById(mainDiv2).innerHTML = "" ;
+  //stores in array, quant left ;  if another search and uses same record, the array will keep track of total reductions
+  savePIDAndQuantInArray(productID, quantLeftInSupply, quantityID);
+
+
+}
+//quant is greater than availbe so do nothing
+else{
+  
+  return(1);
+
+}
+alert("here");
+
+}
+
+
+			</script>
+
+			
 			</div>
 
 			</div>
-			</html>
+			
 			</body>
-			
+			</html>
 			
 			<br><br><br><br><br>
 

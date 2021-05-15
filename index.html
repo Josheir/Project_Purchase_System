@@ -15,7 +15,9 @@
 
 <body>
 
-  
+  <script>
+    window.sessionStorage
+  </script>
 
   
   
@@ -64,6 +66,7 @@
       <input   id="button1" type="submit" value="Search Database"/>
       
       <input   id="button6"  type="button" value="template"/>
+      <input   id="button7"  type="button" value="tryme"/>
 
       </div>
 
@@ -81,6 +84,28 @@ function insert(pid, quantLeft) {
        
     });        
 }
+
+
+
+$(document).ready(function () {
+      $('#button7').click(function () {
+          $.ajax({
+              url: "http://localhost:8080/HelloWorld",
+              type: 'POST',
+              dataType: 'html',
+              contentType: "application/x-www-form-urlencoded",
+              crossDomain: true,
+              data: {post_data: 'hello world'},
+              success: function (result) {
+                
+                alert(result);
+                
+                $('#div1').html(result);
+                ///$('#buttons').html(result);
+              }
+          });
+      });
+  });
 
 //Global Array
 
