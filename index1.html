@@ -118,7 +118,7 @@
 			<div class="row">
 			<div class="col">
 			<center><button onclick="removeRecord('{{.MainDivID}}' )">Remove Record</button></center>
-			<center><button onclick="changeFields('{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
+			<center><button onclick="changeFields('{{.ProductID}}' , '{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
 			</div>
 			</div>
 			</div>
@@ -133,7 +133,7 @@
 				alert("hereisit");
 				document.getElementById(mainDivForRecord).innerHTML = "";
 			}
-			function changeFields(quantityID, amountPurchasedID, amountToPurchaseID)
+			function changeFields(productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
 
@@ -160,6 +160,7 @@
 				
 				//document.getElementById(amountPurchasedID).value="";
 
+				//if there is enough product go in here
 				if(parseInt(amountInPurchasedField) >= parseInt(amountToBePurchased)  )
 				{
 					
@@ -174,6 +175,16 @@
 
 					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
 
+					saveData(productID, quantitytryingtobuy)
+
+
+					///////////
+
+
+
+
+					///////////
+
 
 				}
 				
@@ -182,56 +193,24 @@
 								
 			}
 
+			//https://stackoverflow.com/questions/17309199/how-to-send-variables-from-one-file-to-another-in-javascript/17309679#17309679
+			//https://www.w3docs.com/learn-javascript/localstorage-sessionstorage.html
+			function  saveData(productid, quantitytryingtobuy)
+			{
+				var account = {
+					ProductID:productID,
+					Quantity:quantitytryingtobuy
+				};
 
-/*
-//check this when purchasing so if there is a purchase is stored in an array
-//if called and pid has some reductions already will keep track of how many
-//left.  Used here to prevent more than total being reduced, and for if chosen
-//again with a seperate search 
-function savePIDAndQuantInArray(PID, quantLeft, quantityID){
+				//converts to JSON string the Object
+				account = JSON.stringify(account);
+				//creates a base-64 encoded ASCII string
+				account = btoa(account);
+				//save the encoded accout to web storage
+				sessionStorage.setItem('_account', account);
 
-sessionStroage.setItem(PID, quantTaking);
+			}
 
-
-
-document.getElementById(quantityID) = quantLeft;
-
-
-
-
-//function setMaxQuantityInRecord(PID, quantLeft, quantityID)
-//{
-//document.getElementById(QuantityID) = quantLeft;
-//}
-
-////"Purchase(" + strconv.Itoa(ProductID) + ", " + quantityID + ", " + mainDiv + " )
-function Purchase(mainDiv2, productID, quantityID, chosenQuant){
-
-//quant left for purchasing
-var quantmax = document.getElementById(quantityID).value;
-//less or equal to stor in database
-if (chosenQuant > 0 && chosenQuant <= quantmax )
-{
-  var quantLeftInSupply = quantmax - chosenQuant;
-  //make box display amount left
-  setMaxQuantityInRecord(productID, quantLeft, quantityID)
-  //clears record:
-  document.getElementById(mainDiv2).innerHTML = "" ;
-  //stores in array, quant left ;  if another search and uses same record, the array will keep track of total reductions
-  savePIDAndQuantInArray(productID, quantLeftInSupply, quantityID);
-
-
-}
-//quant is greater than availbe so do nothing
-else{
-  
-  return(1);
-
-}
-alert("here");
-
-}
-*/
 
 			</script>
 
