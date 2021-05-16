@@ -1,0 +1,28 @@
+
+
+<script>
+
+//loads ajax on page start
+$(function(){
+  loadajax();
+});
+
+
+function loadajax(){
+    $.ajax({ 
+      url:'http://localhost:8080/template2',
+      data:"test",
+      type:"post",
+      success:function(result){
+        $('#div1').html(result);
+
+        alert("in here");
+       //do action
+      }
+    });
+  }
+
+
+
+
+  </script>
