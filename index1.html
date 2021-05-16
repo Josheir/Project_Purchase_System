@@ -32,8 +32,17 @@
 			
 			<iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
 
+
+			<div id = "{{.MainDivID}}">
+
+			
+
+
 			<div id = "">zzzz</div>
 			<div id  = "" class = "test100_" Value = "" name = "">  
+			
+			
+			
 			<div class="row" > 
 			<div class="col">
 			 <p id = "">product id   : {{.ProductID}} </p>" 
@@ -53,19 +62,19 @@
 			<div class="col">
 			<h4><center><p id =""  >Title</p></center></h4>
 
-			<center><p><input id = "" value = "{{.ProductName}}" type="text" name="title" placeholder="" ></p></center>
+			<center><p><input id = "{{.TitleID}}" value = "{{.ProductName}}" type="text" name="title" placeholder="" readonly></p></center>
 			</div>
 
 			<div class="col">
 
 			<h4><center><p id = "">Desc</p></center></h4>
 
-			<center><textarea wrap id = " {{.DescID}} "   value = " {{.ProductDescription}} "  type="text" rows="5" cols="34"></textarea></center>
+			<center><textarea wrap id = "{{.DescID}}"   value = "{{.ProductDescription}}"  type="text" rows="5" cols="34" readonly></textarea></center>
 			</div>
 
 			<div class="col">" 
 			<h4><center><p id = "" >Cost</p></center></h4>
-			<center><p>	<input id = "  {{.CostID}}  " value =    {{.ProductCost}}     type="number" name="title" placeholder="" readonly>		</p></center>
+			<center><p>	<input id = "{{.CostID}}" value =    {{.ProductCost}}     type="number" name="title" placeholder="" readonly>		</p></center>
 		
 			</div>
 			</div>
@@ -73,7 +82,7 @@
 			<div class="col">
 			
 			<h4><center><p id = "" >Quantity</p></center></h4>
-			<center><p> <input id = "  {{.QuantityID}}  " value =  {{.ProductQuantity}}  type="number" name="title" placeholder="" readonly>	</p></center>
+			<center><p> <input id = "{{.QuantityID}}" value =  {{.ProductQuantity}}  type="number" name="title" placeholder="" readonly>	</p></center>
 			</div>
 			
 			<div class="col">
@@ -81,39 +90,50 @@
 			
 				
 			<h4><center><p id = "" >Keyword 1</p></center></h4>
-			<center><p>	<input id = " {{.Key1ID}} " value = " {{.GKeyword1}} " type="text" name="title" placeholder="" readonly>		</p></center>
+			<center><p>	<input id = "{{.Key1ID}}" value = "{{.GKeyword1}}" type="text" name="title" placeholder="" readonly>		</p></center>
 
 			</div>
 
 			<div class="col">
 			<h4><center><p id = "" >Keyword 2</p></center></h4>
-			<center><p>	<input id = " {{.Key2ID}} " value = " {{.GKeyword2}} " type="text" name="title" placeholder="" readonly>		</p></center>
+			<center><p>	<input id = "{{.Key2ID}}" value = "{{.GKeyword2}}" type="text" name="title" placeholder="" readonly>		</p></center>
 
 			</div>
 
 			<div class="col">
 			<h4><center><p id = "" >Keyword 3</p></center></h4>
-			<center><p>	<input id =   "{{.Key3ID}}"  value = " {{.GKeyword3}} " type="text" name="{{.Key3ID}}" placeholder="" >	</p></center>
+			<center><p>	<input id =   "{{.Key3ID}}"  value = "{{.GKeyword3}}" type="text" name="{{.Key3ID}}" placeholder="" readonly> 	</p></center>
 			</div>
 			</div>
 			<div class="row">
 			<div class="col">
-				
+			
+			<h4><center><p id = "" >Amount purchased</p></center></h4>
+			<center><p><input id = "{{.AmountPurchasedID}}" value = 0 type="number" name="title" placeholder="" readonly ></p></center>
+
 			<h4><center><p id = "" >Amount to purchase</p></center></h4>
-			<center><p><input id = "{{.AmountToPurchaseID}}" value = "" type="number" name="title" placeholder="" ></p></center>
+			<center><p><input id = "{{.AmountToPurchaseID}}" value = 0 type="number" name="title" placeholder="" ></p></center>
 			</div>
 		    </div>
 			<div class="row">
 			<div class="col">
-			<center><button onclick="changeFields('{{.QuantityID}}' )">submit</button></center>
+			<center><button onclick="removeRecord('{{.MainDivID}}' )">Remove Record</button></center>
+			<center><button onclick="changeFields('{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
 			</div>
 			</div>
 			</div>
 		    </div>
+			</div>
 			
 			
 			<script>
-			function changeFields(quantity)
+			
+			function removeRecord(mainDivForRecord)
+			{
+				alert("hereisit");
+				document.getElementById(mainDivForRecord).innerHTML = "";
+			}
+			function changeFields(quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
 
@@ -123,22 +143,52 @@
 				//var elem = document.getElementById("{{.Key3ID}}");
 				//console.log(elem);
 				//elem.value = "block";
-				alert(a);
-				document.getElementById(quantity).value = 30;
-				//alert("{{.Key3ID}}");
+
+
+				//alert(quantityID);
+
+				var  amountInPurchasedField = 0;
+				var amountPurchasedSoFar = 0;
+				var value1 = 0;
+				//total of product with server
+				var amountInPurchasedField = document.getElementById(quantityID).value;
+				//already purchased
+				amountPurchasedSoFar = document.getElementById(amountPurchasedID).value;
+				//amount held for subtraction when submit button pressed
+				amountToBePurchased = document.getElementById(amountToPurchaseID).value;
+
 				
+				//document.getElementById(amountPurchasedID).value="";
+
+				if(parseInt(amountInPurchasedField) >= parseInt(amountToBePurchased)  )
+				{
+					
+					alert(value1);
+					value1 = document.getElementById(amountToPurchaseID).value; 
+					alert(value1);
+					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
+					alert(value2);
+					//alert(amountPurchasedSoFar);
+					//alert(value1);
+					document.getElementById(amountPurchasedID).value = value2 ;
+
+					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
+
+
+				}
+				
+				document.getElementById(amountToPurchaseID).value = 0;
+
+								
 			}
-			//check this when purchasing so if there is a purchase is stored in an array
+
+
+/*
+//check this when purchasing so if there is a purchase is stored in an array
 //if called and pid has some reductions already will keep track of how many
 //left.  Used here to prevent more than total being reduced, and for if chosen
 //again with a seperate search 
 function savePIDAndQuantInArray(PID, quantLeft, quantityID){
-
-
-//let keys = Object.keys(sessionStorage);
-//for(let key of keys) {
-//  //console.log(`${key}: ${sessionStorage.getItem(key)}`);
-//}
 
 sessionStroage.setItem(PID, quantTaking);
 
@@ -181,7 +231,7 @@ else{
 alert("here");
 
 }
-
+*/
 
 			</script>
 

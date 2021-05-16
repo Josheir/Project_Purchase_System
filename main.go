@@ -101,8 +101,8 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 type forTemplate struct {
 	ProductID       int
 	ProductCatTitle string
-	MainDiv         string
-	TitleID         string
+	//MainDiv         string
+	TitleID string
 	//ProductFilename    string
 	ProductName        string
 	DescID             string
@@ -119,6 +119,8 @@ type forTemplate struct {
 	GKeyword3          string
 	ProductFilename    string
 	AmountToPurchaseID string
+	AmountPurchasedID  string
+	MainDivID          string
 }
 
 type Name struct {
@@ -246,7 +248,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 
 		var ProductCost, ProductQuantity int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID string
+		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
 
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
@@ -258,7 +260,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		str := strconv.Itoa(counter)
 
 		//var inputID = "inputID" + str
-		var mainDiv = "mainDivID" + str
+		var mainDivID = "mainDivID" + str
 		var titleID = "titleID" + str
 		var descID = "descID" + str
 		var costID = "costID" + str
@@ -267,9 +269,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var key2ID = "key2ID" + str
 		var key3ID = "key3ID" + str
 		AmountToPurchaseID = "amountID" + str
+		AmountPurchasedID = "amountPID" + str
 
-		templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID}
+		templ1 = forTemplate{ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
 		fmt.Println(templ1)
 
@@ -345,7 +348,7 @@ func main() {
 	//button3 - just read session for right now
 	mux.HandleFunc("/getMessages", getMessages)
 
-	mux.HandleFunc("/Hello", display1)
+	mux.HandleFunc("/display", display1)
 
 	mux.HandleFunc("/HelloWorld", HelloWorld)
 
