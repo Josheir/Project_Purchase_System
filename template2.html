@@ -11,14 +11,14 @@
 <th>Cost</th> 
 
 </tr>
-
+{{ range .}}
 <tr>
-<td> {{}} </td>
-<td> {{}}  </td>
-<td> {{}} </td>
-<td> {{}} </td>
-
+<td> {{.Quantity}} </td>
+<td> {{.Title}}  </td>
+<td> {{.Category}} </td>
+<td> {{.Cost}} </td>
 </tr>
+{{ end}}
 </table>
 
 
