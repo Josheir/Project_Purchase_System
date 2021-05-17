@@ -1,5 +1,5 @@
 //FOR TEMPLATE:  https://www.golangprograms.com/example-of-golang-crud-using-mysql-from-scratch.html
-
+/*
 type product struct {
 	Quantity string
 	Title    string
@@ -7,13 +7,11 @@ type product struct {
 	Cost     int
 }
 
-
-w.Header().Set("Access-Control-Allow-Origin", "*")
-	name := Name{"mindorks2", "Subject2"}
-	template, _ := template.ParseFiles("index2.html")
-	template.Execute(w, name)
-}
-
+//w.Header().Set("Access-Control-Allow-Origin", "*")
+//	name := Name{"mindorks2", "Subject2"}
+//	template, _ := template.ParseFiles("index2.html")
+//	template.Execute(w, name)
+//}
 
 func dbConn() (db *sql.DB) {
 	dbDriver := "mysql"
@@ -35,7 +33,7 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 	////////////////
 	//incoming : productid and quantity
 	db := dbConn()
-	nId := r.URL.Query().Get("id")
+	//nId := r.URL.Query().Get("id")
 	selDB, err := db.prepare("SELECT products.ProductQuantity, products.ProductName, products.ProductCatTitle, products.ProductCost FROM products WHERE id=1")
 	if err != nil {
 		panic(err.Error())
@@ -45,8 +43,6 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-
-
 
 	prod := product{}
 	for selDB.Next() {
@@ -62,7 +58,7 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 		prod.Cost = cost
 	}
 	//tmpl.ExecuteTemplate(w, "Show", emp)
-	
+
 	//templ1 = product{ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 	//	key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
@@ -71,19 +67,17 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
 
 	err1 := globt.Execute(w, prod)
-	
-	
-	
-	
+
 	defer db.Close()
 }
 
-func main() {
+///func main() {
 
-	mux := http.NewServeMux()
-
-	//has an id value passed in url
-	mux.HandleFunc("/purgeHTML", template2)
-
-	http.ListenAndServe(":8080", mux)
-}
+//	mux := http.NewServeMux()
+//
+//	//has an id value passed in url
+//	mux.HandleFunc("/purgeHTML", template2)
+//
+//	http.ListenAndServe(":8081", mux)
+//}
+*/

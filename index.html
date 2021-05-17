@@ -66,8 +66,7 @@
       <input   id="button1" type="submit" value="Search Database"/>
       
       <input   id="button6"  type="button" value="template"/>
-      <input   id="button7" onClick="location.href='finalPage.html'"  type="button" value="Checkout"/>
-
+     
 
       </div>
 
@@ -226,11 +225,11 @@ var dataB = JSON.stringify(dataA);
 }
  
 
-
+  //template button press
     $(document).ready(function () {
       $('#button6').click(function () {
           $.ajax({
-              url: "http://localhost:8080/display",
+              url: "http://localhost:8081/display",
               type: 'POST',
               dataType: 'html',
               contentType: "application/x-www-form-urlencoded",
@@ -243,8 +242,39 @@ var dataB = JSON.stringify(dataA);
                 $('#firstdiv').html( "<center><input   id=\"button7\"  type=\"button\" value=\"Checkout\"/></center>"   );
                 $('#buttons').html(result);
                 $('#lastdiv').html( "<center><input   id=\"button7\"  type=\"button\" value=\"Checkout\"/> <center>"   );
+                  
+              
+              
+              //////////
+              
+              $.ajax({ 
+                    url:'http://localhost:8081/template2',
+                   
+                    type:"post",
+                    dataType: 'html',
+                    contentType: "application/x-www-form-urlencoded",
+                    crossDomain: true,
+                    data: {post_data: 'hello world'},
+                    success:function(result){
+                      //$('#div1').html(result);
 
-              }
+                      alert(result);
+                    //do action
+                    }
+
+
+
+                    //alert("result");
+                  
+                  
+                  
+                  });
+              
+              
+              
+              ////////////
+              
+                }
           });
       });
   });

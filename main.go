@@ -14,6 +14,13 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+type product struct {
+	Quantity int
+	Title    string
+	Category string
+	Cost     int
+}
+
 //cited
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
 //http://localhost:8080/golangproj/
@@ -63,6 +70,56 @@ func dbConn() (db *sql.DB) {
 	}
 	return db
 }
+
+//////////
+
+//executes back to :  finalpage.html
+func purgeHTML(w http.ResponseWriter, r *http.Request) {
+
+	///////////////
+
+	////////////////
+	//incoming : productid and quantity
+	db := dbConn()
+	//nId := r.URL.Query().Get("id")
+	selDB, err := db.Query("SELECT products.ProductQuantity, products.ProductName, products.ProductCatTitle, products.ProductCost FROM products WHERE id=1")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	//rows, err := db.Query()
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+
+	prod := product{}
+	for selDB.Next() {
+		var quant, cost int
+		var title, category string
+		err = selDB.Scan(&quant, &title, &category, &cost)
+		if err != nil {
+			panic(err.Error())
+		}
+		prod.Quantity = quant
+		prod.Title = title
+		prod.Category = category
+		prod.Cost = cost
+	}
+	//tmpl.ExecuteTemplate(w, "Show", emp)
+
+	//templ1 = product{ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+	//	key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+	//fmt.Println(templ1)
+
+	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
+
+	globt.Execute(w, prod)
+
+	defer db.Close()
+}
+
+//////////
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -296,6 +353,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+
 }
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
@@ -337,20 +395,51 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 
 //////
 
+//type one struct {
+//}
+
+//type two struct {
+//}
+
+//func (m *one) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+//	w.Write([]byte("Listening on 8080: foo "))
+//}
+//func (m *two) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+//	w.Write([]byte("Listening on 8081: foo "))
+//}
 func main() {
 
-	mux := http.NewServeMux()
+	finish := make(chan bool)
+
+	one := http.NewServeMux()
+
+	//mux := http.NewServeMux()
 
 	//has an id value passed in url
-	mux.HandleFunc("/updateForm/", updateForm)
-	mux.HandleFunc("/processSearch", processSearch)
+	one.HandleFunc("/updateForm/", updateForm)
+	one.HandleFunc("/processSearch", processSearch)
 
 	//button3 - just read session for right now
-	mux.HandleFunc("/getMessages", getMessages)
+	one.HandleFunc("/getMessages", getMessages)
 
-	mux.HandleFunc("/display", display1)
+	one.HandleFunc("/display", display1)
 
-	mux.HandleFunc("/HelloWorld", HelloWorld)
+	one.HandleFunc("/HelloWorld", HelloWorld)
 
-	http.ListenAndServe(":8080", mux)
+	two := http.NewServeMux()
+
+	two.HandleFunc("/purge", purgeHTML)
+
+	go func() {
+
+		http.ListenAndServe(":8080", one)
+	}()
+
+	go func() {
+
+		http.ListenAndServe(":8081", two)
+
+	}()
+
+	<-finish
 }

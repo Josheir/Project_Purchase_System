@@ -5,10 +5,34 @@
 
 //loads ajax on page start
 $(function(){
-  loadajax();
+
+////////
+
+loadData();
+
+////////
+  //loadajax();
 });
 
+function loadData() {
+  alert("loaddata");
+   var account = localStorage.getItem('_account');
+   if (!account) return false;
+   localStorage.removeItem('_account');
+   //decodes a string data encoded using base-64
+   account = atob(account);
+   //parses to Object the JSON string
+   account = JSON.parse(account);
+   //do what you need with the Object
+   //fillFields(account.User, account.Pass);
+   //ProductID:productID,
+	 //Quantity:quantitytryingtobuy
+  alert(account.productID);
+  alert(account.quantitytryingtobuy);
 
+
+   return true;
+}
 
 <div id = "div1">tets</div>
 

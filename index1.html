@@ -133,6 +133,7 @@
 				alert("hereisit");
 				document.getElementById(mainDivForRecord).innerHTML = "";
 			}
+			//called on 
 			function changeFields(productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
@@ -164,18 +165,18 @@
 				if(parseInt(amountInPurchasedField) >= parseInt(amountToBePurchased)  )
 				{
 					
-					alert(value1);
+					//alert(value1);
 					value1 = document.getElementById(amountToPurchaseID).value; 
-					alert(value1);
+					//alert(value1);
 					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
-					alert(value2);
+					//alert(value2);
 					//alert(amountPurchasedSoFar);
 					//alert(value1);
 					document.getElementById(amountPurchasedID).value = value2 ;
 
 					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
 
-					saveData(productID, quantitytryingtobuy)
+					saveData(productID, amountToBePurchased)
 
 
 					///////////
@@ -195,7 +196,7 @@
 
 			//https://stackoverflow.com/questions/17309199/how-to-send-variables-from-one-file-to-another-in-javascript/17309679#17309679
 			//https://www.w3docs.com/learn-javascript/localstorage-sessionstorage.html
-			function  saveData(productid, quantitytryingtobuy)
+			function  saveData(productID, quantitytryingtobuy)
 			{
 				var account = {
 					ProductID:productID,
@@ -208,6 +209,7 @@
 				account = btoa(account);
 				//save the encoded accout to web storage
 				sessionStorage.setItem('_account', account);
+				alert("ok");
 
 			}
 
