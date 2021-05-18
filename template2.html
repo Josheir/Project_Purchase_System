@@ -1,8 +1,7 @@
-
 <html>
 <body>
 
-<table style="width:100%">
+<table>
 <tr>
 
 <th>Quantity</th> 
@@ -11,6 +10,7 @@
 <th>Cost</th> 
 
 </tr>
+
 {{ range .}}
 <tr>
 <td> {{.Quantity}} </td>
@@ -18,7 +18,7 @@
 <td> {{.Category}} </td>
 <td> {{.Cost}} </td>
 </tr>
-{{ end}}
+{{end}}
 </table>
 
 

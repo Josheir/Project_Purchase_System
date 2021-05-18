@@ -74,7 +74,28 @@ func dbConn() (db *sql.DB) {
 //////////
 
 //executes back to :  finalpage.html
+
+//var list[]product
+
+//var List1  []product
+var prod []product
+
+func addElement(var1 int, var2 string, var3 string, var4 int) {
+
+	var element product
+	element.Quantity = var1
+	element.Title = var2
+	element.Category = var3
+	element.Cost = var4
+
+	prod = append(prod, element)
+
+}
+
+//pass an array to here from index.html
 func purgeHTML(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	///////////////
 
@@ -82,7 +103,7 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 	//incoming : productid and quantity
 	db := dbConn()
 	//nId := r.URL.Query().Get("id")
-	selDB, err := db.Query("SELECT products.ProductQuantity, products.ProductName, products.ProductCatTitle, products.ProductCost FROM products WHERE id=1")
+	selDB, err := db.Query("SELECT products.ProductQuantity, products.ProductName, products.ProductCatTitle, products.ProductCost FROM products WHERE products.ProductCost=100")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -92,7 +113,6 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 	//	panic(err.Error())
 	//}
 
-	prod := product{}
 	for selDB.Next() {
 		var quant, cost int
 		var title, category string
@@ -100,10 +120,12 @@ func purgeHTML(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err.Error())
 		}
-		prod.Quantity = quant
-		prod.Title = title
-		prod.Category = category
-		prod.Cost = cost
+
+		//prod.Quantity = quant
+		//prod.Title = title
+		//prod.Category = category
+		//prod.Cost = cost
+		addElement(quant, title, category, cost)
 	}
 	//tmpl.ExecuteTemplate(w, "Show", emp)
 
@@ -202,7 +224,7 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	//data := VAR{"testname"}
 	//var var1 = VAR{var2}
 
-	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
+	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/twemplate1.html"))
 
 	err1 := globt.Execute(w, var2)
 
@@ -409,7 +431,10 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 //}
 func main() {
 
-	finish := make(chan bool)
+	//finish := make(chan bool)
+
+	//wg := new(sync.WaitGroup)
+	//wg.Add(2)
 
 	one := http.NewServeMux()
 
@@ -428,18 +453,15 @@ func main() {
 
 	two := http.NewServeMux()
 
-	two.HandleFunc("/purge", purgeHTML)
+	//
+	two.HandleFunc("/template2", purgeHTML)
 
 	go func() {
 
 		http.ListenAndServe(":8080", one)
 	}()
 
-	go func() {
+	http.ListenAndServe(":8081", two)
 
-		http.ListenAndServe(":8081", two)
-
-	}()
-
-	<-finish
+	//wg.Wait()
 }
