@@ -355,7 +355,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(templ1)
 
-		globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/index1.html"))
+		globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
 
 		err1 := globt.Execute(w, templ1)
 
