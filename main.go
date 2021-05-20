@@ -2,13 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 	"strconv"
-
-	"encoding/json"
-	"html/template"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/sessions"
@@ -78,7 +77,7 @@ func dbConn() (db *sql.DB) {
 //var list[]product
 
 //var List1  []product
-var prod []product
+//var prod []product
 
 func addElement(var1 int, var2 string, var3 string, var4 int) {
 
@@ -88,60 +87,54 @@ func addElement(var1 int, var2 string, var3 string, var4 int) {
 	element.Category = var3
 	element.Cost = var4
 
-	prod = append(prod, element)
+	//prod = append(prod, element)
 
 }
+
+//arr.push({ID:key, Quant:item});
+//type product1 struct {
+//	ID    int `json:"ID"`
+//	Quant int `json:"Quant"`
+//}
+type product1 struct {
+	ID    string
+	Quant string
+}
+
+//arr.push({ID:key, Quant:item});
 
 //pass an array to here from index.html
 func purgeHTML(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	///////////////
+	//fmt.Println("GET params were:", r.URL.Query())
 
-	////////////////
-	//incoming : productid and quantity
-	db := dbConn()
-	//nId := r.URL.Query().Get("id")
-	selDB, err := db.Query("SELECT products.ProductQuantity, products.ProductName, products.ProductCatTitle, products.ProductCost FROM products WHERE products.ProductCost=100")
-	if err != nil {
-		panic(err.Error())
+	//param1 := r.URL.Query().Get("password")
+
+	//fmt.Println("", param1)
+
+	query := r.URL.Query()
+
+	//fmt.Printf("%s", query)
+
+	//filters=["color", "price", "brand"]
+	filters, present := query["id"]
+
+	if !present || len(filters) == 0 {
+		fmt.Println("filters not present")
 	}
 
-	//rows, err := db.Query()
-	//if err != nil {
-	//	panic(err.Error())
-	//}
+	fmt.Println(filters[0])
 
-	for selDB.Next() {
-		var quant, cost int
-		var title, category string
-		err = selDB.Scan(&quant, &title, &category, &cost)
-		if err != nil {
-			panic(err.Error())
-		}
+	//	templ1 = product1{}
+	//
+	//	fmt.Println(templ1)
+	//
+	//	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+	//
+	//	err1 := globt.Execute(w, templ1)
 
-		//prod.Quantity = quant
-		//prod.Title = title
-		//prod.Category = category
-		//prod.Cost = cost
-		addElement(quant, title, category, cost)
-	}
-	//tmpl.ExecuteTemplate(w, "Show", emp)
-
-	//templ1 = product{ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-	//	key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-	//fmt.Println(templ1)
-
-	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
-
-	globt.Execute(w, prod)
-
-	defer db.Close()
 }
-
-//////////
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 

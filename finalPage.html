@@ -1,7 +1,27 @@
+<html>
+<body>
+  <head>
+
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <!DOCTYPE html>
+</head>  
+
+<html>
+
+<div id = "div1">test</div>
+
 
 
 <script>
-//(checkout)
+  
+    window.sessionStorage
+  
 
 //loads ajax on page start
 $(function(){
@@ -11,46 +31,105 @@ $(function(){
 loadData();
 
 ////////
-  //loadajax();
+//  loadajax();
 });
 
+
+//checkout button pressed, so is here!
+//data is here by sessionstorage
+//send it to purge which calls template with data
 function loadData() {
-  alert("loaddata");
-   var account = localStorage.getItem('_account');
+ // alert("loaddata");
+   //(checkout)
+
+
+   var postData = {user_name:'jerry', password:'666666'};
+
+
+   
+var arr =  {};
+var arr1 = [];
+var prodid = 1;
+var quant = 2;
+arr[prodid] = quant; 
+
+prodid = 5;
+quant = 6;
+arr[prodid] = quant; 
+
+var data = {
+  "1" : "2",
+  "3" : "4"
+
+}
+//arr1.push(data);
+//console.log(arr1);
+
+//save sesion at : checkout template1
+//////////////////////////////////////
+//load data
+/*
+var sessionID = "_0";
+var account = sessionStorage.getItem('sessionID');
    if (!account) return false;
-   localStorage.removeItem('_account');
+   sessionStorage.removeItem(sessionID);
    //decodes a string data encoded using base-64
    account = atob(account);
    //parses to Object the JSON string
    account = JSON.parse(account);
    //do what you need with the Object
    //fillFields(account.User, account.Pass);
-   //ProductID:productID,
-	 //Quantity:quantitytryingtobuy
-  alert(account.productID);
-  alert(account.quantitytryingtobuy);
-
-
-   return true;
+   console.log(account)
+   alert(account.ID);
+  */ 
+   
+ var string = ""
+//////////////////////
+//alert("in final page");
+let keys = Object.keys(sessionStorage);
+for(let key of keys) {
+ 
+  var item = sessionStorage.getItem(key);
+  //alert(key);
+  //alert(item);
+  string =  string + "id=" + key + "&quant=" + item + "&";
+  //alert(key);
+  //alert(item);
+  
 }
-
-<div id = "div1">tets</div>
-
-function loadajax(){
-    $.ajax({ 
-      url:'http://localhost:8080/template2',
-      data:"test",
-      type:"post",
-      success:function(result){
-        $('#div1').html(result);
-
-        alert("in here");
-       //do action
-      }
-    });
-  }
+//goes backwards and last entered writes over
+queryString = string.substring(0, string.length-1);
+alert(queryString);
+//$.each(arr, function () {
+//    $.each(this, function(key, val){
+//      alert (key)  
+//      alert( val)
+//    })
+//})
 
 
+//var myObj = { ID: "1", Quant: "31"};
+//var myJSON = JSON.stringify(myObj);
 
 
+var url = "http://localhost:8081/template2";
+//var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
+
+
+
+                    $.ajax({
+                    type:"GET",
+                    url:url,
+                    data:queryString,
+                    async:false,
+                    success: function (data) {
+                    //alert(data);
+                    }
+                });
+}
   </script>
+
+
+
+</body>
+</html>

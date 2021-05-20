@@ -17,7 +17,10 @@
 	</head>  
 
 <body>
-	
+	<script>
+		window.sessionStorage
+	  </script>
+
 	<div>
 		
 	
@@ -127,13 +130,15 @@
 			
 			
 			<script>
-			
+			 var gAccount = [];
+
 			function removeRecord(mainDivForRecord)
 			{
 				alert("hereisit");
 				document.getElementById(mainDivForRecord).innerHTML = "";
 			}
 			//called on 
+            var gTotalOfPurchases = 0;
 			function changeFields(productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
@@ -159,6 +164,7 @@
 				amountToBePurchased = document.getElementById(amountToPurchaseID).value;
 
 				
+				//alert(amountToBePurchased);
 				//document.getElementById(amountPurchasedID).value="";
 
 				//if there is enough product go in here
@@ -176,8 +182,14 @@
 
 					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
 
-					saveData(productID, amountToBePurchased)
-
+                    gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
+                    if(gTotalOfPurchases > 0){
+                        document.getElementById(amountToPurchaseID).value = 0;
+                        alert("here");
+						alert(amountToBePurchased);
+						saveData(productID, amountToBePurchased)
+                        return (1);
+                    }
 
 					///////////
 
@@ -194,22 +206,38 @@
 								
 			}
 
+           var gCounter = -1;
+
+		   //CHANGEFILEDs*******
 			//https://stackoverflow.com/questions/17309199/how-to-send-variables-from-one-file-to-another-in-javascript/17309679#17309679
 			//https://www.w3docs.com/learn-javascript/localstorage-sessionstorage.html
-			function  saveData(productID, quantitytryingtobuy)
+			function  saveData(productID, quantityTryingToBuy)
 			{
-				var account = {
-					ProductID:productID,
-					Quantity:quantitytryingtobuy
-				};
-
+				//alert(productID)
+				//alert(quantityTryingToBuy)
+				gCounter++;
+				var sessionID = "_" + gCounter;
+				//alert(sessionID);
+                var account = {
+    			ID: productID ,
+     			Quant: quantityTryingToBuy
+   				};
+				   //alert("makeit?");
+				   console.log(account)
 				//converts to JSON string the Object
-				account = JSON.stringify(account);
+				//account = JSON.stringify(account);
 				//creates a base-64 encoded ASCII string
-				account = btoa(account);
+				//account = btoa(account);
 				//save the encoded accout to web storage
-				sessionStorage.setItem('_account', account);
-				alert("ok");
+				//localStorage.setItem('_account', account);
+				//   console.log(account)
+				//alert(account.ID);
+				//alert(account.Quant);
+
+				//Last productID writes over the first
+                sessionStorage.setItem(account.ID, account.Quant);
+				
+                //alert(gAccount);
 
 			}
 

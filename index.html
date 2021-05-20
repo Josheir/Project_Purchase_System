@@ -19,6 +19,7 @@
     window.sessionStorage
   </script>
 
+<!--#include virtual ="finalPage.html" /> -->
   
   
     
@@ -47,6 +48,7 @@
 
 </script>
 
+      <input   id="button7"  type="button" value="checkout"/>
       <div id = "firstdiv" ></div>
       <div id ="buttons">
       <br><br><br>
@@ -67,7 +69,7 @@
       
       <input   id="button6"  type="button" value="display"/>
       
-      <input   id="button7"  type="button" value="checkout"/>
+      
      
 
       </div>
@@ -255,13 +257,31 @@ var dataB = JSON.stringify(dataA);
   });
 
 
+  
+
   //checkout button
   $(document).ready(function () {
       $('#button7').click(function () {
               //////////
               //calls purgehtml which calls template2.html - go
               alert("called")
+
+              window.location.href = "finalPage.html";
+              //loadData();
+
+              alert("called")
+              
+
+              /*
               $.ajax({ 
+
+                    //link to finalpage which calls template and passes the data regurgetated there
+                    //data is saved when template1.html has savdata pressed
+                    //this page runs load data and passes data as ajax whem page is started
+
+                    //call finalpage so div will be used there
+
+                    
                     url:'http://localhost:8081/template2',
                    
                     type:"post",
@@ -270,19 +290,21 @@ var dataB = JSON.stringify(dataA);
                     crossDomain: true,
                     data: {post_data: 'hello world'},
                     success:function(result){
+                      
+                      //last template displayed here
                       $('#firstdiv').html(result);
+                      
 
-                      //alert(result);
-                    //do action
                     }
 
-
+                  
 
                     //alert("result");
                   
                   
                   
                   });
+                  */
               
                 });  
               });
