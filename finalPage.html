@@ -43,7 +43,7 @@ function loadData() {
    //(checkout)
 
 
-   var postData = {user_name:'jerry', password:'666666'};
+//var postData = {user_name:'jerry', password:'666666'};
 
 
    
@@ -90,16 +90,14 @@ let keys = Object.keys(sessionStorage);
 for(let key of keys) {
  
   var item = sessionStorage.getItem(key);
-  //alert(key);
-  //alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
-  //alert(key);
-  //alert(item);
+  
   
 }
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
 alert(queryString);
+
 //$.each(arr, function () {
 //    $.each(this, function(key, val){
 //      alert (key)  

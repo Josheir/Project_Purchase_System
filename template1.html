@@ -144,13 +144,6 @@
 			{
 				
 
-				//console.log("test");
-				//console.log("{{.Key3ID}}");
-				//console.log(document.getElementById("{{.Key3ID}}"));
-				//var elem = document.getElementById("{{.Key3ID}}");
-				//console.log(elem);
-				//elem.value = "block";
-
 
 				//alert(quantityID);
 
@@ -171,7 +164,7 @@
 				//document.getElementById(amountPurchasedID).value="";
 
 				
-				//if there is enough product go in here - take from dbase amount
+				//if there is enough product go in here - take from quantity amount
 				if((parseInt(amountInPurchasedField) >= parseInt(amountToBePurchased)) && parseInt(amountToBePurchased) > 0  )
 				{
 
@@ -188,7 +181,9 @@
                         document.getElementById(amountToPurchaseID).value = 0;
                         alert("here");
 						alert(amountToBePurchased);
-						saveData(productID, amountToBePurchased)
+						
+						//so far, so good is still in database!
+						setData(productID, amountToBePurchased, 0)
                         return (1);
                     }
 
@@ -202,7 +197,7 @@
 
 
 				}
-				//adding to quantity
+				//adding to quantity, up to original quantity
 				else if( (parseInt(amountToBePurchased) < 0  ) && ((-1*(parseInt(amountToBePurchased)) + parseInt(amountInPurchasedField ) <= originalQuantity))){
 
 					alert(amountToBePurchased);
@@ -218,7 +213,9 @@
 					document.getElementById(quantityID).value = value2 ;
 					//amount purchaesd  subtracks amounttopurchase 
 					document.getElementById(amountPurchasedID).value = parseInt(amountPurchasedSoFar) + parseInt(amountToBePurchased);
-
+					//DONT FORGRT ABOUT SETTING VALUE TO 0, BELOW
+					var amountToRefund = amountToBePurchased;
+					setData(productID, amountToRefund, 1)
 				}
 				
 				
@@ -232,33 +229,58 @@
 		   //CHANGEFILEDs*******
 			//https://stackoverflow.com/questions/17309199/how-to-send-variables-from-one-file-to-another-in-javascript/17309679#17309679
 			//https://www.w3docs.com/learn-javascript/localstorage-sessionstorage.html
-			function  saveData(productID, quantityTryingToBuy)
+			
+			
+			//if negative, the quantitytryingtoset is a possible value
+			//reduce bool is 1 for first section, quantity is being reduced 
+			function  saveData(productID, quantityTryingToSet, reduceBool)
 			{
-				//alert(productID)
-				//alert(quantityTryingToBuy)
-				gCounter++;
-				var sessionID = "_" + gCounter;
-				//alert(sessionID);
-                var account = {
-    			ID: productID ,
-     			Quant: quantityTryingToBuy
-   				};
-				   //alert("makeit?");
-				   console.log(account)
-				//converts to JSON string the Object
-				//account = JSON.stringify(account);
-				//creates a base-64 encoded ASCII string
-				//account = btoa(account);
-				//save the encoded accout to web storage
-				//localStorage.setItem('_account', account);
-				//   console.log(account)
-				//alert(account.ID);
-				//alert(account.Quant);
-
-				//Last productID writes over the first
-                sessionStorage.setItem(account.ID, account.Quant);
 				
-                //alert(gAccount);
+				//gCounter++;
+				//var sessionID = "_" + gCounter;
+				
+                //var account = {
+    			//ID: productID ,
+     			//Quant: quantityTryingToSet
+   				//};
+				   
+				 
+				var string = "";
+				
+				var keyflag, quantityOfProduct, totalquantity = "";
+				let keys = Object.keys(sessionStorage);
+				for(let key of keys) {
+				
+				//total the quantity and overwrite - is already a record
+				if(key == productID){
+					
+					keyFlag = "found";
+					quantityOfProduct = sessionStorage.getItem(key);
+					
+					//quantity of records is decreasing
+					if (reduceBool)
+					{
+						totalquantity = quantityOfProduct - quantityTryingToSet;
+					}
+					else 
+					{
+						totalquantity = quantityOfProduct + quantityTryingToSet;
+					}
+					
+					
+					//overwrites
+					sessionStorage.setItem(productID, totalquantity);
+					break;
+				
+					}
+				}
+				//there is no productID record yet, make one here 
+				if (keyFlag !=  found)
+				{
+					sessionStorage.setItem(productID, quantityTryingToSet);
+				}
+				
+                
 
 			}
 
