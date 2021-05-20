@@ -121,7 +121,7 @@
 			<div class="row">
 			<div class="col">
 			<center><button onclick="removeRecord('{{.MainDivID}}' )">Remove Record</button></center>
-			<center><button onclick="changeFields('{{.ProductID}}' , '{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
+			<center><button onclick="changeFields('{{.ProductQuantity}}', '{{.ProductID}}' , '{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
 			</div>
 			</div>
 			</div>
@@ -131,6 +131,7 @@
 			
 			<script>
 			 var gAccount = [];
+			 //var originalQuantity = "{{.ProductQuantity}}";
 
 			function removeRecord(mainDivForRecord)
 			{
@@ -139,7 +140,7 @@
 			}
 			//called on 
             var gTotalOfPurchases = 0;
-			function changeFields(productID, quantityID, amountPurchasedID, amountToPurchaseID)
+			function changeFields(originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
 
@@ -153,11 +154,13 @@
 
 				//alert(quantityID);
 
+				var amountToBePurchased  = 0;
 				var  amountInPurchasedField = 0;
 				var amountPurchasedSoFar = 0;
 				var value1 = 0;
+				var value2 = 0;
 				//total of product with server
-				var amountInPurchasedField = document.getElementById(quantityID).value;
+				amountInPurchasedField = document.getElementById(quantityID).value;
 				//already purchased
 				amountPurchasedSoFar = document.getElementById(amountPurchasedID).value;
 				//amount held for subtraction when submit button pressed
@@ -167,22 +170,20 @@
 				//alert(amountToBePurchased);
 				//document.getElementById(amountPurchasedID).value="";
 
-				//if there is enough product go in here
-				if(parseInt(amountInPurchasedField) >= parseInt(amountToBePurchased)  )
+				
+				//if there is enough product go in here - take from dbase amount
+				if((parseInt(amountInPurchasedField) >= parseInt(amountToBePurchased)) && parseInt(amountToBePurchased) > 0  )
 				{
+
 					
-					//alert(value1);
+					
 					value1 = document.getElementById(amountToPurchaseID).value; 
-					//alert(value1);
 					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
-					//alert(value2);
-					//alert(amountPurchasedSoFar);
-					//alert(value1);
+					
+					//puts total in here
 					document.getElementById(amountPurchasedID).value = value2 ;
-
 					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
-
-                    gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
+					gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
                     if(gTotalOfPurchases > 0){
                         document.getElementById(amountToPurchaseID).value = 0;
                         alert("here");
@@ -199,7 +200,27 @@
 					///////////
 
 
+
 				}
+				//adding to quantity
+				else if( (parseInt(amountToBePurchased) < 0  ) && ((-1*(parseInt(amountToBePurchased)) + parseInt(amountInPurchasedField ) <= originalQuantity))){
+
+					alert(amountToBePurchased);
+					alert(amountInPurchasedField);
+					alert(originalQuantity);
+					//alert("a");
+					//in field not submitted yet
+					value1 = document.getElementById(amountToPurchaseID).value; 
+					//total of amount for text box
+					value2  = parseInt(amountInPurchasedField) - parseInt(value1);
+					alert(value2);
+					//change total in here
+					document.getElementById(quantityID).value = value2 ;
+					//amount purchaesd  subtracks amounttopurchase 
+					document.getElementById(amountPurchasedID).value = parseInt(amountPurchasedSoFar) + parseInt(amountToBePurchased);
+
+				}
+				
 				
 				document.getElementById(amountToPurchaseID).value = 0;
 
