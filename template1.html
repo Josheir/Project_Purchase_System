@@ -18,7 +18,7 @@
 
 <body>
 	<script>
-		window.sessionStorage
+		
 	  </script>
 
 	<div>
@@ -144,6 +144,7 @@
 			{
 				
 
+				
 
 				//alert(quantityID);
 
@@ -233,7 +234,7 @@
 			
 			//if negative, the quantitytryingtoset is a possible value
 			//reduce bool is 1 for first section, quantity is being reduced 
-			function  saveData(productID, quantityTryingToSet, reduceBool)
+			function  setData(productID, quantityTryingToSet, reduceBool)
 			{
 				
 				//gCounter++;
@@ -247,7 +248,7 @@
 				 
 				var string = "";
 				
-				var keyflag, quantityOfProduct, totalquantity = "";
+				var keyFlag, quantityOfProduct, totalquantity = "";
 				let keys = Object.keys(sessionStorage);
 				for(let key of keys) {
 				
@@ -275,8 +276,9 @@
 					}
 				}
 				//there is no productID record yet, make one here 
-				if (keyFlag !=  found)
+				if (keyFlag !=  "found")
 				{
+					alert("insession");
 					sessionStorage.setItem(productID, quantityTryingToSet);
 				}
 				

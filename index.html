@@ -61,7 +61,7 @@
      
       
       
-      <input   id="button3" type="button" onclick = "testJSON()" value="Test JSON"/>
+      <input   id="button3" type="button" value="Test JSON"/>
       <input   id="button2" type="submit" value="Get Inputs"/>
       </form>
     
@@ -162,22 +162,24 @@ function Purchase(mainDiv2, productID, quantityID, chosenQuant){
 
 //try - not currently being  used : TEST
 //function refresh(){
- function testJSON()
-{
-  //var fileInput = document.getElementById('file');   
-  //var filename = fileInput.files[0].name;
+//function testJSON()
 
-  //let url = `http://localhost:8080/getMessages?filename=${filename}`;
-  //alert (url);
-  //var result = "test1"
-   
-  //var arr = { name: "John", age: 30, city: "New York" };
+
+
+$(document).ready(function () {
+      $('#button3').click(function () {
+
+
+        /*
+  
+   alert("your here");
+  var arr = { name: "John", age: 30, city: "New York" };
   
 var name = "Josh"; 
 var age = 10;
 var city = "Boston"
 
- insert(name, age, city);
+ //insert(name, age, city);
 
 
   var obj2 = { name: "John", age: 30, city: "New York" };
@@ -193,40 +195,44 @@ var city = "Boston"
 
 var dataB = JSON.stringify(dataA);
 
-
+*/
   //https://stackoverflow.com/questions/8951810/how-to-parse-json-data-with-jquery-javascript
        // https://stackoverflow.com/questions/5061310/jquery-returning-parsererror-for-ajax-request
           
-    $(document).ready(function (obj) {
+   // $(document).ready(function (obj) {
       //$('#button5').click(function () {
 
-        
+        alert("here to");
        $.ajax({
               url: 'http://localhost:8080/getMessages',
               type: 'POST',
               dataType: 'json',
               contentType: "application/json",
               //data: { name: "John", age: 30, city: "New York" },
-              data: JSON.stringify({ "name": name, "city": city }),
+              data:{post_data: 'hello world'}, //JSON.stringify({ "name": name, "city": city }),
               crossDomain: true,
              
-            success: function (data) {
-              json = $.parseJSON(data);
-              $(json).each(function (i, val) {
-              $.each(val, function (k, v) {
-              alert(k)
-              alert(v)
-             
+            success: function (data1) {
+              alert(data1);
+              console.log(data1[1].city);
+              //var x = data1.city;
+              //console.log(x);
+              //alert(x);
+              
+              //var json1 = JSON.parse(data1, function (key,value) {
+              //$(json).each(function (i, val) {
+              //$.each(val, function (k, v) {
+              alert("in here!!!");
+              //alert(v)
+              }
               });
-            }); 
-            
-            }
+          
+         });
 
-          });
-      //});
-  });
+    });
 
-}
+
+
  
 
   //template button press - display

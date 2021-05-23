@@ -14,11 +14,20 @@ import (
 )
 
 type product struct {
-	Quantity int
-	Title    string
-	Category string
-	Cost     int
+	ProductQuantity int
+	ProductName     string
+	ProductCatTitle string
+	ProductCost     int
 }
+
+type Product1 struct {
+	ProductQuantity int
+	ProductName     string
+	ProductCatTitle string
+	ProductCost     int
+}
+
+var ProductList = []Product1{}
 
 //cited
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
@@ -82,10 +91,10 @@ func dbConn() (db *sql.DB) {
 func addElement(var1 int, var2 string, var3 string, var4 int) {
 
 	var element product
-	element.Quantity = var1
-	element.Title = var2
-	element.Category = var3
-	element.Cost = var4
+	element.ProductQuantity = var1
+	element.ProductName = var2
+	element.ProductCatTitle = var3
+	element.ProductCost = var4
 
 	//prod = append(prod, element)
 
@@ -104,38 +113,121 @@ type product1 struct {
 //arr.push({ID:key, Quant:item});
 
 //pass an array to here from index.html
-func purgeHTML(w http.ResponseWriter, r *http.Request) {
+//called from finalpage. query string,
+//there, checkout button pressed
+//this function creates them template2!
+func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//fmt.Println("GET params were:", r.URL.Query())
-
-	//param1 := r.URL.Query().Get("password")
-
-	//fmt.Println("", param1)
+	fmt.Println("GET params were:", r.URL.Query())
 
 	query := r.URL.Query()
 
-	//fmt.Printf("%s", query)
-
 	//filters=["color", "price", "brand"]
-	filters, present := query["id"]
+	allIds, present := query["id"]
 
-	if !present || len(filters) == 0 {
+	if !present || len(allIds) == 0 {
 		fmt.Println("filters not present")
 	}
 
-	fmt.Println(filters[0])
+	//fmt.Println(allIds[0])
 
-	//	templ1 = product1{}
-	//
-	//	fmt.Println(templ1)
-	//
-	//	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-	//
-	//	err1 := globt.Execute(w, templ1)
+	allQuants, present := query["quant"]
 
+	if !present || len(allQuants) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	//fmt.Println(allQuants[0])
+
+	//{{.Quantity}}
+	//{{.Title}}
+	//{{.Category}}
+	//{{.Cost}}
+
+	//////////
+	/////////
+
+	string1 = ""
+
+	db := dbConn()
+
+	var j = 1
+	var i = 0
+	for i = 0; i < 1; i++ {
+		//pid := allIds[i]
+		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
+			"FROM products WHERE " +
+			"products.ProductID = ?")
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		rows, err := stmt.Query(j)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		//var counter = 0
+
+		//var templ1 product
+
+		var ProductQuantity, ProductCost int
+		var ProductName, ProductCatTitle string
+
+		for rows.Next() {
+
+			//copies from database row to these variables
+			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
+			if err != nil {
+				panic(err.Error())
+			}
+
+			addProduct(ProductQuantity, ProductName, ProductCatTitle, ProductCost)
+		}
+		//var ProductList = []Product1{
+		//	{
+		//		ProductQuantity: 1,
+		//		ProductName:     "name",
+		//		ProductCatTitle: "title",
+		//		ProductCost:     100,
+		//	},
+		//	{
+		//		ProductQuantity: 1,
+		//		ProductName:     "name",
+		//		ProductCatTitle: "title",
+		//		ProductCost:     100,
+		//	},
+		//}
+
+		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
+
+		err1 := globt.Execute(w, ProductList)
+
+		if err1 != nil {
+			fmt.Println("C---------------")
+			fmt.Println(err1.Error())
+
+			panic(err1.Error())
+
+		}
+
+	}
+
+	///////////
 }
+func addProduct(quant int, name string, cat string, cost int) {
 
+	prod := Product1{
+		ProductQuantity: quant,
+		ProductName:     name,
+		ProductCatTitle: cat,
+		ProductCost:     cost,
+	}
+	ProductList = append(ProductList, prod)
+}
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Rrrrrrraarg ")
@@ -352,13 +444,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		err1 := globt.Execute(w, templ1)
 
-		//My idea was to update the template this way, however creates a new record.
-		//ProductName = "this is a test"
-
-		//templ1 = forTemplate{ProductID, ProductCatTitle, mainDiv, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity, key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword}
-
-		//err1 = globt.Execute(w, templ1)
-
 		if err1 != nil {
 			fmt.Println("B---------------")
 			fmt.Println(err1.Error())
@@ -394,18 +479,36 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	user := User{
+	//	a := User{Name:"a" , Age: 10 , City:"s" };
+
+	//var arr []User
+
+	//arr = append(arr,a)
+
+	var user = []User{{
 
 		Name: "John Doe",
 		Age:  10,
-		City: "richmond"}
+		City: "richmond"}}
+
+	var msg = new(User)
+	msg.Name = "Test namee"
+	msg.Age = 30
+	msg.City = "here"
+	user = append(user, *msg)
+
+	msg = new(User)
+	msg.Name = "namee"
+	msg.Age = 20
+	msg.City = "here2"
+	user = append(user, *msg)
 
 	json.NewEncoder(w).Encode(user)
 
 	//w.Header().Set("Content-Type", "application/json")
 	//w.Write(j)
 	fmt.Println("--wwww---")
-
+	fmt.Println(user)
 }
 
 //////
@@ -447,7 +550,7 @@ func main() {
 	two := http.NewServeMux()
 
 	//
-	two.HandleFunc("/template2", purgeHTML)
+	two.HandleFunc("/template2", createTemplate2)
 
 	go func() {
 

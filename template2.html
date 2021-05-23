@@ -1,7 +1,21 @@
 <html>
-<body>
 
-<table>
+
+<body>
+    <head>
+
+		<title>Bootstrap Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	  <!DOCTYPE html>
+	</head>  
+
+
+<table style="width:50%">
 <tr>
 
 <th>Quantity</th> 
@@ -11,16 +25,42 @@
 
 </tr>
 
-{{ range .}}
+
+
+{{range .}}
 <tr>
-<td> {{.Quantity}} </td>
-<td> {{.Title}}  </td>
-<td> {{.Category}} </td>
-<td> {{.Cost}} </td>
+<td> {{.ProductQuantity}} </td>
+<td> {{.ProductName}}  </td>
+<td> {{.ProductCatTitle}} </td>
+<td> {{.ProductCost}} </td>
 </tr>
 {{end}}
 </table>
+<center><button onclick="encodeToDatabase( )">Check Database</button></center>
 
+
+
+<script>
+
+
+function encodeToDatabase(){
+
+    var url = "http://localhost:8081/spitBackAmounts";
+
+                    $.ajax({
+                    type:"GET",
+                    url:url,
+                    data:queryString,
+                    async:false,
+                    success: function (data) {
+                    alert("fix this");
+                    //$('#div1').html(data);
+                    }
+                });
+}
+
+
+</script>
 
 </body>
 </html>
