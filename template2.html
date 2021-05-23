@@ -12,31 +12,58 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 	  <!DOCTYPE html>
+
+      <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+
+      
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      td {
+        height: 80px;
+        width: 160px;
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      </style>
 	</head>  
 
-
-<table style="width:50%">
+<br>
+<table style="width:60%" class="center">
 <tr>
 
-<th>Quantity</th> 
-<th>Product Title</th>
-<th>Category</th>
-<th>Cost</th> 
+<th><center>Amount to Buy</center></th>
 
+<th><center>Product Name</center></th>
+<th><center>Category</center></th>
+<th><center>Available</center></th> 
+<th><center>Cost</center></th> 
 </tr>
 
 
 
 {{range .}}
 <tr>
-<td> {{.ProductQuantity}} </td>
-<td> {{.ProductName}}  </td>
-<td> {{.ProductCatTitle}} </td>
-<td> {{.ProductCost}} </td>
+<td> <center><p> <input id = "" value =""   type="" name="" placeholder="" size="2">	</p></center></td>
+			
+
+<td><center> {{.ProductName}}</center>  </td>
+<td><center>{{.ProductCatTitle}}</center> </td>
+
+<td><center> {{.ProductQuantity}}</center> </td>
+<td><center>{{.ProductCost}}</center> </td>
 </tr>
 {{end}}
+
 </table>
-<center><button onclick="encodeToDatabase( )">Check Database</button></center>
+<br><br>
+<center><button onclick="encodeToDatabase( )">Final Purchase</button></center>
 
 
 
