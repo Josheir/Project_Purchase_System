@@ -61,7 +61,7 @@
      
       
       
-      <input   id="button3" type="button" value="Test JSON"/>
+      <input   id="button3" type="button" value="Test JSON - getmerssage"/>
       <input   id="button2" type="submit" value="Get Inputs"/>
       </form>
     
@@ -202,7 +202,7 @@ var dataB = JSON.stringify(dataA);
    // $(document).ready(function (obj) {
       //$('#button5').click(function () {
 
-        alert("here to");
+        
        $.ajax({
               url: 'http://localhost:8080/getMessages',
               type: 'POST',
@@ -214,7 +214,7 @@ var dataB = JSON.stringify(dataA);
              
             success: function (data1) {
               alert(data1);
-              console.log(data1[1].city);
+              console.log(data1[2].Age);
               //var x = data1.city;
               //console.log(x);
               //alert(x);
@@ -270,12 +270,10 @@ var dataB = JSON.stringify(dataA);
       $('#button7').click(function () {
               //////////
               //calls purgehtml which calls template2.html - go
-              alert("called")
-
+             
               window.location.href = "finalPage.html";
               //loadData();
 
-              alert("called")
               
 
               /*

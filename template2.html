@@ -56,8 +56,8 @@
 <td><center> {{.ProductName}}</center>  </td>
 <td><center>{{.ProductCatTitle}}</center> </td>
 
-<td><center> {{.ProductQuantity}}</center> </td>
-<td><center>{{.ProductCost}}</center> </td>
+<td><center><div id = "{{.DivID}}"> {{.ProductQuantity}}</center> </td><div>
+<div id =""><td><center>{{.ProductCost}}</center> </td></div>
 </tr>
 {{end}}
 
@@ -72,18 +72,78 @@
 
 function encodeToDatabase(){
 
-    var url = "http://localhost:8081/spitBackAmounts";
 
+    var string = ""
+
+    let keys = Object.keys(sessionStorage);
+    for(let key of keys) {
+ 
+        var item = sessionStorage.getItem(key);
+  string =  string + "id=" + key + "&quant=" + item + "&";
+  
+  
+}
+//goes backwards and last entered writes over
+queryString = string.substring(0, string.length-1);
+alert(queryString);
+
+/*
                     $.ajax({
-                    type:"GET",
+                    type:"POST",
                     url:url,
                     data:queryString,
                     async:false,
-                    success: function (data) {
-                    alert("fix this");
-                    //$('#div1').html(data);
-                    }
-                });
+                    success: function (data1) {
+                    alert("made it here!");
+                    //alert(data1);
+                    alert(data1[2].Quant);
+                    console.log(data1[2].Quant);
+
+*/
+              $.ajax({
+              url: 'http://localhost:8080/spitBackAmounts',
+              type: 'POST',
+              dataType: 'json',
+              contentType: "application/json",
+              
+              data:queryString,
+              crossDomain: true,
+             
+              success: function (data1) {
+              alert(data1);
+              console.log(data1[2].ID);
+              
+              
+                    
+              console.log(data1.length);
+        
+
+              alert("in here!!!");
+            
+              }
+              });
+
+
+                    
+              //var divid = "A" + (data1[i].ID).toString(); 
+              //document.getElementById(divid).innerHTML = "1111";
+              //$('#div1').html(data);
+
+
+                 //   for(var i = 0; i < data1.length; i++) {
+                 // for(key in data1[i]) {
+                 //  alert(key + " :: " + data1[i][key]);
+                 //  }
+                 //   }
+
+
+                 //   for (var key in array) {
+                 //   if (array.hasOwnProperty(key)) {
+
+                   
+
+
+
 }
 
 

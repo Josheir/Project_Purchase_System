@@ -21,13 +21,23 @@ type product struct {
 }
 
 type Product1 struct {
+	
+	//ProductID       int
 	ProductQuantity int
 	ProductName     string
+	DivID string
 	ProductCatTitle string
 	ProductCost     int
 }
 
+//spit back to last html page
+type Product2 struct {
+	ID                int
+	QuantityAvailable int
+}
+
 var ProductList = []Product1{}
+var ProductList2 = []Product2{}
 
 //cited
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
@@ -105,9 +115,9 @@ func addElement(var1 int, var2 string, var3 string, var4 int) {
 //	ID    int `json:"ID"`
 //	Quant int `json:"Quant"`
 //}
-type product1 struct {
-	ID    string
-	Quant string
+type Product3 struct {
+	ID    int
+	Quant int
 }
 
 //arr.push({ID:key, Quant:item});
@@ -116,7 +126,66 @@ type product1 struct {
 //called from finalpage. query string,
 //there, checkout button pressed
 //this function creates them template2!
-func createTemplate2(w http.ResponseWriter, r *http.Request) {
+
+//this last page is where the data is spat back to html to note any database changes that cause purchase impossible
+func makeListForLastpage(id int, quant int) {
+
+	//to spit back to html
+	prod := Product2{
+
+		ID:                id,
+		QuantityAvailable: quant,
+	}
+	//list to spit back to html for rewriting all the quant
+	ProductList2 = append(ProductList2, prod)
+}
+
+//called from template2, final purchase selected, so send this back to display
+func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	///////
+
+	//type User struct {
+	//	Name string 
+	//	Age  int    
+	//	City string 
+	//}
+
+	
+	//	a := User{Name:"a" , Age: 10 , City:"s" };
+
+	var oneProduct = []Product3{{
+
+		ID: 2,
+		Quant:  10,
+		}}
+
+	var msg = new(Product3)
+	msg.ID = 3
+	msg.Quant = 30
+	
+	oneProduct = append( oneProduct, *msg)
+
+	msg = new(Product3)
+	msg.ID = 3
+	msg.Quant = 30
+	
+	oneProduct= append( oneProduct, *msg)
+
+	fmt.Println(oneProduct)
+
+	json.NewEncoder(w).Encode(oneProduct)
+	
+	fmt.Println(oneProduct)
+	
+
+	/*
+	//b := 9
+	//a := "a" + strconv.Itoa(b)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	fmt.Println("GET params were:", r.URL.Query())
@@ -138,12 +207,88 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present")
 	}
 
-	//fmt.Println(allQuants[0])
+	//get all current quantities
 
-	//{{.Quantity}}
-	//{{.Title}}
-	//{{.Category}}
-	//{{.Cost}}
+	db := dbConn()
+
+	var j = 0
+	var i = 0
+		for i = 0; i < len(allIds); i++ {
+		//for i = 0; i < 1; i++ {
+		//pid := allIds[i]
+		stmt, err := db.Prepare("SELECT products.ProductQuantity  " +
+			"FROM products WHERE " +
+			"products.ProductID = ?")
+
+		if err != nil {
+			panic(err.Error())
+		}
+		rows, err := stmt.Query(allIds[j])
+		//rows, err := stmt.Query(j)
+
+		if err != nil {
+			panic(err.Error())
+		}
+
+		//var counter = 0
+
+		//var templ1 product
+
+		var ProductQuantity int
+
+		for rows.Next() {
+
+			//copies from database row to these variables
+			err = rows.Scan(&ProductQuantity)
+			if err != nil {
+				panic(err.Error())
+			}
+
+			i1, err := strconv.Atoi(allIds[i])
+			if err == nil {
+				fmt.Println(i1)
+			}
+			i2, err1 := strconv.Atoi(allQuants[i])
+			if err1 == nil {
+				fmt.Println(i2)
+			}
+			makeListForLastpage(i1, i2)
+		}
+
+		//////////
+	}
+	json.NewEncoder(w).Encode(ProductList2)
+*/
+}
+
+func createTemplate2(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	
+	//////////
+
+	/////////
+
+	fmt.Println("GET params were:", r.URL.Query())
+
+	query := r.URL.Query()
+
+	//filters=["color", "price", "brand"]
+	allIds, present := query["id"]
+
+	if !present || len(allIds) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	//fmt.Println(allIds[0])
+
+	allQuants, present := query["quant"]
+
+	if !present || len(allQuants) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	/////////////
 
 	//////////
 	/////////
@@ -152,9 +297,17 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	var j = 1
+	var var1 = "A"
+	//yes this is right product starts at one
+	var j = 0
+	//counter := 0
+	
 	var i = 0
+	//divID := "A"
 	for i = 0; i < 1; i++ {
+
+		j++
+		DivID  := var1 + (strconv.Itoa(j))
 		//pid := allIds[i]
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
@@ -185,7 +338,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				panic(err.Error())
 			}
 
-			addProduct(ProductQuantity, ProductName, ProductCatTitle, ProductCost)
+
+			addProduct(ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
 		}
 		//var ProductList = []Product1{
 		//	{
@@ -207,7 +361,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		err1 := globt.Execute(w, ProductList)
 
 		if err1 != nil {
-			fmt.Println("C---------------")
+			fmt.Println("CC---------------")
 			fmt.Println(err1.Error())
 
 			panic(err1.Error())
@@ -218,11 +372,14 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(quant int, name string, cat string, cost int) {
+func addProduct( quant int, name string, div string, cat string, cost int) {
 
 	prod := Product1{
+	
+		
 		ProductQuantity: quant,
 		ProductName:     name,
+		DivID: div,
 		ProductCatTitle: cat,
 		ProductCost:     cost,
 	}
@@ -472,18 +629,13 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
 	type User struct {
-		Name string `json:"name"`
-		Age  int    `json:"age"`
-		City string `json:"city"`
+		Name string 
+		Age  int    
+		City string 
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-
+	
 	//	a := User{Name:"a" , Age: 10 , City:"s" };
-
-	//var arr []User
-
-	//arr = append(arr,a)
 
 	var user = []User{{
 
@@ -551,6 +703,7 @@ func main() {
 
 	//
 	two.HandleFunc("/template2", createTemplate2)
+	one.HandleFunc("/spitBackAmounts", spitBackAmounts)
 
 	go func() {
 
