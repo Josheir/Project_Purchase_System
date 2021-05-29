@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
+
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/sessions"
 )
 
 type product struct {
@@ -21,11 +20,10 @@ type product struct {
 }
 
 type Product1 struct {
-	
 	ProductID       int
 	ProductQuantity int
 	ProductName     string
-	DivID string
+	DivID           string
 	ProductCatTitle string
 	ProductCost     int
 }
@@ -121,11 +119,10 @@ type Product3 struct {
 }
 
 // i1 is product id, i2 is quant to add
-func updateListForLastpage(index int , quantity int , amtInDatabase int ){
+func updateListForLastpage(index int, quantity int, amtInDatabase int) {
 
 	ProductList2[index].QuantityAvailable = amtInDatabase + quantity
 }
-
 
 //arr.push({ID:key, Quant:item});
 
@@ -154,15 +151,11 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
-
-
-
 	fmt.Println(ProductList2)
 
 	json.NewEncoder(w).Encode(ProductList2)
-	
+
 	fmt.Println(ProductList2)
-	
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -170,7 +163,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	
 	allIds, present := query["id"]
 
 	if !present || len(allIds) == 0 {
@@ -185,13 +177,12 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present")
 	}
 
-	
 	db := dbConn()
 
 	var j = 0
 	var i = 0
-		for i = 0; i < len(allIds); i++ {
-		
+	for i = 0; i < len(allIds); i++ {
+
 		stmt, err := db.Prepare("SELECT products.ProductQuantity  " +
 			"FROM products WHERE " +
 			"products.ProductID = ?")
@@ -200,18 +191,16 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		rows, err := stmt.Query(allIds[j])
-		
 
 		if err != nil {
 			panic(err.Error())
 		}
 
-		
 		var ProductQuantity int
 
 		var flag = "noOther"
 		for rows.Next() {
-			
+
 			//This is the new exsact quantity available in the database for index i
 			//the two arrays, below, are from the attempted values to purchase from setdata (template1)
 			//this is a check of the most current database values
@@ -219,7 +208,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				panic(err.Error())
 			}
-			//assumption one unique index for whole slice 
+			//assumption one unique index for whole slice
 			id, err := strconv.Atoi(allIds[i])
 			if err == nil {
 				fmt.Println(id)
@@ -228,32 +217,32 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			if err1 == nil {
 				fmt.Println(quant)
 			}
-			for j = 0; j < len(ProductList2) ; j++{
-			//	i3 := id 
-				
+			for j = 0; j < len(ProductList2); j++ {
+				//	i3 := id
+
 				//id is already in product list keep id and add quant to it
-				if (ProductList2[j].ID == id){
+				if ProductList2[j].ID == id {
 					flag = "thereIsAnother"
 					var amtInDatabase = ProductQuantity
-					updateListForLastpage(j , quant, amtInDatabase )
+					updateListForLastpage(j, quant, amtInDatabase)
 				}
 			}
 			//no current record
-			if (flag != "ThereisAnother"){
+			if flag != "ThereisAnother" {
 
-			//snot in list yet
-			makeListForLastpage(j , quant)
+				//snot in list yet
+				makeListForLastpage(j, quant)
 			}
 
 		}
 
 		//////////
 	}
-	if(len(ProductList2) != 0){
-	//sends array of structs to template2.html
-	json.NewEncoder(w).Encode(ProductList2)
-	
-	} else{
+	if len(ProductList2) != 0 {
+		//sends array of structs to template2.html
+		json.NewEncoder(w).Encode(ProductList2)
+
+	} else {
 		fmt.Println("array length zero")
 	}
 }
@@ -261,7 +250,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	
 	//////////
 
 	/////////
@@ -298,13 +286,12 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//yes this is right product starts at one
 	var j = 0
 	//counter := 0
-	
+
 	var i = 0
 	//divID := "A"
 	for i = 0; i < 1; i++ {
 
-		
-		DivID  := var1 + (strconv.Itoa(i))
+		DivID := var1 + (strconv.Itoa(i))
 		//pid := allIds[i]
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
@@ -336,14 +323,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			}
 
 			//
-			value1,err1 := strconv.Atoi(allIds[i]) 
+			value1, err1 := strconv.Atoi(allIds[i])
 			if err1 != nil {
 				panic(err1.Error())
 			}
 			//value1 is product ID
 			addProduct(value1, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
 		}
-		
 
 		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
 
@@ -364,36 +350,33 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 func addProduct(prodid int, quant int, name string, div string, cat string, cost int) {
 
 	prod := Product1{
-	
-		ProductID:  prodid,
+
+		ProductID:       prodid,
 		ProductQuantity: quant,
 		ProductName:     name,
-		DivID: div,
+		DivID:           div,
 		ProductCatTitle: cat,
 		ProductCost:     cost,
 	}
 	flag := "nonefound"
 	//create one record with total quantities, duplicate record is set to -1 as productID and 0 as quantity
 	//could be done better, if time allows
-	for i := 0; i<len(ProductList) ; i++{
-		if((ProductList[i].ProductID) == prodid) {
-		prod.ProductQuantity =  prod.ProductQuantity + ProductList[i].ProductQuantity
-		ProductList[i].ProductQuantity = 0
-		ProductList[i].ProductID = -1
-		ProductList = append(ProductList, prod)
-		flag = "found"
-		} else{
-			
+	for i := 0; i < len(ProductList); i++ {
+		if (ProductList[i].ProductID) == prodid {
+			prod.ProductQuantity = prod.ProductQuantity + ProductList[i].ProductQuantity
+			ProductList[i].ProductQuantity = 0
+			ProductList[i].ProductID = -1
+			ProductList = append(ProductList, prod)
+			flag = "found"
+		} else {
+
 		}
-		if (flag != "found"){
-		ProductList = append(ProductList, prod)
+		if flag != "found" {
+			ProductList = append(ProductList, prod)
 		}
 	}
 
-
-
-	}
-	
+}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -639,12 +622,11 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
 	type User struct {
-		Name string 
-		Age  int    
-		City string 
+		Name string
+		Age  int
+		City string
 	}
 
-	
 	//	a := User{Name:"a" , Age: 10 , City:"s" };
 
 	var user = []User{{
