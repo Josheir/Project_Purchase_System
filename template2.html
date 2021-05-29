@@ -100,6 +100,9 @@ alert(queryString);
                     console.log(data1[2].Quant);
 
 */
+
+
+
               $.ajax({
               url: 'http://localhost:8080/spitBackAmounts',
               type: 'POST',
@@ -110,39 +113,26 @@ alert(queryString);
               crossDomain: true,
              
               success: function (data1) {
-              alert(data1);
-              console.log(data1[2].ID);
+              //alert(data1);
+              //console.log(data1[1].ID);
               
-              
-                    
-              console.log(data1.length);
-        
+              //total all elemetst, two per array.
+              var lengthOfData = data1.length;
 
-              alert("in here!!!");
+              for(i = 0; i < lengthOfData; i++)
+              {
+                
+                alert("in here!!!");
+                
+                putChangeHere = "D" + data[i].ID
+                //changes display
+                document.getElementById(putChangeHere).value =  data1[i].QuantityAvailable;
+
+              }
+
             
               }
               });
-
-
-                    
-              //var divid = "A" + (data1[i].ID).toString(); 
-              //document.getElementById(divid).innerHTML = "1111";
-              //$('#div1').html(data);
-
-
-                 //   for(var i = 0; i < data1.length; i++) {
-                 // for(key in data1[i]) {
-                 //  alert(key + " :: " + data1[i][key]);
-                 //  }
-                 //   }
-
-
-                 //   for (var key in array) {
-                 //   if (array.hasOwnProperty(key)) {
-
-                   
-
-
 
 }
 

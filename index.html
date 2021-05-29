@@ -160,10 +160,6 @@ function Purchase(mainDiv2, productID, quantityID, chosenQuant){
 
 */
 
-//try - not currently being  used : TEST
-//function refresh(){
-//function testJSON()
-
 
 
 $(document).ready(function () {
@@ -198,11 +194,8 @@ var dataB = JSON.stringify(dataA);
 */
   //https://stackoverflow.com/questions/8951810/how-to-parse-json-data-with-jquery-javascript
        // https://stackoverflow.com/questions/5061310/jquery-returning-parsererror-for-ajax-request
-          
-   // $(document).ready(function (obj) {
-      //$('#button5').click(function () {
-
-        
+    
+        //example
        $.ajax({
               url: 'http://localhost:8080/getMessages',
               type: 'POST',
@@ -215,13 +208,7 @@ var dataB = JSON.stringify(dataA);
             success: function (data1) {
               alert(data1);
               console.log(data1[2].Age);
-              //var x = data1.city;
-              //console.log(x);
-              //alert(x);
               
-              //var json1 = JSON.parse(data1, function (key,value) {
-              //$(json).each(function (i, val) {
-              //$.each(val, function (k, v) {
               alert("in here!!!");
               //alert(v)
               }
@@ -247,12 +234,9 @@ var dataB = JSON.stringify(dataA);
               data: {post_data: 'hello world'},
               success: function (result) {
                 
-                alert(result);
-                //document.getElementById("firstdiv").html( "<center><input   id=\"button7\"  type=\"button\" value=\"Checkout\"/></center>") ;
-                //$('#firstdiv').html( "<center><input   id=\"button7\"  type=\"button\" value=\"Checkout\"/></center>"   );
+                
                 $('#buttons').html(result);
-                //$('#lastdiv').html( "<center><input   id=\"button7\"  type=\"button\" value=\"Checkout\"/> <center>"   );
-                  
+               
               
               
              

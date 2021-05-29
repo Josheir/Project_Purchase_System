@@ -135,7 +135,7 @@
 
 			function removeRecord(mainDivForRecord)
 			{
-				alert("hereisit");
+				//alert("hereisit");
 				document.getElementById(mainDivForRecord).innerHTML = "";
 			}
 			//called on 
@@ -180,8 +180,8 @@
 					gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
                     if(gTotalOfPurchases > 0){
                         document.getElementById(amountToPurchaseID).value = 0;
-                        alert("here");
-						alert(amountToBePurchased);
+                        //alert("here");
+						//alert(amountToBePurchased);
 						
 						//so far, so good is still in database!
 						setData(productID, amountToBePurchased, 0)
@@ -201,9 +201,9 @@
 				//adding to quantity, up to original quantity
 				else if( (parseInt(amountToBePurchased) < 0  ) && ((-1*(parseInt(amountToBePurchased)) + parseInt(amountInPurchasedField ) <= originalQuantity))){
 
-					alert(amountToBePurchased);
-					alert(amountInPurchasedField);
-					alert(originalQuantity);
+					//alert(amountToBePurchased);
+					//alert(amountInPurchasedField);
+					//alert(originalQuantity);
 					//alert("a");
 					//in field not submitted yet
 					value1 = document.getElementById(amountToPurchaseID).value; 
@@ -237,8 +237,6 @@
 			function  setData(productID, quantityTryingToSet, reduceBool)
 			{
 				
-				//gCounter++;
-				//var sessionID = "_" + gCounter;
 				
                 //var account = {
     			//ID: productID ,
@@ -256,6 +254,7 @@
 				if(key == productID){
 					
 					keyFlag = "found";
+					//sofar
 					quantityOfProduct = sessionStorage.getItem(key);
 					
 					//quantity of records is decreasing
@@ -263,6 +262,7 @@
 					{
 						totalquantity = quantityOfProduct - quantityTryingToSet;
 					}
+					//quantity of records is acummulating
 					else 
 					{
 						totalquantity = quantityOfProduct + quantityTryingToSet;
@@ -270,6 +270,7 @@
 					
 					
 					//overwrites
+					sessionStorage.removeRecord(productID);
 					sessionStorage.setItem(productID, totalquantity);
 					break;
 				
@@ -278,7 +279,7 @@
 				//there is no productID record yet, make one here 
 				if (keyFlag !=  "found")
 				{
-					alert("insession");
+					//alert("insession");
 					sessionStorage.setItem(productID, quantityTryingToSet);
 				}
 				
