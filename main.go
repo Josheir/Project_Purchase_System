@@ -20,6 +20,9 @@ type product struct {
 }
 
 type Product1 struct {
+	
+	Condition int
+	Condition2 int
 	ProductID       int
 	ProductQuantity int
 	ProductName     string
@@ -137,8 +140,9 @@ func makeListForLastpage(id int, quant int) {
 	//to spit back to html
 	prod := Product2{
 
-		ID:                id,
 		QuantityAvailable: quant,
+		ID:                id,
+		
 	}
 	//list to spit back to html for rewriting all the quant
 	ProductList2 = append(ProductList2, prod)
@@ -151,15 +155,15 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
-	fmt.Println(ProductList2)
+	//fmt.Println(ProductList2)
 
-	json.NewEncoder(w).Encode(ProductList2)
+	//json.NewEncoder(w).Encode(ProductList2)
 
-	fmt.Println(ProductList2)
+	//fmt.Println(ProductList2)
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	fmt.Println("GET params were:", r.URL.Query())
+	//fmt.Println("GET params were:", r.URL.Query())
 
 	query := r.URL.Query()
 
@@ -217,7 +221,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			if err1 == nil {
 				fmt.Println(quant)
 			}
-			for j = 0; j < len(ProductList2); j++ {
+			for j = 0; j < len((ProductList2))/2; j++ {
 				//	i3 := id
 
 				//id is already in product list keep id and add quant to it
@@ -284,13 +288,19 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	var var1 = "D"
 	//yes this is right product starts at one
-	var j = 0
+	var j = 1
 	//counter := 0
 
 	var i = 0
 	//divID := "A"
-	for i = 0; i < 1; i++ {
+	
+	var Condition = 1
+	var Condition2 = 0
 
+	
+	for i = 0; i < 1; i++ {
+		//Condition++
+		Condition2++
 		DivID := var1 + (strconv.Itoa(i))
 		//pid := allIds[i]
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
@@ -323,14 +333,25 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			}
 
 			//
-			value1, err1 := strconv.Atoi(allIds[i])
+			Value1, err1 := strconv.Atoi(allIds[i])
 			if err1 != nil {
 				panic(err1.Error())
 			}
+			
 			//value1 is product ID
-			addProduct(value1, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
-		}
+			if(i == 0){
+				Condition = 1
+			}else{
+				Condition = 0
 
+			}
+			if(i == (len(allIds)-1)){
+				Condition2 = -1
+			}
+			addProduct(Condition, Condition2, Value1, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
+		
+		}
+		//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
 		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
 
 		err1 := globt.Execute(w, ProductList)
@@ -347,10 +368,11 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(prodid int, quant int, name string, div string, cat string, cost int) {
+func addProduct(condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
 
 	prod := Product1{
-
+		Condition: condition,
+		Condition2: condition2,
 		ProductID:       prodid,
 		ProductQuantity: quant,
 		ProductName:     name,
@@ -359,24 +381,27 @@ func addProduct(prodid int, quant int, name string, div string, cat string, cost
 		ProductCost:     cost,
 	}
 	flag := "nonefound"
-	//create one record with total quantities, duplicate record is set to -1 as productID and 0 as quantity
+	
+	//ProductList = append(ProductList, prod)
+
+	
 	//could be done better, if time allows
 	for i := 0; i < len(ProductList); i++ {
-		if (ProductList[i].ProductID) == prodid {
-			prod.ProductQuantity = prod.ProductQuantity + ProductList[i].ProductQuantity
-			ProductList[i].ProductQuantity = 0
-			ProductList[i].ProductID = -1
-			ProductList = append(ProductList, prod)
+		if ((ProductList[i].ProductID) == prodid) {
+			ProductList[i].ProductQuantity = ProductList[i].ProductQuantity + prod.ProductQuantity 
+			
+			//break out
+			i = 100
 			flag = "found"
-		} else {
+		}}
 
-		}
+	
 		if flag != "found" {
 			ProductList = append(ProductList, prod)
 		}
 	}
 
-}
+
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 

@@ -35,20 +35,22 @@
 	</head>  
 
 <br>
+
+{{range .}}
+{{if(eq .Condition 1)}}
 <table style="width:60%" class="center">
 <tr>
 
 <th><center>Amount to Buy</center></th>
-
 <th><center>Product Name</center></th>
 <th><center>Category</center></th>
 <th><center>Available</center></th> 
 <th><center>Cost</center></th> 
 </tr>
+{{end}}
 
 
 
-{{range .}}
 <tr>
 <td> <center><p> <input id = "" value =""   type="" name="" placeholder="" size="2">	</p></center></td>
 			
@@ -59,13 +61,15 @@
 <td><center><div id = "{{.DivID}}"> {{.ProductQuantity}}</center> </td><div>
 <div id =""><td><center>{{.ProductCost}}</center> </td></div>
 </tr>
-{{end}}
+
+{{if(eq .Condition2 -1)}}
+
 
 </table>
 <br><br>
 <center><button onclick="encodeToDatabase( )">Final Purchase</button></center>
-
-
+{{end}}
+{{end}}
 
 <script>
 
@@ -85,6 +89,7 @@ function encodeToDatabase(){
 }
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
+alert("here");
 alert(queryString);
 
 /*
@@ -103,9 +108,11 @@ alert(queryString);
 
 
 
+
+
               $.ajax({
               url: 'http://localhost:8080/spitBackAmounts',
-              type: 'POST',
+              type: 'GET',
               dataType: 'json',
               contentType: "application/json",
               
@@ -119,14 +126,16 @@ alert(queryString);
               //total all elemetst, two per array.
               var lengthOfData = data1.length;
 
-              for(i = 0; i < lengthOfData; i++)
+              for(i = 0; i < (lengthOfData/2); i++)
               {
-                
+                //console.log(lengthOfData);
                 alert("in here!!!");
-                
-                putChangeHere = "D" + data[i].ID
+                var putChangeHere = "D" + data1[i].ID;
+                console.log(putChangeHere);
+                console.log(data1[i].QuantityAvailable);
                 //changes display
-                document.getElementById(putChangeHere).value =  data1[i].QuantityAvailable;
+                document.getElementById(putChangeHere).innerHTML=(data1[i].QuantityAvailable);
+                //console.log(data[i].quant);
 
               }
 
