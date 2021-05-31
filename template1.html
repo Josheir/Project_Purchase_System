@@ -159,7 +159,7 @@
 				amountPurchasedSoFar = document.getElementById(amountPurchasedID).value;
 				//amount held for subtraction when submit button pressed
 				amountToBePurchased = document.getElementById(amountToPurchaseID).value;
-
+				alert(amountToBePurchased);
 				
 				//alert(amountToBePurchased);
 				//document.getElementById(amountPurchasedID).value="";
@@ -170,15 +170,21 @@
 				{
 
 					
-					
+					alert("1");
 					value1 = document.getElementById(amountToPurchaseID).value; 
 					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
 					
 					//puts total in here
 					document.getElementById(amountPurchasedID).value = value2 ;
 					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
+					
+					alert(amountToBePurchased);
+					
 					gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
-                    if(gTotalOfPurchases > 0){
+					
+					alert(amountToBePurchased);
+					
+					if(gTotalOfPurchases > 0){
                         document.getElementById(amountToPurchaseID).value = 0;
                         //alert("here");
 						//alert(amountToBePurchased);
@@ -201,6 +207,7 @@
 				//adding to quantity, up to original quantity
 				else if( (parseInt(amountToBePurchased) < 0  ) && ((-1*(parseInt(amountToBePurchased)) + parseInt(amountInPurchasedField ) <= originalQuantity))){
 
+					alert("2");
 					//alert(amountToBePurchased);
 					//alert(amountInPurchasedField);
 					//alert(originalQuantity);
@@ -236,6 +243,7 @@
 			//reduce bool is 1 for first section, quantity is being reduced 
 			function  setData(productID, quantityTryingToSet, reduceBool)
 			{
+				//gThereAreRecords++;
 				
 				
                 //var account = {
@@ -243,29 +251,44 @@
      			//Quant: quantityTryingToSet
    				//};
 				   
-				 
+				
 				var string = "";
 				
-				var keyFlag, quantityOfProduct, totalquantity = "";
+				var keyFlag = ""
+				var quantityOfProduct, totalquantity = 0;
 				let keys = Object.keys(sessionStorage);
 				for(let key of keys) {
 				
 				//total the quantity and overwrite - is already a record
 				if(key == productID){
-					
+				
+					alert("setdata");
 					keyFlag = "found";
 					//sofar
+					alert(sessionStorage.getItem(key));
 					quantityOfProduct = sessionStorage.getItem(key);
-					
+					alert(quantityOfProduct);
 					//quantity of records is decreasing
+					var totalquantity = 0;
 					if (reduceBool)
 					{
-						totalquantity = quantityOfProduct - quantityTryingToSet;
+						alert("1a");
+						var totalquantity = quantityOfProduct - quantityTryingToSet;
+						alert(quantityOfProduct);
 					}
 					//quantity of records is acummulating
 					else 
 					{
-						totalquantity = quantityOfProduct + quantityTryingToSet;
+						alert("1b");
+						alert(quantityOfProduct);
+						alert(quantityTryingToSet);
+						alert(totalquantity);
+						//alert(quantityTryingToSet);
+						totalquantity = parseInt(quantityOfProduct) + parseInt(quantityTryingToSet);
+						alert(quantityOfProduct);
+						alert(quantityTryingToSet);
+						alert(totalquantity);
+						//alert(quantityOfProduct);
 					}
 					
 					

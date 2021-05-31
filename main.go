@@ -288,11 +288,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	var var1 = "D"
 	//yes this is right product starts at one
-	var j = 1
-	//counter := 0
-
+	
+	//var j = 1
+	var ProductID = 1
 	var i = 0
-	//divID := "A"
 	
 	var Condition = 1
 	var Condition2 = 0
@@ -311,7 +310,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 
-		rows, err := stmt.Query(j)
+		rows, err := stmt.Query(ProductID)
 
 		if err != nil {
 			panic(err.Error())
@@ -331,9 +330,30 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				panic(err.Error())
 			}
+			var subtractThisQuant = 0
+			var k = 0
+			for  k = 0; k < len(allIds)  ; k++{
 
-			//
-			Value1, err1 := strconv.Atoi(allIds[i])
+				var1,err1 := (strconv.Atoi(allIds[k]))
+				if err1 == nil {
+					fmt.Println(var1)
+				}
+				
+
+				if( var1 == ProductID){
+
+					var2,err2 := (strconv.Atoi(allQuants[k]))
+					if err2 == nil {
+						fmt.Println(var2)
+					}
+
+					subtractThisQuant = var2
+				}
+			}
+			ProductQuantity = ProductQuantity - subtractThisQuant
+			
+
+			ID, err1 := strconv.Atoi(allIds[i])
 			if err1 != nil {
 				panic(err1.Error())
 			}
@@ -348,7 +368,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if(i == (len(allIds)-1)){
 				Condition2 = -1
 			}
-			addProduct(Condition, Condition2, Value1, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
+			addProduct(Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
 		
 		}
 		//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates

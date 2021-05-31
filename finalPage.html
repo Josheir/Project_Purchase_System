@@ -70,13 +70,21 @@ var account = sessionStorage.getItem('sessionID');
 //////////////////////
 //alert("in final page");
 let keys = Object.keys(sessionStorage);
+var var1 = "hasntBeenHere"
 for(let key of keys) {
- 
+  
   var item = sessionStorage.getItem(key);
   string =  string + "id=" + key + "&quant=" + item + "&";
-  
+  var1 = "hasBeenHere"
   
 }
+if(var1 == "hasntBeenHere")
+  {
+    alert("no!");
+    window.location.href = "index.html";
+    return(1);
+  }
+
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
 //alert(queryString);
