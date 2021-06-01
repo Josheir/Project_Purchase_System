@@ -20,7 +20,8 @@ type product struct {
 }
 
 type Product1 struct {
-	
+	CostID string
+	AmountToBuyID string
 	Condition int
 	Condition2 int
 	ProductID       int
@@ -214,11 +215,11 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			}
 			//assumption one unique index for whole slice
 			id, err := strconv.Atoi(allIds[i])
-			if err == nil {
+			if err != nil {
 				fmt.Println(id)
 			}
 			quant, err1 := strconv.Atoi(allQuants[i])
-			if err1 == nil {
+			if err1 != nil {
 				fmt.Println(quant)
 			}
 			for j = 0; j < len((ProductList2))/2; j++ {
@@ -287,6 +288,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	db := dbConn()
 
 	var var1 = "D"
+	var var2 = "A"
+	var var3 = "C"
 	//yes this is right product starts at one
 	
 	//var j = 1
@@ -297,10 +300,19 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var Condition2 = 0
 
 	
+
+	
+
 	for i = 0; i < 1; i++ {
 		//Condition++
 		Condition2++
 		DivID := var1 + (strconv.Itoa(i))
+		AmountToBuyID := var2 + (strconv.Itoa(i))
+		CostID := var3 + (strconv.Itoa(i))
+		
+
+
+		
 		//pid := allIds[i]
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
@@ -368,7 +380,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if(i == (len(allIds)-1)){
 				Condition2 = -1
 			}
-			addProduct(Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
+			
+			
+			addProduct(CostID,AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
 		
 		}
 		//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
@@ -388,9 +402,11 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
+func addProduct(costid string, amountid string , condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
 
 	prod := Product1{
+		CostID: costid,
+		AmountToBuyID: amountid,
 		Condition: condition,
 		Condition2: condition2,
 		ProductID:       prodid,

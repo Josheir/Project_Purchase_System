@@ -130,6 +130,7 @@
 			
 			
 			<script>
+				var firstTime = "yes";
 			 var gAccount = [];
 			 //var originalQuantity = "{{.ProductQuantity}}";
 
@@ -170,7 +171,7 @@
 				{
 
 					
-					alert("1");
+					//alert("1");
 					value1 = document.getElementById(amountToPurchaseID).value; 
 					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
 					
@@ -178,11 +179,11 @@
 					document.getElementById(amountPurchasedID).value = value2 ;
 					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
 					
-					alert(amountToBePurchased);
+					//alert(amountToBePurchased);
 					
 					gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
 					
-					alert(amountToBePurchased);
+					//alert(amountToBePurchased);
 					
 					if(gTotalOfPurchases > 0){
                         document.getElementById(amountToPurchaseID).value = 0;
@@ -216,7 +217,7 @@
 					value1 = document.getElementById(amountToPurchaseID).value; 
 					//total of amount for text box
 					value2  = parseInt(amountInPurchasedField) - parseInt(value1);
-					alert(value2);
+					//alert(value2);
 					//change total in here
 					document.getElementById(quantityID).value = value2 ;
 					//amount purchaesd  subtracks amounttopurchase 
@@ -238,19 +239,16 @@
 			//https://stackoverflow.com/questions/17309199/how-to-send-variables-from-one-file-to-another-in-javascript/17309679#17309679
 			//https://www.w3docs.com/learn-javascript/localstorage-sessionstorage.html
 			
-			
+			//called by change fields
 			//if negative, the quantitytryingtoset is a possible value
 			//reduce bool is 1 for first section, quantity is being reduced 
 			function  setData(productID, quantityTryingToSet, reduceBool)
 			{
-				//gThereAreRecords++;
-				
-				
-                //var account = {
-    			//ID: productID ,
-     			//Quant: quantityTryingToSet
-   				//};
-				   
+				if(firstTime == "yes")
+				{
+					sessionStorage.clear();
+					firstTime = "no";
+				}
 				
 				var string = "";
 				
@@ -262,12 +260,14 @@
 				//total the quantity and overwrite - is already a record
 				if(key == productID){
 				
-					alert("setdata");
+					alert("in this place");
+					alert(productID);
+					//alert("setdata");
 					keyFlag = "found";
 					//sofar
-					alert(sessionStorage.getItem(key));
+					//alert(sessionStorage.getItem(key));
 					quantityOfProduct = sessionStorage.getItem(key);
-					alert(quantityOfProduct);
+					//alert(quantityOfProduct);
 					//quantity of records is decreasing
 					var totalquantity = 0;
 					if (reduceBool)
@@ -279,16 +279,19 @@
 					//quantity of records is acummulating
 					else 
 					{
-						alert("1b");
-						alert(quantityOfProduct);
-						alert(quantityTryingToSet);
-						alert(totalquantity);
+						//alert("1b");
+						//alert(quantityOfProduct);
+						//alert(quantityTryingToSet);
+						//alert(totalquantity);
 						//alert(quantityTryingToSet);
 						totalquantity = parseInt(quantityOfProduct) + parseInt(quantityTryingToSet);
+						alert("quantityOfProduct");
 						alert(quantityOfProduct);
+						alert("quantityTryingToSet");
 						alert(quantityTryingToSet);
+						alert("totalquantity");
 						alert(totalquantity);
-						//alert(quantityOfProduct);
+						
 					}
 					
 					

@@ -52,14 +52,23 @@
 
 
 <tr>
-<td> <center><p> <input id = "" value =""   type="" name="" placeholder="" size="2">	</p></center></td>
+<td> <center><p> <input id = "{{.AmountToBuyID}}" value =""   type="" name="" placeholder="" size="2">	</p></center></td>
 			
 
 <td><center> {{.ProductName}}</center>  </td>
 <td><center>{{.ProductCatTitle}}</center> </td>
 
-<td><center><div id = "{{.DivID}}"> {{.ProductQuantity}}</center> </td><div>
-<div id =""><td><center>{{.ProductCost}}</center> </td></div>
+
+
+
+  <td> <center><p> <input id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="3" readonly >	</p></center></td>
+
+
+  
+  <td> <center><p> <input id = "{{.CostID}}" value ="{{.ProductCost}}"  type="" name="" placeholder="" size="3" readonly >	</p></center></td>
+
+
+
 </tr>
 
 {{if(eq .Condition2 -1)}}
@@ -67,47 +76,70 @@
 
 </table>
 <br><br>
-<center><button onclick="encodeToDatabase( )">Final Purchase</button></center>
+<center><button onclick="checkAllAvailableProducts('{{.ProductQuantity}}')">Final Purchase</button></center>
 {{end}}
 {{end}}
 
 <script>
 
 
-function encodeToDatabase(){
+function checkAllAvailableProducts(quantity){
 
 
-    var string = ""
 
+alert("encode to dbase");
+  //var amtInBuyBox = document.getElementById(amttobuyID).value;
+
+  //for amountinboxid
+  var var1 = "A";
+  //for costid
+  var var2 = "C";
+  var var3 = "D" 
+  var counter = -1;
+  var string = "";
+
+  var item = 0;
+  var AmountToBuyID = 0;
+  var AmountOfCostID = 0;
+  var AmountOfQuantityID = 0; 
+  
     let keys = Object.keys(sessionStorage);
     for(let key of keys) {
- 
-        var item = sessionStorage.getItem(key);
-  string =  string + "id=" + key + "&quant=" + item + "&";
-  
-  
+        counter++;
+        //input boxes id
+        AmountToBuyID = var1 + counter;
+        AmountOfCostID = var2 + counter;
+        AmountOfQuantityID = var3 + counter;
+      
+        //amount in box
+        var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
+        var quantityInBox = parseInt(document.getElementById(AmountOfQuantityID).value);
+        var costInBox = (document.getElementById(AmountOfCostID).value); 
+        //alert(AmountOfCostID);
+        //alert(costInBox);
+        //console.log("starts here");
+        //console.log(sessionStorage.getItem(key));
+        //console.log(amtInBuyBox);
+        
+        //amount bought before purchase
+        var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
+        string =  string + "id=" + key + "&quant=" + item + "&";
+        
+        
+        
+        //console.log("string");
+        //console.log(string);
+        //console.log("item");
+        //console.log(item);
+        //console.log("key");
+        //console.log(sessionStorage.getItem(key));
+        //console.log("in box");
+        //console.log(amtInBuyBox);
 }
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
-alert("here");
+
 alert(queryString);
-
-/*
-                    $.ajax({
-                    type:"POST",
-                    url:url,
-                    data:queryString,
-                    async:false,
-                    success: function (data1) {
-                    alert("made it here!");
-                    //alert(data1);
-                    alert(data1[2].Quant);
-                    console.log(data1[2].Quant);
-
-*/
-
-
-
 
 
               $.ajax({
@@ -125,17 +157,24 @@ alert(queryString);
               
               //total all elemetst, two per array.
               var lengthOfData = data1.length;
-
-              for(i = 0; i < (lengthOfData/2); i++)
+                //array has double because 2 variables
+                //iterate for divid and amountinboxid
+              //for(i = 0; i < (lengthOfData/2); i++)
               {
                 //console.log(lengthOfData);
-                alert("in here!!!");b
-                var putChangeHere = "D" + data1[i].ID;
-                console.log(putChangeHere);
-                console.log(data1[i].QuantityAvailable);
-                //changes display
-                document.getElementById(putChangeHere).innerHTML=(data1[i].QuantityAvailable);
-                //console.log(data[i].quant);
+                alert("in here!!!");
+                
+                //console.log("available");
+                //console.log((((data1[i].QuantityAvailable))));
+                //console.log("quantity");
+                //console.log(quantity);
+                //document.getElementById(putChangeHere).innerHTML= 100 - (((data1[i].QuantityAvailable)));
+                document.getElementById(AmountOfQuantityID ).value = 100 - (((data1[counter].QuantityAvailable)));
+                document.getElementById(AmountOfCostID ).value = costInBox * document.getElementById(AmountOfQuantityID ).value ;
+               
+               
+                //var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
+               
 
               }
 
