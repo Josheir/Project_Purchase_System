@@ -11,7 +11,6 @@ import (
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/net/idna"
 )
 
 type product struct {
@@ -208,74 +207,13 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 
 
-	/*
-	for i = 0; i < len(allIds); i++ {
-
-		stmt, err := db.Prepare("SELECT products.ProductQuantity  " +
-			"FROM products WHERE " +
-			"products.ProductID = ?")
-
-		if err != nil {
-			panic(err.Error())
-		}
-		rows, err := stmt.Query(allIds[j])
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		var ProductQuantity int
-
-		var flag = "noOther"
-		for rows.Next() {
-
-			//This is the new exsact quantity available in the database for index i
-			//the two arrays, below, are from the attempted values to purchase from setdata (template1)
-			//this is a check of the most current database values
-			err = rows.Scan(&ProductQuantity)
-			if err != nil {
-				panic(err.Error())
-			}
-			//assumption one unique index for whole slice
-			id, err := strconv.Atoi(allIds[i])
-			if err != nil {
-				fmt.Println(id)
-			}
-			quant, err1 := strconv.Atoi(allQuants[i])
-			if err1 != nil {
-				fmt.Println(quant)
-			}
-			for j = 0; j < len((ProductList2))/2; j++ {
-				//	i3 := id
-
-				//id is already in product list keep id and add quant to it
-				if ProductList2[j].ID == id {
-					flag = "thereIsAnother"
-					var amtInDatabase = ProductQuantity
-					updateListForLastpage(j, quant, amtInDatabase)
-				}
-			}
-			//no current record
-			if flag != "ThereisAnother" {
-
-				//snot in list yet
-				makeListForLastpage(j, quant)
-			}
-
-		}
-
-		//////////
-	}
-
-*/
-
 
 	
 	//Trying to save in database, if there is a rollback undo save and update template2.html
 	//db = dbConn()
 	var isEnoughInDatabase = "yes"
-	var allIds2 = []int{}
-	var allQuants2 =[]int{}
+	//var allIds2 = []int{}
+	//var allQuants2 =[]int{}
 	
 	
 	tx, err := db.Begin()
@@ -287,13 +225,13 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	i := 0
 
-
+	var quant = 0
 	for i = 0; i < len(allIds); i++ {
 	DatabaseQuantity:= 0 
 
 	//gets quantity for each product id
-	quant, _ := (strconv.Atoi(allQuants[i]))
-	row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? and products.ProductQuantity = ?", allIds[i], quant)
+	quant, _ = (strconv.Atoi(allQuants[i]))
+	row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ?", allIds[i])
 	err = row.Scan(&DatabaseQuantity)
 	if err != nil {
 		fmt.Println(err)
@@ -305,12 +243,12 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	//listing : ProductList2A - new values of quantity for id 
-	allIds2[i] = val1
+	//allIds2[i] = val1
 	//product amt, whats in database
-	allQuants2[i] = DatabaseQuantity
+	//allQuants2[i] = DatabaseQuantity
 
 	//makes productline2A for new values to pass to template2.html
-	makeListForLastpageA((allIds2[i]), DatabaseQuantity)
+	makeListForLastpageA((val1), DatabaseQuantity)
 
 
 	//amount of product changed, there is no longer enough product for purchase
@@ -336,6 +274,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		
 
 	var orderid = 0
+	var nextProductID = 0
+	//var ins *sql.Stmt
 	for i = 0; i < len(allIds); i++ {
 
 	///////////////////
@@ -343,18 +283,27 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	///////////////////
 
-	quant, err2 := (strconv.Atoi(allQuants[i]))
-	if err2 != nil {
-		fmt.Println(err)
-	}
+	//quant, err2 := (strconv.Atoi(allQuants[i]))
+	//if err2 != nil {
+	//	fmt.Println(err)
+	//}
 
 	orderid = 0
 	//get newest order id
-	row := tx.QueryRow("SELECT * FROM orders ORDER BY OrderID DESC LIMIT 1")
+	row := tx.QueryRow("SELECT OrderID FROM orders ORDER BY OrderID DESC LIMIT 1")
 	err3 := row.Scan(&orderid)
 	if err3 != nil {
 		fmt.Println(err)
 	}
+	orderid = orderid + 1
+
+	row = tx.QueryRow("SELECT ProductID FROM products ORDER BY ProductID DESC LIMIT 1")
+	err3 = row.Scan(&nextProductID)
+	if err3 != nil {
+		fmt.Println(err)
+	}
+
+	nextProductID = nextProductID + 1
 
 	
 
@@ -363,20 +312,21 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	//this gets the record before it is updated for quantity and orderid to supply the insert
 	
-	rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?",  allIds2[i])
+	rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?",  allIds[i])
 
 	
 
-	var ProductCost, ProductQuantity, ProductID, CustomerID, /*OrderID,*/ AdminID int
+	var ProductCost, ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
 	var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
-
-	err4 := rows.Scan( ProductID, ProductFilename,ProductName, ProductDescription,ProductCost, ProductQuantity, ProductCatTitle,   
-		&gKeyword1, &gKeyword2, &gKeyword3, ProductStatus)
+	//https://devtidbits.com/2020/08/03/go-sql-error-converting-null-to-string-is-unsupported/
+	err4 := rows.Scan( &ProductID, &ProductFilename,&ProductName, &ProductDescription,&ProductCost, &ProductQuantity, &ProductCatTitle,   
+		&gKeyword1, &gKeyword2, &gKeyword3,&CustomerID, &OrderID, &ProductStatus,&AdminID )
 
 		if err4 != nil {
-			fmt.Println(err)
+			fmt.Println(err4)
 		}
 
+		//var ProductQuantity2 = ProductQuantity - quant
 
 	
 	
@@ -387,7 +337,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//creates same product with quantitiy of this product minus how much purchased (quant)
 		//database amount - amount purchased
 		//100 in database , 10 bought -> 90 left   so there is ten purchased in order (bought)
-		_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", allQuants2[i] - quant,  allIds2[i])
+		_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity - quant,    allIds[i])
 
 
 
@@ -395,30 +345,51 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 //////////////
 	//https://idineshkrishnan.com/crud-operations-with-mysql-in-go-language/
 	//new record with next orderid - amount of products purchased
-	_ = tx.QueryRow("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", orderid, ProductFilename,ProductName, ProductDescription,
-	ProductCost, quant, ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, CustomerID, 0, ProductStatus,AdminID )
+//	_ = tx.QueryRow("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", orderid, ProductFilename,ProductName, ProductDescription,
+//	ProductCost, quant, ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, CustomerID, 0, ProductStatus,AdminID )
 
 
 
-/////////////
 
+//var ins *sql.Stmt
 
-	}//end for
+stmt, err := tx.Prepare(`INSERT INTO products set  ProductID=?,ProductFilename=?,ProductName =?, ProductDescription=?, ProductCost =?, ProductQuantity=?, ProductCatTitle = ?,ProductKeyword1=?, ProductKeyword2=?, ProductKeyword3=?, CustomerID = ?,OrderID=?, ProductStatus=?, AdminID=?`)
 
-
-
-//get this with logon : custid 
-var cost = 100
-var custId = 1
-var date = "not available"
-//id, date, cost, custid
-	_ = tx.QueryRow("INSERT INTO orders VALUES (?,?,?,?)", orderid, date, cost, custId)
-	
-
+if err != nil {
+	fmt.Println(err)
 }
 
-	
+_, err =stmt.Exec(nextProductID ,ProductFilename,ProductName, ProductDescription,ProductCost, quant, ProductCatTitle,   
+	gKeyword1, gKeyword2, gKeyword3,CustomerID, orderid, ProductStatus,AdminID );
 
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//get this with logon : custid 
+	var cust = 1
+	var cost = 100
+	var date = "2021-01-1"
+
+	stmt, err = db.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?"); 
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	_, err =stmt.Exec(orderid, date, cost, cust)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	
+/////////////////////
+
+}//is enough in database
+
+	
+	}
 	
 
 	if err := tx.Commit(); err != nil {
