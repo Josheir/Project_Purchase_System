@@ -7,7 +7,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"log"
+	//"log"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -21,10 +21,12 @@ type product struct {
 }
 
 type Product1 struct {
-	CostID string
-	AmountToBuyID string
-	Condition int
-	Condition2 int
+	TotalCost       int
+	TotalCostID     string
+	CostID          string
+	AmountToBuyID   string
+	Condition       int
+	Condition2      int
 	ProductID       int
 	ProductQuantity int
 	ProductName     string
@@ -137,10 +139,9 @@ func makeListForLastpageA(id int, quant int) {
 
 		QuantityAvailable: quant,
 		ID:                id,
-		
 	}
 	//list to spit back to html for rewriting all the quant
-	ProductList2 = append(ProductList2A, prod)
+	ProductList2A = append(ProductList2A, prod)
 }
 
 //arr.push({ID:key, Quant:item});
@@ -158,10 +159,53 @@ func makeListForLastpage(id int, quant int) {
 
 		QuantityAvailable: quant,
 		ID:                id,
-		
 	}
 	//list to spit back to html for rewriting all the quant
 	ProductList2 = append(ProductList2, prod)
+}
+
+var orderid1 = 100
+
+//for testing
+func trycommit(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	db := dbConn()
+	tx, err := db.Begin()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var cust = 1
+	var cost = 107
+	var date = "2021-01-1"
+
+	//var ins *sql.Stmt
+	//stmt, err := tx.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?");
+	stmt, err := tx.Prepare("INSERT INTO orders (OrderID, OrderDate,OrderCost, CustomerID) values(?,?,?,?)")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(orderid1, date, cost, cust)
+	orderid1++
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err5 := tx.Commit()
+	if err5 != nil {
+		fmt.Println(err5)
+	}
+
 }
 
 //called from template2, final purchase selected, so send this back to display
@@ -202,204 +246,202 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	//var j = 0
 	//var i = 0
 
-
-
-
-
-
-
-	
 	//Trying to save in database, if there is a rollback undo save and update template2.html
 	//db = dbConn()
 	var isEnoughInDatabase = "yes"
 	//var allIds2 = []int{}
 	//var allQuants2 =[]int{}
-	
-	
-	tx, err := db.Begin()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-
 
 	i := 0
-
-	var quant = 0
-	for i = 0; i < len(allIds); i++ {
-	DatabaseQuantity:= 0 
-
-	//gets quantity for each product id
-	quant, _ = (strconv.Atoi(allQuants[i]))
-	row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ?", allIds[i])
-	err = row.Scan(&DatabaseQuantity)
+	j := 0
+	tx, err := db.Begin()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	val1, err1 := strconv.Atoi(allIds[i])
-	if err1 != nil {
-		fmt.Println(err)
+	var counter = 0
+	var quant = 0
+	//any fail means isnotenoughindatabase
+	for j = 0; j < len(allIds); j++ {
+
+		DatabaseQuantity := 0
+
+		//gets quantity for each product id
+		quant, _ = (strconv.Atoi(allQuants[j]))
+		row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ?", allIds[j])
+		err = row.Scan(&DatabaseQuantity)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		val1, err1 := strconv.Atoi(allIds[j])
+		if err1 != nil {
+			fmt.Println(err)
+		}
+
+		//listing : ProductList2A - new values of quantity for id
+		//allIds2[i] = val1
+		//product amt, whats in database
+		//allQuants2[i] = DatabaseQuantity
+
+		//makes productline2A for new values to pass to template2.html
+		//appends
+		makeListForLastpageA((val1), DatabaseQuantity)
+
+		//amount of product changed, there is no longer enough product for purchase
+		//just send all values without delete
+		//if there is no fail than checkout completes with
+		//quant is amount purchasing
+		if counter == 0 {
+			quant = 2000
+			counter++
+		}
+		//any one fail means just write the new amounts and do  not change the database
+		if (quant) > DatabaseQuantity || isEnoughInDatabase == "no" {
+
+			isEnoughInDatabase = "no"
+			//continue
+
+		}
+
+		//err := tx.Commit();
+		//if err != nil {
+		//fmt.Println(err)
+		//}
+
 	}
-	
-	//listing : ProductList2A - new values of quantity for id 
-	//allIds2[i] = val1
-	//product amt, whats in database
-	//allQuants2[i] = DatabaseQuantity
 
-	//makes productline2A for new values to pass to template2.html
-	makeListForLastpageA((val1), DatabaseQuantity)
-
-
-	//amount of product changed, there is no longer enough product for purchase
-	//just send all values without delete
-	//if there is no fail than checkout completes with 
-	//quant is amount purchasing
-	
-	//any one fail means just write the new amounts and do  not change the database
-	if ((quant) > DatabaseQuantity || isEnoughInDatabase == "no"){
-
-		isEnoughInDatabase = "no"
-		//continue
-
-	}
-}
-	
 	//all the products may be removed from the database so delete  them and create an order and create a new product for each product
 	//proceed with checkout
-	if(isEnoughInDatabase == "yes"){
+	if isEnoughInDatabase == "yes" {
 
 		//set new record for order, with the quantity subtracted
 
-		
+		var insertOrderFlag = "yes"
+		var orderid = 0
+		var nextProductID = 0
+		//var ins *sql.Stmt
+		for i = 0; i < len(allIds); i++ {
+			insertOrderFlag = "yes"
+			///////////////////
 
-	var orderid = 0
-	var nextProductID = 0
-	//var ins *sql.Stmt
-	for i = 0; i < len(allIds); i++ {
+			///////////////////
 
-	///////////////////
-	
+			//quant, err2 := (strconv.Atoi(allQuants[i]))
+			//if err2 != nil {
+			//	fmt.Println(err)
+			//}
 
-	///////////////////
+			orderid = 0
+			//get last order id
+			row := tx.QueryRow("SELECT OrderID FROM orders ORDER BY OrderID DESC LIMIT 1")
+			err3 := row.Scan(&orderid)
+			if err3 != nil {
+				fmt.Println(err)
+			}
+			orderid = orderid + 1
+			//get last productid
+			row = tx.QueryRow("SELECT ProductID FROM products ORDER BY ProductID DESC LIMIT 1")
+			err3 = row.Scan(&nextProductID)
+			if err3 != nil {
+				fmt.Println(err)
+			}
 
-	//quant, err2 := (strconv.Atoi(allQuants[i]))
-	//if err2 != nil {
-	//	fmt.Println(err)
-	//}
+			nextProductID = nextProductID + 1
 
-	orderid = 0
-	//get newest order id
-	row := tx.QueryRow("SELECT OrderID FROM orders ORDER BY OrderID DESC LIMIT 1")
-	err3 := row.Scan(&orderid)
-	if err3 != nil {
-		fmt.Println(err)
-	}
-	orderid = orderid + 1
+			//////////////
 
-	row = tx.QueryRow("SELECT ProductID FROM products ORDER BY ProductID DESC LIMIT 1")
-	err3 = row.Scan(&nextProductID)
-	if err3 != nil {
-		fmt.Println(err)
-	}
+			//this gets the record before it is updated for quantity and orderid to supply the insert
 
-	nextProductID = nextProductID + 1
+			rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?", allIds[i])
 
-	
+			var ProductCost, ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
+			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
+			//https://devtidbits.com/2020/08/03/go-sql-error-converting-null-to-string-is-unsupported/
+			err4 := rows.Scan(&ProductID, &ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle,
+				&gKeyword1, &gKeyword2, &gKeyword3, &CustomerID, &OrderID, &ProductStatus, &AdminID)
 
+			if err4 != nil {
+				fmt.Println(err4)
+			}
 
-	//////////////
+			//var ProductQuantity2 = ProductQuantity - quant
 
-	//this gets the record before it is updated for quantity and orderid to supply the insert
-	
-	rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?",  allIds[i])
+			/////////////
 
-	
+			//creates same product with quantitiy of this product minus how much purchased (quant)
+			//database amount - amount purchased
+			//100 in database , 10 bought -> 90 left   so there is ten purchased in order (bought)
+			_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity-quant, allIds[i])
 
-	var ProductCost, ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
-	var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
-	//https://devtidbits.com/2020/08/03/go-sql-error-converting-null-to-string-is-unsupported/
-	err4 := rows.Scan( &ProductID, &ProductFilename,&ProductName, &ProductDescription,&ProductCost, &ProductQuantity, &ProductCatTitle,   
-		&gKeyword1, &gKeyword2, &gKeyword3,&CustomerID, &OrderID, &ProductStatus,&AdminID )
+			//////////////
+			//https://idineshkrishnan.com/crud-operations-with-mysql-in-go-language/
+			//new record with next orderid - amount of products purchased
+			//	_ = tx.QueryRow("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", orderid, ProductFilename,ProductName, ProductDescription,
+			//	ProductCost, quant, ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, CustomerID, 0, ProductStatus,AdminID )
 
-		if err4 != nil {
-			fmt.Println(err4)
-		}
+			////////////////
 
-		//var ProductQuantity2 = ProductQuantity - quant
+			//get this with logon : custid
 
-	
-	
+			if insertOrderFlag == "yes" {
+				var cust = 1
+				var cost = 100
+				var date = "2021-01-1"
 
+				//stmt, err := tx.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?");
+				stmt, err := tx.Prepare("INSERT INTO orders (OrderID, OrderDate,OrderCost, CustomerID) values(?,?,?,?)")
 
-/////////////
+				if err != nil {
+					fmt.Println(err)
+				}
 
-		//creates same product with quantitiy of this product minus how much purchased (quant)
-		//database amount - amount purchased
-		//100 in database , 10 bought -> 90 left   so there is ten purchased in order (bought)
-		_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity - quant,    allIds[i])
+				defer stmt.Close()
 
+				_, err = stmt.Exec(orderid, date, cost, cust)
 
+				if err != nil {
+					fmt.Println(err)
+				}
 
+				insertOrderFlag = "no"
 
-//////////////
-	//https://idineshkrishnan.com/crud-operations-with-mysql-in-go-language/
-	//new record with next orderid - amount of products purchased
-//	_ = tx.QueryRow("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", orderid, ProductFilename,ProductName, ProductDescription,
-//	ProductCost, quant, ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, CustomerID, 0, ProductStatus,AdminID )
+			}
+			////////////////
 
+			stmt, err := tx.Prepare(`INSERT INTO products set  ProductID=?,ProductFilename=?,ProductName =?, ProductDescription=?, ProductCost =?, ProductQuantity=?, ProductCatTitle = ?,ProductKeyword1=?, ProductKeyword2=?, ProductKeyword3=?, CustomerID = ?,OrderID=?, ProductStatus=?, AdminID=?`)
 
+			if err != nil {
+				fmt.Println(err)
+			}
 
+			ProductCatTitle = "purchased"
 
-//var ins *sql.Stmt
+			_, err = stmt.Exec(nextProductID, ProductFilename, ProductName, ProductDescription, ProductCost, quant, ProductCatTitle,
+				gKeyword1, gKeyword2, gKeyword3, CustomerID, orderid, ProductStatus, AdminID)
 
-stmt, err := tx.Prepare(`INSERT INTO products set  ProductID=?,ProductFilename=?,ProductName =?, ProductDescription=?, ProductCost =?, ProductQuantity=?, ProductCatTitle = ?,ProductKeyword1=?, ProductKeyword2=?, ProductKeyword3=?, CustomerID = ?,OrderID=?, ProductStatus=?, AdminID=?`)
+			if err != nil {
+				fmt.Println(err)
+			}
 
-if err != nil {
-	fmt.Println(err)
-}
+			if err != nil {
+				fmt.Println(err)
+			}
 
-_, err =stmt.Exec(nextProductID ,ProductFilename,ProductName, ProductDescription,ProductCost, quant, ProductCatTitle,   
-	gKeyword1, gKeyword2, gKeyword3,CustomerID, orderid, ProductStatus,AdminID );
+			/////////////////////
 
+		} //for
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	} //is enough
 
-	//get this with logon : custid 
-	var cust = 1
-	var cost = 100
-	var date = "2021-01-1"
-
-	stmt, err = db.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?"); 
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	_, err =stmt.Exec(orderid, date, cost, cust)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-/////////////////////
-
-}//is enough in database
-
-	
-	}
-	
-
-	if err := tx.Commit(); err != nil {
-		fmt.Println(err)
+	err5 := tx.Commit()
+	if err5 != nil {
+		fmt.Println(err5)
 	}
 
-
-	if len(ProductList2) != 0 {
+	if len(ProductList2A) != 0 && isEnoughInDatabase == "no" {
 		//sends array of structs to template2.html
-		json.NewEncoder(w).Encode(ProductList2)
+		json.NewEncoder(w).Encode(ProductList2A)
 
 	} else {
 		fmt.Println("array length zero")
@@ -420,6 +462,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	//filters=["color", "price", "brand"]
 	allIds, present := query["id"]
+	fmt.Println("allIds")
+	fmt.Println(allIds)
 
 	if !present || len(allIds) == 0 {
 		fmt.Println("filters not present")
@@ -445,42 +489,41 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var1 = "D"
 	var var2 = "A"
 	var var3 = "C"
+	var var4 = "TC"
 	//yes this is right product starts at one
-	
+
 	//var j = 1
-	var ProductID = 1
+	//var ProductID = 2
 	var i = 0
-	
-	var Condition = 1
+
+	var Condition = 0
 	var Condition2 = 0
 
-	
-
-	
-
-	for i = 0; i < 1; i++ {
+	for i = 0; i < len(allIds); i++ {
 		//Condition++
 		Condition2++
 		DivID := var1 + (strconv.Itoa(i))
 		AmountToBuyID := var2 + (strconv.Itoa(i))
 		CostID := var3 + (strconv.Itoa(i))
-		
+		TotalCostID := var4 + (strconv.Itoa(i))
 
-
-		
+		var prodid, err = (strconv.Atoi(allIds[i]))
+		if err != nil {
+			fmt.Println(err)
+		}
 		//pid := allIds[i]
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
-			"products.ProductID = ?")
+			"products.ProductID = ? AND products.ProductStatus = 'ready'")
 
 		if err != nil {
-			panic(err.Error())
+			fmt.Println(err)
 		}
 
-		rows, err := stmt.Query(ProductID)
+		rows, err := stmt.Query(prodid)
 
 		if err != nil {
-			panic(err.Error())
+			fmt.Println(err)
 		}
 
 		//var counter = 0
@@ -490,80 +533,121 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		var ProductQuantity, ProductCost int
 		var ProductName, ProductCatTitle string
 
+		fmt.Println("ProductList")
+		fmt.Println(ProductList)
+
 		for rows.Next() {
+
+			fmt.Println("ProductList1")
+			fmt.Println(ProductList)
 
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
 			if err != nil {
-				panic(err.Error())
+				fmt.Println(err)
 			}
-			var subtractThisQuant = 0
-			var k = 0
-			for  k = 0; k < len(allIds)  ; k++{
+			/*
+				var subtractThisQuant = 0
+				var k = 0
+				for  k = 0; k < len(allIds)  ; k++{
 
-				var1,err1 := (strconv.Atoi(allIds[k]))
-				if err1 == nil {
-					fmt.Println(var1)
-				}
-				
-
-				if( var1 == ProductID){
-
-					var2,err2 := (strconv.Atoi(allQuants[k]))
-					if err2 == nil {
-						fmt.Println(var2)
+					var1,err1 := (strconv.Atoi(allIds[k]))
+					if err1 == nil {
+						fmt.Println(var1)
 					}
 
-					subtractThisQuant = var2
+
+					if( var1 == prodid){
+
+						var2,err2 := (strconv.Atoi(allQuants[k]))
+						if err2 == nil {
+							fmt.Println(var2)
+						}
+
+						subtractThisQuant = var2
+					}
 				}
+				ProductQuantity = ProductQuantity - subtractThisQuant
+
+			*/
+
+			//productquantity
+			var2, err2 := (strconv.Atoi(allQuants[i]))
+			if err2 == nil {
+				fmt.Println(var2)
 			}
-			ProductQuantity = ProductQuantity - subtractThisQuant
-			
 
 			ID, err1 := strconv.Atoi(allIds[i])
 			if err1 != nil {
-				panic(err1.Error())
+				fmt.Println(err)
 			}
-			
+
 			//value1 is product ID
-			if(i == 0){
+			if i == 0 {
 				Condition = 1
-			}else{
+			} else {
 				Condition = 0
 
 			}
-			if(i == (len(allIds)-1)){
+			if i == (len(allIds) - 1) {
 				Condition2 = -1
 			}
-			
-			
-			addProduct(CostID,AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCost)
-		
-		}
-		//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
-		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
 
-		err1 := globt.Execute(w, ProductList)
-
-		if err1 != nil {
-			fmt.Println("CC---------------")
-			fmt.Println(err1.Error())
-
-			panic(err1.Error())
+			var TotalCost = (ProductQuantity - var2) * ProductCost
+			//ProductQuantity = ProductQuantity - var2
+			//var2 is quantity for the index i
+			addProduct(TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, var2, ProductName, DivID, ProductCatTitle, ProductCost)
 
 		}
+		fmt.Println("ProductList3")
+		fmt.Println(ProductList)
+		/*
+			//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
+			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
+			fmt.Println("ProductList2")
+				fmt.Println(ProductList)
+
+			err1 := globt.Execute(w, ProductList)
+
+			if err1 != nil {
+				fmt.Println("CC---------------")
+				fmt.Println(err1.Error())
+
+				panic(err1.Error())
+
+			}
+		*/
+
+	} //for next loop
+
+	///////////
+
+	//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
+	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
+	fmt.Println("ProductList2")
+	fmt.Println(ProductList)
+
+	err1 := globt.Execute(w, ProductList)
+
+	if err1 != nil {
+		fmt.Println("CC---------------")
+		fmt.Println(err1.Error())
+
+		panic(err1.Error())
 
 	}
 
 	///////////
 }
-func addProduct(costid string, amountid string , condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
+func addProduct(totalcost int, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
 
 	prod := Product1{
-		CostID: costid,
-		AmountToBuyID: amountid,
-		Condition: condition,
-		Condition2: condition2,
+		TotalCost:       totalcost,
+		TotalCostID:     totalcostid,
+		CostID:          costid,
+		AmountToBuyID:   amountid,
+		Condition:       condition,
+		Condition2:      condition2,
 		ProductID:       prodid,
 		ProductQuantity: quant,
 		ProductName:     name,
@@ -572,27 +656,26 @@ func addProduct(costid string, amountid string , condition int, condition2, prod
 		ProductCost:     cost,
 	}
 	flag := "nonefound"
-	
+
 	//ProductList = append(ProductList, prod)
 
-	
 	//could be done better, if time allows
 	for i := 0; i < len(ProductList); i++ {
-		if ((ProductList[i].ProductID) == prodid) {
-			ProductList[i].ProductQuantity = ProductList[i].ProductQuantity + prod.ProductQuantity 
-			
-			//break out
-			i = 100
-			flag = "found"
-		}}
+		if (ProductList[i].ProductID) == prodid {
+			ProductList[i].ProductQuantity = ProductList[i].ProductQuantity + prod.ProductQuantity
 
-	
-		if flag != "found" {
-			ProductList = append(ProductList, prod)
+			//break out
+
+			flag = "found"
+			i = 100
 		}
 	}
 
-
+	if flag != "found" {
+		prod.ProductQuantity = ProductQuantity - prod.ProductQuantity
+		ProductList = append(ProductList, prod)
+	}
+}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -760,7 +843,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
 		"((products.ProductKeyWord1 = ?) OR " +
-		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? ))")
+		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
 	if err != nil {
 		panic(err.Error())
 	}

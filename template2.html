@@ -45,14 +45,16 @@
 <th><center>Product Name</center></th>
 <th><center>Category</center></th>
 <th><center>Available</center></th> 
-<th><center>Cost</center></th> 
+<th><center>Cost for Each</center></th> 
+<th><center>Total Cost Items</center></th> 
+
 </tr>
 {{end}}
 
 
 
 <tr>
-<td> <center><p> <input id = "{{.AmountToBuyID}}" value =""   type="" name="" placeholder="" size="2">	</p></center></td>
+<td> <center><p> <input id = "{{.AmountToBuyID}}" value =""   type="" name="" placeholder="" size="8">	</p></center></td>
 			
 
 <td><center> {{.ProductName}}</center>  </td>
@@ -61,11 +63,13 @@
 
 
 
-  <td> <center><p> <input id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="3" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
 
   
-  <td> <center><p> <input id = "{{.CostID}}" value ="{{.ProductCost}}"  type="" name="" placeholder="" size="3" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.CostID}}" value ="{{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+
+  <td> <center><p> <input id = "{{.TotalCostID}}" value = "{{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
 
 
@@ -76,11 +80,15 @@
 
 </table>
 <br><br>
-<center><button onclick="checkAllAvailableProducts('{{.ProductQuantity}}')">Final Purchase</button></center>
+<center><button onclick="checkAllAvailableProducts('{{.DivID}}')">Final Purchase</button></center>
 {{end}}
 {{end}}
 
 <script>
+
+
+
+
 
 
 function checkAllAvailableProducts(quantity){
@@ -94,6 +102,7 @@ alert("encode to dbase");
   var var1 = "A";
   //for costid
   var var2 = "C";
+  //for div - availablr
   var var3 = "D" 
   var counter = -1;
   var string = "";
@@ -139,6 +148,7 @@ alert("encode to dbase");
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
 
+alert("spit test");
 alert(queryString);
 
 
@@ -146,7 +156,7 @@ alert(queryString);
               url: 'http://localhost:8080/spitBackAmounts',
               type: 'GET',
               dataType: 'json',
-              contentType: "application/json",
+              
               
               data:queryString,
               crossDomain: true,
@@ -160,23 +170,49 @@ alert(queryString);
                 //array has double because 2 variables
                 //iterate for divid and amountinboxid
               //for(i = 0; i < (lengthOfData/2); i++)
-              {
+              
                 //console.log(lengthOfData);
-                alert("in here!!!");
+                //alert("in here!!!");
                 
-                //console.log("available");
-                //console.log((((data1[i].QuantityAvailable))));
-                //console.log("quantity");
-                //console.log(quantity);
-                //document.getElementById(putChangeHere).innerHTML= 100 - (((data1[i].QuantityAvailable)));
-                document.getElementById(AmountOfQuantityID ).value = 100 - (((data1[counter].QuantityAvailable)));
-                document.getElementById(AmountOfCostID ).value = costInBox * document.getElementById(AmountOfQuantityID ).value ;
+              var lengthOfData = data1.length;
+              //alert("start");
+              alert("length");
+              alert(var3);
+              //alert(data1.length);
+              alert(data1[0].QuantityAvailable);
+              //alert(data1[1].QuantityAvailable);
+              alert(data1[0].ID);
+              //alert(data1[0].ID);
+              alert("finish");
+              //console.log(data1[i].QuantityAvailable);
+              alert(data1);
+                
+                for(var i = 0; i<lengthOfData ; i++)
+                {
+                var buyThisManyID = "A" + i;
+                var availableID =  "D" + i;
+                var costID = "C" + i;
+                var totalCostID = "TC" + i;
+               // document.getElementById(AmountOfQuantityID).value = data1[0].QuantityAvailable;
+                //document.getElementById(costID).value =  costInBox data1[i].QuantityAvailable;
+                var what = document.getElementById(quantity).value;
+               console.log(what);
+                
+                document.getElementById(availableID).outerHTML = "<p>" + data1[0].QuantityAvailable + "</p>";
+                var costEach = document.getElementById(costID).value;
+                document.getElementById(totalCostID).outerHTML = "<p>" + (data1[0].QuantityAvailable * costEach) + "</p>";
+                document.getElementById(buyThisManyID ).outerHTML = "";
+
+                
+                }
+                //document.getElementById(AmountOfQuantityID ).value = 100 - (((data1[counter].QuantityAvailable)));
+                //document.getElementById(AmountOfCostID ).value = costInBox * document.getElementById(AmountOfQuantityID ).value ;
                
                
                 //var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
                
 
-              }
+              
 
             
               }
