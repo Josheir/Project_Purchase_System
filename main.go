@@ -21,6 +21,8 @@ type product struct {
 }
 
 type Product1 struct {
+	BoughtID        string
+	Bought          int
 	TotalCost       int
 	TotalCostID     string
 	CostID          string
@@ -490,6 +492,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var2 = "A"
 	var var3 = "C"
 	var var4 = "TC"
+	var var5 = "B"
 	//yes this is right product starts at one
 
 	//var j = 1
@@ -506,6 +509,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		AmountToBuyID := var2 + (strconv.Itoa(i))
 		CostID := var3 + (strconv.Itoa(i))
 		TotalCostID := var4 + (strconv.Itoa(i))
+		BoughtID := var5 + (strconv.Itoa(i))
 
 		var prodid, err = (strconv.Atoi(allIds[i]))
 		if err != nil {
@@ -592,11 +596,16 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if i == (len(allIds) - 1) {
 				Condition2 = -1
 			}
+			var3, err3 := strconv.Atoi(allQuants[i])
+			if err3 == nil {
+				fmt.Println(var2)
+			}
+			Bought := var3
 
-			var TotalCost = (ProductQuantity - var2) * ProductCost
+			var TotalCost = (var2) * ProductCost
 			//ProductQuantity = ProductQuantity - var2
 			//var2 is quantity for the index i
-			addProduct(TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, var2, ProductName, DivID, ProductCatTitle, ProductCost)
+			addProduct(BoughtID, Bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, var2, ProductName, DivID, ProductCatTitle, ProductCost)
 
 		}
 		fmt.Println("ProductList3")
@@ -639,9 +648,11 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(totalcost int, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
+func addProduct(boughtid string, bought int, totalcost int, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
 
 	prod := Product1{
+		BoughtID:        boughtid,
+		Bought:          bought,
 		TotalCost:       totalcost,
 		TotalCostID:     totalcostid,
 		CostID:          costid,

@@ -45,6 +45,7 @@
 <th><center>Product Name</center></th>
 <th><center>Category</center></th>
 <th><center>Available</center></th> 
+<th><center>Bought</center></th> 
 <th><center>Cost for Each</center></th> 
 <th><center>Total Cost Items</center></th> 
 
@@ -65,6 +66,7 @@
 
   <td> <center><p> <input id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
+  <td> <center><p> <input id = "{{.BoughtID}}" value ="{{.Bought}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
   
   <td> <center><p> <input id = "{{.CostID}}" value ="{{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
@@ -189,18 +191,24 @@ alert(queryString);
                 
                 for(var i = 0; i<lengthOfData ; i++)
                 {
+                var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
                 var availableID =  "D" + i;
                 var costID = "C" + i;
                 var totalCostID = "TC" + i;
-               // document.getElementById(AmountOfQuantityID).value = data1[0].QuantityAvailable;
-                //document.getElementById(costID).value =  costInBox data1[i].QuantityAvailable;
                 var what = document.getElementById(quantity).value;
                console.log(what);
                 
                 document.getElementById(availableID).outerHTML = "<p>" + data1[0].QuantityAvailable + "</p>";
                 var costEach = document.getElementById(costID).value;
-                document.getElementById(totalCostID).outerHTML = "<p>" + (data1[0].QuantityAvailable * costEach) + "</p>";
+
+                var bought = document.getElementById(boughtid).value;
+                document.getElementById(totalCostID).outerHTML = "<p>" + (bought * costEach) + "</p>";
+                //var buyThisMany = document.getElementById(buyThisManyID).value;
+                //var bought = document.getElementById(boughtID).value;
+                //bought = bought + buyThisMany;
+                //document.getElementById(boughtid).outerHTML = bought;
+
                 document.getElementById(buyThisManyID ).outerHTML = "";
 
                 
