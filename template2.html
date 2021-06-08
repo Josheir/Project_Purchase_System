@@ -69,9 +69,9 @@
   <td> <center><p> <input id = "{{.BoughtID}}" value ="{{.Bought}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
   
-  <td> <center><p> <input id = "{{.CostID}}" value ="{{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.CostID}}" value ="${{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
-  <td> <center><p> <input id = "{{.TotalCostID}}" value = "{{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.TotalCostID}}" value = "${{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
 
 
@@ -197,9 +197,30 @@ alert(queryString);
                 var costID = "C" + i;
                 var totalCostID = "TC" + i;
                 var what = document.getElementById(quantity).value;
-               console.log(what);
+              // console.log(what);
+
+
+                var str2= ""
+                str1 = data1[i].IsNotEnoughQuantity;
+
+                var num = data1[i].QuantityAvailable ;
+                str2 = num.toString();
                 
-                document.getElementById(availableID).outerHTML = "<p>" + data1[0].QuantityAvailable + "</p>";
+                //was enough, red text
+                //DatabaseQuantity < quant)
+                if (str1 == "yes")
+                {
+                  alert("str2")
+                  alert(str2);
+                  document.getElementById(availableID).outerHTML = str2.fontcolor("red");
+                }
+                //wasnt enough, so make red
+                else
+                {
+                  
+                  document.getElementById(availableID).outerHTML = str2;
+                }
+                
                 var costEach = document.getElementById(costID).value;
 
                 var bought = document.getElementById(boughtid).value;

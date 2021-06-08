@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-
+	
 	//"log"
 	"strconv"
-
+	
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -22,8 +22,8 @@ type product struct {
 
 type Product1 struct {
 	BoughtID        string
-	Bought          int
-	TotalCost       int
+	Bought          float64
+	TotalCost       float64
 	TotalCostID     string
 	CostID          string
 	AmountToBuyID   string
@@ -34,13 +34,14 @@ type Product1 struct {
 	ProductName     string
 	DivID           string
 	ProductCatTitle string
-	ProductCost     int
+	ProductCost     float64
 }
 
 //spit back to last html page
 type Product2 struct {
 	ID                int
 	QuantityAvailable int
+	IsNotEnoughQuantity string
 }
 
 var ProductList = []Product1{}
@@ -129,16 +130,17 @@ type Product3 struct {
 }
 
 // i1 is product id, i2 is quant to add
-func updateListForLastpage(index int, quantity int, amtInDatabase int) {
+//func updateListForLastpage(index int, quantity int, amtInDatabase int) {
+//
+//	ProductList2[index].QuantityAvailable = amtInDatabase + quantity
+//}
 
-	ProductList2[index].QuantityAvailable = amtInDatabase + quantity
-}
-
-func makeListForLastpageA(id int, quant int) {
+func makeListForLastpageA(enough string, id int, quant int) {
 
 	//to spit back to html
 	prod := Product2{
 
+		IsNotEnoughQuantity: enough,
 		QuantityAvailable: quant,
 		ID:                id,
 	}
@@ -168,6 +170,7 @@ func makeListForLastpage(id int, quant int) {
 
 var orderid1 = 100
 
+/*
 //for testing
 func trycommit(w http.ResponseWriter, r *http.Request) {
 
@@ -209,7 +212,7 @@ func trycommit(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-
+*/
 //called from template2, final purchase selected, so send this back to display
 func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
@@ -245,14 +248,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	//var j = 0
-	//var i = 0
-
-	//Trying to save in database, if there is a rollback undo save and update template2.html
-	//db = dbConn()
+	
 	var isEnoughInDatabase = "yes"
-	//var allIds2 = []int{}
-	//var allQuants2 =[]int{}
+	
 
 	i := 0
 	j := 0
@@ -270,6 +268,12 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		//gets quantity for each product id
 		quant, _ = (strconv.Atoi(allQuants[j]))
+
+		if counter == 0 {
+			quant = 2000
+			counter++
+		}
+
 		row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ?", allIds[j])
 		err = row.Scan(&DatabaseQuantity)
 		if err != nil {
@@ -286,18 +290,29 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//product amt, whats in database
 		//allQuants2[i] = DatabaseQuantity
 
+		enough := ""
+		//not enough to buy this product
+		if(DatabaseQuantity <= quant){
+
+			enough = "yes"
+		}else{
+
+			enough = "no"
+		}
+
+
 		//makes productline2A for new values to pass to template2.html
 		//appends
-		makeListForLastpageA((val1), DatabaseQuantity)
+		makeListForLastpageA(enough,(val1), DatabaseQuantity)
 
 		//amount of product changed, there is no longer enough product for purchase
 		//just send all values without delete
 		//if there is no fail than checkout completes with
 		//quant is amount purchasing
-		if counter == 0 {
-			quant = 2000
-			counter++
-		}
+		//if counter == 0 {
+		//	quant = 2000
+		//	counter++
+		//}
 		//any one fail means just write the new amounts and do  not change the database
 		if (quant) > DatabaseQuantity || isEnoughInDatabase == "no" {
 
@@ -357,7 +372,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?", allIds[i])
 
-			var ProductCost, ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
+			var ProductCost float64 
+			var ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
 			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
 			//https://devtidbits.com/2020/08/03/go-sql-error-converting-null-to-string-is-unsupported/
 			err4 := rows.Scan(&ProductID, &ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle,
@@ -515,7 +531,12 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		//pid := allIds[i]
+		
+
+
+		
+
+
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
 			"products.ProductID = ? AND products.ProductStatus = 'ready'")
@@ -534,7 +555,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		//var templ1 product
 
-		var ProductQuantity, ProductCost int
+		var ProductQuantity int 
+		var ProductCost float64
 		var ProductName, ProductCatTitle string
 
 		fmt.Println("ProductList")
@@ -550,30 +572,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println(err)
 			}
-			/*
-				var subtractThisQuant = 0
-				var k = 0
-				for  k = 0; k < len(allIds)  ; k++{
-
-					var1,err1 := (strconv.Atoi(allIds[k]))
-					if err1 == nil {
-						fmt.Println(var1)
-					}
-
-
-					if( var1 == prodid){
-
-						var2,err2 := (strconv.Atoi(allQuants[k]))
-						if err2 == nil {
-							fmt.Println(var2)
-						}
-
-						subtractThisQuant = var2
-					}
-				}
-				ProductQuantity = ProductQuantity - subtractThisQuant
-
-			*/
+			
 
 			//productquantity
 			var2, err2 := (strconv.Atoi(allQuants[i]))
@@ -596,37 +595,32 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if i == (len(allIds) - 1) {
 				Condition2 = -1
 			}
-			var3, err3 := strconv.Atoi(allQuants[i])
+
+			//https://stackoverflow.com/questions/37160126/golang-store-retrieve-decimal-from-mysql
+
+			//https://stackoverflow.com/questions/41159492/format-float-in-golang-html-template
+
+			aQuant, err3 := strconv.Atoi(allQuants[i])
 			if err3 == nil {
 				fmt.Println(var2)
 			}
-			Bought := var3
+			
+			
 
-			var TotalCost = (var2) * ProductCost
-			//ProductQuantity = ProductQuantity - var2
-			//var2 is quantity for the index i
+			var var4 float64 = float64(aQuant)
+			
+			Bought := var4
+
+			//ProductCost1 := 10.0111
+			//ProductCost = (math.Floor(ProductCost*100)/100)
+			TotalCost := (var4) * ProductCost
+			//strconv.FormatFloat( ProductCost, 'f', 2, 32)
 			addProduct(BoughtID, Bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, var2, ProductName, DivID, ProductCatTitle, ProductCost)
 
 		}
 		fmt.Println("ProductList3")
 		fmt.Println(ProductList)
-		/*
-			//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
-			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
-			fmt.Println("ProductList2")
-				fmt.Println(ProductList)
-
-			err1 := globt.Execute(w, ProductList)
-
-			if err1 != nil {
-				fmt.Println("CC---------------")
-				fmt.Println(err1.Error())
-
-				panic(err1.Error())
-
-			}
-		*/
-
+		
 	} //for next loop
 
 	///////////
@@ -648,7 +642,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(boughtid string, bought int, totalcost int, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost int) {
+func addProduct(boughtid string, bought float64, totalcost float64, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost float64) {
 
 	prod := Product1{
 		BoughtID:        boughtid,
@@ -732,7 +726,7 @@ type forTemplate struct {
 	DescID             string
 	ProductDescription string
 	CostID             string
-	ProductCost        int
+	ProductCost        float64
 	QuantityID         string
 	ProductQuantity    int
 	Key1ID             string
@@ -871,7 +865,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 
-		var ProductCost, ProductQuantity int
+		var ProductCost float64 
+		var ProductQuantity int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
 
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
@@ -895,6 +890,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		AmountToPurchaseID = "amountID" + str
 		AmountPurchasedID = "amountPID" + str
 
+
+		
 		templ1 = forTemplate{ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
