@@ -6,11 +6,15 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	
+
 	//"log"
+	//"math"
 	"strconv"
-	
+
 	_ "github.com/go-sql-driver/mysql"
+	//"math/big"
+	//"github.com/shopspring/decimal"
+	//"github.com/leekchan/accounting"
 )
 
 type product struct {
@@ -23,7 +27,7 @@ type product struct {
 type Product1 struct {
 	BoughtID        string
 	Bought          float64
-	TotalCost       float64
+	TotalCost       string
 	TotalCostID     string
 	CostID          string
 	AmountToBuyID   string
@@ -34,13 +38,13 @@ type Product1 struct {
 	ProductName     string
 	DivID           string
 	ProductCatTitle string
-	ProductCost     float64
+	ProductCost     string
 }
 
 //spit back to last html page
 type Product2 struct {
-	ID                int
-	QuantityAvailable int
+	ID                  int
+	QuantityAvailable   int
 	IsNotEnoughQuantity string
 }
 
@@ -98,6 +102,37 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
+// USD represents US dollar amount in terms of cents
+type USD int64
+
+// Float64 converts a USD to float64
+func (m USD) Float64() float64 {
+	x := float64(m)
+	x = x / 100
+	return x
+}
+
+// Multiply safely multiplies a USD value by a float64, rounding
+// to the nearest cent.
+func (m USD) Multiply(f float64) USD {
+	x := (float64(m) * f) + 0.5
+	return USD(x)
+}
+
+// String returns a formatted USD value
+func (m USD) String() string {
+	x := float64(m)
+	x = x / 100
+	return fmt.Sprintf("$%.2f", x)
+}
+
+////////////
+// ToUSD converts a float64 to USD
+// e.g. 1.23 to $1.23, 1.345 to $1.35
+func ToUSD(f float64) USD {
+	return USD((f * 100) + 0.5)
+}
+
 //////////
 
 //executes back to :  finalpage.html
@@ -107,6 +142,7 @@ func dbConn() (db *sql.DB) {
 //var List1  []product
 //var prod []product
 
+//https://www.bing.com/search?q=receiver%20int%20golang&qs=n&form=QBRE&sp=-1&pq=receiver%20int%20golang&sc=0-19&sk=&cvid=14C3226BD73C46F09A57AA46291441EA
 func addElement(var1 int, var2 string, var3 string, var4 int) {
 
 	var element product
@@ -141,8 +177,8 @@ func makeListForLastpageA(enough string, id int, quant int) {
 	prod := Product2{
 
 		IsNotEnoughQuantity: enough,
-		QuantityAvailable: quant,
-		ID:                id,
+		QuantityAvailable:   quant,
+		ID:                  id,
 	}
 	//list to spit back to html for rewriting all the quant
 	ProductList2A = append(ProductList2A, prod)
@@ -248,9 +284,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	
 	var isEnoughInDatabase = "yes"
-	
 
 	i := 0
 	j := 0
@@ -269,8 +303,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//gets quantity for each product id
 		quant, _ = (strconv.Atoi(allQuants[j]))
 
+		/////////IMPORTANT!!!!!!/////
 		if counter == 0 {
-			quant = 2000
+			//quant = 2000
 			counter++
 		}
 
@@ -292,18 +327,17 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		enough := ""
 		//not enough to buy this product
-		if(DatabaseQuantity <= quant){
+		if DatabaseQuantity <= quant {
 
 			enough = "yes"
-		}else{
+		} else {
 
 			enough = "no"
 		}
 
-
 		//makes productline2A for new values to pass to template2.html
 		//appends
-		makeListForLastpageA(enough,(val1), DatabaseQuantity)
+		makeListForLastpageA(enough, (val1), DatabaseQuantity)
 
 		//amount of product changed, there is no longer enough product for purchase
 		//just send all values without delete
@@ -372,7 +406,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?", allIds[i])
 
-			var ProductCost float64 
+			var ProductCost float64
 			var ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
 			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
 			//https://devtidbits.com/2020/08/03/go-sql-error-converting-null-to-string-is-unsupported/
@@ -467,12 +501,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//https://github.com/strongo/decimal
+//https://programming.guide/go/convert-int64-to-string.html
+
+//stackoverflow.com/questions/54362751/how-can-i-truncate-float64-number-to-a-particular-precision
+//stackoverflow.com/questions/4187146/truncate-number-to-two-decimal-places-without-rounding#:~:text=General%20solution%20to%20truncate%20%28no%20rounding%29%20a%20number,with%20exactly%20n%20decimal%20digits%2C%20for%20any%20n%E2%89%A50.
+
 func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	//////////
-
-	/////////
 
 	fmt.Println("GET params were:", r.URL.Query())
 
@@ -531,11 +567,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		
-
-
-		
-
 
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
@@ -555,13 +586,15 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		//var templ1 product
 
-		var ProductQuantity int 
-		var ProductCost float64
-		var ProductName, ProductCatTitle string
+		var ProductQuantity int
+
+		var ProductName, ProductCatTitle, ProductCost string
 
 		fmt.Println("ProductList")
 		fmt.Println(ProductList)
 
+		ID := 0
+		bought := 0
 		for rows.Next() {
 
 			fmt.Println("ProductList1")
@@ -572,18 +605,29 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println(err)
 			}
-			
 
-			//productquantity
-			var2, err2 := (strconv.Atoi(allQuants[i]))
-			if err2 == nil {
-				fmt.Println(var2)
-			}
+			var i = 0
+			for i = 0; i < len(allIds); i++ {
 
-			ID, err1 := strconv.Atoi(allIds[i])
-			if err1 != nil {
-				fmt.Println(err)
-			}
+				bought, err = (strconv.Atoi(allQuants[i]))
+				if err != nil {
+					fmt.Println(var2)
+				}
+
+				ID, err = strconv.Atoi(allIds[i])
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//there is boutght total that goes with this id
+				if prodid == ID {
+
+					//subtract bought from quantity
+					ProductQuantity = ProductQuantity + bought
+					break
+				}
+
+			} //for
 
 			//value1 is product ID
 			if i == 0 {
@@ -596,31 +640,34 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-			//https://stackoverflow.com/questions/37160126/golang-store-retrieve-decimal-from-mysql
-
-			//https://stackoverflow.com/questions/41159492/format-float-in-golang-html-template
-
 			aQuant, err3 := strconv.Atoi(allQuants[i])
 			if err3 == nil {
 				fmt.Println(var2)
 			}
-			
-			
 
-			var var4 float64 = float64(aQuant)
-			
-			Bought := var4
+			//https://yourbasic.org/golang/round-float-2-decimal-places/
+			//https://stackoverflow.com/questions/20596428/how-to-represent-currency-in-go
+			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
+			//quantity
+			var QuantityFloat float64 = float64(aQuant)
+			ProductCostString := ProductCost
+			//from db, is was a string is now float that is to large
+			ProductCostFloat, err := strconv.ParseFloat(ProductCostString, 64)
+			if err != nil {
+				fmt.Println(err)
+			}
+			//SmallerCostString := fmt.Sprintf("%.2f", ProductCostFloat)
+			TotalCostFloat := QuantityFloat * ProductCostFloat
+			SmallerTotalCostString := fmt.Sprintf("%.2f", TotalCostFloat)
 
-			//ProductCost1 := 10.0111
-			//ProductCost = (math.Floor(ProductCost*100)/100)
-			TotalCost := (var4) * ProductCost
-			//strconv.FormatFloat( ProductCost, 'f', 2, 32)
-			addProduct(BoughtID, Bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, var2, ProductName, DivID, ProductCatTitle, ProductCost)
+			Bought := QuantityFloat
+
+			addProduct(BoughtID, Bought, SmallerTotalCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
 		fmt.Println("ProductList3")
 		fmt.Println(ProductList)
-		
+
 	} //for next loop
 
 	///////////
@@ -642,7 +689,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(boughtid string, bought float64, totalcost float64, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost float64) {
+func addProduct(boughtid string, bought float64, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
 		BoughtID:        boughtid,
@@ -717,6 +764,7 @@ func processSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 type forTemplate struct {
+	AmountPurchased int
 	ProductID       int
 	ProductCatTitle string
 	//MainDiv         string
@@ -834,6 +882,25 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	query := r.URL.Query()
+
+	key, present := query["var"]
+
+	if !present || len(key) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	keyTotalAmountBought, present2 := query["quant"]
+	if !present2 || len(keyTotalAmountBought) == 0 {
+		fmt.Println("filters not present")
+	}
+	ProdID, present3 := query["id"]
+	if !present3 || len(ProdID) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	globKeyword = key[0]
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	string1 = ""
@@ -841,8 +908,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("in display 1")
 
 	db := dbConn()
-
-	globKeyword = "apple1"
 
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
@@ -865,7 +930,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 
-		var ProductCost float64 
+		var ProductCost float64
 		var ProductQuantity int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
 
@@ -875,8 +940,33 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 
+		i := 0
+		prodBoughtInt := 0
+		isAmountPurchased := "no"
+
+		for i = 0; i < len(ProdID); i++ {
+			prodIDStr := ProdID[i]
+
+			prodIDInt, err := strconv.Atoi(prodIDStr)
+			if err != nil {
+			}
+
+			prodBoughtStr := keyTotalAmountBought[i]
+			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+			if err != nil {
+			}
+
+			if prodIDInt == ProductID {
+				ProductQuantity = ProductQuantity - prodBoughtInt
+				isAmountPurchased = "yes"
+				break;
+			}
+
+		}
+
 		counter = counter + 1
 		str := strconv.Itoa(counter)
+		AmountPurchased := 0
 
 		//var inputID = "inputID" + str
 		var mainDivID = "mainDivID" + str
@@ -890,9 +980,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		AmountToPurchaseID = "amountID" + str
 		AmountPurchasedID = "amountPID" + str
 
+		if isAmountPurchased == "yes" {
+			AmountPurchased = prodBoughtInt
+		} else {
+			AmountPurchased = 0
+		}
 
-		
-		templ1 = forTemplate{ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+		templ1 = forTemplate{AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
 		fmt.Println(templ1)

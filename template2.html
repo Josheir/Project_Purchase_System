@@ -126,27 +126,31 @@ alert("encode to dbase");
         var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
         var quantityInBox = parseInt(document.getElementById(AmountOfQuantityID).value);
         var costInBox = (document.getElementById(AmountOfCostID).value); 
-        //alert(AmountOfCostID);
-        //alert(costInBox);
-        //console.log("starts here");
-        //console.log(sessionStorage.getItem(key));
-        //console.log(amtInBuyBox);
+       
+
         
         //amount bought before purchase
-        var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
+        //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
+        //string =  string + "id=" + key + "&quant=" + item + "&";
+        var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
         string =  string + "id=" + key + "&quant=" + item + "&";
+
         
-        
-        
-        //console.log("string");
-        //console.log(string);
-        //console.log("item");
-        //console.log(item);
-        //console.log("key");
-        //console.log(sessionStorage.getItem(key));
-        //console.log("in box");
-        //console.log(amtInBuyBox);
+
 }
+
+function toFixedWithoutRounding(num, fractionDigits) {
+  if ((num > 0 && num < 0.000001) || (num < 0 && num > -0.000001)) {
+    // HACK: below this js starts to turn numbers into exponential form like 1e-7.
+    // This gives wrong results so we are just changing the original number to 0 here
+    // as we don't need such small numbers anyway.
+    num = 0;
+  }
+  const re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fractionDigits || -1) + '})?');
+  return Number(num.toString().match(re)[0]).toFixed(fractionDigits);
+}
+
+
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
 
@@ -221,29 +225,28 @@ alert(queryString);
                   document.getElementById(availableID).outerHTML = str2;
                 }
                 
+
+                //doesnt change
                 var costEach = document.getElementById(costID).value;
+                
+                document.getElementById(costID).outerHTML = costEach
 
                 var bought = document.getElementById(boughtid).value;
-                document.getElementById(totalCostID).outerHTML = "<p>" + (bought * costEach) + "</p>";
-                //var buyThisMany = document.getElementById(buyThisManyID).value;
-                //var bought = document.getElementById(boughtID).value;
-                //bought = bought + buyThisMany;
-                //document.getElementById(boughtid).outerHTML = bought;
 
+                
+                var total = (bought * costEach);
+               //hopefully rounding digits (more than one) is same with golang 
+               //rounded to two digits
+               //https://learnersbucket.com/examples/javascript/learn-how-to-round-to-2-decimal-places-in-javascript/
+                var roundedTotal = Math.round(total * 100) / 100
+
+                document.getElementById(totalCostID).outerHTML = (roundedTotal);
+                
                 document.getElementById(buyThisManyID ).outerHTML = "";
 
                 
                 }
-                //document.getElementById(AmountOfQuantityID ).value = 100 - (((data1[counter].QuantityAvailable)));
-                //document.getElementById(AmountOfCostID ).value = costInBox * document.getElementById(AmountOfQuantityID ).value ;
-               
-               
-                //var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
-               
-
-              
-
-            
+                
               }
               });
 

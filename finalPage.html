@@ -65,7 +65,10 @@ var account = sessionStorage.getItem('sessionID');
    console.log(account)
    alert(account.ID);
   */ 
-   
+  
+  console.log("finalpage");
+  alert("finalpageA");
+  
  var string = ""
 //////////////////////
 //alert("in final page");
@@ -87,6 +90,8 @@ if(var1 == "hasntBeenHere")
 
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
+
+alert("finalpageB");
 //alert(queryString);
 
 //$.each(arr, function () {
@@ -112,6 +117,7 @@ var url = "http://localhost:8081/template2";
                     data:queryString,
                     async:false,
                     success: function (data1) {
+                      alert("in finalpage");
                        alert(data1);
                       $('#div1').html(data1);
                     //alert(data);

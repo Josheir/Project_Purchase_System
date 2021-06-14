@@ -66,7 +66,7 @@
 			<div class="col">
 			<h4><center><p id =""  >Title</p></center></h4>
 
-			<center><p><input id = "{{.TitleID}}" value = "{{.ProductName}}" type="text" name="title" placeholder="" readonly></p></center>
+			<center><p><input id = "{{.TitleID}}" value = "{{.ProductName}}{{.ProductDescription}}" type="text" name="title" placeholder="" readonly></p></center>
 			</div>
 
 			<div class="col">
@@ -113,7 +113,7 @@
 			<div class="col">
 			
 			<h4><center><p id = "" >Amount purchased</p></center></h4>
-			<center><p><input id = "{{.AmountPurchasedID}}" value = 0 type="number" name="title" placeholder="" readonly ></p></center>
+			<center><p><input id = "{{.AmountPurchasedID}}" value = "{{.AmountPurchased}}" type="text" name="title" placeholder="" readonly ></p></center>
 
 			<h4><center><p id = "" >Amount to purchase</p></center></h4>
 			<center><p><input id = "{{.AmountToPurchaseID}}" value = 0 type="number" name="title" placeholder="" ></p></center>
@@ -159,9 +159,12 @@
 				amountInPurchasedField = document.getElementById(quantityID).value;
 				//already purchased
 				amountPurchasedSoFar = document.getElementById(amountPurchasedID).value;
+				alert("in the amount purchased");
+				alert(amountPurchasedSoFar);
+				
 				//amount held for subtraction when submit button pressed
 				amountToBePurchased = document.getElementById(amountToPurchaseID).value;
-				alert(amountToBePurchased);
+				//alert(amountToBePurchased);
 				
 				//alert(amountToBePurchased);
 				//document.getElementById(amountPurchasedID).value="";
@@ -175,11 +178,28 @@
 					//alert("1");
 					value1 = document.getElementById(amountToPurchaseID).value; 
 					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
+					alert("values");
+					alert(value1);
+					alert(value2);
+					alert(amountPurchasedSoFar)
 					
 					//puts total in here
 					document.getElementById(amountPurchasedID).value = value2 ;
-					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
 					
+					if(value1 > 0){
+					document.getElementById(quantityID).value = amountInPurchasedField - amountToBePurchased ;
+					}else if (value == 0)
+					{
+
+					}
+
+					//negative value for amount to purchase
+					else if ((value2 + amountToBePurchased) > -1){
+						document.getElementById(quantityID).value = amountInPurchasedField + amountToBePurchased ;
+
+					}
+
+
 					//alert(amountToBePurchased);
 					
 					gTotalOfPurchases =  parseInt(gTotalOfPurchases) +  parseInt(amountToBePurchased); 
@@ -192,21 +212,21 @@
 						//alert(amountToBePurchased);
 						
 						//so far, so good is still in database!
-						setData(productID, amountToBePurchased, 0)
+						setData(originalQuantity, productID, amountToBePurchased, 0)
                         return (1);
                     }
 
 					///////////
 
 
-
+				
 
 					///////////
 
 
 
 				}
-				//adding to quantity, up to original quantity
+				//not enough product
 				else if( (parseInt(amountToBePurchased) < 0  ) && ((-1*(parseInt(amountToBePurchased)) + parseInt(amountInPurchasedField ) <= originalQuantity))){
 
 					alert("2");
@@ -223,9 +243,11 @@
 					document.getElementById(quantityID).value = value2 ;
 					//amount purchaesd  subtracks amounttopurchase 
 					document.getElementById(amountPurchasedID).value = parseInt(amountPurchasedSoFar) + parseInt(amountToBePurchased);
+					
+					//?
 					//DONT FORGRT ABOUT SETTING VALUE TO 0, BELOW
-					var amountToRefund = amountToBePurchased;
-					setData(productID, amountToRefund, 1)
+					//var amountToRefund = amountToBePurchased;
+					//setData(productID, amountToRefund, 1)
 				}
 				
 				
@@ -243,39 +265,56 @@
 			//called by change fields
 			//if negative, the quantitytryingtoset is a possible value
 			//reduce bool is 1 for first section, quantity is being reduced 
-			function  setData(productID, quantityTryingToSet, reduceBool)
+			function  setData(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
 			{
 				if(firstTime == "yes")
 				{
-					sessionStorage.clear();
+					//sessionStorage.clear();
 					firstTime = "no";
 				}
 				
 				var string = "";
 				
 				var keyFlag = ""
-				var quantityOfProduct, totalquantity = 0;
+				var bought, totalquantity = 0;
+
+				//alert("before");
+
+
+
+
+
 				let keys = Object.keys(sessionStorage);
+				//console.log(keys);
 				for(let key of keys) {
+					//alert("key");
+					//alert(key)
+					//alert("prodcutid")
+					//alert(productID)
 				
 				//total the quantity and overwrite - is already a record
-				if(key == productID){
+				if(key == (productID.toString())){
 				
-					alert("in this place");
-					alert(productID);
+					//alert("in this place");
+					//alert(productID);
 					//alert("setdata");
 					keyFlag = "found";
 					//sofar
 					//alert(sessionStorage.getItem(key));
-					quantityOfProduct = sessionStorage.getItem(key);
+					
+					//bought
+					bought = sessionStorage.getItem(key);
+					alert("bought");
+					alert(bought);
+					//document.getElementById(amountPurchasedID).value = bought;
 					//alert(quantityOfProduct);
 					//quantity of records is decreasing
 					var totalquantity = 0;
 					if (reduceBool)
 					{
-						alert("1a");
-						var totalquantity = quantityOfProduct - quantityTryingToSet;
-						alert(quantityOfProduct);
+						//alert("1a");
+						var totalquantity = bought - quantityTryingToSet;
+						//alert(quantityOfProduct);
 					}
 					//quantity of records is acummulating
 					else 
@@ -285,20 +324,26 @@
 						//alert(quantityTryingToSet);
 						//alert(totalquantity);
 						//alert(quantityTryingToSet);
-						totalquantity = parseInt(quantityOfProduct) + parseInt(quantityTryingToSet);
-						alert("quantityOfProduct");
-						alert(quantityOfProduct);
-						alert("quantityTryingToSet");
-						alert(quantityTryingToSet);
-						alert("totalquantity");
-						alert(totalquantity);
+						totalquantity = parseInt(bought) + parseInt(quantityTryingToSet);
+						//console.log(document.getElementById(amountPurchasedID).value);
+						//document.getElementById(amountPurchasedID).value = 579;//'//totalquantity;
+						//alert("quantityOfProduct");
+						//alert(quantityOfProduct);
+						//alert("quantityTryingToSet");
+						//alert(quantityTryingToSet);
+						//alert("totalquantity");
+						//alert(totalquantity);
 						
 					}
 					
 					
 					//overwrites
 					sessionStorage.removeItem(productID);
+					//alert("set");
+					//alert(productID);
+					//alert(totalquantity);
 					sessionStorage.setItem(productID, totalquantity);
+					//alert("overwrites")
 					break;
 				
 					}
@@ -306,8 +351,8 @@
 				//there is no productID record yet, make one here 
 				if (keyFlag !=  "found")
 				{
-					//alert("insession");
-					sessionStorage.setItem(productID, quantityTryingToSet);
+					//alert("new item");
+					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
 				}
 				
                 

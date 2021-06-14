@@ -17,6 +17,9 @@
 
   <script>
     window.sessionStorage
+
+    //https://stackoverflow.com/questions/4187146/truncate-number-to-two-decimal-places-without-rounding
+    
   </script>
 
 <!--#include virtual ="finalPage.html" /> -->
@@ -53,8 +56,12 @@ var3 = var1 + var2;
 //let var1 = "apple1";
 
 </script>
-
+    
       <input   id="button7"  type="button" value="checkout"/>
+      <input   name = "search" type="text" id="search" name="search" placeholder= "apple1" value="apple1"/>
+      <input   id="button6"  type="button" value="display"/>
+
+
       <div id = "firstdiv" ></div>
       <div id ="buttons">
       <br><br><br>
@@ -63,8 +70,7 @@ var3 = var1 + var2;
 
       <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="http://localhost:8080/processSearch">
      
-      <center><input   name = "search" type="text" id="search" name="search" placeholder= "apple1" value="apple1"/></center>
-     
+      
       
       
       <input   id="button3" type="button" value="Test JSON - getmerssage"/>
@@ -73,7 +79,7 @@ var3 = var1 + var2;
     
       <input   id="button1" type="submit" value="Search Database"/>
       
-      <input   id="button6"  type="button" value="display"/>
+     
       
       
      
@@ -228,16 +234,55 @@ var dataB = JSON.stringify(dataA);
 
  
 
+
+   // type: 'GET',
+   //           dataType: 'json',
+   //           
+   //           
+   //           data:queryString,
+   //           crossDomain: true,
+
+
+//goes backwards and last entered writes over
+//queryString = string.substring(0, string.length-1);
+
+  
   //template button press - display
     $(document).ready(function () {
       $('#button6').click(function () {
+        var string = ""
+        let keys = Object.keys(sessionStorage);
+
+        var wasKeys = "no";
+      for(let key of keys) {
+  
+       var item = sessionStorage.getItem(key);
+       string =  string + "id=" + key + "&quant=" + item + "&";
+  
+       wasKeys = "yes";
+        
+      }
+      var val1 = document.getElementById("search").value;
+      if(wasKeys == "yes"){
+
+        var querystring = string + "var=" + val1;
+      }
+      else
+      {
+        var querystring = "var=" + val1;
+      }
+
+        
+        
+        
+        alert(val1);
           $.ajax({
               url: "http://localhost:8080/display",
-              type: 'POST',
+              type: 'GET',
               dataType: 'html',
               contentType: "application/x-www-form-urlencoded",
               crossDomain: true,
-              data: {post_data: 'hello world'},
+              data: querystring,
               success: function (result) {
                 
                 
