@@ -184,29 +184,29 @@
 						document.getElementById(amountToPurchaseID).value = 0;
 						return;
 					}
-					alert("values");
-					alert(value1);
-					alert(value2);
-					alert(amountPurchasedSoFar)
+					//alert("values");
+					//alert(value1);
+					//alert(value2);
+					//alert(amountPurchasedSoFar)
 					
 					//puts total in here
 					document.getElementById(amountPurchasedID).value = value2 ;
 					
 					if(value1 > 0){
 
-						alert("a");
+						//alert("a");
 					document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased) ;
 					}else if (value1 == 0)
 					{
-						alert("b");
+						//alert("b");
 					}
 
 					//negative value for amount to purchase
 					//value
 					else if ( (parseInt(amountPurchasedSoFar) + parseInt(value1)) > -1){
-						alert("in neg");
-						alert(amountInPurchasedField);
-						alert( amountToBePurchased);
+						//alert("in neg");
+						//alert(amountInPurchasedField);
+						//alert( amountToBePurchased);
 						document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased) ;
 						//
 						document.getElementById(amountToPurchaseID).value = 0;

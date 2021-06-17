@@ -25,20 +25,21 @@ type product struct {
 }
 
 type Product1 struct {
-	BoughtID        string
-	Bought          float64
-	TotalCost       string
-	TotalCostID     string
-	CostID          string
-	AmountToBuyID   string
-	Condition       int
-	Condition2      int
-	ProductID       int
-	ProductQuantity int
-	ProductName     string
-	DivID           string
-	ProductCatTitle string
-	ProductCost     string
+	GrandTotalString string
+	BoughtID         string
+	Bought           int
+	TotalCost        string
+	TotalCostID      string
+	CostID           string
+	AmountToBuyID    string
+	Condition        int
+	Condition2       int
+	ProductID        int
+	ProductQuantity  int
+	ProductName      string
+	DivID            string
+	ProductCatTitle  string
+	ProductCost      string
 }
 
 //spit back to last html page
@@ -555,6 +556,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var Condition2 = 0
 
 	for i = 0; i < len(allIds); i++ {
+
+		fmt.Println("length")
+		fmt.Println(len(allIds))
+
 		//Condition++
 		Condition2++
 		DivID := var1 + (strconv.Itoa(i))
@@ -568,6 +573,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
+		//Total := ""
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
 			"products.ProductID = ? AND products.ProductStatus = 'ready'")
@@ -588,13 +594,14 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		var ProductQuantity int
 
-		var ProductName, ProductCatTitle, ProductCost string
+		var ProductName, ProductCatTitle, ProductCost, TotalCost string
 
 		fmt.Println("ProductList")
 		fmt.Println(ProductList)
 
 		ID := 0
 		bought := 0
+		numTotal := 0.0
 		for rows.Next() {
 
 			fmt.Println("ProductList1")
@@ -623,7 +630,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				if prodid == ID {
 
 					//subtract bought from quantity
-					ProductQuantity = ProductQuantity + bought
+					ProductQuantity = ProductQuantity - bought
 					break
 				}
 
@@ -658,14 +665,20 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			}
 			//SmallerCostString := fmt.Sprintf("%.2f", ProductCostFloat)
 			TotalCostFloat := QuantityFloat * ProductCostFloat
-			SmallerTotalCostString := fmt.Sprintf("%.2f", TotalCostFloat)
+			TotalCost = fmt.Sprintf("%.2f", TotalCostFloat)
 
-			Bought := QuantityFloat
+			//Bought := QuantityFloat
+			numTotal := numTotal + TotalCostFloat
+			if i == (len(allIds) - 1) {
 
-			addProduct(BoughtID, Bought, SmallerTotalCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
+				numTotal = numTotal * .95
+			}
+			GrandTotalString := fmt.Sprintf("$%.2f", numTotal)
+
+			addProduct(GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
-		fmt.Println("ProductList3")
+		fmt.Println("ProductList")
 		fmt.Println(ProductList)
 
 	} //for next loop
@@ -689,23 +702,24 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(boughtid string, bought float64, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost string) {
+func addProduct(total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
-		BoughtID:        boughtid,
-		Bought:          bought,
-		TotalCost:       totalcost,
-		TotalCostID:     totalcostid,
-		CostID:          costid,
-		AmountToBuyID:   amountid,
-		Condition:       condition,
-		Condition2:      condition2,
-		ProductID:       prodid,
-		ProductQuantity: quant,
-		ProductName:     name,
-		DivID:           div,
-		ProductCatTitle: cat,
-		ProductCost:     cost,
+		GrandTotalString: total,
+		BoughtID:         boughtid,
+		Bought:           bought,
+		TotalCost:        totalcost,
+		TotalCostID:      totalcostid,
+		CostID:           costid,
+		AmountToBuyID:    amountid,
+		Condition:        condition,
+		Condition2:       condition2,
+		ProductID:        prodid,
+		ProductQuantity:  quant,
+		ProductName:      name,
+		DivID:            div,
+		ProductCatTitle:  cat,
+		ProductCost:      cost,
 	}
 	flag := "nonefound"
 
@@ -714,8 +728,11 @@ func addProduct(boughtid string, bought float64, totalcost string, totalcostid s
 	//could be done better, if time allows
 	for i := 0; i < len(ProductList); i++ {
 		if (ProductList[i].ProductID) == prodid {
-			ProductList[i].ProductQuantity = ProductList[i].ProductQuantity + prod.ProductQuantity
-
+			//ProductQuantityFloat = float64(ProductQuantity)
+			//prod.Bought = prod.Bought + bought
+			ProductList[i].ProductQuantity = ProductQuantity
+			ProductList[i].Bought = bought
+			ProductList[i].TotalCost = totalcost
 			//break out
 
 			flag = "found"
@@ -724,7 +741,7 @@ func addProduct(boughtid string, bought float64, totalcost string, totalcostid s
 	}
 
 	if flag != "found" {
-		prod.ProductQuantity = ProductQuantity - prod.ProductQuantity
+		//prod.ProductQuantity = prod.ProductQuantity - prod.Bought
 		ProductList = append(ProductList, prod)
 	}
 }
@@ -959,7 +976,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			if prodIDInt == ProductID {
 				ProductQuantity = ProductQuantity - prodBoughtInt
 				isAmountPurchased = "yes"
-				break;
+				break
 			}
 
 		}

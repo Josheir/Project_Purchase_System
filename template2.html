@@ -71,14 +71,31 @@
   
   <td> <center><p> <input id = "{{.CostID}}" value ="${{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
-  <td> <center><p> <input id = "{{.TotalCostID}}" value = "${{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.TotalCostID}}" value = "{{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
 
 
 </tr>
 
 {{if(eq .Condition2 -1)}}
-
+<tr>
+<td><center> </center>  </td>
+<td><center> </center>  </td>  
+<td><center> </center>  </td>
+<td><center> </center>  </td>  
+<td><center> </center>  </td>
+<td><center> </center>  </td>  
+<td> <center><p> <input id = "" value = "Tax:  .05% "   type="" name="" placeholder="" size="12" readonly >	</p></center></td>
+</tr>
+<tr>
+<td><center> </center>  </td>
+<td><center> </center>  </td>  
+<td><center> </center>  </td>
+<td><center> </center>  </td>  
+<td><center> </center>  </td>
+<td><center> </center>  </td>  
+<td> <center><p> <input id = "" value = "Grand Total: {{.GrandTotalString}}"   type="" name="" placeholder="" size="20" readonly >	</p></center></td>
+ </tr>
 
 </table>
 <br><br>
@@ -136,19 +153,8 @@ alert("encode to dbase");
         string =  string + "id=" + key + "&quant=" + item + "&";
 
         
+    }
 
-}
-
-function toFixedWithoutRounding(num, fractionDigits) {
-  if ((num > 0 && num < 0.000001) || (num < 0 && num > -0.000001)) {
-    // HACK: below this js starts to turn numbers into exponential form like 1e-7.
-    // This gives wrong results so we are just changing the original number to 0 here
-    // as we don't need such small numbers anyway.
-    num = 0;
-  }
-  const re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fractionDigits || -1) + '})?');
-  return Number(num.toString().match(re)[0]).toFixed(fractionDigits);
-}
 
 
 //goes backwards and last entered writes over
@@ -251,6 +257,7 @@ alert(queryString);
               });
 
 }
+
 
 
 </script>
