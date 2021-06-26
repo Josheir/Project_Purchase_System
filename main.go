@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	//"log"
-	//"math"
+	"math"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -25,6 +25,8 @@ type product struct {
 }
 
 type Product1 struct {
+	GrandTotalStringID string
+
 	GrandTotalString string
 	BoughtID         string
 	Bought           int
@@ -304,6 +306,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//gets quantity for each product id
 		quant, _ = (strconv.Atoi(allQuants[j]))
 
+		if quant == 0 {
+			continue
+		}
+
 		/////////IMPORTANT!!!!!!/////
 		if counter == 0 {
 			//quant = 2000
@@ -375,9 +381,15 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//var ins *sql.Stmt
 		for i = 0; i < len(allIds); i++ {
 			insertOrderFlag = "yes"
-			///////////////////
 
-			///////////////////
+			intQuant, err := strconv.Atoi(allQuants[i])
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			if intQuant <= 0 {
+				continue
+			}
 
 			//quant, err2 := (strconv.Atoi(allQuants[i]))
 			//if err2 != nil {
@@ -425,7 +437,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			//creates same product with quantitiy of this product minus how much purchased (quant)
 			//database amount - amount purchased
 			//100 in database , 10 bought -> 90 left   so there is ten purchased in order (bought)
-			_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity-quant, allIds[i])
+			//intQuant, err := strconv.Atoi(allQuants[i])
+			_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity-intQuant, allIds[i])
 
 			//////////////
 			//https://idineshkrishnan.com/crud-operations-with-mysql-in-go-language/
@@ -470,12 +483,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			ProductCatTitle = "purchased"
 
-			_, err = stmt.Exec(nextProductID, ProductFilename, ProductName, ProductDescription, ProductCost, quant, ProductCatTitle,
+			_, err = stmt.Exec(nextProductID, ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle,
 				gKeyword1, gKeyword2, gKeyword3, CustomerID, orderid, ProductStatus, AdminID)
-
-			if err != nil {
-				fmt.Println(err)
-			}
 
 			if err != nil {
 				fmt.Println(err)
@@ -497,7 +506,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(ProductList2A)
 
 	} else {
-		fmt.Println("array length zero")
+		//fmt.Println("array length zero")
 	}
 
 }
@@ -546,6 +555,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var3 = "C"
 	var var4 = "TC"
 	var var5 = "B"
+	var var6 = "GT"
 	//yes this is right product starts at one
 
 	//var j = 1
@@ -567,6 +577,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		CostID := var3 + (strconv.Itoa(i))
 		TotalCostID := var4 + (strconv.Itoa(i))
 		BoughtID := var5 + (strconv.Itoa(i))
+		GrandTotalStringID := var6 + (strconv.Itoa(i))
 
 		var prodid, err = (strconv.Atoi(allIds[i]))
 		if err != nil {
@@ -656,26 +667,48 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//https://stackoverflow.com/questions/20596428/how-to-represent-currency-in-go
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
 			//quantity
+			//However, whole numner
 			var QuantityFloat float64 = float64(aQuant)
+			//in cents, no decimal
 			ProductCostString := ProductCost
-			//from db, is was a string is now float that is to large
+
+			//cents
 			ProductCostFloat, err := strconv.ParseFloat(ProductCostString, 64)
 			if err != nil {
 				fmt.Println(err)
 			}
-			//SmallerCostString := fmt.Sprintf("%.2f", ProductCostFloat)
-			TotalCostFloat := QuantityFloat * ProductCostFloat
+			//cents
+			ProductCostFloat2 := ProductCostFloat
+			//move decimal
+			ProductCostFloat = ProductCostFloat / (math.Pow(10, 2))
+			//take care of decimals
+			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
+
+			//in cents and wholenumber
+			TotalCostFloat := QuantityFloat * ProductCostFloat2
+			TotalCostFloat2 := TotalCostFloat
+			//move decimal
+			TotalCostFloat = TotalCostFloat / (math.Pow(10, 2))
+			//take care of decimals
 			TotalCost = fmt.Sprintf("%.2f", TotalCostFloat)
 
-			//Bought := QuantityFloat
-			numTotal := numTotal + TotalCostFloat
+			//cents
+			numTotal := numTotal + TotalCostFloat2
+
+			tax := 0.0
 			if i == (len(allIds) - 1) {
 
-				numTotal = numTotal * .95
+				//numTotal = numTotal  * .05
+				//this is the tax  amount
+				tax = numTotal * 5
+				numTotal = numTotal * 100
+				numTotal = numTotal + tax
 			}
-			GrandTotalString := fmt.Sprintf("$%.2f", numTotal)
 
-			addProduct(GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
+			numTotal = numTotal / math.Pow(10, 4)
+			GrandTotalString := fmt.Sprintf("%.2f", numTotal)
+
+			addProduct(GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
 		fmt.Println("ProductList")
@@ -702,24 +735,25 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	///////////
 }
-func addProduct(total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost string) {
+func addProduct(totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
-		GrandTotalString: total,
-		BoughtID:         boughtid,
-		Bought:           bought,
-		TotalCost:        totalcost,
-		TotalCostID:      totalcostid,
-		CostID:           costid,
-		AmountToBuyID:    amountid,
-		Condition:        condition,
-		Condition2:       condition2,
-		ProductID:        prodid,
-		ProductQuantity:  quant,
-		ProductName:      name,
-		DivID:            div,
-		ProductCatTitle:  cat,
-		ProductCost:      cost,
+		GrandTotalStringID: totalID,
+		GrandTotalString:   total,
+		BoughtID:           boughtid,
+		Bought:             bought,
+		TotalCost:          totalcost,
+		TotalCostID:        totalcostid,
+		CostID:             costid,
+		AmountToBuyID:      amountid,
+		Condition:          condition,
+		Condition2:         condition2,
+		ProductID:          prodid,
+		ProductQuantity:    quant,
+		ProductName:        name,
+		DivID:              div,
+		ProductCatTitle:    cat,
+		ProductCost:        cost,
 	}
 	flag := "nonefound"
 

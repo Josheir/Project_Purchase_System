@@ -17,7 +17,7 @@
 <div id = "div1">test</div>
 
 <form  action = "index.html" method = "POST">
-<input   id="button1"  type="submit" value="Purchase"/>
+<center><input   id="button1"  type="submit" value="Return to Purchase"/></center>
 </form>
 
 <script>
@@ -68,8 +68,8 @@ var account = sessionStorage.getItem('sessionID');
    alert(account.ID);
   */ 
   
-  console.log("finalpage");
-  alert("finalpageA");
+  //console.log("finalpage");
+  //alert("finalpageA");
   
  var string = ""
 //////////////////////
@@ -85,7 +85,7 @@ for(let key of keys) {
 }
 if(var1 == "hasntBeenHere")
   {
-    alert("no!");
+    //alert("no!");
     window.location.href = "index.html";
     return(1);
   }
@@ -93,7 +93,7 @@ if(var1 == "hasntBeenHere")
 //goes backwards and last entered writes over
 queryString = string.substring(0, string.length-1);
 
-alert("finalpageB");
+//alert("finalpageB");
 //alert(queryString);
 
 //$.each(arr, function () {
@@ -119,8 +119,8 @@ var url = "http://localhost:8081/template2";
                     data:queryString,
                     async:false,
                     success: function (data1) {
-                      alert("in finalpage");
-                       alert(data1);
+                      //alert("in finalpage");
+                       //alert(data1);
                       $('#div1').html(data1);
                     //alert(data);
                     }

@@ -55,7 +55,7 @@
 
 
 <tr>
-<td> <center><p> <input id = "{{.AmountToBuyID}}" value =""   type="" name="" placeholder="" size="8">	</p></center></td>
+<td> <center><p > <input  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"   id = "{{.AmountToBuyID}}" value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
 
 <td><center> {{.ProductName}}</center>  </td>
@@ -71,7 +71,7 @@
   
   <td> <center><p> <input id = "{{.CostID}}" value ="${{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
-  <td> <center><p> <input id = "{{.TotalCostID}}" value = "{{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.TotalCostID}}" value = "${{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
 
 
@@ -94,12 +94,12 @@
 <td><center> </center>  </td>  
 <td><center> </center>  </td>
 <td><center> </center>  </td>  
-<td> <center><p> <input id = "" value = "Grand Total: {{.GrandTotalString}}"   type="" name="" placeholder="" size="20" readonly >	</p></center></td>
+<td> <center><p> <input id = "{{.GrandTotalStringID}}" value = "Grand Total: ${{.GrandTotalString}}"   type="" name="" placeholder="test" size="20" readonly >	</p></center></td>
  </tr>
 
 </table>
 <br><br>
-<center><button onclick="checkAllAvailableProducts('{{.DivID}}')">Final Purchase</button></center>
+<center><button onclick="checkAllAvailableProducts('{{.DivID}}' , '{{.GrandTotalString}}' )">Checkout</button></center>
 {{end}}
 {{end}}
 
@@ -107,14 +107,16 @@
 
 
 
+function changeColorToBlack(AmountToBuyID)
+{
+  document.getElementById(AmountToBuyID).style.color = "black";
+  //document.getElementById(AmountToBuyID).value = "";
+  //alert("clicked!");
+}
 
 
-
-function checkAllAvailableProducts(quantity){
-
-
-
-alert("encode to dbase");
+function checkAllAvailableProducts(quantity, gtotal){
+  //alert("encode to dbase");
   //var amtInBuyBox = document.getElementById(amttobuyID).value;
 
   //for amountinboxid
@@ -131,6 +133,8 @@ alert("encode to dbase");
   var AmountOfCostID = 0;
   var AmountOfQuantityID = 0; 
   
+    //var flag = "wasntHere"
+    var flag = "isNotNegValue";
     let keys = Object.keys(sessionStorage);
     for(let key of keys) {
         counter++;
@@ -150,18 +154,41 @@ alert("encode to dbase");
         //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
         //string =  string + "id=" + key + "&quant=" + item + "&";
         var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
+
+        //negative or has decimal
+        if(item < 0 ) //|| (item == Math.floor(item)))
+        {
+          var str2 = amtInBuyBox.toString();
+          document.getElementById(AmountToBuyID).style.color = "red";
+          flag = "isNegValue";
+        }
+        if (isNaN(item ))
+        {
+          item = quantityInBox;
+        }
+        //flag = "wasHere"
         string =  string + "id=" + key + "&quant=" + item + "&";
 
-        
+        //alert("string");
+        //alert(string);
     }
-
-
-
+    //if(flag == "wasHere")
+    //{
+    //  return
+    //}
+    //alert("here");
+    //alert(flag);
+    
+if (flag == "isNegValue")
+{
+  return;
+}
+//alert("here2");
 //goes backwards and last entered writes over
-queryString = string.substring(0, string.length-1);
+var queryString = string.substring(0, string.length-1);
 
-alert("spit test");
-alert(queryString);
+//alert("spit test");
+//alert(queryString);
 
 
               $.ajax({
@@ -174,6 +201,8 @@ alert(queryString);
               crossDomain: true,
              
               success: function (data1) {
+
+                var newGrandTotalString = "a";
               //alert(data1);
               //console.log(data1[1].ID);
               
@@ -188,17 +217,20 @@ alert(queryString);
                 
               var lengthOfData = data1.length;
               //alert("start");
-              alert("length");
-              alert(var3);
+              //alert("length");
+              //alert(var3);
               //alert(data1.length);
-              alert(data1[0].QuantityAvailable);
+              //alert(data1[0].QuantityAvailable);
               //alert(data1[1].QuantityAvailable);
-              alert(data1[0].ID);
               //alert(data1[0].ID);
-              alert("finish");
+              //alert(data1[0].ID);
+              //alert("finish");
               //console.log(data1[i].QuantityAvailable);
-              alert(data1);
+              //alert(data1);
                 
+
+              var TotalCost = 1.1;
+
                 for(var i = 0; i<lengthOfData ; i++)
                 {
                 var boughtid = "B" + i; 
@@ -206,6 +238,7 @@ alert(queryString);
                 var availableID =  "D" + i;
                 var costID = "C" + i;
                 var totalCostID = "TC" + i;
+                var GrandTotalStringID = "GT" + i;
                 var what = document.getElementById(quantity).value;
               // console.log(what);
 
@@ -216,48 +249,249 @@ alert(queryString);
                 var num = data1[i].QuantityAvailable ;
                 str2 = num.toString();
                 
-                //was enough, red text
                 //DatabaseQuantity < quant)
+                //wasnt enough, so make red
+                
+
+                //transactio at try again state
                 if (str1 == "yes")
                 {
-                  alert("str2")
-                  alert(str2);
+                  //alert("trying this...");
+                  //alert(str2);
                   document.getElementById(availableID).outerHTML = str2.fontcolor("red");
+                  
+                  //sets amount to but to zero
+                  document.getElementById(buyThisManyID ).value = 0;
+                  //sets amount bought to zero
+                  document.getElementById(boughtid).value = 0;
+
+                  TotalCost = document.getElementById(totalCostID).value;
+                 
+                 //cost of all the products in this "record" it is a string
+                 //var TotalCost = document.getElementById(totalCostID).value;
+                 //remove $
+                 //TotalCost = TotalCost.slice(1);
+
+                 //document.getElementById(totalCostID).outerHTML = "$0.00";
+
+                 
+                    //tried seperating left and right of decimals
+                    //counting length of string
+                    //tried multiplying by .05 to know leftmost amount of places
+
+                   
+                    //var numDecimals2 = Number(recordTotal_String).getPrecision(); 
+                    
+                    //makes these variables cents 
+                    gtotal =  gtotal * (10 ** 2);
+                    //alert("gtotal1");
+                    //alert(gtotal);
+                    
+                    //$9.23
+                    alert("totalcost1");
+                    alert(TotalCost);
+                    TotalCost =  TotalCost.slice(1);
+                    TotalCost =  TotalCost * (10 ** 2);
+                    //923
+                    alert("totalcost2");
+                    alert(TotalCost);
+                    //the five represents the tax of .05%
+                    var tax =  TotalCost * 5 ;
+                    //4615
+                    alert("tax");
+                    alert(tax);
+                    //how can I set this exponent when TotalCost is larger
+                    //ie, not hardcoded - this makes this value one digit more than tax
+                    //because initally, tax is one digit more than TotalCost.
+                    //initial tax = 100480    initial TotalCost = 20096
+                    
+                    TotalCost = TotalCost * (10 ** 2);
+                    //
+                    //alert("tax2");
+                    //alert(tax);
+                    //92300
+                    alert("totalcost3");
+                    alert(TotalCost);
+                    var GTotalWithTax = tax + TotalCost;
+                    //96915
+                    alert("GTotalWithTax");
+                    alert(GTotalWithTax);
+                    //how can I set this correctly when TotalCost is larger,
+                    //this resets the decimal points to money (dollars and cents)
+                    
+                   
+                   
+                   
+                   
+                   
+                   
+                    //moves ddecimal left
+                    ///////GTotalWithTax = GTotalWithTax / (10 ** 2);
+                    //96915
+                    alert("GTotalWithTax2");
+                    alert(GTotalWithTax);
+
+                    //969
+                    alert("gtotal");
+                    alert(gtotal);
+                    //96915
+                    alert("GTotalWithTax");
+                    alert(GTotalWithTax);
+
+
+
+                    gtotal = gtotal * (10 ** 2);
+                    
+                    gtotal = gtotal / (10 ** 4);
+
+                    GTotalWithTax = GTotalWithTax /(10 ** 4);
+
+                    gtotal = gtotal -  GTotalWithTax;
+
+                    //gtotal = gtotal / (10 ** 5);
+
+                   //!!!!!!!!!!!!!!
+                    alert("gtotal");
+                    alert(gtotal);
+
+                    GrandTotalFloat = gtotal;
+                    
+                   
+                    //-15
+                    alert("gtotal5");
+                    alert(gtotal);
+
+                    //alert("end");
+
+
+                    //1296225
+                    alert("grandtotalfloat1");
+                    alert(GrandTotalFloat);
+                
+                    //added for 12345
+                   //GrandTotalFloat = GrandTotalFloat / (10 ** 4);
+                   
+                   alert("grandtotalfloat2");
+                    alert(GrandTotalFloat);
+                
+                 
+
+                 ////////////////////////////////
+
+                 //-------------
+                 //The gtotal is the grandTotal of all the records
+                 //add whole numbers
+                 //var GrandTotalFloatInt = (gtotal) - (TotalCost);
+                 //divide the answer by the largest amount of decimals
+                 //var GrandTotalFloat = GrandTotalFloatInt /  biggestNumOfDecimals ;
+
+                
+                 //????????????
+                 //check this is it a string?
+                 GrandTotalFloat = GrandTotalFloat.toFixed(2); 
+                 if(GrandTotalFloat < 0)
+                    {
+                      //GrandTotalFloat = 0;
+                    } 
+                 alert("grandtotalfloat2");
+                 alert(GrandTotalFloat);
+                
+
+                 //alert("GTF3");
+                 //alert(GrandTotalFloat);
+                 var stringGrandTotal = GrandTotalFloat.toString(); 
+                 alert("stringGrandTotal");
+                 alert(stringGrandTotal);
+                 
+                 var value = "$" + stringGrandTotal;
+                 alert("value");
+                 alert(value);
+                 
+                 //works
+                 document.getElementById(GrandTotalStringID).value = (value); 
+                
+                  //continue;
                 }
-                //wasnt enough, so make red
+                
                 else
                 {
                   
-                  document.getElementById(availableID).outerHTML = str2;
+                  //document.getElementById(availableID).outerHTML = str2;
                 }
                 
 
-                //doesnt change
+                //doesnt change - works
                 var costEach = document.getElementById(costID).value;
-                
                 document.getElementById(costID).outerHTML = costEach
+               //remove dollar sign
+                costEach = costEach.slice(1);
+                 //move decimal right
+                costEach =  costEach * (10 ** 2);
 
+                //whole number
                 var bought = document.getElementById(boughtid).value;
+               // alert("bought");
+               // alert(bought);
 
-                
+               // alert("costeach");
+               // alert(costEach);
+
                 var total = (bought * costEach);
+               // alert("total");
+               // alert(total);
+                //reinstate decimals
+                total = total / (10 ** 2)
+
+              //  alert("total");
+              //  alert(total);
+
+
+
+              //  alert("costeach");
+              //  alert(costEach);
+               // 
+              //  alert("bought");
+              //  alert(bought);
+               
+
+
+
                //hopefully rounding digits (more than one) is same with golang 
                //rounded to two digits
                //https://learnersbucket.com/examples/javascript/learn-how-to-round-to-2-decimal-places-in-javascript/
-                var roundedTotal = Math.round(total * 100) / 100
 
-                document.getElementById(totalCostID).outerHTML = (roundedTotal);
+                //var roundedTotal = Math.round(total * 100) / 100
+                total = total.toFixed(2); 
+                TotalCostString = "$" +  total.toString(); 
                 
-                document.getElementById(buyThisManyID ).outerHTML = "";
+                document.getElementById(totalCostID).outerHTML = (TotalCostString);
+                
+                document.getElementById(buyThisManyID ).outerHTML = 0;
 
                 
                 }
                 
-              }
+              }//for
               });
 
 }
 
+
+Number.prototype.getPrecision = function() {
+  var v = this.valueOf();
+  if (Math.floor(v) === v) return 0;
+  var str = this.toString();
+  var ep = str.split("e-");
+  if (ep.length > 1) {
+    var np = Number(ep[0]);
+    return np.getPrecision() + Number(ep[1]);
+  }
+  var dp = str.split(".");
+  if (dp.length > 1) {
+    return dp[1].length;
+  }
+  return 0;
+}
 
 
 </script>
