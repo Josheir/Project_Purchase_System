@@ -565,6 +565,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var Condition = 0
 	var Condition2 = 0
 
+	//error when making two product and pressing checkout displays all table data below main table with another checkout button
+	//6/26/21
+
+	ID := 0
+	bought := 0
+	numTotal := 0.0
+
 	for i = 0; i < len(allIds); i++ {
 
 		fmt.Println("length")
@@ -610,9 +617,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("ProductList")
 		fmt.Println(ProductList)
 
-		ID := 0
-		bought := 0
-		numTotal := 0.0
 		for rows.Next() {
 
 			fmt.Println("ProductList1")
@@ -693,20 +697,21 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			TotalCost = fmt.Sprintf("%.2f", TotalCostFloat)
 
 			//cents
-			numTotal := numTotal + TotalCostFloat2
+			numTotal = numTotal + TotalCostFloat2
 
 			tax := 0.0
-			if i == (len(allIds) - 1) {
 
-				//numTotal = numTotal  * .05
-				//this is the tax  amount
+			//numTotal = numTotal  * .05
+			//this is the tax  amount
+			var GrandTotalString = "doesnt display"
+			if i == (len(allIds) - 1) {
 				tax = numTotal * 5
 				numTotal = numTotal * 100
 				numTotal = numTotal + tax
-			}
 
-			numTotal = numTotal / math.Pow(10, 4)
-			GrandTotalString := fmt.Sprintf("%.2f", numTotal)
+				numTotal = numTotal / math.Pow(10, 4)
+				GrandTotalString = fmt.Sprintf("%.2f", numTotal)
+			}
 
 			addProduct(GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 

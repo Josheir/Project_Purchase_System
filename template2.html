@@ -55,7 +55,7 @@
 
 
 <tr>
-<td> <center><p > <input  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"   id = "{{.AmountToBuyID}}" value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
+<td> <center><p > <input  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
 
 <td><center> {{.ProductName}}</center>  </td>
@@ -99,7 +99,8 @@
 
 </table>
 <br><br>
-<center><button onclick="checkAllAvailableProducts('{{.DivID}}' , '{{.GrandTotalString}}' )">Checkout</button></center>
+<center><button onclick="checkAllAvailableProducts('{{.DivID}}' , '{{.GrandTotalString}}', '{{.GrandTotalStringID}}' )">Checkout</button></center>
+
 {{end}}
 {{end}}
 
@@ -111,11 +112,17 @@ function changeColorToBlack(AmountToBuyID)
 {
   document.getElementById(AmountToBuyID).style.color = "black";
   //document.getElementById(AmountToBuyID).value = "";
-  //alert("clicked!");
+ 
 }
 
 
-function checkAllAvailableProducts(quantity, gtotal){
+function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
+
+  
+  
+  var gtotal = parseFloat(gtotal);
+  
+  
   //alert("encode to dbase");
   //var amtInBuyBox = document.getElementById(amttobuyID).value;
 
@@ -159,7 +166,7 @@ function checkAllAvailableProducts(quantity, gtotal){
         if(item < 0 ) //|| (item == Math.floor(item)))
         {
           var str2 = amtInBuyBox.toString();
-          document.getElementById(AmountToBuyID).style.color = "red";
+          document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
         if (isNaN(item ))
@@ -202,19 +209,19 @@ var queryString = string.substring(0, string.length-1);
              
               success: function (data1) {
 
+
+
+              //  type Product2 struct {
+              //	ID                  int
+	            //  QuantityAvailable   int
+	            //  IsNotEnoughQuantity string
+              //  }
+
                 var newGrandTotalString = "a";
-              //alert(data1);
-              //console.log(data1[1].ID);
               
               //total all elemetst, two per array.
               var lengthOfData = data1.length;
-                //array has double because 2 variables
-                //iterate for divid and amountinboxid
-              //for(i = 0; i < (lengthOfData/2); i++)
               
-                //console.log(lengthOfData);
-                //alert("in here!!!");
-                
               var lengthOfData = data1.length;
               //alert("start");
               //alert("length");
@@ -231,8 +238,14 @@ var queryString = string.substring(0, string.length-1);
 
               var TotalCost = 1.1;
 
-                for(var i = 0; i<lengthOfData ; i++)
+              
+              var GTotalWithTax = 0.0;
+                for(var i = 0; i<(lengthOfData) ; i++)
                 {
+
+                  GTotalWithTax = 0;
+                alert("lengthOfData");
+                alert(lengthOfData);
                 var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
                 var availableID =  "D" + i;
@@ -240,241 +253,419 @@ var queryString = string.substring(0, string.length-1);
                 var totalCostID = "TC" + i;
                 var GrandTotalStringID = "GT" + i;
                 var what = document.getElementById(quantity).value;
-              // console.log(what);
-
-
-                var str2= ""
+             
+                var str2= "";
                 str1 = data1[i].IsNotEnoughQuantity;
 
                 var num = data1[i].QuantityAvailable ;
                 str2 = num.toString();
-                
+                //alert("str2");
+                //alert(str2);
                 //DatabaseQuantity < quant)
-                //wasnt enough, so make red
-                
 
-                //transactio at try again state
+
+
+                //wasnt enough, so make red
                 if (str1 == "yes")
                 {
-                  //alert("trying this...");
-                  //alert(str2);
+
+                  GTotalWithTax = 0.0;
+                  //alert ("in not enough");
                   document.getElementById(availableID).outerHTML = str2.fontcolor("red");
                   
-                  //sets amount to but to zero
-                  document.getElementById(buyThisManyID ).value = 0;
-                  //sets amount bought to zero
                   document.getElementById(boughtid).value = 0;
 
+                  //string, however value is (example) : $1.00
                   TotalCost = document.getElementById(totalCostID).value;
-                 
-                 //cost of all the products in this "record" it is a string
-                 //var TotalCost = document.getElementById(totalCostID).value;
-                 //remove $
-                 //TotalCost = TotalCost.slice(1);
+                  TotalCost = TotalCost.slice(1);
+                  alert(TotalCost);
+                  var TotalCostFloat = parseFloat(TotalCost);
 
-                 //document.getElementById(totalCostID).outerHTML = "$0.00";
+                  //alert("TotalCostFloat");
+                  //alert(TotalCostFloat);
 
-                 
-                    //tried seperating left and right of decimals
-                    //counting length of string
-                    //tried multiplying by .05 to know leftmost amount of places
+                  //alert("totalcostfloat1");
+                  //alert(TotalCostFloat);
 
-                   
-                    //var numDecimals2 = Number(recordTotal_String).getPrecision(); 
-                    
-                    //makes these variables cents 
-                    gtotal =  gtotal * (10 ** 2);
-                    //alert("gtotal1");
-                    //alert(gtotal);
+                  //alert("type1");
+                  //alert(typeof(TotalCost));
+                  //makes these variables cents 
+                  //gtotal =  gtotal * (10 ** 2);
                     
                     //$9.23
-                    alert("totalcost1");
-                    alert(TotalCost);
-                    TotalCost =  TotalCost.slice(1);
-                    TotalCost =  TotalCost * (10 ** 2);
+                    //alert("totalcost1");
+                    //alert(TotalCost);
+                    //TotalCost =  TotalCost.slice(1);
+                    //TotalCostFloat =  TotalCostFloat * (10 ** 2);
+                    //alert("totalcostfloat2");
+                    //alert(TotalCostFloat);
                     //923
-                    alert("totalcost2");
-                    alert(TotalCost);
+                    //alert("totalcost2");
+                    //alert(TotalCost);
                     //the five represents the tax of .05%
-                    var tax =  TotalCost * 5 ;
+                    var tax =  TotalCostFloat * 5 ;
                     //4615
-                    alert("tax");
-                    alert(tax);
-                    //how can I set this exponent when TotalCost is larger
-                    //ie, not hardcoded - this makes this value one digit more than tax
-                    //because initally, tax is one digit more than TotalCost.
-                    //initial tax = 100480    initial TotalCost = 20096
-                    
-                    TotalCost = TotalCost * (10 ** 2);
-                    //
-                    //alert("tax2");
+                    //alert("tax");
                     //alert(tax);
-                    //92300
-                    alert("totalcost3");
-                    alert(TotalCost);
-                    var GTotalWithTax = tax + TotalCost;
-                    //96915
-                    alert("GTotalWithTax");
-                    alert(GTotalWithTax);
-                    //how can I set this correctly when TotalCost is larger,
-                    //this resets the decimal points to money (dollars and cents)
-                    
-                   
-                   
-                   
-                   
-                   
-                   
-                    //moves ddecimal left
-                    ///////GTotalWithTax = GTotalWithTax / (10 ** 2);
-                    //96915
-                    alert("GTotalWithTax2");
-                    alert(GTotalWithTax);
+                    TotalCostFloat = TotalCostFloat * (10 ** 2);
+                    //alert("totalcostfloat3");
+                    //alert(TotalCostFloat);
 
-                    //969
-                    alert("gtotal");
-                    alert(gtotal);
-                    //96915
-                    alert("GTotalWithTax");
-                    alert(GTotalWithTax);
+                    //alert("totalcost3");
+                    //alert(TotalCost);
+                    //alert("GTotalWithTax");
+                    //alert(GTotalWithTax);
 
+                    //($1.05)
+                    //105
+                    GTotalWithTax =  GTotalWithTax +  tax + TotalCostFloat;
+                    //GTotalWithTax = GTotalWithTax / (10 ** 2)
 
+                    //alert("GTotalWithTax");
+                    //alert(GTotalWithTax);
 
+                    //alert("gtotal");
+                    //alert(gtotal);
                     gtotal = gtotal * (10 ** 2);
-                    
-                    gtotal = gtotal / (10 ** 4);
+                    gtotal = gtotal - GTotalWithTax;
+                    gtotal = gtotal / (10 ** 2);
 
-                    GTotalWithTax = GTotalWithTax /(10 ** 4);
+                    //alert("gtotal");
+                    //alert(gtotal);
 
-                    gtotal = gtotal -  GTotalWithTax;
-
-                    //gtotal = gtotal / (10 ** 5);
-
-                   //!!!!!!!!!!!!!!
-                    alert("gtotal");
-                    alert(gtotal);
-
-                    GrandTotalFloat = gtotal;
-                    
+                    //96915
                    
-                    //-15
-                    alert("gtotal5");
-                    alert(gtotal);
 
-                    //alert("end");
+                    //alert("tax");
+                    //alert(tax);
 
+                    //alert("totalcost1");
+                    //alert(TotalCostFloat);
 
-                    //1296225
-                    alert("grandtotalfloat1");
-                    alert(GrandTotalFloat);
-                
-                    //added for 12345
-                   //GrandTotalFloat = GrandTotalFloat / (10 ** 4);
-                   
-                   alert("grandtotalfloat2");
-                    alert(GrandTotalFloat);
-                
-                 
+                    //96915
+                    //alert("GTotalWithTax2");
+                    //alert(GTotalWithTax);
+                    //969
+                    //alert("gtotal");
+                    //alert(gtotal);
+                    //96915
+                    //alert("GTotalWithTax");
+                    //alert(GTotalWithTax);
 
-                 ////////////////////////////////
-
-                 //-------------
-                 //The gtotal is the grandTotal of all the records
-                 //add whole numbers
-                 //var GrandTotalFloatInt = (gtotal) - (TotalCost);
-                 //divide the answer by the largest amount of decimals
-                 //var GrandTotalFloat = GrandTotalFloatInt /  biggestNumOfDecimals ;
-
-                
-                 //????????????
-                 //check this is it a string?
-                 GrandTotalFloat = GrandTotalFloat.toFixed(2); 
-                 if(GrandTotalFloat < 0)
-                    {
-                      //GrandTotalFloat = 0;
-                    } 
-                 alert("grandtotalfloat2");
-                 alert(GrandTotalFloat);
-                
-
-                 //alert("GTF3");
-                 //alert(GrandTotalFloat);
-                 var stringGrandTotal = GrandTotalFloat.toString(); 
-                 alert("stringGrandTotal");
-                 alert(stringGrandTotal);
-                 
-                 var value = "$" + stringGrandTotal;
-                 alert("value");
-                 alert(value);
-                 
-                 //works
-                 document.getElementById(GrandTotalStringID).value = (value); 
-                
-                  //continue;
-                }
-                
-                else
-                {
-                  
-                  //document.getElementById(availableID).outerHTML = str2;
-                }
-                
-
-                //doesnt change - works
-                var costEach = document.getElementById(costID).value;
-                document.getElementById(costID).outerHTML = costEach
-               //remove dollar sign
-                costEach = costEach.slice(1);
-                 //move decimal right
-                costEach =  costEach * (10 ** 2);
-
-                //whole number
-                var bought = document.getElementById(boughtid).value;
+                ///////////
+                //string - is the value so has dollar sign
+                //var costEach = document.getElementById(costID).value;
+                //alert("costeach");
+                //alert(costEach);
+                //costEach = costEach.slice(1);
+                //costEach =  costEach * (10 ** 2);
+               //whole number
+                document.getElementById(boughtid).value = 0;
                // alert("bought");
                // alert(bought);
-
                // alert("costeach");
                // alert(costEach);
-
-                var total = (bought * costEach);
-               // alert("total");
-               // alert(total);
-                //reinstate decimals
-                total = total / (10 ** 2)
-
-              //  alert("total");
-              //  alert(total);
-
-
-
-              //  alert("costeach");
-              //  alert(costEach);
-               // 
-              //  alert("bought");
-              //  alert(bought);
-               
-
-
-
-               //hopefully rounding digits (more than one) is same with golang 
-               //rounded to two digits
+              //var total = (bought * costEach);
+                //alert("total");
+                //alert(total);
+               //reinstate decimals
+                //total = total / (10 ** 2);
+               //  alert("total");
+               //  alert(total);
+               //  alert("costeach");
+               //  alert(costEach);
+               //  alert("bought");
+               //  alert(bought);
                //https://learnersbucket.com/examples/javascript/learn-how-to-round-to-2-decimal-places-in-javascript/
+               //var roundedTotal = Math.round(total * 100) / 100
+                //total = total.toFixed(2); 
+                //alert("total");
+                //alert(total);
+                TotalCostString = "$0.00"; 
+                //alert("TotalCostString");
+                //alert(TotalCostString);
 
-                //var roundedTotal = Math.round(total * 100) / 100
-                total = total.toFixed(2); 
-                TotalCostString = "$" +  total.toString(); 
-                
                 document.getElementById(totalCostID).outerHTML = (TotalCostString);
-                
-                document.getElementById(buyThisManyID ).outerHTML = 0;
+                var check = document.getElementById(buyThisManyID );    
+                check.value = "";
+                  ///////////
+                  
+
+                }//there wasn't enough product
+                //there is plenty of product for this record...
+                else
+                {
+
+                  /////////////////////////////////begin work to do
+                  alert("in new section");
 
                 
+
+                //remove totalcost determined at purchase interface, so that amount to buy times cost will equal this
+                //products total
+                var initialTotalCost = document.getElementById(totalCostID).value;
+                alert("typeof1");
+                alert(typeof(initialTotalCost));
+
+                initialTotalCost = initialTotalCost.slice(1);
+
+                alert("typeof2");
+                alert(typeof(initialTotalCost));
+                //float
+                initialTotalCost = parseFloat(initialTotalCost);
+                alert("typeof2");
+                alert(typeof(initialTotalCost));
+
+                alert("initialTotalCostA");
+                alert(initialTotalCost);
+                  
+                
+                var initialTotalCost = initialTotalCost * (10 ** 2);
+
+                //whole number
+                var tax1 = initialTotalCost * 5;
+                alert("tax1");
+                alert(tax1);
+
+
+                var initialTotalCost = initialTotalCost * (10 ** 2);
+
+                alert("initialTotalCostB");
+                alert(initialTotalCost);
+
+                initialTotalCost = initialTotalCost + tax1;
+                alert("initialTotalCostC");
+                alert(initialTotalCost);
+                  
+
+                //intialTotalCost = initialTotalCost / (10 ** 4);
+
+
+                //intialTotalCost = initialTotalCost * (10 ** 2);
+
+
+
+                ///////////////////////end work to do
+
+                //211.01
+                alert("gtotal1");
+                alert(gtotal);
+
+                //gtotal = 2110100
+                gtotal = gtotal * (10 ** 4);
+                alert("gtotal2");
+                alert(gtotal);
+                //2110080
+                alert("initialTotalCost");
+                alert(initialTotalCost);
+                gtotal = gtotal - initialTotalCost;
+                intialTotalCost = initialTotalCost / (10 ** 2);
+                gtotal = gtotal / (10 ** 4);
+                alert("gtotal3!!!!");
+                alert(gtotal);
+
+                
+                //gtotal = gtotal / (10 ** 4);
+
+                alert("gtotal4");
+                alert(gtotal);
+
+
+                GTotalWithTax = 0;
+
+                var amtAvailable = document.getElementById(availableID).value;
+                amtAvailable = parseFloat(amtAvailable);
+               
+                var bought = document.getElementById(boughtid).value;
+                bought = parseFloat(bought);
+                
+                var amtBuying = document.getElementById(buyThisManyID).value;
+                amtBuying = parseFloat(amtBuying);
+
+                alert(amtAvailable);
+                alert(bought);
+                alert(amtBuying);
+               
+                  //94   1    2
+                var newAvailable = amtAvailable + bought - amtBuying;
+                alert(newAvailable);
+                document.getElementById(availableID).value = newAvailable;
+
+                alert("newAvailable");
+                alert(newAvailable);
+                //example : 1.11 - string
+                var costEach = document.getElementById(costID).value;
+                costEach = costEach.slice(1);
+                
+                //alert(costEach);
+                costEach = parseFloat(costEach);
+                //move decimal right
+                costEach =  costEach * (10 ** 2);
+
+                alert("costEach");
+                alert(costEach);
+                //save new bought
+                document.getElementById(boughtid).value = amtBuying; 
+                
+                
+                var total = (amtBuying * costEach);
+                total = parseFloat(total);
+                var totalNoDecimals = total;
+
+                
+
+                var totalCopy = total;
+               
+                //has two deicmals - 20096
+                total = total / (10 ** 2);
+               
+                
+                //round
+                total = total.toFixed(2); 
+                 // alert("total");
+                 // alert(total);
+
+
+                TotalCostString = total.toString(); 
+                //no dollar sign
+                //alert("TotalCostString");
+                //alert(TotalCostString);
+                TotalCostString = "$" +  TotalCostString; 
+                //alert("TotalCostString");
+                //alert(TotalCostString);
+
+                document.getElementById(totalCostID).value = (TotalCostString);
+
+                //grand total with tax :
+                //50000
+                var tax =  totalCopy * 5 ;
+
+                totalCopy = totalCopy * (10 ** 2);
+                tax = parseFloat(tax);
+                  
+                alert("totalCopy");
+                alert(totalCopy);
+                alert("tax");
+                alert(tax);
+
+                alert("totalCopy");
+                alert(totalCopy);
+                //example:
+                //($1.05)
+                //10500
+                alert("GTotalWithTax1");
+                alert(GTotalWithTax);
+
+                GTotalWithTax =  tax + totalCopy;
+
+                alert("gtotal!!!!!");
+                alert(gtotal);
+                alert("GTotalWithTax1");
+                alert(GTotalWithTax);
+
+                gtotal = gtotal * (10 ** 2);
+                
+                gtotal = gtotal + GTotalWithTax;
+                alert("gtotal");
+                alert(gtotal);
+
+                gtotal = gtotal / (10 ** 2); 
+                
+                //alert("gtotalcopy");
+                //alert(gtotalCopy);
+                var gtotalCopy = gtotal;
+                //4220160
+                alert("gtotalCopy1A");
+                alert(gtotalCopy);
+
+                gtotalCopy = gtotalCopy / (10 ** 2)
+
+                alert("gtotalCopy2");
+                alert(gtotalCopy);
+
+                var stringGrandTotal = gtotalCopy.toFixed(2); 
+                alert(typeof(stringGrandTotal));
+
+                alert("stringGrandTotal");
+                alert(stringGrandTotal);
+
+               
+                stringGrandTotal = "Grand Total: $" + stringGrandTotal;
+
+                document.getElementById(grandTotalID).outerHTML = (stringGrandTotal);
+                
+                   //alert("totalcost1");
+                   //alert(TotalCost);
+                  
+                   //totalCostString =  totalCostString * (10 ** 2);
+                   //923
+                   //alert("totalcost2");
+                   //alert(TotalCost);
+                   //the five represents the tax of .05%
+                   //var tax =  TotalCostString  * 5 ;
+                   //4615
+                   //alert("tax");
+                   //alert(tax);
+                   //TotalCostString  = TotalCostString  * (10 ** 2);
+                   //alert("totalcost3");
+                   //alert(TotalCost);
+                   //GTotalWithTax =  GTotalWithTax * (10 ** 2);
+                   //GTotalWithTax =  GTotalWithTax +  tax + TotalCost;
+                   //GTotalWithTax = GTotalWithTax / (10 ** 2);
+                 /////////
+                 
                 }
                 
-              }//for
+
+                
+                }//for
+
+                
+/*
+                    gtotal = gtotal * (10 ** 2);
+                    gtotal = gtotal / (10 ** 4);
+                    alert("gtotal");
+                    alert(gtotal);
+                    GTotalWithTax = GTotalWithTax /(10 ** 2);
+                    alert("GTotalWithTax3");
+                     alert(GTotalWithTax);
+
+                    gtotal = gtotal -  GTotalWithTax;
+                    //alert("gtotal here");
+                    //alert(gtotal);
+                    GrandTotalFloat = gtotal;
+                    //alert("gtotal5");
+                    //alert(gtotal);
+                    //alert("grandtotalfloat1");
+                    //alert(GrandTotalFloat);
+                    //alert("grandtotalfloat2");
+                    //alert(GrandTotalFloat);
+                    //returns string value
+                    GrandTotalFloat = GrandTotalFloat.toFixed(2); 
+                    //if(GrandTotalFloat < 0)
+                    //   {
+                    //     //GrandTotalFloat = 0;
+                    //   } 
+                    //alert("grandtotalfloat2");
+                    //alert(GrandTotalFloat);
+                    //alert("GTF3");
+                    //alert(GrandTotalFloat);
+                    var stringGrandTotal = GrandTotalFloat; 
+                    //alert("stringGrandTotal");
+                    //alert(stringGrandTotal);
+                    var value = "$" + stringGrandTotal;
+                    //alert("value");
+                    //alert(value);
+                    //works - sets this value to string value, grandtotal
+                    document.getElementById(GrandTotalStringID).value = (value); 
+*/
+
+                ////////
+
+              }//sucesss - goto spitback and return values
               });
 
-}
+}//end
 
 
 Number.prototype.getPrecision = function() {
