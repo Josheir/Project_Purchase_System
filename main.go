@@ -683,13 +683,16 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			}
 			//cents
 			ProductCostFloat2 := ProductCostFloat
+
 			//move decimal
 			ProductCostFloat = ProductCostFloat / (math.Pow(10, 2))
-			//take care of decimals
+			//take care of decimals - ready for display
 			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
 
 			//in cents and wholenumber
 			TotalCostFloat := QuantityFloat * ProductCostFloat2
+
+			//cents
 			TotalCostFloat2 := TotalCostFloat
 			//move decimal
 			TotalCostFloat = TotalCostFloat / (math.Pow(10, 2))
@@ -703,7 +706,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			//numTotal = numTotal  * .05
 			//this is the tax  amount
-			var GrandTotalString = "doesnt display"
+			var GrandTotalString = "this text doesnt display"
 			if i == (len(allIds) - 1) {
 				tax = numTotal * 5
 				numTotal = numTotal * 100
