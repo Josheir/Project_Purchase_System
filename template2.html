@@ -149,7 +149,8 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         AmountToBuyID = var1 + counter;
         AmountOfCostID = var2 + counter;
         AmountOfQuantityID = var3 + counter;
-      
+      alert("quantity");
+      alert(AmountOfQuantityID);
         //amount in box
         var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
         var quantityInBox = parseInt(document.getElementById(AmountOfQuantityID).value);
@@ -236,16 +237,19 @@ var queryString = string.substring(0, string.length-1);
               //alert(data1);
                 
 
-              var TotalCost = 1.1;
+             
 
-              
+              var TotalCost = "string";
+                  
               var GTotalWithTax = 0.0;
+                gFlagIsEnoughProduct = "yes";
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
+                 
                   GTotalWithTax = 0;
-                alert("lengthOfData");
-                alert(lengthOfData);
+                //alert("lengthOfData");
+                //alert(lengthOfData);
                 var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
                 var availableID =  "D" + i;
@@ -269,17 +273,39 @@ var queryString = string.substring(0, string.length-1);
                 if (str1 == "yes")
                 {
 
+                  gFlagIsEnoughProduct = "no"
+
                   GTotalWithTax = 0.0;
                   //alert ("in not enough");
-                  document.getElementById(availableID).outerHTML = str2.fontcolor("red");
+                  
+                  
+                  //document.write(str2.fontcolor("red"));
+                  //document.getElementById(availableID).outerHTML = str2.fontcolor("red");
+
+                  //const check = document.getElementById(availableID); 
+                     
+                  //check.value = str2.fontcolor("red");
+                  //div.style.color = "red";
+                  document.getElementById(availableID).style.color = "red";
+                  var value = document.getElementById(availableID);
+                  value.value = str2;
+
+
+
+
+
+                  
                   
                   document.getElementById(boughtid).value = 0;
 
                   //string, however value is (example) : $1.00
-                  TotalCost = document.getElementById(totalCostID).value;
-                  TotalCost = TotalCost.slice(1);
+                  TotalCost = document.getElementById(totalCostID).value ;
+                  alert("start");
+                  alert(typeof(TotalCost));
                   alert(TotalCost);
-                  var TotalCostFloat = parseFloat(TotalCost);
+                  TotalCost1 = TotalCost.slice(1);
+                  //alert(TotalCost);
+                  var TotalCostFloat = parseFloat(TotalCost1);
 
                   //alert("TotalCostFloat");
                   //alert(TotalCostFloat);
@@ -382,10 +408,13 @@ var queryString = string.substring(0, string.length-1);
                 //alert("total");
                 //alert(total);
                 TotalCostString = "$0.00"; 
+
+                
+                
                 //alert("TotalCostString");
                 //alert(TotalCostString);
 
-                document.getElementById(totalCostID).outerHTML = (TotalCostString);
+                document.getElementById(totalCostID).value = (TotalCostString);
                 var check = document.getElementById(buyThisManyID );    
                 check.value = "";
                   ///////////
@@ -404,38 +433,38 @@ var queryString = string.substring(0, string.length-1);
                 //remove totalcost determined at purchase interface, so that amount to buy times cost will equal this
                 //products total
                 var initialTotalCost = document.getElementById(totalCostID).value;
-                alert("typeof1");
-                alert(typeof(initialTotalCost));
+                //alert("typeof1");
+                //alert(typeof(initialTotalCost));
 
                 initialTotalCost = initialTotalCost.slice(1);
 
-                alert("typeof2");
-                alert(typeof(initialTotalCost));
+                //alert("typeof2");
+                //alert(typeof(initialTotalCost));
                 //float
                 initialTotalCost = parseFloat(initialTotalCost);
-                alert("typeof2");
-                alert(typeof(initialTotalCost));
+                //alert("typeof2");
+                //alert(typeof(initialTotalCost));
 
-                alert("initialTotalCostA");
-                alert(initialTotalCost);
+                //alert("initialTotalCostA");
+                //alert(initialTotalCost);
                   
                 
                 var initialTotalCost = initialTotalCost * (10 ** 2);
 
                 //whole number
                 var tax1 = initialTotalCost * 5;
-                alert("tax1");
-                alert(tax1);
+                //alert("tax1");
+                //alert(tax1);
 
 
                 var initialTotalCost = initialTotalCost * (10 ** 2);
 
-                alert("initialTotalCostB");
-                alert(initialTotalCost);
+                //alert("initialTotalCostB");
+                //alert(initialTotalCost);
 
                 initialTotalCost = initialTotalCost + tax1;
-                alert("initialTotalCostC");
-                alert(initialTotalCost);
+                //alert("initialTotalCostC");
+                //alert(initialTotalCost);
                   
 
                 //intialTotalCost = initialTotalCost / (10 ** 4);
@@ -448,27 +477,27 @@ var queryString = string.substring(0, string.length-1);
                 ///////////////////////end work to do
 
                 //211.01
-                alert("gtotal1");
-                alert(gtotal);
+                //alert("gtotal1");
+                //alert(gtotal);
 
                 //gtotal = 2110100
                 gtotal = gtotal * (10 ** 4);
-                alert("gtotal2");
-                alert(gtotal);
+                //alert("gtotal2");
+                //alert(gtotal);
                 //2110080
-                alert("initialTotalCost");
-                alert(initialTotalCost);
+                //alert("initialTotalCost");
+                //alert(initialTotalCost);
                 gtotal = gtotal - initialTotalCost;
                 intialTotalCost = initialTotalCost / (10 ** 2);
                 gtotal = gtotal / (10 ** 4);
-                alert("gtotal3!!!!");
-                alert(gtotal);
+                //alert("gtotal3!!!!");
+                //alert(gtotal);
 
                 
                 //gtotal = gtotal / (10 ** 4);
 
-                alert("gtotal4");
-                alert(gtotal);
+                //alert("gtotal4");
+                //alert(gtotal);
 
 
                 GTotalWithTax = 0;
@@ -482,17 +511,17 @@ var queryString = string.substring(0, string.length-1);
                 var amtBuying = document.getElementById(buyThisManyID).value;
                 amtBuying = parseFloat(amtBuying);
 
-                alert(amtAvailable);
-                alert(bought);
-                alert(amtBuying);
+                //alert(amtAvailable);
+                //alert(bought);
+                //alert(amtBuying);
                
                   //94   1    2
                 var newAvailable = amtAvailable + bought - amtBuying;
-                alert(newAvailable);
+                //alert(newAvailable);
                 document.getElementById(availableID).value = newAvailable;
 
-                alert("newAvailable");
-                alert(newAvailable);
+                //alert("newAvailable");
+                //alert(newAvailable);
                 //example : 1.11 - string
                 var costEach = document.getElementById(costID).value;
                 costEach = costEach.slice(1);
@@ -502,8 +531,8 @@ var queryString = string.substring(0, string.length-1);
                 //move decimal right
                 costEach =  costEach * (10 ** 2);
 
-                alert("costEach");
-                alert(costEach);
+                //alert("costEach");
+                //alert(costEach);
                 //save new bought
                 document.getElementById(boughtid).value = amtBuying; 
                 
@@ -543,31 +572,31 @@ var queryString = string.substring(0, string.length-1);
                 totalCopy = totalCopy * (10 ** 2);
                 tax = parseFloat(tax);
                   
-                alert("totalCopy");
-                alert(totalCopy);
-                alert("tax");
-                alert(tax);
+                //alert("totalCopy");
+                //alert(totalCopy);
+                //alert("tax");
+                //alert(tax);
 
-                alert("totalCopy");
-                alert(totalCopy);
+                //alert("totalCopy");
+                //alert(totalCopy);
                 //example:
                 //($1.05)
                 //10500
-                alert("GTotalWithTax1");
-                alert(GTotalWithTax);
+                //alert("GTotalWithTax1");
+                //alert(GTotalWithTax);
 
                 GTotalWithTax =  tax + totalCopy;
 
-                alert("gtotal!!!!!");
-                alert(gtotal);
-                alert("GTotalWithTax1");
-                alert(GTotalWithTax);
+                //alert("gtotal!!!!!");
+                //alert(gtotal);
+                //alert("GTotalWithTax1");
+                //alert(GTotalWithTax);
 
                 gtotal = gtotal * (10 ** 2);
                 
                 gtotal = gtotal + GTotalWithTax;
-                alert("gtotal");
-                alert(gtotal);
+               // alert("gtotal");
+               // alert(gtotal);
 
                 gtotal = gtotal / (10 ** 2); 
                 
@@ -575,13 +604,13 @@ var queryString = string.substring(0, string.length-1);
                 //alert(gtotalCopy);
                 var gtotalCopy = gtotal;
                 //4220160
-                alert("gtotalCopy1A");
-                alert(gtotalCopy);
+              //  alert("gtotalCopy1A");
+              //  alert(gtotalCopy);
 
                 gtotalCopy = gtotalCopy / (10 ** 2)
 
-                alert("gtotalCopy2");
-                alert(gtotalCopy);
+             //   alert("gtotalCopy2");
+             //   alert(gtotalCopy);
 
                 var stringGrandTotal = gtotalCopy.toFixed(2); 
                 alert(typeof(stringGrandTotal));
@@ -614,11 +643,19 @@ var queryString = string.substring(0, string.length-1);
                    //GTotalWithTax = GTotalWithTax / (10 ** 2);
                  /////////
                  
-                }
+                }//not enough product
                 
 
                 
                 }//for
+
+                //alert("flag");
+                //alert(gFlagIsEnoughProduct);
+                //if (gFlagIsEnoughProduct == "yes")
+                //{
+                //  alert("redirect");
+                //  window.location.replace("http://www.localhost/donePurchase.html");
+                //}
 
                 
 /*

@@ -506,7 +506,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(ProductList2A)
 
 	} else {
+
 		//fmt.Println("array length zero")
+		http.Redirect(w, r, "http://www.localhost/donePurchase", 301)
 	}
 
 }
