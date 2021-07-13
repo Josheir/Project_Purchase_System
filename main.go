@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+
 	"net/http"
 
 	//"log"
@@ -51,9 +52,18 @@ type Product2 struct {
 	IsNotEnoughQuantity string
 }
 
+type HoldsFlag struct {
+
+	Flag   string
+}
+
+
 var ProductList = []Product1{}
 var ProductList2 = []Product2{}
 var ProductList2A = []Product2{}
+
+
+
 
 //cited
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
@@ -252,6 +262,90 @@ func trycommit(w http.ResponseWriter, r *http.Request) {
 
 }
 */
+
+func processLogin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	query := r.URL.Query()
+
+	userid, present := query["userid"]
+
+	if !present || len(userid) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	userid1, err := (strconv.Atoi(userid[0]))
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	pass, present := query["pass"]
+
+	if !present || len(pass) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	db := dbConn()
+
+	stmt, err := db.Prepare("SELECT customers.Password FROM customers WHERE customers.CustomerID = ?")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	rows, err := stmt.Query(userid1)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var PasswordID string
+
+	for rows.Next() {
+
+		err = rows.Scan(&PasswordID)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+
+	/*type flag struct {
+		flag string
+	}
+
+	//	a := User{Name:"a" , Age: 10 , City:"s" };
+
+	var flagValue = []flag{{
+
+		flag: "yes",
+	}}
+
+	*/
+	
+	
+
+	passFlag := "no"
+	
+	if PasswordID == "" {
+		passFlag = "password wrong"
+	} else if PasswordID == pass[0] {
+	
+		passFlag = "password correct"
+	} else {
+	
+		passFlag = "password wrong"
+	}
+	json.NewEncoder(w).Encode(passFlag)
+
+}
+
+
+
 //called from template2, final purchase selected, so send this back to display
 func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
@@ -265,7 +359,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Println(ProductList2)
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	//fmt.Println("GET params were:", r.URL.Query())
 
@@ -370,7 +464,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//all the products may be removed from the database so delete  them and create an order and create a new product for each product
-	//proceed with checkout
+	//proceed with checkout - can save off everything and end transaction
 	if isEnoughInDatabase == "yes" {
 
 		//set new record for order, with the quantity subtracted
@@ -501,16 +595,43 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err5)
 	}
 
-	if len(ProductList2A) != 0 && isEnoughInDatabase == "no" {
+	if isEnoughInDatabase == "no" {
 		//sends array of structs to template2.html
 		json.NewEncoder(w).Encode(ProductList2A)
 
+		//sold status
 	} else {
 
-		//fmt.Println("array length zero")
-		http.Redirect(w, r, "http://www.localhost/donePurchase", 301)
-	}
+		//fmt.Println("was here...")
 
+		//req, err := http.NewRequest("GET", "https://www.google.com", nil)
+		//if err != nil {
+		//	panic(err)
+		//}
+
+		//client := new(http.Client)
+		//response, err := client.Do(req)
+		//if err != nil {
+		//	panic(err)
+		//}
+		//fmt.Println(ioutil.ReadAll(response.Body))
+		//resp, err := http.Get("http://www.google.com/")
+
+		//if err != nil {
+		//	fmt.Println(err)
+		//}
+
+		//fmt.Println("StatusCode:", resp.StatusCode)
+		//fmt.Println(resp.Request.URL)
+
+		//target = "html://login";
+		//http.Redirect(w, r, "http://www.gmail.com", 301)
+		//if err != nil {
+		//	fmt.Println("err")
+		//	//	fmt.Println(val)
+
+	}
+	//json.NewEncoder(w).Encode(ProductList2A)
 }
 
 //https://github.com/strongo/decimal
@@ -1152,11 +1273,12 @@ func main() {
 	one.HandleFunc("/display", display1)
 
 	one.HandleFunc("/HelloWorld", HelloWorld)
+	one.HandleFunc("/processLogin", processLogin)
 
 	two := http.NewServeMux()
 
 	//
-	two.HandleFunc("/template2", createTemplate2)
+	one.HandleFunc("/template2", createTemplate2)
 	one.HandleFunc("/spitBackAmounts", spitBackAmounts)
 
 	go func() {
