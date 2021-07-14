@@ -210,7 +210,18 @@ var queryString = string.substring(0, string.length-1);
              
               success: function (data1) {
 
-                alert("success");
+
+                if (data1 == "not enough")
+                {
+
+                }
+                else if (data1 == "is enough")
+                {
+                  window.location.href = "donePurchase.html";
+                }
+                
+
+
                 alert(data1);
                 console.log(data1);
 

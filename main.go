@@ -53,17 +53,12 @@ type Product2 struct {
 }
 
 type HoldsFlag struct {
-
-	Flag   string
+	Flag string
 }
-
 
 var ProductList = []Product1{}
 var ProductList2 = []Product2{}
 var ProductList2A = []Product2{}
-
-
-
 
 //cited
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
@@ -326,25 +321,21 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	}}
 
 	*/
-	
-	
 
 	passFlag := "no"
-	
+
 	if PasswordID == "" {
 		passFlag = "password wrong"
 	} else if PasswordID == pass[0] {
-	
+
 		passFlag = "password correct"
 	} else {
-	
+
 		passFlag = "password wrong"
 	}
 	json.NewEncoder(w).Encode(passFlag)
 
 }
-
-
 
 //called from template2, final purchase selected, so send this back to display
 func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
@@ -595,12 +586,23 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err5)
 	}
 
+	var value1 = "thisvalue1"
+
+	//not enough in database,
 	if isEnoughInDatabase == "no" {
+
+		value1 = "not enough"
 		//sends array of structs to template2.html
-		json.NewEncoder(w).Encode(ProductList2A)
+		fmt.Println("made it here")
+
+		//json.NewEncoder(w).Encode(ProductList2A)
+		json.NewEncoder(w).Encode(value1)
 
 		//sold status
 	} else {
+
+		value1 = "is enough"
+		json.NewEncoder(w).Encode(value1)
 
 		//fmt.Println("was here...")
 

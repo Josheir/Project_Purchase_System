@@ -1,9 +1,37 @@
 <html>
 
+
+    <head>
+
+        <title>Bootstrap Example</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+      <!DOCTYPE html>
+    </head>  
+
+
     <body>
 
-        <p><center>Your Purchase has been made successfully!</center></p>
+        <p><center><font size = "+3">Your Purchase has been made successfully!</font></center></p>
 
+        <center><input   id="button1"  type="button" value="Search for Product"/></center>
+        
+        <script>
+        
+        $(document).ready(function () {
+        $('#button1').click(function () {
+
+            window.location.href = "index.html";
+     
+        });
+    });
+
+
+        </script>
     </body>
 
 
