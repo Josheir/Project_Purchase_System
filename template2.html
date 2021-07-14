@@ -106,6 +106,7 @@
 
 <script>
 
+window.sessionStorage
 
 
 function changeColorToBlack(AmountToBuyID)
@@ -156,7 +157,8 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         var quantityInBox = parseInt(document.getElementById(AmountOfQuantityID).value);
         var costInBox = (document.getElementById(AmountOfCostID).value); 
        
-
+       alert("cost");
+      alert(costInBox);
         
         //amount bought before purchase
         //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
@@ -180,17 +182,16 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         //alert("string");
         //alert(string);
     }
-    //if(flag == "wasHere")
-    //{
-    //  return
-    //}
-    //alert("here");
-    //alert(flag);
     
+    
+    //remove the amperstand is right below
+    string = string + "userid" + sessionStorage.getItem("session_userID") +  "&"
 if (flag == "isNegValue")
 {
   return;
 }
+
+
 //alert("here2");
 //goes backwards and last entered writes over
 var queryString = string.substring(0, string.length-1);
@@ -211,16 +212,19 @@ var queryString = string.substring(0, string.length-1);
               success: function (data1) {
 
 
+                //at least one product cant be purchased
                 if (data1 == "not enough")
                 {
 
                 }
+                //all products can be purchasee
                 else if (data1 == "is enough")
                 {
                   window.location.href = "donePurchase.html";
                 }
                 
 
+                // GTotalWithTax 
 
                 alert(data1);
                 console.log(data1);
@@ -256,6 +260,8 @@ var queryString = string.substring(0, string.length-1);
                   
               var GTotalWithTax = 0.0;
                 gFlagIsEnoughProduct = "yes";
+                
+                //amount of products
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
@@ -289,16 +295,7 @@ var queryString = string.substring(0, string.length-1);
                   gFlagIsEnoughProduct = "no"
 
                   GTotalWithTax = 0.0;
-                  //alert ("in not enough");
                   
-                  
-                  //document.write(str2.fontcolor("red"));
-                  //document.getElementById(availableID).outerHTML = str2.fontcolor("red");
-
-                  //const check = document.getElementById(availableID); 
-                     
-                  //check.value = str2.fontcolor("red");
-                  //div.style.color = "red";
                   document.getElementById(availableID).style.color = "red";
                   var value = document.getElementById(availableID);
                   value.value = str2;
@@ -358,6 +355,8 @@ var queryString = string.substring(0, string.length-1);
                     //($1.05)
                     //105
                     GTotalWithTax =  GTotalWithTax +  tax + TotalCostFloat;
+
+
                     //GTotalWithTax = GTotalWithTax / (10 ** 2)
 
                     //alert("GTotalWithTax");
@@ -599,6 +598,10 @@ var queryString = string.substring(0, string.length-1);
                 //alert(GTotalWithTax);
 
                 GTotalWithTax =  tax + totalCopy;
+
+
+                alert("total");
+                alert(GTotalWithTax);
 
                 //alert("gtotal!!!!!");
                 //alert(gtotal);

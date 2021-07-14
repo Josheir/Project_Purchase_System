@@ -25,6 +25,7 @@
 
 <script>
 
+window.sessionStorage
 ///////////
 
 
@@ -44,6 +45,8 @@ alert("query")
 
             alert(querystring);
 
+            
+
             $.ajax({
                 url: "http://localhost:8080/processLogin",
                 type: 'GET',
@@ -57,6 +60,7 @@ alert("query")
                   
                   if (result == "password correct")
                   {
+                    sessionStorage.setItem("session_userID", userid)
                     window.location.href = "index.html";
                   }
                   else

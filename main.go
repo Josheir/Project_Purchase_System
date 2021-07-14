@@ -8,14 +8,11 @@ import (
 
 	"net/http"
 
-	//"log"
 	"math"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	//"math/big"
-	//"github.com/shopspring/decimal"
-	//"github.com/leekchan/accounting"
 )
 
 type product struct {
@@ -60,10 +57,7 @@ var ProductList = []Product1{}
 var ProductList2 = []Product2{}
 var ProductList2A = []Product2{}
 
-//cited
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
-//http://localhost:8080/golangproj/
-
 var globt *template.Template
 var globKeyword = ""
 var Test = 1
@@ -143,13 +137,6 @@ func ToUSD(f float64) USD {
 
 //////////
 
-//executes back to :  finalpage.html
-
-//var list[]product
-
-//var List1  []product
-//var prod []product
-
 //https://www.bing.com/search?q=receiver%20int%20golang&qs=n&form=QBRE&sp=-1&pq=receiver%20int%20golang&sc=0-19&sk=&cvid=14C3226BD73C46F09A57AA46291441EA
 func addElement(var1 int, var2 string, var3 string, var4 int) {
 
@@ -159,25 +146,12 @@ func addElement(var1 int, var2 string, var3 string, var4 int) {
 	element.ProductCatTitle = var3
 	element.ProductCost = var4
 
-	//prod = append(prod, element)
-
 }
 
-//arr.push({ID:key, Quant:item});
-//type product1 struct {
-//	ID    int `json:"ID"`
-//	Quant int `json:"Quant"`
-//}
 type Product3 struct {
 	ID    int
 	Quant int
 }
-
-// i1 is product id, i2 is quant to add
-//func updateListForLastpage(index int, quantity int, amtInDatabase int) {
-//
-//	ProductList2[index].QuantityAvailable = amtInDatabase + quantity
-//}
 
 func makeListForLastpageA(enough string, id int, quant int) {
 
@@ -191,13 +165,6 @@ func makeListForLastpageA(enough string, id int, quant int) {
 	//list to spit back to html for rewriting all the quant
 	ProductList2A = append(ProductList2A, prod)
 }
-
-//arr.push({ID:key, Quant:item});
-
-//pass an array to here from index.html
-//called from finalpage. query string,
-//there, checkout button pressed
-//this function creates them template2!
 
 //this last page is where the data is spat back to html to note any database changes that cause purchase impossible
 func makeListForLastpage(id int, quant int) {
@@ -214,50 +181,7 @@ func makeListForLastpage(id int, quant int) {
 
 var orderid1 = 100
 
-/*
-//for testing
-func trycommit(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Add("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-
-	db := dbConn()
-	tx, err := db.Begin()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var cust = 1
-	var cost = 107
-	var date = "2021-01-1"
-
-	//var ins *sql.Stmt
-	//stmt, err := tx.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?");
-	stmt, err := tx.Prepare("INSERT INTO orders (OrderID, OrderDate,OrderCost, CustomerID) values(?,?,?,?)")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	defer stmt.Close()
-
-	_, err = stmt.Exec(orderid1, date, cost, cust)
-	orderid1++
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	err5 := tx.Commit()
-	if err5 != nil {
-		fmt.Println(err5)
-	}
-
-}
-*/
-
+//https://www.geeksforgeeks.org/how-to-get-current-time-in-golang/
 func processLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -309,19 +233,6 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	/*type flag struct {
-		flag string
-	}
-
-	//	a := User{Name:"a" , Age: 10 , City:"s" };
-
-	var flagValue = []flag{{
-
-		flag: "yes",
-	}}
-
-	*/
-
 	passFlag := "no"
 
 	if PasswordID == "" {
@@ -344,16 +255,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
-	//fmt.Println(ProductList2)
-
-	//json.NewEncoder(w).Encode(ProductList2)
-
-	//fmt.Println(ProductList2)
-
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	//fmt.Println("GET params were:", r.URL.Query())
-
 	query := r.URL.Query()
 
 	allIds, present := query["id"]
@@ -370,6 +271,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present")
 	}
 
+	userID1, present := query["userid"]
+
+	if !present || len(userID1) == 0 {
+		fmt.Println("filters not present")
+	}
+
+	userID := userID1[0]
+
 	db := dbConn()
 
 	var isEnoughInDatabase = "yes"
@@ -383,10 +292,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	var counter = 0
 	var quant = 0
+
+	DatabaseQuantity := 0
 	//any fail means isnotenoughindatabase
 	for j = 0; j < len(allIds); j++ {
-
-		DatabaseQuantity := 0
 
 		//gets quantity for each product id
 		quant, _ = (strconv.Atoi(allQuants[j]))
@@ -412,11 +321,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		//listing : ProductList2A - new values of quantity for id
-		//allIds2[i] = val1
-		//product amt, whats in database
-		//allQuants2[i] = DatabaseQuantity
-
 		enough := ""
 		//not enough to buy this product
 		if DatabaseQuantity <= quant {
@@ -427,18 +331,13 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			enough = "no"
 		}
 
-		//makes productline2A for new values to pass to template2.html
-		//appends
 		makeListForLastpageA(enough, (val1), DatabaseQuantity)
 
 		//amount of product changed, there is no longer enough product for purchase
 		//just send all values without delete
 		//if there is no fail than checkout completes with
 		//quant is amount purchasing
-		//if counter == 0 {
-		//	quant = 2000
-		//	counter++
-		//}
+
 		//any one fail means just write the new amounts and do  not change the database
 		if (quant) > DatabaseQuantity || isEnoughInDatabase == "no" {
 
@@ -446,11 +345,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			//continue
 
 		}
-
-		//err := tx.Commit();
-		//if err != nil {
-		//fmt.Println(err)
-		//}
 
 	}
 
@@ -475,11 +369,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			if intQuant <= 0 {
 				continue
 			}
-
-			//quant, err2 := (strconv.Atoi(allQuants[i]))
-			//if err2 != nil {
-			//	fmt.Println(err)
-			//}
 
 			orderid = 0
 			//get last order id
@@ -515,30 +404,20 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err4)
 			}
 
-			//var ProductQuantity2 = ProductQuantity - quant
-
-			/////////////
-
 			//creates same product with quantitiy of this product minus how much purchased (quant)
 			//database amount - amount purchased
 			//100 in database , 10 bought -> 90 left   so there is ten purchased in order (bought)
 			//intQuant, err := strconv.Atoi(allQuants[i])
 			_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity-intQuant, allIds[i])
 
-			//////////////
-			//https://idineshkrishnan.com/crud-operations-with-mysql-in-go-language/
-			//new record with next orderid - amount of products purchased
-			//	_ = tx.QueryRow("INSERT INTO products VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", orderid, ProductFilename,ProductName, ProductDescription,
-			//	ProductCost, quant, ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, CustomerID, 0, ProductStatus,AdminID )
-
-			////////////////
-
 			//get this with logon : custid
 
+			var cust = userID
+			//no decimals
+			var cost = ProductCost
+			datetime := time.Now()
+
 			if insertOrderFlag == "yes" {
-				var cust = 1
-				var cost = 100
-				var date = "2021-01-1"
 
 				//stmt, err := tx.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?");
 				stmt, err := tx.Prepare("INSERT INTO orders (OrderID, OrderDate,OrderCost, CustomerID) values(?,?,?,?)")
@@ -549,7 +428,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 				defer stmt.Close()
 
-				_, err = stmt.Exec(orderid, date, cost, cust)
+				_, err = stmt.Exec(orderid, datetime, cost, cust)
 
 				if err != nil {
 					fmt.Println(err)
@@ -569,7 +448,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			ProductCatTitle = "purchased"
 
 			_, err = stmt.Exec(nextProductID, ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle,
-				gKeyword1, gKeyword2, gKeyword3, CustomerID, orderid, ProductStatus, AdminID)
+				gKeyword1, gKeyword2, gKeyword3, cust, orderid, ProductStatus, AdminID)
 
 			if err != nil {
 				fmt.Println(err)
@@ -603,34 +482,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		value1 = "is enough"
 		json.NewEncoder(w).Encode(value1)
-
-		//fmt.Println("was here...")
-
-		//req, err := http.NewRequest("GET", "https://www.google.com", nil)
-		//if err != nil {
-		//	panic(err)
-		//}
-
-		//client := new(http.Client)
-		//response, err := client.Do(req)
-		//if err != nil {
-		//	panic(err)
-		//}
-		//fmt.Println(ioutil.ReadAll(response.Body))
-		//resp, err := http.Get("http://www.google.com/")
-
-		//if err != nil {
-		//	fmt.Println(err)
-		//}
-
-		//fmt.Println("StatusCode:", resp.StatusCode)
-		//fmt.Println(resp.Request.URL)
-
-		//target = "html://login";
-		//http.Redirect(w, r, "http://www.gmail.com", 301)
-		//if err != nil {
-		//	fmt.Println("err")
-		//	//	fmt.Println(val)
 
 	}
 	//json.NewEncoder(w).Encode(ProductList2A)
@@ -988,12 +839,6 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var Var1 = "abc"
 	var var2 = VAR1{Var1}
-	//w.Header().Add("Content-Type", "application/html")
-
-	//w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	//w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	//data := VAR{"testname"}
-	//var var1 = VAR{var2}
 
 	globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/twemplate1.html"))
 
@@ -1007,9 +852,6 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//t, _ := template.ParseFiles("index1.html")
-	//var t = template.Must(template.New("").Parse("index1.html"))
-	//globt.Execute(w, "a")
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
@@ -1240,26 +1082,7 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(user)
 }
 
-//////
-
-//type one struct {
-//}
-
-//type two struct {
-//}
-
-//func (m *one) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-//	w.Write([]byte("Listening on 8080: foo "))
-//}
-//func (m *two) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-//	w.Write([]byte("Listening on 8081: foo "))
-//}
 func main() {
-
-	//finish := make(chan bool)
-
-	//wg := new(sync.WaitGroup)
-	//wg.Add(2)
 
 	one := http.NewServeMux()
 
@@ -1290,5 +1113,4 @@ func main() {
 
 	http.ListenAndServe(":8081", two)
 
-	//wg.Wait()
 }
