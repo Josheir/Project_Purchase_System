@@ -13,17 +13,21 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 	  <!DOCTYPE html>
 
+  </head> 
+
+
+  <script>
+    window.sessionStorage
+    </script>
+
       <style>
       table, th, td {
         border: 1px solid black;
-        border-collapse: collapse;
+       
       }
 
       
-      .center {
-        margin-left: auto;
-        margin-right: auto;
-      }
+      
       td {
         height: 80px;
         width: 160px;
@@ -32,13 +36,16 @@
       }
 
       </style>
-	</head>  
+ 
 
 <br>
 
 {{range .}}
 {{if(eq .Condition 1)}}
-<table style="width:60%" class="center">
+
+
+<table style="width:60%; border:1px solid black;margin-left:auto;margin-right:auto;">
+
 <tr>
 
 <th><center>Amount to Buy</center></th>
@@ -50,6 +57,7 @@
 <th><center>Total Cost Items</center></th> 
 
 </tr>
+
 {{end}}
 
 
@@ -106,7 +114,6 @@
 
 <script>
 
-window.sessionStorage
 
 
 function changeColorToBlack(AmountToBuyID)
@@ -153,8 +160,8 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       alert("quantity");
       alert(AmountOfQuantityID);
         //amount in box
-        var amtInBuyBox = parseInt(document.getElementById(AmountToBuyID).value);
-        var quantityInBox = parseInt(document.getElementById(AmountOfQuantityID).value);
+        var amtInBuyBox =(document.getElementById(AmountToBuyID).value);
+        var quantityInBox = (document.getElementById(AmountOfQuantityID).value);
         var costInBox = (document.getElementById(AmountOfCostID).value); 
        
        alert("cost");

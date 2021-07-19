@@ -66,10 +66,10 @@ var3 = var1 + var2;
       <div id ="buttons">
       <br><br><br>
      
-      <iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
+     <!-- <iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
 
       <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="http://localhost:8080/processSearch">
-     
+      -->
       
       
       
@@ -92,6 +92,13 @@ var3 = var1 + var2;
       <div id = "lastdiv"></div>
       
 <script>
+
+let url = window.location.href;
+      if(url.includes('?')){
+      //alert("alert");
+      //sessionStorage.setItem("key", "item");
+}
+
 
 var array1 = [];
 function insert(pid, quantLeft) {
