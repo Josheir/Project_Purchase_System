@@ -460,6 +460,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	} //is enough
 
+	//LOOK AT THIS AND ENCODE A STRUCT WITH VALUE1 ; look at enough perhaps chceck for it in the template2
 	err5 := tx.Commit()
 	if err5 != nil {
 		fmt.Println(err5)

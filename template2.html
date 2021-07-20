@@ -153,6 +153,11 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     let keys = Object.keys(sessionStorage);
     for(let key of keys) {
         counter++;
+        if(key =="session_userID")
+        {
+          counter--;
+          continue;
+        }
         //input boxes id
         AmountToBuyID = var1 + counter;
         AmountOfCostID = var2 + counter;
@@ -192,7 +197,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     
     
     //remove the amperstand is right below
-    string = string + "userid" + sessionStorage.getItem("session_userID") +  "&"
+    string = string + "userid=" + sessionStorage.getItem("session_userID") +  "&"
 if (flag == "isNegValue")
 {
   return;
@@ -287,7 +292,7 @@ var queryString = string.substring(0, string.length-1);
                 var str2= "";
                 str1 = data1[i].IsNotEnoughQuantity;
 
-                var num = data1[i].QuantityAvailable ;
+                var num = data1[i].QuantityAvailable;
                 str2 = num.toString();
                 //alert("str2");
                 //alert(str2);
