@@ -538,7 +538,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//var ProductID = 2
 	var i = 0
 
-	var Condition = 0
+	var Condition = 1
 	var Condition2 = 0
 
 	//error when making two product and pressing checkout displays all table data below main table with another checkout button
@@ -591,12 +591,15 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		var ProductName, ProductCatTitle, ProductCost, TotalCost string
 
 		fmt.Println("ProductList")
-		fmt.Println(ProductList)
+		fmt.Println(fmt.Sprintf("%+v", ProductList))
 
+		defer rows.Close()
+
+		//jumps past this, first run through
 		for rows.Next() {
 
 			fmt.Println("ProductList1")
-			fmt.Println(ProductList)
+			fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
@@ -604,15 +607,15 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 
-			var i = 0
-			for i = 0; i < len(allIds); i++ {
+			var j = 0
+			for j = 0; j < len(allIds); j++ {
 
-				bought, err = (strconv.Atoi(allQuants[i]))
+				bought, err = (strconv.Atoi(allQuants[j]))
 				if err != nil {
-					fmt.Println(var2)
+					fmt.Println(err)
 				}
 
-				ID, err = strconv.Atoi(allIds[i])
+				ID, err = strconv.Atoi(allIds[j])
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -696,7 +699,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		}
 		fmt.Println("ProductList")
-		fmt.Println(ProductList)
+		fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 	} //for next loop
 
@@ -705,7 +708,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
 	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
 	fmt.Println("ProductList2")
-	fmt.Println(ProductList)
+	fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 	err1 := globt.Execute(w, ProductList)
 
