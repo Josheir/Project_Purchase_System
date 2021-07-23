@@ -20,40 +20,13 @@
 
     //https://stackoverflow.com/questions/4187146/truncate-number-to-two-decimal-places-without-rounding
     
-  </script>
-
-<!--#include virtual ="finalPage.html" /> -->
   
-  
-    
-  
-  <!-- 
-  <form
-      id="form"
-      enctype="multipart/form-data"
-      action="http://localhost:8080/upload"
-      method="POST"
-    >
-      <input class="input file-input" type="file2" name="file2" multiple />
-      <button class="button" type="fix">Submit</button>
-    </form>
-  -->
-
-
-  
-
-
-
-<script>
 
 var var1 =1;
 var var2 =1;
 var var3 ;
 var3 = var1 + var2;
 
-//var3 = var1 + var2;
-
-//let var1 = "apple1";
 
 </script>
     
@@ -66,22 +39,6 @@ var3 = var1 + var2;
       <div id ="buttons">
       <br><br><br>
      
-     <!-- <iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
-
-      <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="http://localhost:8080/processSearch">
-      -->
-      
-      
-      
-     <!--- <input   id="button3" type="button" value="Test JSON - getmerssage"/>
-      <input   id="button2" type="submit" value="Get Inputs"/>
-      </form>
-    
-      <input   id="button1" type="submit" value="Search Database"/>-->
-      
-     
-      
-      
      
 
       </div>
@@ -92,16 +49,6 @@ var3 = var1 + var2;
       <div id = "lastdiv"></div>
       
 <script>
-
-//from login.html
-//let url = window.location.href;
-//      if(url.includes('?')){
-//      alert("alert");
-//
-//      //when uncommented the template table doesn't display properly
-//      //sessionStorage.setItem("key", "item");
-//}
-
 
 var array1 = [];
 function insert(pid, quantLeft) {
@@ -115,72 +62,7 @@ function insert(pid, quantLeft) {
 
 
 
-//Global Array
 
-//check this when purchasing so if there is a purchase is stored in an array
-//if called and pid has some reductions already will keep track of how many
-//left.  Used here to prevent more than total being reduced, and for if chosen
-//again with a seperate search 
-
-/*
-function savePIDAndQuantInArray(PID, quantLeft, quantityID){
-
-  for (i=0;i< array1.length ;i++ )
-  {
-      
-    //already has a key pid
-    if(array1[i] == PID)
-      {
-          array1[i].quant =  array1[i].quant - quantLeft;
-          
-          string = "foundPIDandQuantChanged";
-          break;
-      }
-    }
-    //no pid with PID insert new record
-    if (string != "foundPIDandQuantChanged")
-      {
-        insert(PID, quantLeft);
-      }
-    setMaxQuantityInRecord(PID, quantLeft, QuantityID);
-
-
-  }
-
-function setMaxQuantityInRecord(PID, quantLeft, quantityID)
-{
-  document.getElementById(QuantityID) = quantLeft;
-}
-
-////"Purchase(" + strconv.Itoa(ProductID) + ", " + quantityID + ", " + mainDiv + " )
-function Purchase(mainDiv2, productID, quantityID, chosenQuant){
-
-  //quant left for purchasing
-  var quantmax = document.getElementById(quantityID).value;
-  //less or equal to stor in database
-  if (chosenQuant > 0 && chosenQuant <= quantmax )
-  {
-    var quantLeftInSupply = quantmax - chosenQuant;
-    //make box display amount left
-    setMaxQuantityInRecord(productID, quantLeft, quantityID)
-    //clears record:
-    document.getElementById(mainDiv2).innerHTML = "" ;
-    //stores in array, quant left ;  if another search and uses same record, the array will keep track of total reductions
-    savePIDAndQuantInArray(productID, quantLeftInSupply, quantityID);
-
-
-  }
-  //quant is greater than availbe so do nothing
-  else{
-    
-    return(1);
-
-  }
-  alert("here");
-
-}
-
-*/
 
 
 
@@ -188,34 +70,9 @@ $(document).ready(function () {
       $('#button3').click(function () {
 
 
-        /*
-  
-   alert("your here");
-  var arr = { name: "John", age: 30, city: "New York" };
-  
-var name = "Josh"; 
-var age = 10;
-var city = "Boston"
-
- //insert(name, age, city);
-
-
-  var obj2 = { name: "John", age: 30, city: "New York" };
-  var testing = JSON.stringify(obj2);
-  
-  var dataA = '{"Nidhi": "3","Nisha": "2", "Rohit": "1"}'; 
-  
-  var name = "test1";
-  var email = "test2";
-  var lang = "test3";
- 
-
-
-var dataB = JSON.stringify(dataA);
-
-*/
+        
   //https://stackoverflow.com/questions/8951810/how-to-parse-json-data-with-jquery-javascript
-       // https://stackoverflow.com/questions/5061310/jquery-returning-parsererror-for-ajax-request
+  // https://stackoverflow.com/questions/5061310/jquery-returning-parsererror-for-ajax-request
     
         //example
        $.ajax({
@@ -240,21 +97,6 @@ var dataB = JSON.stringify(dataA);
 
     });
 
-
-
- 
-
-
-   // type: 'GET',
-   //           dataType: 'json',
-   //           
-   //           
-   //           data:queryString,
-   //           crossDomain: true,
-
-
-//goes backwards and last entered writes over
-//queryString = string.substring(0, string.length-1);
 
   
   //template button press - display
@@ -318,43 +160,7 @@ var dataB = JSON.stringify(dataA);
               //calls purgehtml which calls template2.html - go
              alert("finalpage");
               window.location.href = "finalPage.html";
-              //loadData();
-
               
-
-              /*
-              $.ajax({ 
-
-                    //link to finalpage which calls template and passes the data regurgetated there
-                    //data is saved when template1.html has savdata pressed
-                    //this page runs load data and passes data as ajax whem page is started
-
-                    //call finalpage so div will be used there
-
-                    
-                    url:'http://localhost:8081/template2',
-                   
-                    type:"post",
-                    dataType: 'html',
-                    contentType: "application/x-www-form-urlencoded",
-                    crossDomain: true,
-                    data: {post_data: 'hello world'},
-                    success:function(result){
-                      
-                      //last template displayed here
-                      $('#firstdiv').html(result);
-                      
-
-                    }
-
-                  
-
-                    //alert("result");
-                  
-                  
-                  
-                  });
-                  */
               
                 });  
               });
@@ -364,26 +170,6 @@ var dataB = JSON.stringify(dataA);
 //not used...
 function uploadandProcessImage(){
 
-  
- //     var result = ""
- //     
- //   $(document).ready(function () {
- //     //$('#button2').click(function () {
- //         $.ajax({
- //             url: "http://localhost:8080/upload",
- //             type: 'post',
- //             dataType: 'html',
- //             contentType: "application/x-www-form-urlencoded",
- //             crossDomain: true,
- //             data: {post_data: 'hello world'},
- //             success: function (result) {
- //               
- //               alert(result);
- //                 //$('#div1').html(result);
- //             }
- //         });
- //     //});
- // });
 
 ///////////////////////////////////
 //https://stackoverflow.com/questions/25493706/ajax-upload-file-to-golang-server-with-content-type-multipart
@@ -397,7 +183,6 @@ var xhr = new XMLHttpRequest();
     
 var formdata = new FormData();
 formdata.append("file", file);
-//xhr.open("POST", $id("upload").action, true);
 xhr.open("POST", "localhost:8080/upload", true);
 //xhr.setRequestHeader("content-type", "multipart/form-data; charset=utf-8; boundary=" + boundary);
 xhr.send(formdata);
@@ -405,38 +190,7 @@ xhr.send(formdata);
 ///////////////////////////////////
 
 }
-//button 3
 
-
-/*
-//https://stackoverflow.com/questions/37412187/golang-ajax-how-to-return-slices-or-struct-in-a-success-function
-function refresh()
-{
-
-$(document).ready(function () {
-      $('#button3').click(function () {
-          $.ajax({
-              url: "http://localhost:8080/refresh",
-              type: 'post',
-              dataType: 'html',
-              contentType: 'application/x-www-form-urlencoded',
-              crossDomain: true,
-              data: {post_data: 'hello world'},
-              success: function (data) {
-                alert ("abc");
-                  console.log(data);
-                  $('#div1').html(data);
-              }
-          });
-      });
-  });
-
-
-
-}
-*/
-
-/////////
 
 </script>
 

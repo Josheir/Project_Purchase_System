@@ -42,38 +42,11 @@ loadData();
 //send it to purge which calls template with data
 function loadData() {
   
-   //(checkout)
-
-
-//var postData = {user_name:'jerry', password:'666666'};
-
-//arr1.push(data);
-//console.log(arr1);
-
-//save sesion at : checkout template1
-//////////////////////////////////////
-//load data
-/*
-var sessionID = "_0";
-var account = sessionStorage.getItem('sessionID');
-   if (!account) return false;
-   sessionStorage.removeItem(sessionID);
-   //decodes a string data encoded using base-64
-   account = atob(account);
-   //parses to Object the JSON string
-   account = JSON.parse(account);
-   //do what you need with the Object
-   //fillFields(account.User, account.Pass);
-   console.log(account)
-   alert(account.ID);
-  */ 
-  
-  //console.log("finalpage");
-  //alert("finalpageA");
+   
   
  var string = ""
 //////////////////////
-//alert("in final page");
+
 let keys = Object.keys(sessionStorage);
 var var1 = "hasntBeenHere"
 for(let key of keys) {
@@ -96,21 +69,6 @@ if(var1 == "hasntBeenHere")
 //goes backwards and last entered writes over
 var queryString = string.substring(0, string.length-1);
 
-//alert("finalpageB");
-//alert(queryString);
-
-//$.each(arr, function () {
-//    $.each(this, function(key, val){
-//      alert (key)  
-//      alert( val)
-//    })
-//})
-
-
-//var myObj = { ID: "1", Quant: "31"};
-//var myJSON = JSON.stringify(myObj);
-
-
 
 var url = "http://localhost:8080/template2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
@@ -123,10 +81,9 @@ var url = "http://localhost:8080/template2";
                     data:queryString,
                     async:false,
                     success: function (data1) {
-                      //alert("in finalpage");
-                       //alert(data1);
+                      
                       $('#div1').html(data1);
-                    //alert(data);
+                   
                     }
                 });
 }

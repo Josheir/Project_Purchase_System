@@ -224,14 +224,26 @@ var queryString = string.substring(0, string.length-1);
               success: function (data1) {
 
 
+                var flag = "notenough";
+                for (var i = 0; i< data1.lenght ;i++)
+                {
+                if(data1.IsNotEnoughQuantity == "yes")
+                {
+                  alert("not enough");
+                flag = "isenough";
+                break;
+                }
+                }
                 //at least one product cant be purchased
-                if (data1 == "not enough")
+                if (flag == "notenough")
                 {
 
                 }
+              
                 //all products can be purchasee
-                else if (data1 == "is enough")
+                else 
                 {
+                  alert("is enough");
                   window.location.href = "donePurchase.html";
                 }
                 

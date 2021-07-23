@@ -466,25 +466,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err5)
 	}
 
-	var value1 = "thisvalue1"
-
-	//not enough in database,
-	if isEnoughInDatabase == "no" {
-
-		value1 = "not enough"
-		//sends array of structs to template2.html
+	
 		fmt.Println("made it here")
 
 		//json.NewEncoder(w).Encode(ProductList2A)
-		json.NewEncoder(w).Encode(value1)
+		json.NewEncoder(w).Encode(ProductList2A)
 
 		//sold status
-	} else {
-
-		value1 = "is enough"
-		json.NewEncoder(w).Encode(value1)
-
-	}
+	
 	//json.NewEncoder(w).Encode(ProductList2A)
 }
 
@@ -1045,6 +1034,7 @@ func submitfunc(w http.ResponseWriter, r *http.Request) {
 
 //send from client to server and
 //send form server to client
+//this is a good example
 func getMessages(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
