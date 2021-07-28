@@ -44,18 +44,23 @@ type Product1 struct {
 
 //spit back to last html page
 type Product2 struct {
-	ID                  int
-	QuantityAvailable   int
-	IsNotEnoughQuantity string
+	ID                int
+	QuantityAvailable int
+	IsEnoughQuantity  string
 }
 
 type HoldsFlag struct {
 	Flag string
 }
+type User1 struct {
+	Text   string
+	UserID int
+}
 
 var ProductList = []Product1{}
 var ProductList2 = []Product2{}
 var ProductList2A = []Product2{}
+var User = []User1{}
 
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
 var globt *template.Template
@@ -90,6 +95,24 @@ type employee struct {
 	ProductCost         int
 	ProductQuantity     int
 	ProductCatTitle     string
+}
+
+//prod := Product2{
+//
+//	IsEnoughQuantity:  enough,
+//	QuantityAvailable: quant,
+//	ID:                id,
+//}
+
+func MakeUser(text string, userid int) {
+
+	user := User1{
+		Text:   text,
+		UserID: userid,
+	}
+
+	User = append(User, user)
+
 }
 
 func dbConn() (db *sql.DB) {
@@ -158,9 +181,9 @@ func makeListForLastpageA(enough string, id int, quant int) {
 	//to spit back to html
 	prod := Product2{
 
-		IsNotEnoughQuantity: enough,
-		QuantityAvailable:   quant,
-		ID:                  id,
+		IsEnoughQuantity:  enough,
+		QuantityAvailable: quant,
+		ID:                id,
 	}
 	//list to spit back to html for rewriting all the quant
 	ProductList2A = append(ProductList2A, prod)
@@ -188,6 +211,8 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
+	User = nil
+
 	query := r.URL.Query()
 
 	userid, present := query["userid"]
@@ -196,6 +221,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present")
 	}
 
+	//string to int
 	userid1, err := (strconv.Atoi(userid[0]))
 
 	if err != nil {
@@ -244,9 +270,23 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 		passFlag = "password wrong"
 	}
-	json.NewEncoder(w).Encode(passFlag)
+
+	MakeUser(passFlag, userid1)
+
+	json.NewEncoder(w).Encode(User)
 
 }
+
+//func MakeUser(text string, userid int) {
+//
+//	user := User1{
+//		Text: text,
+//		UserID: userid,
+//
+//	}
+//
+//	User = append(User, user)
+//
 
 //called from template2, final purchase selected, so send this back to display
 func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
@@ -254,6 +294,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	ProductList2A = nil
 
 	query := r.URL.Query()
 
@@ -323,12 +365,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		enough := ""
 		//not enough to buy this product
-		if DatabaseQuantity <= quant {
 
-			enough = "yes"
-		} else {
+		//is enough
+		if DatabaseQuantity < quant {
 
 			enough = "no"
+		} else {
+
+			enough = "yes"
 		}
 
 		makeListForLastpageA(enough, (val1), DatabaseQuantity)
@@ -358,8 +402,23 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		var orderid = 0
 		var nextProductID = 0
 		//var ins *sql.Stmt
+
+		//OrderID, OrderDate,OrderCost, CustomerID
+
+		//var  OrderID int
+
+		orderid = 0
+		//get last order id
+		row := tx.QueryRow("SELECT OrderID FROM orders ORDER BY OrderID DESC LIMIT 1")
+		err3 := row.Scan(&orderid)
+		if err3 != nil {
+			fmt.Println(err)
+		}
+		orderid = orderid + 1
+
+		insertOrderFlag = "yes"
+
 		for i = 0; i < len(allIds); i++ {
-			insertOrderFlag = "yes"
 
 			intQuant, err := strconv.Atoi(allQuants[i])
 			if err != nil {
@@ -370,14 +429,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			orderid = 0
-			//get last order id
-			row := tx.QueryRow("SELECT OrderID FROM orders ORDER BY OrderID DESC LIMIT 1")
-			err3 := row.Scan(&orderid)
-			if err3 != nil {
-				fmt.Println(err)
-			}
-			orderid = orderid + 1
 			//get last productid
 			row = tx.QueryRow("SELECT ProductID FROM products ORDER BY ProductID DESC LIMIT 1")
 			err3 = row.Scan(&nextProductID)
@@ -394,7 +445,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			rows := tx.QueryRow("SELECT * FROM products   WHERE products.ProductID = ?", allIds[i])
 
 			var ProductCost float64
-			var ProductQuantity, ProductID, CustomerID, OrderID, AdminID int
+			var ProductQuantity, ProductID, AdminID, CustomerID, OrderID int
 			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
 			//https://devtidbits.com/2020/08/03/go-sql-error-converting-null-to-string-is-unsupported/
 			err4 := rows.Scan(&ProductID, &ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle,
@@ -414,13 +465,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			var cust = userID
 			//no decimals
-			var cost = ProductCost
+			//var cost = ProductCost
 			datetime := time.Now()
 
+			//
 			if insertOrderFlag == "yes" {
 
 				//stmt, err := tx.Prepare("INSERT INTO orders set OrderID=?, OrderDate=?,OrderCost=?, CustomerID=?");
-				stmt, err := tx.Prepare("INSERT INTO orders (OrderID, OrderDate,OrderCost, CustomerID) values(?,?,?,?)")
+				stmt, err := tx.Prepare("INSERT INTO orders (OrderID, OrderDate) values(?,?)")
 
 				if err != nil {
 					fmt.Println(err)
@@ -428,7 +480,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 				defer stmt.Close()
 
-				_, err = stmt.Exec(orderid, datetime, cost, cust)
+				_, err = stmt.Exec(orderid, datetime)
 
 				if err != nil {
 					fmt.Println(err)
@@ -445,7 +497,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 
-			ProductCatTitle = "purchased"
+			ProductStatus = "purchased"
 
 			_, err = stmt.Exec(nextProductID, ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle,
 				gKeyword1, gKeyword2, gKeyword3, cust, orderid, ProductStatus, AdminID)
@@ -466,14 +518,13 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err5)
 	}
 
-	
-		fmt.Println("made it here")
+	fmt.Println("made it here")
 
-		//json.NewEncoder(w).Encode(ProductList2A)
-		json.NewEncoder(w).Encode(ProductList2A)
+	//json.NewEncoder(w).Encode(ProductList2A)
+	json.NewEncoder(w).Encode(ProductList2A)
 
-		//sold status
-	
+	//sold status
+
 	//json.NewEncoder(w).Encode(ProductList2A)
 }
 
@@ -626,7 +677,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			} else {
 				Condition = 0
 
-			}
+			} 
 			if i == (len(allIds) - 1) {
 				Condition2 = -1
 			}
@@ -635,7 +686,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err3 == nil {
 				fmt.Println(var2)
 			}
-
+      
 			//https://yourbasic.org/golang/round-float-2-decimal-places/
 			//https://stackoverflow.com/questions/20596428/how-to-represent-currency-in-go
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
@@ -762,7 +813,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Rrrrrrraarg ")
 }
 
-////////
+////////example:
+/*
 
 func receiveAjax(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
@@ -780,16 +832,7 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
-
-//var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
-
-//this is for testin, not used anympre
-func processSearch(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println("Rrrrrrraarg ")
-	fmt.Fprintf(w, "got here1!")
-
-}
+*/
 
 type forTemplate struct {
 	AmountPurchased int
@@ -1084,7 +1127,6 @@ func main() {
 
 	//has an id value passed in url
 	one.HandleFunc("/updateForm/", updateForm)
-	one.HandleFunc("/processSearch", processSearch)
 
 	//button3 - just read session for right now
 	one.HandleFunc("/getMessages", getMessages)

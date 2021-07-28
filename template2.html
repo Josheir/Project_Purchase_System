@@ -224,20 +224,27 @@ var queryString = string.substring(0, string.length-1);
               success: function (data1) {
 
 
-                var flag = "notenough";
-                for (var i = 0; i< data1.lenght ;i++)
+                var flag = "is enough";
+                for (var i = 0; i< data1.length ;i++)
                 {
-                if(data1.IsNotEnoughQuantity == "yes")
+                  alert("length");
+                  alert(data1.length);
+
+                  alert("is eenough");
+                  alert(data1[i].IsEnoughQuantity);
+                  
+                if(data1[i].IsEnoughQuantity == "no")
                 {
-                  alert("not enough");
-                flag = "isenough";
+                  alert("not enough!!!!");
+                flag = "not enough";
                 break;
                 }
                 }
-                //at least one product cant be purchased
-                if (flag == "notenough")
-                {
 
+                //at least one product cant be purchased
+                if (flag == "not enough")
+                {
+                  alert("isn't enough");
                 }
               
                 //all products can be purchasee
@@ -302,7 +309,7 @@ var queryString = string.substring(0, string.length-1);
                 var what = document.getElementById(quantity).value;
              
                 var str2= "";
-                str1 = data1[i].IsNotEnoughQuantity;
+                str1 = data1[i].IsEnoughQuantity;
 
                 var num = data1[i].QuantityAvailable;
                 str2 = num.toString();
@@ -313,7 +320,7 @@ var queryString = string.substring(0, string.length-1);
 
 
                 //wasnt enough, so make red
-                if (str1 == "yes")
+                if (str1 == "no")
                 {
 
                   gFlagIsEnoughProduct = "no"

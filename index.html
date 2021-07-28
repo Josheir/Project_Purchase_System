@@ -107,7 +107,11 @@ $(document).ready(function () {
 
         var wasKeys = "no";
       for(let key of keys) {
-  
+        if(key == "session_userID")
+        {
+        continue;
+        }
+
        var item = sessionStorage.getItem(key);
        string =  string + "id=" + key + "&quant=" + item + "&";
   
@@ -125,7 +129,7 @@ $(document).ready(function () {
       }
 
         
-        alert("querystring");
+        alert("querystring10a");
         alert(querystring);
         
        // alert(val1);
