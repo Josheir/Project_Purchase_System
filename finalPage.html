@@ -43,12 +43,14 @@ loadData();
 function loadData() {
   
    
-  
- var string = ""
+  alert("stringA");
+alert(queryString);
+
+ var string = "";
 //////////////////////
 
 let keys = Object.keys(sessionStorage);
-var var1 = "hasntBeenHere"
+var var1 = "hasntBeenHere";
 for(let key of keys) {
   if(key == "session_userID")
   {
@@ -56,19 +58,21 @@ for(let key of keys) {
   }
   var item = sessionStorage.getItem(key);
   string =  string + "id=" + key + "&quant=" + item + "&";
-  var1 = "hasBeenHere"
+  var1 = "hasBeenHere";
   
 }
 if(var1 == "hasntBeenHere")
   {
     //alert("no!");
     window.location.href = "index.html";
-    return(1);
+    //return(1);
   }
 
 //goes backwards and last entered writes over
 var queryString = string.substring(0, string.length-1);
 
+alert("stringB");
+alert(queryString);
 
 var url = "http://localhost:8080/template2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";

@@ -634,7 +634,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("ProductList")
 		fmt.Println(fmt.Sprintf("%+v", ProductList))
 
-		defer rows.Close()
+		//defer rows.Close()
 
 		//jumps past this, first run through
 		for rows.Next() {
@@ -677,7 +677,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			} else {
 				Condition = 0
 
-			} 
+			}
 			if i == (len(allIds) - 1) {
 				Condition2 = -1
 			}
@@ -686,7 +686,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err3 == nil {
 				fmt.Println(var2)
 			}
-      
+
 			//https://yourbasic.org/golang/round-float-2-decimal-places/
 			//https://stackoverflow.com/questions/20596428/how-to-represent-currency-in-go
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
@@ -739,7 +739,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			addProduct(GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
-		fmt.Println("ProductList")
+		fmt.Println("ProductListXXX")
 		fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 	} //for next loop
