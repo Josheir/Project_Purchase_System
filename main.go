@@ -15,6 +15,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var globalFlagisVariable = "no"
+
 type product struct {
 	ProductQuantity int
 	ProductName     string
@@ -57,8 +59,12 @@ type User1 struct {
 	UserID int
 }
 
+//used in createtemplate2
 var ProductList = []Product1{}
-var ProductList2 = []Product2{}
+
+//var ProductList2 = []Product2{}
+
+//used in spitback
 var ProductList2A = []Product2{}
 var User = []User1{}
 
@@ -190,17 +196,17 @@ func makeListForLastpageA(enough string, id int, quant int) {
 }
 
 //this last page is where the data is spat back to html to note any database changes that cause purchase impossible
-func makeListForLastpage(id int, quant int) {
-
-	//to spit back to html
-	prod := Product2{
-
-		QuantityAvailable: quant,
-		ID:                id,
-	}
-	//list to spit back to html for rewriting all the quant
-	ProductList2 = append(ProductList2, prod)
-}
+//func makeListForLastpage(id int, quant int) {
+//
+//	//to spit back to html
+//	prod := Product2{
+//
+//		QuantityAvailable: quant,
+//		ID:                id,
+//	}
+//	//list to spit back to html for rewriting all the quant
+//	ProductList2 = append(ProductList2, prod)
+//}
 
 var orderid1 = 100
 
@@ -534,9 +540,15 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 //stackoverflow.com/questions/54362751/how-can-i-truncate-float64-number-to-a-particular-precision
 //stackoverflow.com/questions/4187146/truncate-number-to-two-decimal-places-without-rounding#:~:text=General%20solution%20to%20truncate%20%28no%20rounding%29%20a%20number,with%20exactly%20n%20decimal%20digits%2C%20for%20any%20n%E2%89%A50.
 
+var Condition = 0
+
 func createTemplate2(w http.ResponseWriter, r *http.Request) {
+
+	ProductList = nil
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
+	//fmt.Println("+++++++++++++++++++++++++++++++++++++AAAAAAAAAAAAAAAAAAAAAAAAAA++++++++++++++++")
 	fmt.Println("GET params were:", r.URL.Query())
 
 	query := r.URL.Query()
@@ -547,7 +559,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(allIds)
 
 	if !present || len(allIds) == 0 {
+
 		fmt.Println("filters not present")
+
 	}
 
 	//fmt.Println(allIds[0])
@@ -579,7 +593,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//var ProductID = 2
 	var i = 0
 
-	var Condition = 1
+	//fmt.Println("how many times!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	Condition++
 	var Condition2 = 0
 
 	//error when making two product and pressing checkout displays all table data below main table with another checkout button
@@ -631,16 +646,16 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		var ProductName, ProductCatTitle, ProductCost, TotalCost string
 
-		fmt.Println("ProductList")
-		fmt.Println(fmt.Sprintf("%+v", ProductList))
+		//fmt.Println("ProductList")
+		//fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 		//defer rows.Close()
 
 		//jumps past this, first run through
 		for rows.Next() {
 
-			fmt.Println("ProductList1")
-			fmt.Println(fmt.Sprintf("%+v", ProductList))
+			//fmt.Println("ProductList1")
+			//fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
@@ -674,6 +689,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//value1 is product ID
 			if i == 0 {
 				Condition = 1
+
+				//fmt.Println("++++++++++++++++++this is important, here.++++++++++++++++++++++++++++++")
 			} else {
 				Condition = 0
 
@@ -739,8 +756,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			addProduct(GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
-		fmt.Println("ProductListXXX")
-		fmt.Println(fmt.Sprintf("%+v", ProductList))
+		//fmt.Println("ProductListXXX")
+		//fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 	} //for next loop
 
@@ -748,22 +765,33 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
 	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
-	fmt.Println("ProductList2")
-	fmt.Println(fmt.Sprintf("%+v", ProductList))
+	//fmt.Println("ProductList2")
+	//fmt.Println(fmt.Sprintf("%+v", ProductList))
 
 	err1 := globt.Execute(w, ProductList)
 
 	if err1 != nil {
-		fmt.Println("CC---------------")
+		//fmt.Println("CC---------------")
 		fmt.Println(err1.Error())
 
-		panic(err1.Error())
+		//panic(err1.Error())
 
 	}
 
 	///////////
+
 }
-func addProduct(totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2, prodid int, quant int, name string, div string, cat string, cost string) {
+
+//func removeAllProducts() {
+//
+//	if globalFlagisVariable == "yes" {
+//
+//		ProductList = ProductList[:0]
+//
+//	}
+//}
+
+func addProduct(totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
 		GrandTotalStringID: totalID,
@@ -796,7 +824,7 @@ func addProduct(totalID string, total string, boughtid string, bought int, total
 			ProductList[i].Bought = bought
 			ProductList[i].TotalCost = totalcost
 			//break out
-
+			globalFlagisVariable = "yes"
 			flag = "found"
 			i = 100
 		}
@@ -805,6 +833,7 @@ func addProduct(totalID string, total string, boughtid string, bought int, total
 	if flag != "found" {
 		//prod.ProductQuantity = prod.ProductQuantity - prod.Bought
 		ProductList = append(ProductList, prod)
+		globalFlagisVariable = "yes"
 	}
 }
 
@@ -944,24 +973,26 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println("+++++++++++++++++")
+
 	query := r.URL.Query()
 
 	key, present := query["var"]
 
 	if !present || len(key) == 0 {
-		fmt.Println("filters not present")
+		fmt.Println("filters not present1")
 	}
 
 	keyTotalAmountBought, present2 := query["quant"]
 	if !present2 || len(keyTotalAmountBought) == 0 {
-		fmt.Println("filters not present")
+		fmt.Println("filters not present2")
 	}
 	ProdID, present3 := query["id"]
 	if !present3 || len(ProdID) == 0 {
-		fmt.Println("filters not present")
+		fmt.Println("filters not present3")
 	}
 
-	globKeyword = key[0]
+	globKeyword := key[0]
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 

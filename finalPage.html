@@ -29,7 +29,7 @@ window.sessionStorage
 $(function(){
 
 ////////
-
+alert("in fiunction");
 loadData();
 
 ////////
@@ -42,7 +42,7 @@ loadData();
 //send it to purge which calls template with data
 function loadData() {
   
-   
+ alert("))))))))))))))))))))))))))"); 
   alert("stringA");
 alert(queryString);
 
@@ -85,6 +85,8 @@ var url = "http://localhost:8080/template2";
                     data:queryString,
                     async:false,
                     success: function (data1) {
+
+                      alert(data1);
                       
                       $('#div1').html(data1);
                    

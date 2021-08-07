@@ -121,7 +121,7 @@
 		    </div>
 			<div class="row">
 			<div class="col">
-			<center><button onclick="removeRecord('{{.MainDivID}}' )">Remove Record</button></center>
+			<center><button onclick="removeRecord('{{.MainDivID}}',  '{{.ProductID}}' )">Remove Record</button></center>
 			<center><button onclick="changeFields('{{.ProductQuantity}}', '{{.ProductID}}' , '{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
 			</div>
 			</div>
@@ -135,11 +135,127 @@
 			 var gAccount = [];
 			 //var originalQuantity = "{{.ProductQuantity}}";
 
-			function removeRecord(mainDivForRecord)
+			function removeRecord(mainDivForRecord, productID)
 			{
-				//alert("hereisit");
+				alert(productID);
+
+				
+				//////
+				let keys = Object.keys(sessionStorage);
+				
+				var string = "";
+
+
+				var counterOfNewlyAdded = -1;
+				//productid
+				for(let key of keys) {
+
+					//alert("keys");
+					//alert(key);///3
+
+					//amount records
+					//counterOfNewlyAdded++;
+					//quantity
+					//var item = sessionStorage.getItem(key);
+					//alert("items");
+					//alert(item)
+
+					//if(key == "session_userID")
+					//{
+					//
+					//}
+					//remove the key with productid
+					if(key == productID.toString())
+					{
+						alert("removed");
+						alert(key);
+						alert( productID.toString());
+						sessionStorage.removeItem(key);
+						//let keys = Object.keys(sessionStorage);
+						alert("keys");
+						alert(keys);
+						//counterOfNewlyAdded--;
+						break;
+					}
+					//makes a second set of same values, with the removed record removed from  second set
+					//alert("set");
+					//alert(key);
+					//sessionStorage.setItem(key, item);
+
+				}//for
+
+				/*
+				
+				//with additional keys added above
+				
+				var sessionCounter = -1;
+
+				var thisLoopNum = -1;  
+				for(let key of keys) {
+					thisLoopNum++;
+					
+					//remove initial keys that are repeated again from code above, and write the code that was rewritten without the one key that is removed
+					//alert("remove----");
+					//alert(key);
+
+
+					//session variable 
+					if(key =="session_userID")
+					{
+						alert("first session variable");
+						sessionCounter++;
+					}
+
+					alert("sessioncounter");
+					alert(key);
+					alert(sessionCounter);
+					//second
+					if(key =="session_userID" && (sessionCounter > 0))
+					{
+						alert("here+AAAAA");
+						//alert(key);
+						continue;
+					}
+					//first sessionstorage:  user
+					else if(key =="session_userID" && (sessionCounter == 0))
+					{
+						alert("remove+BBBBB");
+						alert(key);
+						sessionStorage.removeItem(key);
+					}
+
+					else if (thisLoopNum <= counterOfNewlyAdded)
+					{
+						alert("removeCCCC");
+						alert(counterOfNewlyAdded);
+						
+						alert(key);
+						sessionStorage.removeItem(key);
+					}
+					
+
+					
+					
+					
+
+				}//for loop end
+				//var queryString = string.substring(0, string.length-1);
+				/////
+				
+
+
+				*/
+
+
+				
 				document.getElementById(mainDivForRecord).innerHTML = "";
-			}
+			
+			}//end of function
+
+
+
+
+
 			//called on 
             var gTotalOfPurchases = 0;
 			function changeFields(originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)

@@ -66,8 +66,8 @@
 <td> <center><p > <input  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
 
-<td><center> {{.ProductName}}</center>  </td>
-<td><center>{{.ProductCatTitle}}</center> </td>
+<td><center> {{.ProductID}}</center>  </td>
+<td><center>{{.Condition}}  {{.Condition2}}</center> </td>
 
 
 
@@ -140,6 +140,9 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   var var2 = "C";
   //for div - availablr
   var var3 = "D" 
+
+  var var4 = "B"
+
   var counter = -1;
   var string = "";
 
@@ -147,6 +150,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   var AmountToBuyID = 0;
   var AmountOfCostID = 0;
   var AmountOfQuantityID = 0; 
+  var bought = 0;
   
     //var flag = "wasntHere"
     var flag = "isNotNegValue";
@@ -162,9 +166,11 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         AmountToBuyID = var1 + counter;
         AmountOfCostID = var2 + counter;
         AmountOfQuantityID = var3 + counter;
+        BoughtID = var4 + counter;
       alert("quantity");
       alert(AmountOfQuantityID);
         //amount in box
+        var bought = (document.getElementById(BoughtID).value);
         var amtInBuyBox =(document.getElementById(AmountToBuyID).value);
         var quantityInBox = (document.getElementById(AmountOfQuantityID).value);
         var costInBox = (document.getElementById(AmountOfCostID).value); 
@@ -176,17 +182,30 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
         //string =  string + "id=" + key + "&quant=" + item + "&";
         var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
-
+        if (item == "")
+        {
+          alert("item is null print");
+          item = bought;
+        }
+        alert("ready")
+        alert("amt in buybox");
+        alert(amtInBuyBox);
+        alert("item");
+        alert(item);
         //negative or has decimal
         if(item < 0 ) //|| (item == Math.floor(item)))
         {
+          alert("in here");
           var str2 = amtInBuyBox.toString();
           document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
         if (isNaN(item ))
         {
-          item = quantityInBox;
+          alert("in here");
+          var str2 = amtInBuyBox.toString();
+          document.getElementById(AmountToBuyID).style.color = "green";
+          flag = "isNegValue";
         }
         //flag = "wasHere"
         string =  string + "id=" + key + "&quant=" + item + "&";
