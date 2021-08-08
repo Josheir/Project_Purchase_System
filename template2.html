@@ -290,7 +290,7 @@ var queryString = string.substring(0, string.length-1);
               //total all elemetst, two per array.
               var lengthOfData = data1.length;
               
-              var lengthOfData = data1.length;
+              //var lengthOfData = data1.length;
               //alert("start");
               //alert("length");
               //alert(var3);
@@ -573,6 +573,15 @@ var queryString = string.substring(0, string.length-1);
                 var amtBuying = document.getElementById(buyThisManyID).value;
                 amtBuying = parseFloat(amtBuying);
 
+
+                alert("near error");
+                alert(amtBuying);
+
+                if(amtBuying == "" || (isNaN(amtBuying)) )
+                {
+                  alert("did it go here?");
+                  amtBuying = bought;
+                }
                 //alert(amtAvailable);
                 //alert(bought);
                 //alert(amtBuying);
