@@ -182,32 +182,43 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
         //string =  string + "id=" + key + "&quant=" + item + "&";
         var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
+
+        alert("key");
+        alert(key);
         if (item == "")
-        {
+        { 
           alert("item is null print");
           item = bought;
-        }
+        
         alert("ready")
         alert("amt in buybox");
         alert(amtInBuyBox);
         alert("item");
         alert(item);
         //negative or has decimal
-        if(item < 0 ) //|| (item == Math.floor(item)))
+        }
+        if(item == 0)
+        { alert("continue");
+          sessionStorage.removeItem(key);
+          window.location.href = "finalPage.html";
+          
+        }
+        
+        else if(item < 0 ) //|| (item == Math.floor(item)))
         {
           alert("in here");
           var str2 = amtInBuyBox.toString();
           document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
-        if (isNaN(item ))
+        else if (isNaN(item ))
         {
           alert("in here");
           var str2 = amtInBuyBox.toString();
           document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
-        //flag = "wasHere"
+        //quant is amount trying to buy
         string =  string + "id=" + key + "&quant=" + item + "&";
 
         //alert("string");
@@ -216,7 +227,9 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     
     
     //remove the amperstand is right below
-    string = string + "userid=" + sessionStorage.getItem("session_userID") +  "&"
+    string = string + "userid=" + sessionStorage.getItem("session_userID");
+
+//leave function with green semblance, there is a problem here, notify of first
 if (flag == "isNegValue")
 {
   return;
@@ -246,6 +259,9 @@ var queryString = string.substring(0, string.length-1);
                 var flag = "is enough";
                 for (var i = 0; i< data1.length ;i++)
                 {
+
+                  alert("i...");
+                  alert(i);
                   alert("length");
                   alert(data1.length);
 
@@ -272,6 +288,8 @@ var queryString = string.substring(0, string.length-1);
                   alert("is enough");
                   window.location.href = "donePurchase.html";
                 }
+
+                
                 
 
                 // GTotalWithTax 
@@ -315,6 +333,8 @@ var queryString = string.substring(0, string.length-1);
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
+                  alert("i..");
+                  alert(i);
                  
                   GTotalWithTax = 0;
                 //alert("lengthOfData");
@@ -326,6 +346,25 @@ var queryString = string.substring(0, string.length-1);
                 var totalCostID = "TC" + i;
                 var GrandTotalStringID = "GT" + i;
                 var what = document.getElementById(quantity).value;
+
+                /////////
+
+
+                bought1 = document.getElementById(boughtid).value;
+                bought1 = parseFloat(bought1);
+                alert("really did get here!");
+
+                amtBuying1 = document.getElementById(buyThisManyID).value;
+                amtBuying1 = parseFloat(amtBuying1);
+
+                if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
+                {
+                  window.location.href = "finalPage.html";
+                }
+
+
+
+                /////////
              
                 var str2= "";
                 str1 = data1[i].IsEnoughQuantity;
