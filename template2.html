@@ -62,17 +62,20 @@
 
 
 
+
+
 <tr>
-<td> <center><p > <input  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
+
+<td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
 
-<td><center> {{.ProductID}}</center>  </td>
-<td><center>{{.Condition}}  {{.Condition2}}</center> </td>
+<td  ><center> {{.ProductID}}</center>  </td>
+<td><center>{{.Condition}}  {{.RemoveRecordDivID}}</center> </td>
 
 
 
 
-  <td> <center><p> <input id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td class = "" > <center><p> <input   id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
   <td> <center><p> <input id = "{{.BoughtID}}" value ="{{.Bought}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
@@ -83,7 +86,11 @@
 
 
 
-</tr>
+
+
+
+
+
 
 {{if(eq .Condition2 -1)}}
 <tr>
@@ -139,9 +146,11 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   //for costid
   var var2 = "C";
   //for div - availablr
-  var var3 = "D" 
+  var var3 = "D"; 
 
-  var var4 = "B"
+  var var4 = "B";
+
+  var var5 = "V";
 
   var counter = -1;
   var string = "";
@@ -167,8 +176,9 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         AmountOfCostID = var2 + counter;
         AmountOfQuantityID = var3 + counter;
         BoughtID = var4 + counter;
-      alert("quantity");
-      alert(AmountOfQuantityID);
+        oneDivID = var5 + counter;
+      //alert("quantity");
+      //alert(AmountOfQuantityID);
         //amount in box
         var bought = (document.getElementById(BoughtID).value);
         var amtInBuyBox =(document.getElementById(AmountToBuyID).value);
@@ -190,7 +200,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
           alert("item is null print");
           item = bought;
         
-        alert("ready")
+        alert("ready");
         alert("amt in buybox");
         alert(amtInBuyBox);
         alert("item");
@@ -199,8 +209,21 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         }
         if(item == 0)
         { alert("continue");
-          sessionStorage.removeItem(key);
-          window.location.href = "finalPage.html";
+          //sessionStorage.removeItem(key);
+          //document.getElementById(oneDivID).value = "";
+
+          //document.getElementById(oneDivID).value = "zaaa";
+                 // document.getElementById(oneDivID).outerHTML = "zbbb";
+                  //document.getElementById(oneDivID).value = "";
+                  document.getElementById(AmountOfQuantityID).value = "";
+                  //document.getElementsById(AmountOfQuantityID).style.display = "none";
+                  //lst[0].style.display = "none";
+                  alert("important");
+                  //alert(lst);
+                  //alert("html");
+                  //alert(document.getElementById(oneDivID).innerHTML);
+
+          continue;
           
         }
         
@@ -257,6 +280,10 @@ var queryString = string.substring(0, string.length-1);
 
 
                 var flag = "is enough";
+
+                if(data1.length == null){
+                  window.location.href = "index.html";
+                }
                 for (var i = 0; i< data1.length ;i++)
                 {
 
@@ -345,6 +372,7 @@ var queryString = string.substring(0, string.length-1);
                 var costID = "C" + i;
                 var totalCostID = "TC" + i;
                 var GrandTotalStringID = "GT" + i;
+                var oneDivID1 =  "V" + i;
                 var what = document.getElementById(quantity).value;
 
                 /////////
@@ -359,7 +387,19 @@ var queryString = string.substring(0, string.length-1);
 
                 if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
-                  window.location.href = "finalPage.html";
+                  document.getElementsById("V0").style.display = "none";
+                  //var lst = document.getElementsByClassName("V0");
+                  alert("important");
+                  //alert(lst);
+                  //lst[0].style.display = "none";
+                  //document.getElementById(oneDivID1).value = "";
+                  //document.getElementById(oneDivID1).outerHTML = "bbb";
+                  //document.getElementById(oneDivID1).innerHTML = "ccc";
+                  //document.getElementsById(AmountOfQuantityID).style.display = "none";
+                  alert("html");
+                  //alert(document.getElementById(oneDivID1).innerHTML);
+
+                  continue;
                 }
 
 
@@ -390,6 +430,7 @@ var queryString = string.substring(0, string.length-1);
                   value.value = str2;
 
 
+                  
 
 
 

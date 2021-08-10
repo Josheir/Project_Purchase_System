@@ -25,6 +25,7 @@ type product struct {
 }
 
 type Product1 struct {
+	RemoveRecordDivID string
 	GrandTotalStringID string
 
 	GrandTotalString string
@@ -587,6 +588,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var4 = "TC"
 	var var5 = "B"
 	var var6 = "GT"
+	var var7 = "V"
 	//yes this is right product starts at one
 
 	//var j = 1
@@ -617,6 +619,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		TotalCostID := var4 + (strconv.Itoa(i))
 		BoughtID := var5 + (strconv.Itoa(i))
 		GrandTotalStringID := var6 + (strconv.Itoa(i))
+		RemoveRecordDivID := var7  + (strconv.Itoa(i))
 
 		var prodid, err = (strconv.Atoi(allIds[i]))
 		if err != nil {
@@ -752,8 +755,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				numTotal = numTotal / math.Pow(10, 4)
 				GrandTotalString = fmt.Sprintf("%.2f", numTotal)
 			}
-
-			addProduct(GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
+			
+			addProduct(RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
 		//fmt.Println("ProductListXXX")
@@ -791,9 +794,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 //	}
 //}
 
-func addProduct(totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
+func addProduct(removerecorddivID string , totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
+		RemoveRecordDivID: removerecorddivID,
 		GrandTotalStringID: totalID,
 		GrandTotalString:   total,
 		BoughtID:           boughtid,
