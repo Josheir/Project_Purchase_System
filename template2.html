@@ -64,7 +64,7 @@
 
 
  
-<tr>
+<tr id = "{{.RemoveRecordDivID}}">
 
 <td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
@@ -85,8 +85,11 @@
   <td> <center><p> <input id = "{{.TotalCostID}}" value = "${{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
 
+</tr>
 
-
+<tr id="row2" style="display: none;">
+  <td colspan="2">Secret row, spooky</td>
+</tr>
 
 
 
@@ -116,10 +119,27 @@
 <br><br>
 <center><button onclick="checkAllAvailableProducts('{{.DivID}}' , '{{.GrandTotalString}}', '{{.GrandTotalStringID}}' )">Checkout</button></center>
 
+<a href="javascript: void(0);"
+    onclick="showRow('row2'); hideRow('row1');">Show/Hide rows</a>
+
+    
+    
 {{end}}
 {{end}}
 
+
 <script>
+
+
+
+  
+  
+    function showRow(rowId) {
+    document.getElementById(rowId).style.display = "";
+}
+function hideRow(rowId) {
+    document.getElementById(rowId).style.display = "none";
+}
 
 
 
@@ -164,11 +184,15 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     //var flag = "wasntHere"
     var flag = "isNotNegValue";
     let keys = Object.keys(sessionStorage);
+    //this starts at zero just like counter
+    var amtOfHiddenProducts = 0;
+
     for(let key of keys) {
         counter++;
         if(key =="session_userID")
         {
           counter--;
+          amtOfHiddenProducts--;
           continue;
         }
         //input boxes id
@@ -210,19 +234,14 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         if(item == 0)
         { alert("continue");
           //sessionStorage.removeItem(key);
-          //document.getElementById(oneDivID).value = "";
+          
+                  hideRow(oneDivID);
 
-          //document.getElementById(oneDivID).value = "zaaa";
-                 // document.getElementById(oneDivID).outerHTML = "zbbb";
-                  //document.getElementById(oneDivID).value = "";
-                  document.getElementById(AmountOfQuantityID).value = "";
-                  //document.getElementsById(AmountOfQuantityID).style.display = "none";
-                  //lst[0].style.display = "none";
+                  amtOfHiddenProducts = amtOfHiddenProducts + 1;
+                  //document.getElementById(AmountOfQuantityID).value = "";
+                  
                   alert("important");
-                  //alert(lst);
-                  //alert("html");
-                  //alert(document.getElementById(oneDivID).innerHTML);
-
+                  
           continue;
           
         }
@@ -247,7 +266,25 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         //alert("string");
         //alert(string);
     }
+
+    //all procucts are zero
+    if (amtOfHiddenProducts == counter)
+    {
+      for(let key of keys) {
+       
+        if(key =="session_userID")
+        {
+          continue;
+        }
+        else
+        {
+          sessionStorage.removeItem(key);
+        }
+      }
+
+      window.location.href = "index.html";
     
+      }
     
     //remove the amperstand is right below
     string = string + "userid=" + sessionStorage.getItem("session_userID");
@@ -281,8 +318,28 @@ var queryString = string.substring(0, string.length-1);
 
                 var flag = "is enough";
 
+                //no records
                 if(data1.length == null){
-                  window.location.href = "index.html";
+
+                  ///////
+                  
+                  
+                  for(let key of keys) {
+       
+                  if(key =="session_userID")
+                  {
+                    continue;
+                  }
+                  else
+                  {
+                    sessionStorage.removeItem(key);
+                  }
+                }
+
+                window.location.href = "index.html";
+            
+                  ///////
+                  
                 }
                 for (var i = 0; i< data1.length ;i++)
                 {
@@ -387,8 +444,8 @@ var queryString = string.substring(0, string.length-1);
 
                 if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
-                  document.getElementsById("V0").style.display = "none";
-                  //var lst = document.getElementsByClassName("V0");
+                  hideRow(oneDivID1);
+                  
                   alert("important");
                   //alert(lst);
                   //lst[0].style.display = "none";
