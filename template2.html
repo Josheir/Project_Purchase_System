@@ -231,6 +231,15 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         alert(item);
         //negative or has decimal
         }
+        //check if is decimal
+        if(item % 1 != 0)
+        {
+          alert("in here1");
+          var str2 = amtInBuyBox.toString();
+          //document.getElementById(AmountToBuyID).style.color = "green";
+          flag = "isNegValue";
+        }
+
         if(item == 0)
         { alert("continue");
           //sessionStorage.removeItem(key);
@@ -248,18 +257,28 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         
         else if(item < 0 ) //|| (item == Math.floor(item)))
         {
-          alert("in here");
+          alert("in here2");
           var str2 = amtInBuyBox.toString();
-          document.getElementById(AmountToBuyID).style.color = "green";
+          //document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
         else if (isNaN(item ))
         {
-          alert("in here");
+          alert("in here3");
           var str2 = amtInBuyBox.toString();
-          document.getElementById(AmountToBuyID).style.color = "green";
+          //document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
+
+        //leave function with green semblance, there is a problem here, notify of first
+        if (flag == "isNegValue")
+        {
+          return;
+        }
+
+
+
+
         //quant is amount trying to buy
         string =  string + "id=" + key + "&quant=" + item + "&";
 
@@ -288,12 +307,6 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     
     //remove the amperstand is right below
     string = string + "userid=" + sessionStorage.getItem("session_userID");
-
-//leave function with green semblance, there is a problem here, notify of first
-if (flag == "isNegValue")
-{
-  return;
-}
 
 
 //alert("here2");
@@ -414,6 +427,8 @@ var queryString = string.substring(0, string.length-1);
                 gFlagIsEnoughProduct = "yes";
                 
                 //amount of products
+
+                var gRedTextAmount = 0;
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
@@ -483,6 +498,7 @@ var queryString = string.substring(0, string.length-1);
                   GTotalWithTax = 0.0;
                   
                   document.getElementById(availableID).style.color = "red";
+                  gRedTextAmount = gRedTextAmount + 1;
                   var value = document.getElementById(availableID);
                   value.value = str2;
 
@@ -618,6 +634,23 @@ var queryString = string.substring(0, string.length-1);
                 check.value = "";
                   ///////////
                   
+                alert("total");
+                alert(gRedTextAmount);
+                alert(lengthOfData);
+                if (gRedTextAmount == lengthOfData - 1)
+                {
+                  stringGrandTotal = "Grand Total: $" + "0.00";
+                }
+
+                document.getElementById(grandTotalID).value = stringGrandTotal;
+
+
+
+
+                  ///////////
+
+
+
 
                 }//there wasn't enough product
                 //there is plenty of product for this record...
@@ -827,33 +860,25 @@ var queryString = string.substring(0, string.length-1);
                 var stringGrandTotal = gtotalCopy.toFixed(2); 
                 alert(typeof(stringGrandTotal));
 
+                
                 alert("stringGrandTotal");
                 alert(stringGrandTotal);
 
                
                 stringGrandTotal = "Grand Total: $" + stringGrandTotal;
+                //iterated one more because for loop failed, so subtract one
+                
+                alert("total");
+                alert(gRedTextAmount);
+                alert(lengthOfData);
+                if (gRedTextAmount == lengthOfData - 1)
+                {
+                  stringGrandTotal = "Grand Total: $" + "0.00";
+                }
 
                 document.getElementById(grandTotalID).value = stringGrandTotal;
                 
-                   //alert("totalcost1");
-                   //alert(TotalCost);
-                  
-                   //totalCostString =  totalCostString * (10 ** 2);
-                   //923
-                   //alert("totalcost2");
-                   //alert(TotalCost);
-                   //the five represents the tax of .05%
-                   //var tax =  TotalCostString  * 5 ;
-                   //4615
-                   //alert("tax");
-                   //alert(tax);
-                   //TotalCostString  = TotalCostString  * (10 ** 2);
-                   //alert("totalcost3");
-                   //alert(TotalCost);
-                   //GTotalWithTax =  GTotalWithTax * (10 ** 2);
-                   //GTotalWithTax =  GTotalWithTax +  tax + TotalCost;
-                   //GTotalWithTax = GTotalWithTax / (10 ** 2);
-                 /////////
+                   
                  
                 }//not enough product
                 
@@ -861,53 +886,9 @@ var queryString = string.substring(0, string.length-1);
                 
                 }//for
 
-                //alert("flag");
-                //alert(gFlagIsEnoughProduct);
-                //if (gFlagIsEnoughProduct == "yes")
-                //{
-                //  alert("redirect");
-                //  window.location.replace("http://www.localhost/donePurchase.html");
-                //}
-
                 
-/*
-                    gtotal = gtotal * (10 ** 2);
-                    gtotal = gtotal / (10 ** 4);
-                    alert("gtotal");
-                    alert(gtotal);
-                    GTotalWithTax = GTotalWithTax /(10 ** 2);
-                    alert("GTotalWithTax3");
-                     alert(GTotalWithTax);
+                
 
-                    gtotal = gtotal -  GTotalWithTax;
-                    //alert("gtotal here");
-                    //alert(gtotal);
-                    GrandTotalFloat = gtotal;
-                    //alert("gtotal5");
-                    //alert(gtotal);
-                    //alert("grandtotalfloat1");
-                    //alert(GrandTotalFloat);
-                    //alert("grandtotalfloat2");
-                    //alert(GrandTotalFloat);
-                    //returns string value
-                    GrandTotalFloat = GrandTotalFloat.toFixed(2); 
-                    //if(GrandTotalFloat < 0)
-                    //   {
-                    //     //GrandTotalFloat = 0;
-                    //   } 
-                    //alert("grandtotalfloat2");
-                    //alert(GrandTotalFloat);
-                    //alert("GTF3");
-                    //alert(GrandTotalFloat);
-                    var stringGrandTotal = GrandTotalFloat; 
-                    //alert("stringGrandTotal");
-                    //alert(stringGrandTotal);
-                    var value = "$" + stringGrandTotal;
-                    //alert("value");
-                    //alert(value);
-                    //works - sets this value to string value, grandtotal
-                    document.getElementById(GrandTotalStringID).value = (value); 
-*/
 
                 ////////
 
