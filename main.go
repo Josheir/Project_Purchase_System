@@ -868,6 +868,8 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 */
 
 type forTemplate struct {
+	Link            string
+	Condition       int
 	AmountPurchased int
 	ProductID       int
 	ProductCatTitle string
@@ -974,6 +976,8 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
+var counter1 = 0
+
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
@@ -1021,12 +1025,12 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 
-	var counter = 0
-
 	var templ1 forTemplate
-
+	var Link = globKeyword
+	var Condition = 0
 	for rows.Next() {
 
+		Condition++
 		var ProductCost float64
 		var ProductQuantity int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
@@ -1061,8 +1065,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		counter = counter + 1
-		str := strconv.Itoa(counter)
+		counter1 = counter1 + 1
+		str := strconv.Itoa(counter1)
 		AmountPurchased := 0
 
 		//var inputID = "inputID" + str
@@ -1083,7 +1087,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			AmountPurchased = 0
 		}
 
-		templ1 = forTemplate{AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+		templ1 = forTemplate{Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
 		fmt.Println(templ1)
