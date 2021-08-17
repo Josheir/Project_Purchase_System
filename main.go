@@ -981,13 +981,16 @@ var counter1 = 0
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	var productsDisplayed []int
+
 	fmt.Println("+++++++++++++++++")
 
 	query := r.URL.Query()
 
-	key, present := query["var"]
+	//this is the searchterm in order from first to last now
+	key1, present := query["var"]
 
-	if !present || len(key) == 0 {
+	if !present || len(key1) == 0 {
 		fmt.Println("filters not present1")
 	}
 
@@ -1000,7 +1003,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present3")
 	}
 
-	globKeyword := key[0]
+	globKeyword := key1[0]
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -1009,105 +1012,122 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("in display 1")
 
 	db := dbConn()
+	var m = 0
+	for m = 0; m < len(key1); m++ {
 
-	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
-		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
-		"FROM products WHERE " +
-		"((products.ProductKeyWord1 = ?) OR " +
-		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
-	if err != nil {
-		panic(err.Error())
-	}
+		globKeyword = key1[m]
 
-	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
+		stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+			"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
+			"FROM products WHERE " +
+			"((products.ProductKeyWord1 = ?) OR " +
+			"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
+		if err != nil {
+			panic(err.Error())
+		}
 
-	if err != nil {
-		panic(err.Error())
-	}
-
-	var templ1 forTemplate
-	var Link = globKeyword
-	var Condition = 0
-	for rows.Next() {
-
-		Condition++
-		var ProductCost float64
-		var ProductQuantity int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
-
-		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
+		rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
 		if err != nil {
 			panic(err.Error())
 		}
 
-		i := 0
-		prodBoughtInt := 0
-		isAmountPurchased := "no"
+		var templ1 forTemplate
 
-		for i = 0; i < len(ProdID); i++ {
-			prodIDStr := ProdID[i]
+		var Link = globKeyword
+		var Condition = 0
+		for rows.Next() {
 
-			prodIDInt, err := strconv.Atoi(prodIDStr)
+			Condition++
+			var ProductCost float64
+			var ProductQuantity int
+			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
+
+			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
+
 			if err != nil {
+				panic(err.Error())
 			}
 
-			prodBoughtStr := keyTotalAmountBought[i]
-			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
-			if err != nil {
+			var m = 0
+			//check of product is already in another search
+			for m = 0; m < len(productsDisplayed); m++ {
+
+				if ProductID == productsDisplayed[m] {
+					continue
+				}
 			}
 
-			if prodIDInt == ProductID {
-				ProductQuantity = ProductQuantity - prodBoughtInt
-				isAmountPurchased = "yes"
-				break
+			productsDisplayed = append(productsDisplayed, ProductID)
+
+			i := 0
+			prodBoughtInt := 0
+			isAmountPurchased := "no"
+
+			for i = 0; i < len(ProdID); i++ {
+				prodIDStr := ProdID[i]
+
+				prodIDInt, err := strconv.Atoi(prodIDStr)
+				if err != nil {
+				}
+
+				prodBoughtStr := keyTotalAmountBought[i]
+				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+				if err != nil {
+				}
+
+				if prodIDInt == ProductID {
+					ProductQuantity = ProductQuantity - prodBoughtInt
+					isAmountPurchased = "yes"
+					break
+				}
+
+			}
+
+			counter1 = counter1 + 1
+			str := strconv.Itoa(counter1)
+			AmountPurchased := 0
+
+			//var inputID = "inputID" + str
+			var mainDivID = "mainDivID" + str
+			var titleID = "titleID" + str
+			var descID = "descID" + str
+			var costID = "costID" + str
+			var quantityID = "quantityID" + str
+			var key1ID = "key1ID" + str
+			var key2ID = "key2ID" + str
+			var key3ID = "key3ID" + str
+			AmountToPurchaseID = "amountID" + str
+			AmountPurchasedID = "amountPID" + str
+
+			if isAmountPurchased == "yes" {
+				AmountPurchased = prodBoughtInt
+			} else {
+				AmountPurchased = 0
+			}
+
+			templ1 = forTemplate{Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+				key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+			fmt.Println(templ1)
+
+			globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+			err1 := globt.Execute(w, templ1)
+
+			if err1 != nil {
+				fmt.Println("B---------------")
+				fmt.Println(err1.Error())
+
+				panic(err1.Error())
+
 			}
 
 		}
 
-		counter1 = counter1 + 1
-		str := strconv.Itoa(counter1)
-		AmountPurchased := 0
-
-		//var inputID = "inputID" + str
-		var mainDivID = "mainDivID" + str
-		var titleID = "titleID" + str
-		var descID = "descID" + str
-		var costID = "costID" + str
-		var quantityID = "quantityID" + str
-		var key1ID = "key1ID" + str
-		var key2ID = "key2ID" + str
-		var key3ID = "key3ID" + str
-		AmountToPurchaseID = "amountID" + str
-		AmountPurchasedID = "amountPID" + str
-
-		if isAmountPurchased == "yes" {
-			AmountPurchased = prodBoughtInt
-		} else {
-			AmountPurchased = 0
-		}
-
-		templ1 = forTemplate{Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-			key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-		fmt.Println(templ1)
-
-		globt := template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-		err1 := globt.Execute(w, templ1)
-
-		if err1 != nil {
-			fmt.Println("B---------------")
-			fmt.Println(err1.Error())
-
-			panic(err1.Error())
-
-		}
-
-	}
+	} //for l
 
 }
-
 func submitfunc(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("aarg ")

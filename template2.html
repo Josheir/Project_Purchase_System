@@ -242,7 +242,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
         if(item == 0)
         { alert("continue");
-          //sessionStorage.removeItem(key);
+          //first delete: sessionStorage.removeItem(key);
           
                   hideRow(oneDivID);
 
@@ -286,7 +286,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         //alert(string);
     }
 
-    //all procucts are zero
+    //all procucts are hidden, therefore thet have a value of zero
     if (amtOfHiddenProducts == counter)
     {
       for(let key of keys) {
@@ -297,7 +297,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         }
         else
         {
-          sessionStorage.removeItem(key);
+          //sessionStorage.removeItem(key);
         }
       }
 
@@ -331,7 +331,7 @@ var queryString = string.substring(0, string.length-1);
 
                 var flag = "is enough";
 
-                //no records
+                //no records, no need to remove assumed zero
                 if(data1.length == null){
 
                   ///////
@@ -345,7 +345,7 @@ var queryString = string.substring(0, string.length-1);
                   }
                   else
                   {
-                    sessionStorage.removeItem(key);
+                    //sessionStorage.removeItem(key);
                   }
                 }
 
@@ -493,14 +493,14 @@ var queryString = string.substring(0, string.length-1);
                 if (str1 == "no")
                 {
 
-                  gFlagIsEnoughProduct = "no"
+                  gFlagIsEnoughProduct = "no";
 
                   GTotalWithTax = 0.0;
                   
-                  document.getElementById(availableID).style.color = "red";
+                  document.getElementById(quantity).style.color = 'red';
                   gRedTextAmount = gRedTextAmount + 1;
-                  var value = document.getElementById(availableID);
-                  value.value = str2;
+                  //var value = document.getElementById(availableID);
+                  //value.value = str2;
 
 
                   
@@ -852,7 +852,7 @@ var queryString = string.substring(0, string.length-1);
               //  alert("gtotalCopy1A");
               //  alert(gtotalCopy);
 
-                gtotalCopy = gtotalCopy / (10 ** 2)
+                gtotalCopy = gtotalCopy / (10 ** 2);
 
              //   alert("gtotalCopy2");
              //   alert(gtotalCopy);

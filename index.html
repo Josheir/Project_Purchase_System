@@ -27,6 +27,18 @@ var var2 =1;
 var var3 ;
 var3 = var1 + var2;
 
+alert("at point");
+
+//function getparam(param_name)
+//{
+	let params = new URLSearchParams(window.location.search);
+	var string = (params.get("val"));
+//}
+
+//var inputs = form.getElementsByTagName("val");
+alert(string);
+
+
 
 </script>
     
@@ -40,8 +52,6 @@ var3 = var1 + var2;
       <div id ="buttons"></div>
       <br>
       <div id ="templateOneHere"> </div>
-     
-
      
 
       
@@ -100,18 +110,49 @@ $(document).ready(function () {
 
 
   
-  //template button press - display
-    $(document).ready(function () {
-      $('#button6').click(function () {
+	var querystring = "";
+
+  //template button press - display searches a keyword
+    //$(document).ready(function () {
+      $("#button6").click(function () {
+
+		
         var string = ""
         let keys = Object.keys(sessionStorage);
 
         var wasKeys = "no";
+
+
+		//let storedArray = ["test"];
       for(let key of keys) {
         if(key == "session_userID")
         {
         continue;
         }
+		else if(key == "searchterms")
+        {
+			var item = sessionStorage.getItem(key);
+
+			item = item.slice(2);
+			item = item.substr(0, item.length - 2);
+			//alert("in here...");
+			//alert(item);
+			//var testArray = item;
+			//var test = (item.join());
+			alert("did i get here?");
+			alert(item);
+
+			//alert("is this it");
+			//alert(item);
+			//const val = item.join();
+			//console.log(item.join());
+			//alert("a");
+			string = string + "var=" + item + "&";
+			//alert("is this it");
+			//alert(item.join(", "));
+			continue;
+		}
+
 
        var item = sessionStorage.getItem(key);
        string =  string + "id=" + key + "&quant=" + item + "&";
@@ -119,17 +160,54 @@ $(document).ready(function () {
        wasKeys = "yes";
         
       }
+
+
+
+
       var val1 = document.getElementById("search").value;
       if(wasKeys == "yes"){
 
-        var querystring = string + "var=" + val1;
-      }
+		
+        var testArray = [val1];
+		//puts testarray in searchterms
+		alert("in here111");
+		//testArray = (testArray.join());
+		window.sessionStorage.setItem("searchterms", JSON.stringify(testArray));
+		
+		var storedArray = JSON.parse(sessionStorage.getItem("searchterms"));
+
+
+		for (i = 0; i < storedArray.length; i++) {
+
+
+		querystring += ("var=" + storedArray[i] + "&");
+		querystring += string;
+     	 }
+
+	  }	
       else
       {
-        var querystring = "var=" + val1;
+
+		
+		var testArray = [val1];
+		alert("in here222");
+		//testArray = (testArray.join());
+		//puts testarray in searchterms
+		window.sessionStorage.setItem("searchterms", JSON.stringify(testArray));
+		
+		var storedArray = JSON.parse(sessionStorage.getItem("searchterms"));
+		//storedArray.push(val1);
+		for (i = 0; i < storedArray.length; i++)
+		{
+			querystring += ("var=" + storedArray[i] + "&");
+		}
+		
       }
 
         
+
+	  //querystring = querystring + "id=3&quant=10&";
+
         alert("querystring10a");
         alert(querystring);
         
@@ -162,7 +240,16 @@ $(document).ready(function () {
                 }
           });
       });
-  });
+  //});
+
+
+
+  
+	  if(string == "1")
+	  {
+		  alert("in here");
+		  document.querySelector("#button6").click();	
+	  }
 
 
   

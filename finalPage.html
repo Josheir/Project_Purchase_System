@@ -16,7 +16,8 @@
 
 <div id = "div1">test</div>
 
-<form  action = "index.html" method = "POST">
+<form  action = "index.html" method = "GET">
+  <input type="hidden" id="val" name="val" value="1">
 <center><input   id="button1"  type="submit" value="Return to Purchase"/></center>
 </form>
 
@@ -52,15 +53,30 @@ alert(queryString);
 let keys = Object.keys(sessionStorage);
 var var1 = "hasntBeenHere";
 for(let key of keys) {
+
+
+  alert("keys here");
+  alert(key);
   if(key == "session_userID")
   {
     continue;
   }
+  else if(key == "searchterms")
+  {
+		continue;
+	}
+  
+  //check for not an integer
+
   var item = sessionStorage.getItem(key);
+  alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
+
+  
   var1 = "hasBeenHere";
   
 }
+
 if(var1 == "hasntBeenHere")
   {
     //alert("no!");

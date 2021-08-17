@@ -42,14 +42,11 @@ alert("query");
             //string type
             userid = document.getElementById("userid").value;
 
-            alert("userid - type");
-            alert(typeof(userid));
-         
+            
 
             var querystring = "pass=" + pass + "&userid=" + userid;
 
-            alert(querystring);
-
+           
             
 
             $.ajax({
@@ -61,18 +58,12 @@ alert("query");
                 data: querystring,
                 success: function (result) {
 
-                  //alert("success1");
-                  //alert(result);
                   
-                  alert("Important1");
-                  alert(result[0].Text);
-
                   if (result[0].Text == "password correct")
                   {
                     //template / table works when this is commented out
                     sessionStorage.setItem("session_userID", result[0].UserID);
-                    alert("Important2");
-                    alert(result[0].UserID);
+                    
                     
                     window.location.href = "index.html";
                   }
