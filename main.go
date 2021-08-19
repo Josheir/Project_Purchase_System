@@ -1,5 +1,10 @@
 package main
 
+//https://stackoverflow.com/questions/32087233/how-does-mysql-handle-concurrent-inserts
+//http://go-database-sql.org/prepared.html
+//https://stackoverflow.com/questions/37404989/whats-the-difference-between-db-query-and-db-preparestmt-query-in-golang
+//https://golangdocs.com/mysql-golang-crud-example
+
 import (
 	"database/sql"
 	"encoding/json"
@@ -25,6 +30,7 @@ type product struct {
 }
 
 type Product1 struct {
+	ProductIDID string
 	RemoveRecordDivID  string
 	GrandTotalStringID string
 
@@ -315,7 +321,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(allIds[0])
 
 	allQuants, present := query["quant"]
-
+	//in template 2 bought column
 	if !present || len(allQuants) == 0 {
 		fmt.Println("filters not present")
 	}
@@ -371,9 +377,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		enough := ""
+
 		//not enough to buy this product
 
-		//is enough
+		//if quantity available is less than amount trying to
 		if DatabaseQuantity < quant {
 
 			enough = "no"
@@ -589,6 +596,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var5 = "B"
 	var var6 = "GT"
 	var var7 = "V"
+	var var8 = "P"
 	//yes this is right product starts at one
 
 	//var j = 1
@@ -613,6 +621,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		//Condition++
 		Condition2++
+
 		DivID := var1 + (strconv.Itoa(i))
 		AmountToBuyID := var2 + (strconv.Itoa(i))
 		CostID := var3 + (strconv.Itoa(i))
@@ -620,6 +629,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		BoughtID := var5 + (strconv.Itoa(i))
 		GrandTotalStringID := var6 + (strconv.Itoa(i))
 		RemoveRecordDivID := var7 + (strconv.Itoa(i))
+		ProductIDID := var8 +(strconv.Itoa(i))
+		//ID := var8 + (strconv.Itoa(i))
 
 		var prodid, err = (strconv.Atoi(allIds[i]))
 		if err != nil {
@@ -679,6 +690,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err)
 				}
 
+				//?????????????
 				//there is boutght total that goes with this id
 				if prodid == ID {
 
@@ -756,7 +768,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				GrandTotalString = fmt.Sprintf("%.2f", numTotal)
 			}
 
-			addProduct(RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, ID, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
+			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
 		//fmt.Println("ProductListXXX")
@@ -794,9 +806,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 //	}
 //}
 
-func addProduct(removerecorddivID string, totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
+func addProduct(productidid string, removerecorddivID string, totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
+		ProductIDID: productidid,
 		RemoveRecordDivID:  removerecorddivID,
 		GrandTotalStringID: totalID,
 		GrandTotalString:   total,

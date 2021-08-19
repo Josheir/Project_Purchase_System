@@ -52,7 +52,7 @@
 <th><center>Product Name</center></th>
 <th><center>Category</center></th>
 <th><center>Available</center></th> 
-<th><center>Bought</center></th> 
+<th><center>Buying</center></th> 
 <th><center>Cost for Each</center></th> 
 <th><center>Total Cost Items</center></th> 
 
@@ -68,12 +68,9 @@
 
 <td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
-
-<td  ><center> {{.ProductID}}</center>  </td>
 <td><center>{{.Condition}}  {{.RemoveRecordDivID}}</center> </td>
 
-
-
+<td> <center><p> <input id = "{{.ProductIDID}}" value ="{{.ProductID}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
   <td class = "" > <center><p> <input   id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
@@ -172,6 +169,8 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
   var var5 = "V";
 
+  var var6 = "P";
+
   var counter = -1;
   var string = "";
 
@@ -187,20 +186,30 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     //this starts at zero just like counter
     var amtOfHiddenProducts = 0;
 
+    //each iteration is one purchase
     for(let key of keys) {
         counter++;
         if(key =="session_userID")
         {
           counter--;
-          amtOfHiddenProducts--;
+         // amtOfHiddenProducts--;
           continue;
         }
+        //???????????
+        if(key =="searchterms")
+        {
+          counter--;
+          //amtOfHiddenProducts--;
+          continue;
+        }
+        
         //input boxes id
         AmountToBuyID = var1 + counter;
         AmountOfCostID = var2 + counter;
         AmountOfQuantityID = var3 + counter;
         BoughtID = var4 + counter;
         oneDivID = var5 + counter;
+        ProductIDID = var6 + counter;
       //alert("quantity");
       //alert(AmountOfQuantityID);
         //amount in box
@@ -208,6 +217,8 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         var amtInBuyBox =(document.getElementById(AmountToBuyID).value);
         var quantityInBox = (document.getElementById(AmountOfQuantityID).value);
         var costInBox = (document.getElementById(AmountOfCostID).value); 
+        var Product = (document.getElementById(ProductIDID).value); 
+       
        
        alert("cost");
       alert(costInBox);
@@ -241,12 +252,26 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         }
 
         if(item == 0)
-        { alert("continue");
-          //first delete: sessionStorage.removeItem(key);
-          
+        {
+                  //sets template1 to zero
+                  alert("important!!!B");
                   hideRow(oneDivID);
+                  amtOfHiddenProducts++;
+                  //amtOfHiddenProducts++;
+                  alert(Product);
+                  //document.getElementById(buyThisManyID).value = 0;
+                  
+                  sessionStorage.setItem((Product), 0);
+                 
+                  //alert(counter);
+                 //alert(data1);
+                  //alert(data1[counter].ID);
+                 
 
-                  amtOfHiddenProducts = amtOfHiddenProducts + 1;
+
+
+
+                  //amtOfHiddenProducts = amtOfHiddenProducts + 1;
                   //document.getElementById(AmountOfQuantityID).value = "";
                   
                   alert("important");
@@ -287,7 +312,11 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     }
 
     //all procucts are hidden, therefore thet have a value of zero
-    if (amtOfHiddenProducts == counter)
+    
+    alert("check this");
+    alert(counter + 1); //1
+    alert(amtOfHiddenProducts);  //2
+    if (amtOfHiddenProducts == (counter + 1))
     {
       for(let key of keys) {
        
@@ -329,6 +358,16 @@ var queryString = string.substring(0, string.length-1);
               success: function (data1) {
 
 
+                ////////////////
+                
+                
+
+
+
+
+                ////////////////
+                
+
                 var flag = "is enough";
 
                 //no records, no need to remove assumed zero
@@ -345,20 +384,31 @@ var queryString = string.substring(0, string.length-1);
                   }
                   else
                   {
-                    //sessionStorage.removeItem(key);
+                    
+                      
+
                   }
                 }
+
+                
 
                 window.location.href = "index.html";
             
                   ///////
                   
                 }
+
+                      
+                        
+
                 for (var i = 0; i< data1.length ;i++)
                 {
 
                   alert("i...");
                   alert(i);
+                  
+                  
+                  
                   alert("length");
                   alert(data1.length);
 
@@ -450,6 +500,35 @@ var queryString = string.substring(0, string.length-1);
                 /////////
 
 
+                var amounttobuy = document.getElementById(buyThisManyID).value;
+
+                //var i1 = -1;
+                //for(let key of keys) {
+                
+                   
+                 // if(key =="session_userID")
+                 // {
+                 //   continue;
+                 // }
+
+                 // if(key =="searchterms")
+                 // {
+                 //   continue;
+                 // }
+                 
+                  //alert("in this new section");
+                  //alert(amounttobuy);
+                  //neet to run this when amount to buy in template2 is zero
+                  //if(amounttobuy == 0 )
+                  //{
+                  //    sessionStorage.setitem(data1[i].ID, 0);
+                  // 
+                  //  //var item = sessionStorage.getitem(key);
+                  //}
+                    
+               
+                /////////
+
                 bought1 = document.getElementById(boughtid).value;
                 bought1 = parseFloat(bought1);
                 alert("really did get here!");
@@ -457,10 +536,19 @@ var queryString = string.substring(0, string.length-1);
                 amtBuying1 = document.getElementById(buyThisManyID).value;
                 amtBuying1 = parseFloat(amtBuying1);
 
+
+
+
+
                 if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
+                  alert("important!!!A");
+
                   hideRow(oneDivID1);
-                  
+                  amtOfHiddenProducts++;
+                  document.getElementById(buyThisManyID).value = 0;
+                  sessionStorage.setitem(data1[i].ID, 0);
+                 
                   alert("important");
                   //alert(lst);
                   //lst[0].style.display = "none";
@@ -497,7 +585,7 @@ var queryString = string.substring(0, string.length-1);
 
                   GTotalWithTax = 0.0;
                   
-                  document.getElementById(quantity).style.color = 'red';
+                  document.getElementById(availableID).style.color = 'red';
                   gRedTextAmount = gRedTextAmount + 1;
                   //var value = document.getElementById(availableID);
                   //value.value = str2;

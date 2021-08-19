@@ -37,7 +37,7 @@
 			{{if(eq .Condition 1)}}
 
 			
-			<div id = "{{.Link}}">Top of record.</div><br>
+			<div id = "{{.Link}}"><b>&nbsp&nbsp&nbsp&nbspThis section is for the keyword : {{.Link}}.</b></div><br>
 
 			{{end}}
 
@@ -58,9 +58,7 @@
 			<div class="row" > 
 			<div class="col">
 			 <p id = "">product id   : {{.ProductID}} </p> 
-			<p>category id  : {{.ProductCatTitle}}</p>
-
-
+			
 		
 
       <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="/updateForm/?idproducts={{.ProductID}}">
