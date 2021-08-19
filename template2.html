@@ -49,6 +49,7 @@
 <tr>
 
 <th><center>Amount to Buy</center></th>
+<th><center>Product ID</center></th>
 <th><center>Product Name</center></th>
 <th><center>Category</center></th>
 <th><center>Available</center></th> 
@@ -68,9 +69,14 @@
 
 <td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
-<td><center>{{.Condition}}  {{.RemoveRecordDivID}}</center> </td>
+<!-- <td><center>{{.Condition}}  {{.RemoveRecordDivID}}</center> </td>-->
 
 <td> <center><p> <input id = "{{.ProductIDID}}" value ="{{.ProductID}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+
+<td> <center><p> <input id = "" value ="{{.ProductName}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+
+<td> <center><p> <input id = "" value ="{{.ProductCatTitle}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+
 
   <td class = "" > <center><p> <input   id = "{{.DivID}}" value ="{{.ProductQuantity}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
@@ -318,17 +324,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     alert(amtOfHiddenProducts);  //2
     if (amtOfHiddenProducts == (counter + 1))
     {
-      for(let key of keys) {
-       
-        if(key =="session_userID")
-        {
-          continue;
-        }
-        else
-        {
-          //sessionStorage.removeItem(key);
-        }
-      }
+      
 
       window.location.href = "index.html";
     
