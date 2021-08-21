@@ -1078,6 +1078,61 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			//productsDisplayed = append(productsDisplayed, ProductID)
 
+				/////
+
+				
+	db := dbConn()
+
+	stmt, err := db.Prepare("SELECT savedtext.text FROM savedtext WHERE savedtext.ProductID = ?")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	rows, err := stmt.Query(ProductID)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	//var PasswordID string
+
+	var flag = 0
+	for rows.Next() {
+		flag = 1
+		err = rows.Scan(&ProdID)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+	//no database entry yet, so insert
+	if flag == 0{
+
+
+		insForm, err := db.Prepare("INSERT INTO savedtext(textstring) VALUES(?)")
+        if err != nil {
+            panic(err.Error())
+        }
+        insForm.Exec(textstring)
+
+
+	//is a database entry, so update
+	}else{
+
+		insForm, err := db.Prepare("UPDATE savedtext SET textstring=?, WHERE productid=?")
+        if err != nil {
+            panic(err.Error())
+        }
+        insForm.Exec(textstring, ProductID)
+
+
+
+	}
+
+
+				/////
+
 			i := 0
 			prodBoughtInt := 0
 			isAmountPurchased := "no"
