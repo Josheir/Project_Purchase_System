@@ -44,11 +44,11 @@
 			
 			<iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
 
-
+			{{if(eq .CondYellow 1)}}
+			<div id = "{{.MainDivID}}" style="background-color:#FFFF00" >
+			{{else}}
 			<div id = "{{.MainDivID}}">
-
-			
-
+			{{end}}
 
 			
 			<div id  = "" class = "test100_" Value = "" name = "">  

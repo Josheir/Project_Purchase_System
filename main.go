@@ -30,7 +30,8 @@ type product struct {
 }
 
 type Product1 struct {
-	ProductIDID string
+	CondYellow         int
+	ProductIDID        string
 	RemoveRecordDivID  string
 	GrandTotalStringID string
 
@@ -629,7 +630,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		BoughtID := var5 + (strconv.Itoa(i))
 		GrandTotalStringID := var6 + (strconv.Itoa(i))
 		RemoveRecordDivID := var7 + (strconv.Itoa(i))
-		ProductIDID := var8 +(strconv.Itoa(i))
+		ProductIDID := var8 + (strconv.Itoa(i))
 		//ID := var8 + (strconv.Itoa(i))
 
 		var prodid, err = (strconv.Atoi(allIds[i]))
@@ -809,7 +810,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 func addProduct(productidid string, removerecorddivID string, totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
 	prod := Product1{
-		ProductIDID: productidid,
+		ProductIDID:        productidid,
 		RemoveRecordDivID:  removerecorddivID,
 		GrandTotalStringID: totalID,
 		GrandTotalString:   total,
@@ -881,6 +882,8 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 */
 
 type forTemplate struct {
+	CondYellow int
+
 	Link            string
 	Condition       int
 	AmountPurchased int
@@ -994,7 +997,7 @@ var counter1 = 0
 /////////
 func display1(w http.ResponseWriter, r *http.Request) {
 
-	var productsDisplayed []int
+	//var productsDisplayed []int
 
 	fmt.Println("+++++++++++++++++")
 
@@ -1048,30 +1051,32 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var templ1 forTemplate
 
 		var Link = globKeyword
+
 		var Condition = 0
 		for rows.Next() {
 
 			Condition++
 			var ProductCost float64
-			var ProductQuantity int
+			var ProductQuantity, CondYellow int
 			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
 
+			CondYellow = 0
 			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
 			if err != nil {
 				panic(err.Error())
 			}
 
-			var m = 0
+			//var m = 0
 			//check of product is already in another search
-			for m = 0; m < len(productsDisplayed); m++ {
+			//for m = 0; m < len(productsDisplayed); m++ {
+			//
+			//	if ProductID == productsDisplayed[m] {
+			//		continue
+			//	}
+			//}
 
-				if ProductID == productsDisplayed[m] {
-					continue
-				}
-			}
-
-			productsDisplayed = append(productsDisplayed, ProductID)
+			//productsDisplayed = append(productsDisplayed, ProductID)
 
 			i := 0
 			prodBoughtInt := 0
@@ -1092,6 +1097,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				if prodIDInt == ProductID {
 					ProductQuantity = ProductQuantity - prodBoughtInt
 					isAmountPurchased = "yes"
+					CondYellow = 1
 					break
 				}
 
@@ -1119,7 +1125,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				AmountPurchased = 0
 			}
 
-			templ1 = forTemplate{Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 				key1ID, globKeyword, key2ID, globKeyword, key3ID, globKeyword, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
 			fmt.Println(templ1)
