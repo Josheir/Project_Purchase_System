@@ -280,6 +280,24 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	} else if PasswordID == pass[0] {
 
 		passFlag = "password correct"
+
+		db := dbConn()
+
+		var UserID = 1
+		//var userID = 1
+		//DOES THIS PRODUCT RECORD ALREADY EXIST
+		stmt, err := db.Prepare("DELETE FROM savedtext WHERE savedtext.UserID = ?")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		stmt.Exec(UserID)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
 	} else {
 
 		passFlag = "password wrong"
@@ -1019,6 +1037,142 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present3")
 	}
 
+	///////////////////
+	///////////////////
+/*
+		//saved text product ids :  1,11,5,7
+		var ints []int
+		var stringText = ""
+		db := dbConn()
+
+		var UserID = 1
+		//var userID = 1
+		//DOES THIS PRODUCT RECORD ALREADY EXIST
+		stmt, err := db.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		rows, err := stmt.Query(UserID)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		var flag = 0
+
+		//get string from database - is at least one record
+		for rows.Next() {
+			flag = 1
+			err = rows.Scan(&stringText)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//change string to array
+			err := json.Unmarshal([]byte(stringText), &ints)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//push to array
+			ints = append(ints, ProductID)
+
+		}
+
+		
+		//no database entry yet, so insert
+		if flag == 0 {
+
+			//pass in array and get string back
+			//var textstring, err = json.Marshal(ints)
+
+			stmt, err := db.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			stmt.Exec(ProductID, UserID)
+
+			//there is/are database entries, so update
+		} else {
+
+			//ALREADY PUSHED
+			//push to array
+			//ints = append(ints, ProductID)
+
+			//turn array to string
+			var textstring, err1 = json.Marshal(ints)
+			if err1 != nil {
+				fmt.Println(err)
+			}
+
+			//update string
+
+			stmt, err := db.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
+			if err != nil {
+				fmt.Println(err)
+			}
+			stmt.Exec(textstring, UserID)
+
+		}
+
+		/////////
+
+		////////
+
+		stmt, err = db.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		rows, err = stmt.Query(UserID)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		//get string from database
+		for rows.Next() {
+
+			err = rows.Scan(&stringText)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//change string to array
+			err := json.Unmarshal([]byte(stringText), &ints)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			/////
+
+			/////
+
+			var flag = 0
+			var j = 0
+			for j = 0; j < len(ints); j++ {
+				if ProductID == ints[j] {
+					flag = 1
+					break
+				}
+
+			}
+			if flag == 1 {
+
+				continue
+			}
+
+		}
+
+
+*/
+
+	///////////////////
+	//////////////////
 	globKeyword := key1[0]
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -1027,7 +1181,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("in display 1")
 
-	db := dbConn()
+	//db := dbConn()
 	var m = 0
 	for m = 0; m < len(key1); m++ {
 
@@ -1102,147 +1256,21 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			*/
 
-			var ints []int
-			var stringText = ""
-			db := dbConn()
 
-			//DOES THIS PRODUCT RECORD ALREADY EXIST
-			stmt, err := db.Prepare("SELECT savedtext.text FROM savedtext WHERE savedtext.ProductID = ?")
 
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			rows, err := stmt.Query(ProductID)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			var flag = 0
-
-			//get string from database
-			for rows.Next() {
-				flag = 1
-				err = rows.Scan(&stringText)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//change string to array
-				err := json.Unmarshal([]byte(stringText), &ints)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//push to array
-				ints = append(ints, ProductID)
-
-			}
-
-			//no database entry yet, so insert
-			if flag == 0 {
-
-				//pass in array and get string back
-				var textstring, err = json.Marshal(ProductID)
-
-				stmt, err := db.Prepare("INSERT INTO savedtext(textstring) VALUES(?)")
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				stmt.Exec(textstring)
-
-				//there is/are database entries, so update
-			} else {
-
-				//stringText is a string acquired form select
-				//change stringText to array
-
-				err := json.Unmarshal([]byte(stringText), &ints)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//push to array
-				ints = append(ints, ProductID)
-
-				//turn array to string
-				var textstring, err1 = json.Marshal(ints)
-				if err1 != nil {
-					fmt.Println(err)
-				}
-
-				//update string
-
-				stmt, err := db.Prepare("UPDATE savedtext SET textstring=?, WHERE productid=?")
-				if err != nil {
-					fmt.Println(err)
-				}
-				stmt.Exec(textstring, ProductID)
-
-			}
-
-			/////////
-
-			////////
-			
-			stmt, err = db.Prepare("SELECT savedtext.text FROM savedtext WHERE savedtext.ProductID = ?")
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			rows, err = stmt.Query(ProductID)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			
-
-			//get string from database
-			for rows.Next() {
-				
-				err = rows.Scan(&stringText)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//change string to array
-				err := json.Unmarshal([]byte(stringText), &ints)
-				if err != nil {
-					fmt.Println(err)
-				}
-			
-			
-			/////
-
-			/////
-
-			var flag = 0
-			var j = 0
-			for j = 0 ; j < len(ints) ; j++ {
-				if ProductID == ints[j]{
-					flag = 1
-					break
-				}
-				
-				}
-				if flag == 1 {
-
-					continue
-				}
-			
-
-			}
+			//////////////////////////////
+			//////////////////////////////
+			//////////////////////////////		   
+/*
+		
+*/
+			//////////
+			//////////
+			//////////
 
 
 
-			//////
 
-
-			
 
 			i := 0
 			prodBoughtInt := 0
