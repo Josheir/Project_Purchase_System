@@ -1067,71 +1067,182 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				panic(err.Error())
 			}
 
-			//var m = 0
-			//check of product is already in another search
-			//for m = 0; m < len(productsDisplayed); m++ {
-			//
-			//	if ProductID == productsDisplayed[m] {
-			//		continue
-			//	}
-			//}
+			/*
 
-			//productsDisplayed = append(productsDisplayed, ProductID)
 
-				/////
+				   	}
 
+				   	//get string from database if exists
+					//otherwise insert record with id array - end
+
+					//or
+					//make string an array
+				   	//push to array
+				   	//updata array to database
+
+
+
+
+					//array to string
+				   	//get array of product ids from
+				   	var stringedarray, err := json.Marshal(ProdID)
+				       if err != nil {
+				   	}
+				   	json.Unmarshal([]byte(JSON),&info)
+
+					//ints is an array with ints
+					//string to ints
+				   	var ints []int
+				       err := json.Unmarshal([]byte(str), &ints)
+				       if err != nil {
+				           log.Fatal(err)
+				       }
+
+
+
+			*/
+
+			var ints []int
+			var stringText = ""
+			db := dbConn()
+
+			//DOES THIS PRODUCT RECORD ALREADY EXIST
+			stmt, err := db.Prepare("SELECT savedtext.text FROM savedtext WHERE savedtext.ProductID = ?")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows, err := stmt.Query(ProductID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			var flag = 0
+
+			//get string from database
+			for rows.Next() {
+				flag = 1
+				err = rows.Scan(&stringText)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//change string to array
+				err := json.Unmarshal([]byte(stringText), &ints)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//push to array
+				ints = append(ints, ProductID)
+
+			}
+
+			//no database entry yet, so insert
+			if flag == 0 {
+
+				//pass in array and get string back
+				var textstring, err = json.Marshal(ProductID)
+
+				stmt, err := db.Prepare("INSERT INTO savedtext(textstring) VALUES(?)")
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				stmt.Exec(textstring)
+
+				//there is/are database entries, so update
+			} else {
+
+				//stringText is a string acquired form select
+				//change stringText to array
+
+				err := json.Unmarshal([]byte(stringText), &ints)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//push to array
+				ints = append(ints, ProductID)
+
+				//turn array to string
+				var textstring, err1 = json.Marshal(ints)
+				if err1 != nil {
+					fmt.Println(err)
+				}
+
+				//update string
+
+				stmt, err := db.Prepare("UPDATE savedtext SET textstring=?, WHERE productid=?")
+				if err != nil {
+					fmt.Println(err)
+				}
+				stmt.Exec(textstring, ProductID)
+
+			}
+
+			/////////
+
+			////////
+			
+			stmt, err = db.Prepare("SELECT savedtext.text FROM savedtext WHERE savedtext.ProductID = ?")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows, err = stmt.Query(ProductID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			
+
+			//get string from database
+			for rows.Next() {
 				
-	db := dbConn()
+				err = rows.Scan(&stringText)
+				if err != nil {
+					fmt.Println(err)
+				}
 
-	stmt, err := db.Prepare("SELECT savedtext.text FROM savedtext WHERE savedtext.ProductID = ?")
+				//change string to array
+				err := json.Unmarshal([]byte(stringText), &ints)
+				if err != nil {
+					fmt.Println(err)
+				}
+			
+			
+			/////
 
-	if err != nil {
-		panic(err.Error())
-	}
+			/////
 
-	rows, err := stmt.Query(ProductID)
+			var flag = 0
+			var j = 0
+			for j = 0 ; j < len(ints) ; j++ {
+				if ProductID == ints[j]{
+					flag = 1
+					break
+				}
+				
+				}
+				if flag == 1 {
 
-	if err != nil {
-		panic(err.Error())
-	}
+					continue
+				}
+			
 
-	//var PasswordID string
-
-	var flag = 0
-	for rows.Next() {
-		flag = 1
-		err = rows.Scan(&ProdID)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-	}
-	//no database entry yet, so insert
-	if flag == 0{
-
-
-		insForm, err := db.Prepare("INSERT INTO savedtext(textstring) VALUES(?)")
-        if err != nil {
-            panic(err.Error())
-        }
-        insForm.Exec(textstring)
-
-
-	//is a database entry, so update
-	}else{
-
-		insForm, err := db.Prepare("UPDATE savedtext SET textstring=?, WHERE productid=?")
-        if err != nil {
-            panic(err.Error())
-        }
-        insForm.Exec(textstring, ProductID)
+			}
 
 
 
-	}
+			//////
 
 
-				/////
+			
 
 			i := 0
 			prodBoughtInt := 0
