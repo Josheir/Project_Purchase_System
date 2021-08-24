@@ -13,13 +13,14 @@ import (
 
 	"net/http"
 
-	//"context"
+	"context"
 	"math"
+
 	//"os"
 	"strconv"
 	"time"
 
-	//"github.com/go-session/session"
+	"github.com/go-session/session"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -1016,14 +1017,46 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 var counter1 = 0
 
 /////////
+
+var GlobCounter = -1
+
 func display1(w http.ResponseWriter, r *http.Request) {
 
-	//store, err := session.Start(context.Background(), w, r)
+	GlobCounter++
+	store, err := session.Start(context.Background(), w, r)
 
-	//if err == nil {
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	//}
-	var UserID = 1 
+	var UserID = 1
+
+	db4 := dbConn()
+	//get from dbase
+
+	var textstring = ""
+	stmt1, err := db4.Prepare("SELECT savedtext.GlobCounter FROM savedtext WHERE savedtext.UserID = ?")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rows1, err := stmt1.Query(UserID)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//get string from database - is at least one record
+	for rows1.Next() {
+
+		err = rows1.Scan(&GlobCounter)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+
 	//var productsDisplayed []int
 
 	fmt.Println("+++++++++++++++++")
@@ -1145,6 +1178,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var Condition = 0
 	//saved text product ids :  1,11,5,7
 	var ints []int
+	var keywords []string
 
 	var marshalFlag = "no"
 
@@ -1164,11 +1198,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		}
 
-
 		db3 := dbConn()
 		//get from dbase
 
-		var textstring = ""
+		textstring = ""
 		stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {
@@ -1181,8 +1214,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		
-
 		//get string from database - is at least one record
 		for rows1.Next() {
 			marshalFlag = "yes"
@@ -1193,8 +1224,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-
-		
 		//textstring, err2= json.Marshal(ints)
 		//if err2 != nil {
 		//	fmt.Println(err)
@@ -1202,13 +1231,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		//change string to array
 
-		if (marshalFlag == "yes"){
-		err = json.Unmarshal([]byte(textstring), &ints)
-		if err != nil {
-			fmt.Println(err)
+		if marshalFlag == "yes" {
+			err = json.Unmarshal([]byte(textstring), &ints)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
-	}
-
+		//check for duplicates
 		var flag1 = 0
 		var j = 0
 		for j = 0; j < len(ints); j++ {
@@ -1223,28 +1252,17 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		
-
-		//var index = "K" + strconv.Itoa(globCounter)
-		//store.Set(index, globKeyword)
-		//err = store.Save()
-		//if err != nil {
-		//	fmt.Fprint(w, err)
-		//	return
-		//}
+		//creates and sets records :  K1, K2...
+		var index = "K" + strconv.Itoa(GlobCounter)
+		store.Set(index, globKeyword)
+		err = store.Save()
+		if err != nil {
+			fmt.Fprint(w, err)
+			//	return
+		}
 
 		/*
 
-
-			   	}
-
-			   	//get string from database if exists
-				//otherwise insert record with id array - end
-
-				//or
-				//make string an array
-			   	//push to array
-			   	//updata array to database
 
 
 
@@ -1272,7 +1290,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//////////////////////////////
 		//////////////////////////////
 
-		
 		//var globCounter = 0
 		//var globalIndex = ""
 		var stringText = ""
@@ -1395,8 +1412,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		
-
 		//////
 
 		/*
@@ -1498,26 +1513,27 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			AmountPurchased = 0
 		}
 
+		var index1 = "a"
+		var k = 0
+		for k = 0; k <= GlobCounter; k++ {
+
+			index1 = "K" + strconv.Itoa(k)
+
+			var1, ok := store.Get(index1)
+
+			if ok {
+				str := fmt.Sprintf("%v", var1)
+				keywords = append(keywords, str)
+			}
+
+		}
+
+		json.NewEncoder(w).Encode(keywords)
+
 		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
 		fmt.Println(templ1)
-
-		//store.Get(strconv.Itoa(globCounter))
-		//store.Set(("globCounter"), globCounter)
-
-		//for keywords
-		//globalIndex = "K" + strconv.Itoa(globCounter)
-		//store.Set(globalIndex, globKeyword)
-		//err = store.Save()
-		//if err != nil {
-		//	fmt.Fprint(w, err)
-		//	return
-		//}
-
-		//change array to text string - send
-		//json.NewEncoder(w).Encode(keywords)
-		//json.NewEncoder(w).Encode(templ1)
 
 		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
 
@@ -1531,27 +1547,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//} //for l
-
-	//index K1 , K2 , K3  - make into an array to passcostID
-
-	//	var k = 0
-
-	//var index1 = "a"
-	//	for k = 0; k < globCounter; k++ {
-	//
-	//		var index1 = "K" + strconv.Itoa(k)
-	//
-	//		_, ok := store.Get(index1)
-	//		if(ok){
-	//
-	//		}
-	//		keywords = append(keywords, globKeyword)
-	//
-	//	}
+	stmt1, err = db.Prepare("UPDATE savedtext SET GlobCounter=? WHERE UserID=?")
+	if err != nil {
+		fmt.Println(err)
+	}
+	stmt1.Exec(GlobCounter, UserID)
 
 }
-
 
 func submitfunc(w http.ResponseWriter, r *http.Request) {
 
