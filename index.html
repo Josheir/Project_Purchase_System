@@ -222,6 +222,19 @@ $(document).ready(function () {
               data: querystring,
               success: function (result) {
                 
+				//func Replace(result, old, new string, n int) string
+
+				//https://stackoverflow.com/questions/1493027/javascript-return-string-between-square-brackets
+				//https://www.delftstack.com/howto/javascript/javascript-remove-substring-from-string/
+				var mystring = "A[aa]A";
+				var matched = mystring.match("\\[.*]");
+				var ourNewWord = result.replace(matched, '')
+				
+				alert("display");
+				alert (matched);
+				alert (result[0]);
+				alert (result[0].testvar);
+				
                 
                 //$('#buttons').html( result);
                 var result1 = "<a href='#" + val1 + "'>" + val1 + "</a><br>";
