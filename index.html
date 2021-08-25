@@ -319,7 +319,7 @@ xhr.send(formdata);
 
 var gTotalOfPurchases = 0;
 
-function changeFields(originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
+function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
 
@@ -327,6 +327,8 @@ function changeFields(originalQuantity, productID, quantityID, amountPurchasedID
 
 				//alert(quantityID);
 
+				var makeYellow = document.getElementById(mainDiv);
+				makeYellow.style["background-color"] = "yellow";
 				var amountToBePurchased  = 0;
 				var  amountInPurchasedField = 0;
 				var amountPurchasedSoFar = 0;
