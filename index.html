@@ -226,18 +226,28 @@ $(document).ready(function () {
 
 				//https://stackoverflow.com/questions/1493027/javascript-return-string-between-square-brackets
 				//https://www.delftstack.com/howto/javascript/javascript-remove-substring-from-string/
-				//var mystring = "A[aa]A";
-				//var matched = mystring.match("\\[.*]");
-				//var ourNewWord = result.replace(matched, '')
+				//var mystring = "[aa]aaaa";
+				var item = ""
+				item = result.match("\\[.*]");
+				var ourNewWord = result.replace(item, '')
+				var x = typeof(item);
 
 				alert("display");
-				alert (result);
-				alert (result[0]);
-				alert (result[0].testvar);
+				var item1 = JSON.stringify(item);
+				alert (item1);
+				item1 = item1.slice(5);
+				alert (item1);
+				
+				//alert(item1)
+				alert(typeof(item1));
+				var item1 = item1.substring(0, item1.length - 5);
+				alert(item1)
+				
+				
 				
                 
                 //$('#buttons').html( result);
-                var result1 = "<a href='#" + val1 + "'>" + val1 + "</a><br>";
+                var result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
 
                 //alert("important check");
                 //alert(result1);
@@ -246,7 +256,7 @@ $(document).ready(function () {
 
                 document.getElementById('buttons').innerHTML   += result1;
 
-                document.getElementById('templateOneHere').innerHTML   += result;
+                document.getElementById('templateOneHere').innerHTML   += ourNewWord;
                               
                               
              

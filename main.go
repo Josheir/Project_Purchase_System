@@ -1523,6 +1523,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			if ok {
 				str := fmt.Sprintf("%v", var1)
+				//this array is reset at reload and is always just this one keyword
 				keywords = append(keywords, str)
 			}
 
