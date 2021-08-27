@@ -1022,6 +1022,11 @@ var GlobCounter = -1
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	//ARRAY OF INTS  [3,4,7]
+	//thesse ints are kept in database and changed to an array to see if they have aleady been
+	//displayed so continue.  Does not effect the client side is an int
+	//product is checked with array and if exists is contniues
+
 	GlobCounter++
 	store, err := session.Start(context.Background(), w, r)
 
@@ -1031,10 +1036,52 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	var UserID = 1
 
+	////////
+
+	fmt.Println("+++++++++++++++++")
+
+	query := r.URL.Query()
+
+	//this is the searchterm in order from first to last now
+	key1, present := query["var"]
+
+	if !present || len(key1) == 0 {
+		fmt.Println("filters not present1")
+	}
+
+	keyTotalAmountBought, present2 := query["quant"]
+	if !present2 || len(keyTotalAmountBought) == 0 {
+		fmt.Println("filters not present2")
+	}
+	ProdID, present3 := query["id"]
+	if !present3 || len(ProdID) == 0 {
+		fmt.Println("filters not present3")
+	}
+
+	UserIDstring, present4 := query["uid"]
+	if !present4 || len(UserIDstring) == 0 {
+		fmt.Println("filters not present4")
+
+	}
+
+	if len(UserIDstring) != 0 {
+
+		//only one
+		UserID, _ = strconv.Atoi(UserIDstring[0])
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		UserID = 1
+	}
+
+	//////////
+
 	db4 := dbConn()
 	//get from dbase
 
 	var textstring = ""
+	//get the ounter for
 	stmt1, err := db4.Prepare("SELECT savedtext.GlobCounter FROM savedtext WHERE savedtext.UserID = ?")
 
 	if err != nil {
@@ -1057,28 +1104,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//var productsDisplayed []int
-
-	fmt.Println("+++++++++++++++++")
-
-	query := r.URL.Query()
-
-	//this is the searchterm in order from first to last now
-	key1, present := query["var"]
-
-	if !present || len(key1) == 0 {
-		fmt.Println("filters not present1")
-	}
-
-	keyTotalAmountBought, present2 := query["quant"]
-	if !present2 || len(keyTotalAmountBought) == 0 {
-		fmt.Println("filters not present2")
-	}
-	ProdID, present3 := query["id"]
-	if !present3 || len(ProdID) == 0 {
-		fmt.Println("filters not present3")
-	}
-
 	globKeyword := key1[0]
 
 	//var keywords []string
@@ -1098,6 +1123,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//globKeyword = key1[m]
 
+	//get records that use keywords
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
@@ -1110,60 +1136,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//var var3 = ""
 
 	//globCounter++
-
-	/*
-		var num = 0
-		store.Set("globCounter", num)
-
-
-		gcounter, _ := store.Get("globCounter")
-
-		fmt.Println(gcounter)
-
-		fmt.Fprintf(os.Stdout, "gcounter:%s", gcounter)
-
-		if gcounter == nil {
-
-			store.Set("globCounter", "1")
-			err = store.Save()
-			if err != nil {
-				fmt.Fprint(w, err)
-
-			}
-			//fmt.Fprintf(os.Stdout, "gcounter:%s", gcounter)
-
-			//continue
-
-		} else {
-
-			//gcounter = "1"
-			var val1
-			if val1 = ""
-			{
-				val = 0
-			}
-			val++
-			if val1 == und
-			val1++
-			var val2 = string(val1)
-			gcounter = val2
-			store.Set("globCounter", gcounter)
-			err = store.Save()
-			if err != nil {
-				fmt.Fprint(w, err)
-
-			}
-			fmt.Println(gcounter)
-		}
-
-		gcounter, ok := store.Get("globCounter")
-		if ok {
-			fmt.Println(gcounter)
-
-		}
-	*/
-
-	//	globCounter = val + 1
 
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
@@ -1202,6 +1174,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//get from dbase
 
 		textstring = ""
+		//gets the element that is the current keyword element :  ie : ["apple1"]
 		stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {
@@ -1214,7 +1187,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		//get string from database - is at least one record
+		//get string from database
 		for rows1.Next() {
 			marshalFlag = "yes"
 			err = rows1.Scan(&textstring)
@@ -1224,19 +1197,17 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//textstring, err2= json.Marshal(ints)
-		//if err2 != nil {
-		//	fmt.Println(err)
-		//}
-
 		//change string to array
 
+		//ONE KEYWORD IS BEING SENT BACK TO CLIENT, WHERE IT IS USED TO SET THE LINK
+		//
 		if marshalFlag == "yes" {
 			err = json.Unmarshal([]byte(textstring), &ints)
 			if err != nil {
 				fmt.Println(err)
 			}
 		}
+
 		//check for duplicates
 		var flag1 = 0
 		var j = 0
@@ -1252,7 +1223,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		//creates and sets records :  K1, K2...
+		//creates and sets records :  K1, K2...THIS IS FOR LOOKING AT GLOB WORD AND IS NOW ONLY ONE ELEMENT READ BELOW
 		var index = "K" + strconv.Itoa(GlobCounter)
 		store.Set(index, globKeyword)
 		err = store.Save()
@@ -1262,11 +1233,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 		/*
-
-
-
-
-
 				//array to string
 			   	//get array of product ids from
 			   	var stringedarray, err := json.Marshal(ProdID)
@@ -1281,9 +1247,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			       if err != nil {
 			           log.Fatal(err)
 			       }
-
-
-
 		*/
 
 		//////////////////////////////
@@ -1295,7 +1258,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var stringText = ""
 		db1 := dbConn()
 
-		var UserID = 1
+		//var UserID = 1
 		//var userID = 1
 		//DOES THIS PRODUCT RECORD ALREADY EXIST
 		stmt1, err = db1.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
@@ -1337,7 +1300,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			//pass in array and get string back
 			//var textstring, err = json.Marshal(ints)
 
-			stmt1, err := db.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
+			stmt2, err := db.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -1349,17 +1312,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err1)
 			}
 
-			stmt1.Exec(textstring, UserID)
+			stmt2.Exec(textstring)
 
 			//there is/are database entries, so update
 		} else {
-
-			//ALREADY PUSHED
-			//push to array
-			//ints = append(ints, ProductID)
-
-			//turn array to string
-			//ints = append(ints, ProductID)
 
 			var textstring, err1 = json.Marshal(ints)
 			if err1 != nil {
@@ -1409,63 +1365,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			/////
 
 			/////
-
 		}
-
-		//////
-
-		/*
-			store, err := session.Start(context.Background(), w, r)
-			if err != nil {
-				fmt.Fprint(w, err)
-
-			}
-
-			store.Set(strconv.Itoa(ProductID), "1")
-			err = store.Save()
-			if err != nil {
-				fmt.Fprint(w, err)
-				return
-			}
-
-			var2, ok := store.Get(strconv.Itoa(ProductID))
-			if ok {
-				if var2 == "2" {
-
-					store.Set(strconv.Itoa(ProductID), "1")
-					err = store.Save()
-					if err != nil {
-						fmt.Fprint(w, err)
-						return
-					}
-					continue
-
-				} else if var2 == "1" {
-					store.Set(strconv.Itoa(ProductID), "2")
-					err = store.Save()
-					if err != nil {
-						fmt.Fprint(w, err)
-						return
-					}
-				}
-
-			} else {
-				store.Set(strconv.Itoa(ProductID), "1")
-				err = store.Save()
-				if err != nil {
-					fmt.Fprint(w, err)
-					return
-				}
-			}
-
-			//fmt.Fprintf(os.Stdout, "PID value:%s", strconv.Itoa(ProductID))
-
-		*/
-
-		////////////
-
-		///////////
-
 		i := 0
 		prodBoughtInt := 0
 		isAmountPurchased := "no"
@@ -1515,7 +1415,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		var index1 = "a"
 		var k = 0
-		for k = 0; k <= GlobCounter; k++ {
+		//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
+		for k = 0; k <= 1; k++ {
 
 			index1 = "K" + strconv.Itoa(k)
 
@@ -1524,6 +1425,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			if ok {
 				str := fmt.Sprintf("%v", var1)
 				//this array is reset at reload and is always just this one keyword
+				keywords = nil
 				keywords = append(keywords, str)
 			}
 
@@ -1556,11 +1458,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func submitfunc(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println("aarg ")
-	fmt.Println("aarg ")
-}
+//func submitfunc(w http.ResponseWriter, r *http.Request) {
+//
+//	fmt.Println("aarg ")
+//	fmt.Println("aarg ")
+//}
 
 //send from client to server and
 //send form server to client

@@ -116,95 +116,183 @@ $(document).ready(function () {
   //template button press - display searches a keyword
     //$(document).ready(function () {
       $("#button6").click(function () {
-
 		
-        var string = ""
+		var string = ""
         let keys = Object.keys(sessionStorage);
 
+		for(let key of keys) {
+
+		
+        
         var wasKeys = "no";
 
-
-		//let storedArray = ["test"];
-      for(let key of keys) {
+     
         if(key == "session_userID")
         {
         continue;
         }
-		else if(key == "searchterms")
+		
+		//if key is a number
+		var keyAsInt =  parseInt(key); 
+		if (isInteger(keyAsInt));
+		{
+			var item = sessionStorage.getItem(key);
+       		string =  string + "id=" + key + "&quant=" + item + "&";
+  
+       		wasKeys = "yes";
+
+
+	   
+
+		}
+
+	}
+
+		/*else if(key == "searchterms")
         {
 			var item = sessionStorage.getItem(key);
 
 			item = item.slice(2);
 			item = item.substr(0, item.length - 2);
-			//alert("in here...");
-			//alert(item);
-			//var testArray = item;
-			//var test = (item.join());
+			
 			alert("did i get here?");
 			alert(item);
 
-			//alert("is this it");
-			//alert(item);
-			//const val = item.join();
-			//console.log(item.join());
-			//alert("a");
+			
 			string = string + "var=" + item + "&";
-			//alert("is this it");
-			//alert(item.join(", "));
+			
 			continue;
-		}
+		}*/
 
 
-       var item = sessionStorage.getItem(key);
-       string =  string + "id=" + key + "&quant=" + item + "&";
-  
-       wasKeys = "yes";
-        
-      }
+	
+		
+
+			/////////////
+
+			
+			
+	  var val1 = document.getElementById("search").value;
+
+	  
+	  if(val1 == "" )
+	  {
+			return(1);
+	  }
 
 
-
-
-      var val1 = document.getElementById("search").value;
+	  var gflag = "isntin";
+	  //there are url parameters
       if(wasKeys == "yes"){
 
 		
-        var testArray = [val1];
-		//puts testarray in searchterms
-		alert("in here111");
-		//testArray = (testArray.join());
-		window.sessionStorage.setItem("searchterms", JSON.stringify(testArray));
+		//GLOBWORD :   ["APPLE"] is sent as result from display1 to index.html
+		//sent as keywords tried to make this just one element...uses K....
+		//these are held in store   and globcounter saved is counter of just one element now
+		//in dispaly check if already used globword
+
+		var testArray = [val1];
 		
-		var storedArray = JSON.parse(sessionStorage.getItem("searchterms"));
 
+		//turn array to string
 
-		for (i = 0; i < storedArray.length; i++) {
+		alert("in here111");
 
+		sessionStorage.setItem("keywords", (testArray));
+		var storedArray = (sessionStorage.getItem("keywords"));
+		
+		var flag1 = "donthaveit"
+		//val1 = ""
+		
+		for (i = 0; i < 1; i++) {
 
-		querystring = ("var=" + storedArray[i] + "&");
+		if(!storedArray)
+		{
+			flag1 == "donthaveit";
+			break;
+		}
+		//val1 is search keyword - already have it
+		if(val1 == storedArray[i])
+		{
+			flag1 = "haveitalready"
+			break;
+		}
+		
+		}
+
+		if (flag1 == "donthaveit")
+		{
+		querystring = ("var=" + val1 + "&");
 		querystring += string;
-     	 }
+		
+		storedArray = (sessionStorage.getItem("keywords"));
+		if(storedArray)
+		{
+		storedArray.push(val1);
+		}
+		sessionStorage.setItem("keywords", (testArray[0]));
+		
+		}
+		  
 
 	  }	
+	  //no url parameters
       else
       {
 
-		
-		var testArray = [val1];
-		alert("in here222");
-		//testArray = (testArray.join());
-		//puts testarray in searchterms
-		window.sessionStorage.setItem("searchterms", JSON.stringify(testArray));
-		
-		var storedArray = JSON.parse(sessionStorage.getItem("searchterms"));
-		//storedArray.push(val1);
-		for (i = 0; i < storedArray.length; i++)
-		{
-			querystring = ("var=" + storedArray[i] + "&");
-		}
-		
-      }
+		var counter = 0;
+		gflag = "isntin";
+		var testArray = [];
+		//var storedArray = [];
+		testArray.push(val1);
+		//turn array to string
 
+		alert("in here111");
+
+		var storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+
+		if(storedArray){
+		for (i = 0; i < storedArray.length; i++) {
+
+			//if(storedArray)
+			//{
+			if (storedArray[i] == val1)
+			{
+				gflag = "isin"
+				break;
+			}
+			//}
+			}
+		}
+				if (gflag == "isntin")
+			{
+				sessionStorage.setItem("keywords", JSON.stringify(testArray));
+				querystring = ("var=" + val1 + "&");
+
+			}
+		//put keyword into storage : apple1, appl26, apple7, make sure val1 is not added that is same name
+		}
+	
+
+		
+		
+		
+
+//sessionStorage.setItem("keywords", (testArray));
+		
+
+			/////////////
+
+		
+       
+        
+      
+
+
+
+
+
+	  
         
 
 	  //querystring = querystring + "id=3&quant=10&";
@@ -221,12 +309,23 @@ $(document).ready(function () {
               crossDomain: true,
               data: querystring,
               success: function (result) {
-                
+                var result1 = "";
+				let keys = Object.keys(sessionStorage);
+
+				//check if this link/keyword is first time and only useage
+				var  gkeywordArray = ""
+				
+				
+					
+				
 				//func Replace(result, old, new string, n int) string
 
 				//https://stackoverflow.com/questions/1493027/javascript-return-string-between-square-brackets
 				//https://www.delftstack.com/howto/javascript/javascript-remove-substring-from-string/
 				//var mystring = "[aa]aaaa";
+				
+				//gets globword [["apple"]], 
+				//this is only for creatint links
 				var item = ""
 				item = result.match("\\[.*]");
 				var ourNewWord = result.replace(item, '')
@@ -242,17 +341,35 @@ $(document).ready(function () {
 				alert(typeof(item1));
 				var item1 = item1.substring(0, item1.length - 5);
 				alert(item1)
+
+				////////
+
+				//var flag = ""
+				for(let key of keys)
+				{
+
+
+					
+				//https://stackoverflow.com/questions/38083241/sessionstorage-into-array-and-print-all-values-in-the-array
+				//saved array of different keywords, like :  apple1, apple6, apple7
+				if (key == "keywords")
+				{
+					
+					
+
+
+				/////////this is the first item of this name so it is displayed one time for link above records
+				if (gflag == "isntin")
+				{
+					
+					result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+				}
 				
-				
-				
+
+				}
+
+				//window.sessionStorage.setItem("keywords", JSON.stringify(gkeywordArray))
                 
-                //$('#buttons').html( result);
-                var result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
-
-                //alert("important check");
-                //alert(result1);
-
-                //var result2 = "<a href='#apple1'>*apple*</a>" + result;
 
                 document.getElementById('buttons').innerHTML   += result1;
 
@@ -262,9 +379,9 @@ $(document).ready(function () {
              
               
                 }
-          });
+          }
       });
-  //});
+  });
 
 
 
