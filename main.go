@@ -1124,6 +1124,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//globKeyword = key1[m]
 
 	//get records that use keywords
+
+	var counter = 0
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
@@ -1133,6 +1135,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//	//panic(err.Error())
 	}
 
+	counter++
 	//var var3 = ""
 
 	//globCounter++

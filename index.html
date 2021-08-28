@@ -127,14 +127,11 @@ $(document).ready(function () {
         var wasKeys = "no";
 
      
-        if(key == "session_userID")
-        {
-        continue;
-        }
+        
 		
 		//if key is a number
 		var keyAsInt =  parseInt(key); 
-		if (isInteger(keyAsInt));
+		if (typeof value === 'number') {
 		{
 			var item = sessionStorage.getItem(key);
        		string =  string + "id=" + key + "&quant=" + item + "&";
@@ -145,6 +142,11 @@ $(document).ready(function () {
 	   
 
 		}
+		if(key == "session_userID")
+        {
+        continue;
+        }
+
 
 	}
 
@@ -171,7 +173,9 @@ $(document).ready(function () {
 			/////////////
 
 			
-			
+		//GLOBWORD :   ["APPLE"] is sent as result from display1 to index.html
+		//sent as keywords tried to make this just one element...uses K....
+		//these are held in store   and globcounter saved is counter of just one 
 	  var val1 = document.getElementById("search").value;
 
 	  
@@ -181,126 +185,25 @@ $(document).ready(function () {
 	  }
 
 
-	  var gflag = "isntin";
-	  //there are url parameters
+	  //var gflag = "isntin";
+	  //THERE ARE URLS ALREADY
       if(wasKeys == "yes"){
 
-		
-		//GLOBWORD :   ["APPLE"] is sent as result from display1 to index.html
-		//sent as keywords tried to make this just one element...uses K....
-		//these are held in store   and globcounter saved is counter of just one element now
-		//in dispaly check if already used globword
-
-		var testArray = [val1];
-		
-
-		//turn array to string
-
-		alert("in here111");
-
-		sessionStorage.setItem("keywords", (testArray));
-		var storedArray = (sessionStorage.getItem("keywords"));
-		
-		var flag1 = "donthaveit"
-		//val1 = ""
-		
-		for (i = 0; i < 1; i++) {
-
-		if(!storedArray)
-		{
-			flag1 == "donthaveit";
-			break;
-		}
-		//val1 is search keyword - already have it
-		if(val1 == storedArray[i])
-		{
-			flag1 = "haveitalready"
-			break;
-		}
-		
-		}
-
-		if (flag1 == "donthaveit")
-		{
-		querystring = ("var=" + val1 + "&");
-		querystring += string;
-		
-		storedArray = (sessionStorage.getItem("keywords"));
-		if(storedArray)
-		{
-		storedArray.push(val1);
-		}
-		sessionStorage.setItem("keywords", (testArray[0]));
-		
-		}
-		  
-
-	  }	
-	  //no url parameters
-      else
+		querystring = setSession(true, val1);
+	  }
+	  //THERE ARNT URLS NOW 
+	  else
       {
+		querystring = setsession(false, val1);
 
-		var counter = 0;
-		gflag = "isntin";
-		var testArray = [];
-		//var storedArray = [];
-		testArray.push(val1);
-		//turn array to string
-
-		alert("in here111");
-
-		var storedArray = JSON.parse(sessionStorage.getItem("keywords"));
-
-		if(storedArray){
-		for (i = 0; i < storedArray.length; i++) {
-
-			//if(storedArray)
-			//{
-			if (storedArray[i] == val1)
-			{
-				gflag = "isin"
-				break;
-			}
-			//}
-			}
-		}
-				if (gflag == "isntin")
-			{
-				sessionStorage.setItem("keywords", JSON.stringify(testArray));
-				querystring = ("var=" + val1 + "&");
-
-			}
-		//put keyword into storage : apple1, appl26, apple7, make sure val1 is not added that is same name
-		}
-	
-
+	  }
 		
-		
-		
-
-//sessionStorage.setItem("keywords", (testArray));
-		
-
-			/////////////
-
-		
-       
-        
-      
-
-
-
-
-
-	  
-        
-
-	  //querystring = querystring + "id=3&quant=10&";
 
         alert("querystring10a");
         alert(querystring);
         
        // alert(val1);
+	   
           $.ajax({
               url: "http://localhost:8080/display",
               type: 'GET',
@@ -313,25 +216,42 @@ $(document).ready(function () {
 				let keys = Object.keys(sessionStorage);
 
 				//check if this link/keyword is first time and only useage
-				var  gkeywordArray = ""
+				var  gkeywordArray = "";
 				
-				
+				item1, ourNewWord = deriveKeywordFromResult(result);
 					
+				///////////
 				
-				//func Replace(result, old, new string, n int) string
-
+				/*
 				//https://stackoverflow.com/questions/1493027/javascript-return-string-between-square-brackets
 				//https://www.delftstack.com/howto/javascript/javascript-remove-substring-from-string/
 				//var mystring = "[aa]aaaa";
 				
 				//gets globword [["apple"]], 
 				//this is only for creatint links
-				var item = ""
+				alert("display");
+				alert(result);
+				var item = "";
+
+				
 				item = result.match("\\[.*]");
-				var ourNewWord = result.replace(item, '')
+				alert(item);
+				//more than one record, and only first record is not null
+				if (item == "[]")
+				{
+					var ourNewWord = result.replace("null", '');
+					alert(ourNewWord);
+				}
+				else
+				{
+				alert("here");
+				alert(item);
+				var ourNewWord = result.replaceAll(item, '');
+				//ourNewWord = ourNewWord.replace(item, '')
+				alert(ourNewWord);
 				var x = typeof(item);
 
-				alert("display");
+				
 				var item1 = JSON.stringify(item);
 				alert (item1);
 				item1 = item1.slice(5);
@@ -340,8 +260,9 @@ $(document).ready(function () {
 				//alert(item1)
 				alert(typeof(item1));
 				var item1 = item1.substring(0, item1.length - 5);
-				alert(item1)
-
+				alert(item1);
+				}
+				*/
 				////////
 
 				//var flag = ""
@@ -359,7 +280,7 @@ $(document).ready(function () {
 
 
 				/////////this is the first item of this name so it is displayed one time for link above records
-				if (gflag == "isntin")
+				if (gflag == "isntin" && item != "[]" )
 				{
 					
 					result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
@@ -368,21 +289,20 @@ $(document).ready(function () {
 
 				}
 
-				//window.sessionStorage.setItem("keywords", JSON.stringify(gkeywordArray))
-                
+			}
 
                 document.getElementById('buttons').innerHTML   += result1;
 
-                document.getElementById('templateOneHere').innerHTML   += ourNewWord;
+                document.getElementById('templateOneHere').innerHTML   = ourNewWord;
                               
                               
              
               
                 }
-          }
+         
       });
-  });
-
+	
+});
 
 
   
@@ -635,6 +555,118 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 			}
 
 
+
+//returns querystring
+//thi function checks if a keyword is already used and returns the queystring
+function setSession(areThereUrls, val1)
+{//NO URLS
+	var counter = 0;
+		var gflag = "isntin";
+		
+		alert("in here111");
+
+		var storedArray = [];
+		//puts first variable into sessionStorage
+		if(!( storredArray = JSON.parse(sessionStorage.getItem("keywords"))))
+		{
+			sessionStorage.setItem("keywords", JSON.stringify(val1));
+			storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+			//push the searchword onto the array that holds the values for setting ssession storage
+			storedArray.push(val1);	
+			//storedArray.push(val1);	
+		}else
+		{
+			storredArray = JSON.parse(sessionStorage.getItem("keywords"));
+		}
+
+		//if(storedArray){
+		for (i = 0; i < storedArray.length; i++) {
+
+			//if(storedArray)
+			//{
+			if (storedArray[i] == val1)
+			{
+				gflag = "isin"
+				break;
+			}
+			
+		}
+		
+
+		//add a new keyword to session
+		if (gflag == "isntin")
+		{
+		
+		storedArray.push(val1);	
+		sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+		
+
+		//////////
+		
+		if (areThereUrls)
+		{
+			querystring = ("var=" + val1 + "&");
+			querystring += string;
+		}
+		else
+		{
+
+			querystring = ("var=" + val1 + "&");
+		}
+
+		////////////
+
+
+
+		
+		//querystring += string;
+		}
+	
+	
+	return(querystring);
+	}
+
+
+//the ajax returns a string which has the name of the keyword that needs to be removed and both alterd datas are used	
+function deriveKeywordFromResult(result)
+{
+
+				alert("display");
+				//alert(result);
+				var item = "";
+
+				
+				item = result.match("\\[.*]");
+				alert(item);
+				//more than one record, and only first record is not null
+				if (item == "[]")
+				{
+					var ourNewWord = result.replace("null", '');
+					alert(ourNewWord);
+				}
+				else
+				{
+				alert("here");
+				alert(item);
+				var ourNewWord = result.replaceAll(item, '');
+				//ourNewWord = ourNewWord.replace(item, '')
+				alert(ourNewWord);
+				var x = typeof(item);
+
+				
+				var item1 = JSON.stringify(item);
+				alert (item1);
+				item1 = item1.slice(5);
+				alert (item1);
+				
+				//alert(item1)
+				alert(typeof(item1));
+				var item1 = item1.substring(0, item1.length - 5);
+				alert(item1);
+				}
+
+return(item1, ourNewWord);				
+}
 
 </script>
 
