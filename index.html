@@ -566,43 +566,27 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 //thi function checks if a keyword is already used and returns the queystring
 function setSession(areThereUrls, val1)
 {//NO URLS
+	var isfirst = false;
 	var querystring = "";
 	var counter = 0;
 		var gflag = "isntin";
 		
 		alert("in here111");
 
+		var storedArray2 = [val1];
 		var storedArray = [];
 		//puts first variable into sessionStorage
-		if(!( storredArray = JSON.parse(sessionStorage.getItem("keywords"))))
+		if(!( storedArray = JSON.parse(sessionStorage.getItem("keywords"))))
 		{
-			sessionStorage.setItem("keywords", JSON.stringify(val1));
-			storedArray[0] = JSON.parse(sessionStorage.getItem("keywords"));
-			//push the searchword onto the array that holds the values for setting ssession storage
-			//storedArray.push(val1);	
-			//storedArray.push(val1);
+			isfirst = true
+			sessionStorage.setItem("keywords", JSON.stringify(storedArray2));
+			storedArray = JSON.parse(sessionStorage.getItem("keywords"));
 			
-			////////
-			if (areThereUrls)
-			{
-			querystring = ("var=" + val1 + "&");
-			querystring += string;
-			}
-			else
-			{
-
-			querystring = ("var=" + val1 + "&");
-			}
-			gflag = "isntin";
-
-			return [gflag, querystring];
-
-			////////
-
-
 		}else
 		{
-			storredArray = JSON.parse(sessionStorage.getItem("keywords"));
+			storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+			//sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+		
 		}
 
 		//if(storedArray){
@@ -610,7 +594,7 @@ function setSession(areThereUrls, val1)
 
 			//if(storedArray)
 			//{
-			if (storedArray[i] == val1)
+			if (storedArray[i] == val1 && isfirst == false)
 			{
 				gflag = "isin"
 				break;
@@ -623,9 +607,12 @@ function setSession(areThereUrls, val1)
 		if (gflag == "isntin")
 		{
 		
-		storedArray.push(val1);	
-		sessionStorage.setItem("keywords", JSON.stringify(storedArray));
 		
+			if(isfirst == false)
+			{
+			storedArray.push(val1);	
+			sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+			}
 
 		//////////
 		
@@ -668,8 +655,7 @@ function deriveKeywordFromResult(result)
 				//more than one record, and only first record is not null
 				if (item == "[]")
 				{
-					//ourNewWord = result.replace("null", '');
-					//alert(ourNewWord);
+					alert("how many times?");
 					return;
 				}
 				else
