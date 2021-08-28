@@ -243,7 +243,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	userid1, err := (strconv.Atoi(userid[0]))
 
 	if err != nil {
-		panic(err.Error())
+		fmt.Fprint(w, err)
 	}
 
 	pass, present := query["pass"]
@@ -257,13 +257,13 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	stmt, err := db.Prepare("SELECT customers.Password FROM customers WHERE customers.CustomerID = ?")
 
 	if err != nil {
-		panic(err.Error())
+		fmt.Fprint(w, err)
 	}
 
 	rows, err := stmt.Query(userid1)
 
 	if err != nil {
-		panic(err.Error())
+		fmt.Fprint(w, err)
 	}
 
 	var PasswordID string
@@ -1125,7 +1125,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//get records that use keywords
 
-	var counter = 0
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
@@ -1135,7 +1134,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//	//panic(err.Error())
 	}
 
-	counter++
+	//counter++
 	//var var3 = ""
 
 	//globCounter++
@@ -1143,7 +1142,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
 	if err != nil {
-		panic(err.Error())
+		fmt.Fprint(w, err)
 	}
 
 	var templ1 forTemplate
@@ -1157,6 +1156,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	var marshalFlag = "no"
 
+	var lastProductID = -1
+
 	for rows.Next() {
 
 		marshalFlag = "no"
@@ -1168,6 +1169,12 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		CondYellow = 0
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
+
+		if ProductID == lastProductID {
+			continue
+		}
+
+		lastProductID = ProductID
 
 		if err != nil {
 			fmt.Fprint(w, err)

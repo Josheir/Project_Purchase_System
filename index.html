@@ -187,17 +187,19 @@ $(document).ready(function () {
 
 	  //var gflag = "isntin";
 	  //THERE ARE URLS ALREADY
+	  var val2 = [];
       if(wasKeys == "yes"){
 
-		querystring = setSession(true, val1);
+		val2 = setSession(true, val1);
 	  }
 	  //THERE ARNT URLS NOW 
 	  else
       {
-		querystring = setsession(false, val1);
+		val2 = setSession(false, val1);
 
 	  }
-		
+		var gflag = val2[0];
+		var querystring = val2[1];
 
         alert("querystring10a");
         alert(querystring);
@@ -218,7 +220,11 @@ $(document).ready(function () {
 				//check if this link/keyword is first time and only useage
 				var  gkeywordArray = "";
 				
-				item1, ourNewWord = deriveKeywordFromResult(result);
+				//item1, ourNewWord = deriveKeywordFromResult(result);
+				var retVals = deriveKeywordFromResult(result);
+				var item1 = retVals[0];  
+				var ourNewWord = retVals[1]; 
+				var item = retVals[2];
 					
 				///////////
 				
@@ -293,7 +299,7 @@ $(document).ready(function () {
 
                 document.getElementById('buttons').innerHTML   += result1;
 
-                document.getElementById('templateOneHere').innerHTML   = ourNewWord;
+                document.getElementById('templateOneHere').innerHTML   += ourNewWord;
                               
                               
              
@@ -302,10 +308,10 @@ $(document).ready(function () {
          
       });
 	
+
+	};
+
 });
-
-
-  
 	  if(string == "1")
 	  {
 		  alert("in here");
@@ -560,6 +566,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 //thi function checks if a keyword is already used and returns the queystring
 function setSession(areThereUrls, val1)
 {//NO URLS
+	var querystring = "";
 	var counter = 0;
 		var gflag = "isntin";
 		
@@ -570,10 +577,29 @@ function setSession(areThereUrls, val1)
 		if(!( storredArray = JSON.parse(sessionStorage.getItem("keywords"))))
 		{
 			sessionStorage.setItem("keywords", JSON.stringify(val1));
-			storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+			storedArray[0] = JSON.parse(sessionStorage.getItem("keywords"));
 			//push the searchword onto the array that holds the values for setting ssession storage
-			storedArray.push(val1);	
 			//storedArray.push(val1);	
+			//storedArray.push(val1);
+			
+			////////
+			if (areThereUrls)
+			{
+			querystring = ("var=" + val1 + "&");
+			querystring += string;
+			}
+			else
+			{
+
+			querystring = ("var=" + val1 + "&");
+			}
+			gflag = "isntin";
+
+			return [gflag, querystring];
+
+			////////
+
+
 		}else
 		{
 			storredArray = JSON.parse(sessionStorage.getItem("keywords"));
@@ -606,7 +632,7 @@ function setSession(areThereUrls, val1)
 		if (areThereUrls)
 		{
 			querystring = ("var=" + val1 + "&");
-			querystring += string;
+			//querystring += string;
 		}
 		else
 		{
@@ -623,7 +649,7 @@ function setSession(areThereUrls, val1)
 		}
 	
 	
-	return(querystring);
+	return [gflag, querystring];
 	}
 
 
@@ -634,38 +660,40 @@ function deriveKeywordFromResult(result)
 				alert("display");
 				//alert(result);
 				var item = "";
+				var item1 = "";
 
-				
+				var ourNewWord = "";
 				item = result.match("\\[.*]");
 				alert(item);
 				//more than one record, and only first record is not null
 				if (item == "[]")
 				{
-					var ourNewWord = result.replace("null", '');
-					alert(ourNewWord);
+					//ourNewWord = result.replace("null", '');
+					//alert(ourNewWord);
+					return;
 				}
 				else
 				{
 				alert("here");
 				alert(item);
-				var ourNewWord = result.replaceAll(item, '');
+				ourNewWord = result.replaceAll(item, '');
 				//ourNewWord = ourNewWord.replace(item, '')
 				alert(ourNewWord);
 				var x = typeof(item);
 
 				
-				var item1 = JSON.stringify(item);
+				item1 = JSON.stringify(item);
 				alert (item1);
 				item1 = item1.slice(5);
 				alert (item1);
 				
 				//alert(item1)
 				alert(typeof(item1));
-				var item1 = item1.substring(0, item1.length - 5);
+				item1 = item1.substring(0, item1.length - 5);
 				alert(item1);
 				}
 
-return(item1, ourNewWord);				
+return [item1, ourNewWord, item];				
 }
 
 </script>
