@@ -13,13 +13,15 @@
 </head>  
 
 <html>
+  
 
-<div id = "div1">test</div>
+<div id = "removeButton">
 
-<form  action = "index.html" method = "GET">
+
   <input type="hidden" id="val" name="val" value="1">
-<center><input   id="button1"  type="submit" value="Return to Purchase"/></center>
-</form>
+<center><input   id="button1" onclick = "display2()"  type="submit" value="Return to Purchase"/></center>
+
+</div>
 
 <script>
   
@@ -30,7 +32,7 @@ window.sessionStorage
 $(function(){
 
 ////////
-alert("in fiunction");
+//alert("in fiunction");
 loadData();
 
 ////////
@@ -38,14 +40,97 @@ loadData();
 });
 
 
+      //pressed return to purchase from template2
+        function display2(){
+
+        var querystring = "";
+        alert("button1");
+        let keys = Object.keys(sessionStorage);
+
+      
+        for(let key of keys) {
+
+
+          if(key == "keywords")
+          {
+            alert("keywords");
+            var item = sessionStorage.getItem(key);
+            
+            item = item.slice(2);
+			      item = item.substring(0, item.length - 2);
+            querystring += "var=" + item + "&";
+            alert(querystring);
+            alert(item);
+
+          }
+          if(key == "session_userID")
+          {
+
+          }
+          else
+          {
+            var item = sessionStorage.getItem(key);
+            querystring += "id=" + key + "&quant=" + item + "&";
+          } 
+
+        }
+
+        //document.getElementById(removeMe).display = "";
+
+
+        var url = "http://localhost:8080/display2";
+        //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
+
+
+
+                    $.ajax({
+                    type:"GET",
+                    url:url,
+                    data:querystring,
+                    async:false,
+                    success: function (result) {
+
+                      ///alert("result");
+                      //alert(result);
+
+
+                    var retVals = [];
+                    
+                    retVals = deriveKeywordFromResult(result);
+                    
+                    //final keyword
+                    var item1 = retVals[0];  
+                    //html with keyword removed
+                    var ourNewWord = retVals[1]; 
+                    var item = retVals[2];
+                    alert("test");
+                    alert(item1);
+                    
+                    
+                    document.getElementById('removeButton').innerHTML   = "";
+                      document.getElementById('removeMe').innerHTML   = ourNewWord;
+                      result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+                      document.getElementById('linksHere').innerHTML   += result1;
+                   
+                    }
+                });
+
+
+
+
+      
+    };
+
+
+
 //checkout button pressed, so is here!
 //data is here by sessionstorage
 //send it to purge which calls template with data
 function loadData() {
   
- alert("))))))))))))))))))))))))))"); 
-  alert("stringA");
-alert(queryString);
+ //alert("))))))))))))))))))))))))))"); 
+  //alert("stringA");
+//alert(queryString);
 
  var string = "";
 //////////////////////
@@ -55,8 +140,8 @@ var var1 = "hasntBeenHere";
 for(let key of keys) {
 
 
-  alert("keys here");
-  alert(key);
+  //alert("keys here");
+  //alert(key);
   if(key == "session_userID")
   {
     continue;
@@ -69,8 +154,8 @@ for(let key of keys) {
   //check for not an integer
 
   var item = sessionStorage.getItem(key);
-  alert("item");
-  alert(item);
+  //alert("item");
+  //alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
 
   
@@ -88,7 +173,7 @@ if(var1 == "hasntBeenHere")
 //goes backwards and last entered writes over
 var queryString = string.substring(0, string.length-1);
 
-alert("stringB");
+//alert("stringB");
 alert(queryString);
 
 var url = "http://localhost:8080/template2";
@@ -109,6 +194,26 @@ var url = "http://localhost:8080/template2";
                    
                     }
                 });
+}
+  
+  
+function deriveKeywordFromResult(result)
+{
+
+				
+				var item = "";
+				var item1 = "";
+				var ourNewWord = "";
+				item = result.match("\\[.*]");
+				ourNewWord = result.replaceAll(item, '');
+				alert(ourNewWord);
+				var x = typeof(item);
+				item1 = JSON.stringify(item);
+				item1 = item1.slice(5);
+				item1 = item1.substring(0, item1.length - 5);
+				
+
+return [item1, ourNewWord, item];				
 }
   </script>
 

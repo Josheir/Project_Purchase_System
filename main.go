@@ -1022,6 +1022,442 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 
 var counter1 = 0
 
+//////////
+
+func display2(w http.ResponseWriter, r *http.Request) {
+
+	//ARRAY OF INTS  [3,4,7]
+	//thesse ints are kept in database and changed to an array to see if they have aleady been
+	//displayed so continue.  Does not effect the client side is an int
+	//product is checked with array and if exists is contniues
+
+	GlobCounter++
+	store, err := session.Start(context.Background(), w, r)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var UserID = 1
+
+	////////
+
+	fmt.Println("+++++++++++++++++")
+
+	query := r.URL.Query()
+
+	//this is the searchterm in order from first to last now
+	key1, present := query["var"]
+
+	if !present || len(key1) == 0 {
+		fmt.Println("filters not present1")
+	}
+
+	keyTotalAmountBought, present2 := query["quant"]
+	if !present2 || len(keyTotalAmountBought) == 0 {
+		fmt.Println("filters not present2")
+	}
+	ProdID, present3 := query["id"]
+	if !present3 || len(ProdID) == 0 {
+		fmt.Println("filters not present3")
+	}
+
+	UserIDstring, present4 := query["uid"]
+	if !present4 || len(UserIDstring) == 0 {
+		fmt.Println("filters not present4")
+
+	}
+
+	if len(UserIDstring) != 0 {
+
+		//only one
+		UserID, _ = strconv.Atoi(UserIDstring[0])
+		if err != nil {
+			fmt.Println(err)
+		}
+	} else {
+		UserID = 1
+	}
+
+	//////////
+
+	//db4 := dbConn()
+	//get from dbase
+
+	/*
+		var textstring = ""
+		//get the ounter for
+		stmt1, err := db4.Prepare("SELECT savedtext.GlobCounter FROM savedtext WHERE savedtext.UserID = ?")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		rows1, err := stmt1.Query(UserID)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		//get string from database - is at least one record
+		for rows1.Next() {
+
+			err = rows1.Scan(&GlobCounter)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		}
+	*/
+	globKeyword := key1[0]
+
+	//var keywords []string
+	//var globCounter = ""
+	//var globalIndex = ""
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	string1 = ""
+
+	fmt.Println("in display 1")
+
+	db := dbConn()
+
+	var m = 0
+	for m = 0; m < len(key1); m++ {
+
+		//globKeyword = key1[m]
+
+		//get records that use keywords
+
+		stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+			"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
+			"FROM products WHERE " +
+			"((products.ProductKeyWord1 = ?) OR " +
+			"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
+		if err != nil {
+			//	//panic(err.Error())
+		}
+
+		//counter++
+		//var var3 = ""
+
+		//globCounter++
+
+		rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
+
+		if err != nil {
+			fmt.Fprint(w, err)
+		}
+
+		var templ1 forTemplate
+
+		var Link = globKeyword
+
+		var Condition = 0
+		//saved text product ids :  1,11,5,7
+		var ints []int
+		var keywords []string
+
+		var marshalFlag = "no"
+
+		var lastProductID = -1
+
+		for rows.Next() {
+
+			marshalFlag = "no"
+
+			Condition++
+			var ProductCost float64
+			var ProductQuantity, CondYellow int
+			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
+
+			CondYellow = 0
+			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
+
+			if ProductID == lastProductID {
+				continue
+			}
+
+			lastProductID = ProductID
+
+			if err != nil {
+				fmt.Fprint(w, err)
+			}
+
+			db3 := dbConn()
+			//get from dbase
+
+			textstring := ""
+			//gets the element that is the current keyword element :  ie : ["apple1"]
+			stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows1, err := stmt1.Query(UserID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//get string from database
+			for rows1.Next() {
+				marshalFlag = "yes"
+				err = rows1.Scan(&textstring)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+			}
+
+			//change string to array
+
+			//ONE KEYWORD IS BEING SENT BACK TO CLIENT, WHERE IT IS USED TO SET THE LINK
+			//
+			if marshalFlag == "yes" && textstring != "" {
+				err = json.Unmarshal([]byte(textstring), &ints)
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+
+			//check for duplicates, that is, if keyword apple1 and keyword apple2 are with same product only display one product
+			var flag1 = 0
+			var j = 0
+			for j = 0; j < len(ints); j++ {
+				if ProductID == ints[j] {
+					//flag1 = 1
+					//break
+				}
+
+			}
+			if flag1 == 1 {
+
+				continue
+			}
+
+			//creates and sets records :  K1, K2...THIS IS FOR LOOKING AT GLOB WORD AND IS NOW ONLY ONE ELEMENT READ BELOW
+			var index = "K" + strconv.Itoa(GlobCounter)
+			store.Set(index, globKeyword)
+			err = store.Save()
+			if err != nil {
+				fmt.Fprint(w, err)
+				//	return
+			}
+
+			//////////////////////////////
+			//////////////////////////////
+			//////////////////////////////
+
+			//var globCounter = 0
+			//var globalIndex = ""
+			var stringText = ""
+			db1 := dbConn()
+
+			//var UserID = 1
+			//var userID = 1
+			//DOES THIS PRODUCT RECORD ALREADY EXIST
+			stmt1, err = db1.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows1, err = stmt1.Query(UserID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			var flag = 0
+
+			//get string from database - is at least one record
+			for rows1.Next() {
+				flag = 1
+				err = rows1.Scan(&stringText)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//change string to array
+				err := json.Unmarshal([]byte(stringText), &ints)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//push to array
+				ints = append(ints, ProductID)
+
+			}
+
+			//no database entry yet, so insert
+			if flag == 0 {
+
+				//pass in array and get string back
+				//var textstring, err = json.Marshal(ints)
+
+				stmt2, err := db.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				ints = append(ints, ProductID)
+
+				var textstring, err1 = json.Marshal(ints)
+				if err1 != nil {
+					fmt.Println(err1)
+				}
+
+				stmt2.Exec(textstring)
+
+				//there is/are database entries, so update
+			} else {
+
+				var textstring, err1 = json.Marshal(ints)
+				if err1 != nil {
+					fmt.Println(err)
+				}
+
+				//update string
+
+				stmt1, err := db.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
+				if err != nil {
+					fmt.Println(err)
+				}
+				stmt1.Exec(textstring, UserID)
+
+			}
+
+			/////////
+
+			////////
+
+			stmt1, err = db.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows1, err = stmt1.Query(UserID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//get string from database
+			for rows1.Next() {
+
+				err = rows1.Scan(&stringText)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//change string to array
+				err := json.Unmarshal([]byte(stringText), &ints) //
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				/////
+
+				/////
+			}
+
+			i := 0
+			prodBoughtInt := 0
+			isAmountPurchased := "no"
+
+			for i = 0; i < len(ProdID); i++ {
+				prodIDStr := ProdID[i]
+
+				prodIDInt, err := strconv.Atoi(prodIDStr)
+				if err != nil {
+				}
+
+				prodBoughtStr := keyTotalAmountBought[i]
+				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+				if err != nil {
+				}
+
+				if prodIDInt == ProductID {
+					ProductQuantity = ProductQuantity - prodBoughtInt
+					isAmountPurchased = "yes"
+					CondYellow = 1
+					break
+				}
+
+			}
+
+			counter1 = counter1 + 1
+			str := strconv.Itoa(counter1)
+			AmountPurchased := 0
+
+			//var inputID = "inputID" + str
+			var mainDivID = "mainDivID" + str
+			var titleID = "titleID" + str
+			var descID = "descID" + str
+			var costID = "costID" + str
+			var quantityID = "quantityID" + str
+			var key1ID = "key1ID" + str
+			var key2ID = "key2ID" + str
+			var key3ID = "key3ID" + str
+			AmountToPurchaseID = "amountID" + str
+			AmountPurchasedID = "amountPID" + str
+
+			if isAmountPurchased == "yes" {
+				AmountPurchased = prodBoughtInt
+			} else {
+				AmountPurchased = 0
+			}
+
+			var index1 = "a"
+			var k = 0
+			//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
+			for k = 0; k <= 1; k++ {
+
+				index1 = "K" + strconv.Itoa(k)
+
+				var1, ok := store.Get(index1)
+
+				if ok {
+					str := fmt.Sprintf("%v", var1)
+					//this array is reset at reload and is always just this one keyword
+					keywords = nil
+					keywords = append(keywords, str)
+				}
+
+			}
+
+			json.NewEncoder(w).Encode(keywords)
+
+			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+			fmt.Println(templ1)
+
+			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+			//err1 := globt.Execute(w, testvar)
+			var err1 = globt.Execute(w, templ1)
+
+			if err1 != nil {
+				fmt.Println("---------------")
+				fmt.Println(err.Error())
+			}
+
+		}
+
+		//stmt1, err := db.Prepare("UPDATE savedtext SET GlobCounter=? WHERE UserID=?")
+		//if err != nil {
+		//	fmt.Println(err)
+		//}
+		//stmt1.Exec(GlobCounter, UserID)
+
+	}
+}
+
 /////////
 
 var GlobCounter = -1
@@ -1069,10 +1505,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present4")
 
 	}
-
-	
-
-
 
 	if len(UserIDstring) != 0 {
 
@@ -1191,12 +1623,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		}
 
-
-
-		
-
-
-
 		db3 := dbConn()
 		//get from dbase
 
@@ -1258,8 +1684,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 			//	return
 		}
-
-		
 
 		//////////////////////////////
 		//////////////////////////////
@@ -1379,15 +1803,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			/////
 		}
 
-
-
-	
-
-
-
-
-
-
 		i := 0
 		prodBoughtInt := 0
 		isAmountPurchased := "no"
@@ -1435,11 +1850,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			AmountPurchased = 0
 		}
 
-
-		
-
-
-
 		var index1 = "a"
 		var k = 0
 		//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1456,14 +1866,9 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				keywords = append(keywords, str)
 			}
 
-
-
 		}
-	
-		
-			json.NewEncoder(w).Encode(keywords)
-		
-		
+
+		json.NewEncoder(w).Encode(keywords)
 
 		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
@@ -1553,6 +1958,7 @@ func main() {
 	one.HandleFunc("/getMessages", getMessages)
 
 	one.HandleFunc("/display", display1)
+	one.HandleFunc("/display2", display2)
 
 	one.HandleFunc("/HelloWorld", HelloWorld)
 	one.HandleFunc("/processLogin", processLogin)

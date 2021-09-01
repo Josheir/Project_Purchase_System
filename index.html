@@ -15,6 +15,7 @@
 
 <body>
 
+	
   <script>
     window.sessionStorage
 
@@ -27,7 +28,7 @@ var var2 =1;
 var var3 ;
 var3 = var1 + var2;
 
-alert("at point");
+//alert("at point");
 
 //function getparam(param_name)
 //{
@@ -44,7 +45,7 @@ alert("at point");
 </script>
     
       <input   id="button7"  type="button" value="checkout"/>
-      <input   name = "search" type="text" id="search" name="search" placeholder= "apple1" value="apple1"/>
+      <input   name = "search" type="text" id="search" name="search" placeholder= "apple1" value="apple2"/>
       <input   id="button6" onclick = "ajaxCall('0')" type="button" value="Search"/>
 
       <br>
@@ -122,11 +123,11 @@ $(document).ready(function () {
 		{
 
 		
-		alert("button6");
+		//alert("button6");
 		var string = ""
         let keys = Object.keys(sessionStorage);
 
-		alert("keys");
+		//alert("keys");
 		for(let key of keys) {
 
 		
@@ -135,7 +136,7 @@ $(document).ready(function () {
 
      
         
-		alert("test here");
+		//alert("test here");
 		//if key is a number
 	
 		var keyAsInt =  parseInt(key); 
@@ -143,7 +144,7 @@ $(document).ready(function () {
 		//console.log(keyAsInt);
 		if (key != "session_userID" && key != "keywords") 
 		{
-			alert("number here");
+			//alert("number here");
 			var item = sessionStorage.getItem(key);
 			
        		string =  string + "id=" + key + "&quant=" + item + "&";
@@ -154,7 +155,7 @@ $(document).ready(function () {
 		
 		else if(key == "session_userID")
         {
-			alert("session here");
+			//alert("session here");
 			var item = sessionStorage.getItem(key);
 			string = string + "uid="  + item + "&";
         }
@@ -206,7 +207,7 @@ $(document).ready(function () {
 	  }
 
 
-	  alert("beyond there");
+	  //alert("beyond there");
 	  //these are for keywords
 	  //THERE ARE URLS ALREADY
 	  var val2 = [];
@@ -220,8 +221,8 @@ $(document).ready(function () {
 		val2 = setSession(false, val1, string, flag2);
 
 	  }
-	  alert("val2");
-	  alert(val2);
+	  //alert("val2");
+	  //alert(val2);
 		var gflag = val2[0];
 		var querystring = val2[1] + string;
 
@@ -242,8 +243,8 @@ $(document).ready(function () {
 	  ////////////
 	
 
-        alert("querystring10a");
-        alert(querystring);
+        //alert("querystring10a");
+        //alert(querystring);
         
        // alert(val1);
 	   
@@ -261,7 +262,7 @@ $(document).ready(function () {
 				//check if this link/keyword is first time and only useage
 				var  gkeywordArray = "";
 				
-				alert("result");
+				//alert("result");
 				alert(result)
 
 				var retVals = [];
@@ -271,10 +272,10 @@ $(document).ready(function () {
 				var item1 = retVals[0];  
 				var ourNewWord = retVals[1]; 
 				var item = retVals[2];
-				alert("ournewword");
-				alert(item);
-				alert(item1);
-				alert(ourNewWord);
+				//alert("ournewword");
+				//alert(item);
+				//alert(item1);
+				//alert(ourNewWord);
 
 			
 			for(let key of keys)
@@ -303,9 +304,9 @@ $(document).ready(function () {
 			}
 
 
-				alert("ournewword");
-				alert(result1);
-				alert(ourNewWord);
+				//alert("ournewword");
+				//alert(result1);
+				//alert(ourNewWord);
 
                 document.getElementById('buttons').innerHTML   += result1;
 
@@ -590,7 +591,7 @@ function setSession(areThereUrls, val1, string, flag2)
 	var counter = 0;
 		var gflag = "isntin";
 		
-		alert("in here111");
+		//alert("in here111");
 
 
 		//if no keywords than set search word as keyword. This is a list of keywords 
@@ -669,47 +670,7 @@ function setSession(areThereUrls, val1, string, flag2)
 	}
 
 
-//the ajax returns a string which has the name of the keyword that needs to be removed and both alterd datas are used	
-function deriveKeywordFromResult(result)
-{
 
-				alert("display");
-				//alert(result);
-				var item = "";
-				var item1 = "";
-
-				var ourNewWord = "";
-				item = result.match("\\[.*]");
-				alert(item);
-				//more than one record, and only first record is not null
-				//if (item == "[]")
-				//{
-				//	alert("how many times?");
-				//	//return;
-				//}
-				//else
-				//{
-				alert("here, ok?");
-				alert(item);
-				ourNewWord = result.replaceAll(item, '');
-				//ourNewWord = ourNewWord.replace(item, '')
-				alert(ourNewWord);
-				var x = typeof(item);
-
-				
-				item1 = JSON.stringify(item);
-				alert (item1);
-				item1 = item1.slice(5);
-				alert (item1);
-				
-				//alert(item1)
-				alert(typeof(item1));
-				item1 = item1.substring(0, item1.length - 5);
-				alert(item1);
-				//}
-
-return [item1, ourNewWord, item];				
-}
 
 
 window.onload = function(){
@@ -732,6 +693,26 @@ function ajax()
 {
 	alert("ajax");
 }
+
+function deriveKeywordFromResult(result)
+{
+
+				
+				var item = "";
+				var item1 = "";
+				var ourNewWord = "";
+				item = result.match("\\[.*]");
+				ourNewWord = result.replaceAll(item, '');
+				alert(ourNewWord);
+				var x = typeof(item);
+				item1 = JSON.stringify(item);
+				item1 = item1.slice(5);
+				item1 = item1.substring(0, item1.length - 5);
+				
+
+return [item1, ourNewWord, item];				
+}
+
 
 </script>
 
