@@ -49,22 +49,34 @@ loadData();
         let keys = Object.keys(sessionStorage);
 
       
+        var array = [];
         for(let key of keys) {
 
 
           if(key == "keywords")
           {
             alert("keywords");
+           
             var item = sessionStorage.getItem(key);
             
-            item = item.slice(2);
-			      item = item.substring(0, item.length - 2);
-            querystring += "var=" + item + "&";
+            //item = item.slice(2);
+			      //item = item.substring(0, item.length - 2);
+            array = JSON.parse(item);
+           // alert(array);
+            //alert(array[0]);
+            //alert(array.length);
+
+            for(var i = 0; i<array.length ; i++)
+            {
+            
+              querystring += "var=" + array[i] + "&";
+            }
+
             alert(querystring);
-            alert(item);
+            //alert(item);
 
           }
-          if(key == "session_userID")
+          else if(key == "session_userID")
           {
 
           }
@@ -105,13 +117,33 @@ loadData();
                     var ourNewWord = retVals[1]; 
                     var item = retVals[2];
                     alert("test");
-                    alert(item1);
+                    //alert(array[0]);
+                    alert(ourNewWord);
                     
                     
                       document.getElementById('removeButton').innerHTML   = "";
-                      document.getElementById('removeMe').innerHTML   = ourNewWord;
-                      result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
-                      document.getElementById('linksHere').innerHTML   += result1;
+
+                      retVals = deriveKeywordFromResult(ourNewWord);
+
+                      document.getElementById('removeMe').innerHTML   = retVals[1];
+                      
+                      //result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+                      ///document.getElementById('linksHere').innerHTML   += result1;
+
+                      //retVals = deriveKeywordFromResult(ourNewWord);
+                     
+                      
+
+
+                      for(var i = 0 ; i < array.length ; i++)
+                      {
+                        var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
+                        document.getElementById('linksHere').innerHTML   += result1a;
+                      }
+
+
+
+
                    
                     }
                 });
@@ -207,8 +239,8 @@ function deriveKeywordFromResult(result)
 				var ourNewWord = "";
 				item = result.match("\\[.*]");
 				ourNewWord = result.replaceAll(item, '');
-				alert(ourNewWord);
-				var x = typeof(item);
+				//alert(ourNewWord);
+				//var x = typeof(item);
 				item1 = JSON.stringify(item);
 				item1 = item1.slice(5);
 				item1 = item1.substring(0, item1.length - 5);

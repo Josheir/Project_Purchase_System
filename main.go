@@ -1126,7 +1126,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	var m = 0
 	for m = 0; m < len(key1); m++ {
 
-		//globKeyword = key1[m]
+		globKeyword = key1[m]
 
 		//get records that use keywords
 
@@ -1412,23 +1412,23 @@ func display2(w http.ResponseWriter, r *http.Request) {
 				AmountPurchased = 0
 			}
 
-			var index1 = "a"
-			var k = 0
+			//var index1 = "a"
+			//var k = 0
 			//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
-			for k = 0; k <= 1; k++ {
+			//for k = 0; k <= 1; k++ {
 
-				index1 = "K" + strconv.Itoa(k)
+				//index1 = "K" + strconv.Itoa(k)
 
-				var1, ok := store.Get(index1)
+				//var1, ok := store.Get(index1)
 
-				if ok {
-					str := fmt.Sprintf("%v", var1)
+				{
+					//str := fmt.Sprintf("%v", var1)
 					//this array is reset at reload and is always just this one keyword
 					keywords = nil
-					keywords = append(keywords, str)
+					keywords = append(keywords, globKeyword)
 				}
 
-			}
+			//}
 
 			json.NewEncoder(w).Encode(keywords)
 
