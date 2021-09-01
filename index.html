@@ -32,12 +32,12 @@ alert("at point");
 //function getparam(param_name)
 //{
 	//has been a search there is a parameter
-	let params = new URLSearchParams(window.location.search);
-	var string = (params.get("val"));
+
+	
 //}
 
 //var inputs = form.getElementsByTagName("val");
-alert(string);
+//alert(string);
 
 
 
@@ -45,7 +45,7 @@ alert(string);
     
       <input   id="button7"  type="button" value="checkout"/>
       <input   name = "search" type="text" id="search" name="search" placeholder= "apple1" value="apple1"/>
-      <input   id="button6"  type="button" value="Search"/>
+      <input   id="button6" onclick = "ajaxCall('0')" type="button" value="Search"/>
 
       <br>
       <div id = "firstdiv" ></div>
@@ -111,15 +111,22 @@ $(document).ready(function () {
 
 
   
-	var querystring = "";
+	//var querystring = "";
 
   //template button press - display searches a keyword
     //$(document).ready(function () {
-      $("#button6").click(function () {
+      //$('#button6').on("click",function (e) {
 		
+		//flag2 set with a 1 means came from template2 and is returning to old keyword
+		function ajaxCall( flag2)
+		{
+
+		
+		alert("button6");
 		var string = ""
         let keys = Object.keys(sessionStorage);
 
+		alert("keys");
 		for(let key of keys) {
 
 		
@@ -128,28 +135,40 @@ $(document).ready(function () {
 
      
         
-		
+		alert("test here");
 		//if key is a number
+	
 		var keyAsInt =  parseInt(key); 
-		if (typeof value === 'number') {
+		//alert(typeof keyAsInt);
+		//console.log(keyAsInt);
+		if (key != "session_userID" && key != "keywords") 
 		{
+			alert("number here");
 			var item = sessionStorage.getItem(key);
+			
        		string =  string + "id=" + key + "&quant=" + item + "&";
   
        		wasKeys = "yes";
-
-
-	   
-
+			   
 		}
-		if(key == "session_userID")
+		
+		else if(key == "session_userID")
         {
-        continue;
+			alert("session here");
+			var item = sessionStorage.getItem(key);
+			string = string + "uid="  + item + "&";
         }
 
-
+ 	// keyword checked below after ajax
 	}
 
+
+
+
+
+			
+
+		
 		/*else if(key == "searchterms")
         {
 			var item = sessionStorage.getItem(key);
@@ -178,6 +197,8 @@ $(document).ready(function () {
 		//these are held in store   and globcounter saved is counter of just one 
 	  var val1 = document.getElementById("search").value;
 
+	  //check if this keyword has any records, already have these records needs to be consideree
+	  //return yes or no to include  this in keyword list
 	  
 	  if(val1 == "" )
 	  {
@@ -185,21 +206,41 @@ $(document).ready(function () {
 	  }
 
 
-	  //var gflag = "isntin";
+	  alert("beyond there");
+	  //these are for keywords
 	  //THERE ARE URLS ALREADY
 	  var val2 = [];
       if(wasKeys == "yes"){
 
-		val2 = setSession(true, val1);
+		val2 = setSession(true, val1, string, flag2);
 	  }
 	  //THERE ARNT URLS NOW 
 	  else
       {
-		val2 = setSession(false, val1);
+		val2 = setSession(false, val1, string, flag2);
 
 	  }
+	  alert("val2");
+	  alert(val2);
 		var gflag = val2[0];
-		var querystring = val2[1];
+		var querystring = val2[1] + string;
+
+		//flag2 is one if coming from template2
+		//otherwise 0
+		//ft : from template
+		//querystring = querystring + "ft=" + flag2 + "&";  
+		
+		alert(querystring);
+
+	
+		
+	///////////
+
+			
+
+
+	  ////////////
+	
 
         alert("querystring10a");
         alert(querystring);
@@ -220,82 +261,51 @@ $(document).ready(function () {
 				//check if this link/keyword is first time and only useage
 				var  gkeywordArray = "";
 				
+				alert("result");
+				alert(result)
+
+				var retVals = [];
 				//item1, ourNewWord = deriveKeywordFromResult(result);
-				var retVals = deriveKeywordFromResult(result);
+				retVals = deriveKeywordFromResult(result);
+				
 				var item1 = retVals[0];  
 				var ourNewWord = retVals[1]; 
 				var item = retVals[2];
-					
-				///////////
-				
-				/*
-				//https://stackoverflow.com/questions/1493027/javascript-return-string-between-square-brackets
-				//https://www.delftstack.com/howto/javascript/javascript-remove-substring-from-string/
-				//var mystring = "[aa]aaaa";
-				
-				//gets globword [["apple"]], 
-				//this is only for creatint links
-				alert("display");
-				alert(result);
-				var item = "";
-
-				
-				item = result.match("\\[.*]");
+				alert("ournewword");
 				alert(item);
-				//more than one record, and only first record is not null
-				if (item == "[]")
-				{
-					var ourNewWord = result.replace("null", '');
-					alert(ourNewWord);
-				}
-				else
-				{
-				alert("here");
-				alert(item);
-				var ourNewWord = result.replaceAll(item, '');
-				//ourNewWord = ourNewWord.replace(item, '')
-				alert(ourNewWord);
-				var x = typeof(item);
-
-				
-				var item1 = JSON.stringify(item);
-				alert (item1);
-				item1 = item1.slice(5);
-				alert (item1);
-				
-				//alert(item1)
-				alert(typeof(item1));
-				var item1 = item1.substring(0, item1.length - 5);
 				alert(item1);
-				}
-				*/
-				////////
+				alert(ourNewWord);
 
-				//var flag = ""
-				for(let key of keys)
-				{
-
-
-					
-				//https://stackoverflow.com/questions/38083241/sessionstorage-into-array-and-print-all-values-in-the-array
-				//saved array of different keywords, like :  apple1, apple6, apple7
-				if (key == "keywords")
-				{
-					
-					
-
-
-				/////////this is the first item of this name so it is displayed one time for link above records
-				if (gflag == "isntin" && item != "[]" )
-				{
-					
-					result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
-				}
+			
+			for(let key of keys)
+			{
+				
+			
+			
+			//https://stackoverflow.com/questions/38083241/sessionstorage-into-array-and-print-all-values-in-the-array
+			//saved array of different keywords, like :  apple1, apple6, apple7
+			if (key == "keywords")
+			{
+				
 				
 
-				}
+
+			/////////this is the first item of this name so it is displayed one time for link above records
+			if (gflag == "isntin" && item != "[]" )
+			{
+				
+				result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+			}
+			
 
 			}
+
+			}
+
+
+				alert("ournewword");
+				alert(result1);
+				alert(ourNewWord);
 
                 document.getElementById('buttons').innerHTML   += result1;
 
@@ -309,14 +319,10 @@ $(document).ready(function () {
       });
 	
 
-	};
+		};
 
-});
-	  if(string == "1")
-	  {
-		  alert("in here");
-		  document.querySelector("#button6").click();	
-	  }
+//});
+	  
 
 
   
@@ -362,6 +368,7 @@ xhr.send(formdata);
 
 var gTotalOfPurchases = 0;
 
+//template number one presses this and changes values in quantity and amount purchased
 function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
@@ -464,7 +471,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
       }
 
 
-      
+      //called from checkout button to setitem for template2 to use
       function  setData(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
 			{
 				//if(firstTime == "yes")
@@ -564,8 +571,20 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 //returns querystring
 //thi function checks if a keyword is already used and returns the queystring
-function setSession(areThereUrls, val1)
+function setSession(areThereUrls, val1, string, flag2)
 {//NO URLS
+
+	//this flag means that this is a display that returned from template2, so is a special condition
+	if(flag2 == 1)
+	{
+		querystring = ("var=" + val1 + "&");
+		//cause a reaction by lieing about this
+		gflag = "isntin";
+		return [gflag, querystring];
+
+	}
+	else
+	{
 	var isfirst = false;
 	var querystring = "";
 	var counter = 0;
@@ -573,6 +592,9 @@ function setSession(areThereUrls, val1)
 		
 		alert("in here111");
 
+
+		//if no keywords than set search word as keyword. This is a list of keywords 
+		//so that the searhwords cant be used more than once 
 		var storedArray2 = [val1];
 		var storedArray = [];
 		//puts first variable into sessionStorage
@@ -589,7 +611,7 @@ function setSession(areThereUrls, val1)
 		
 		}
 
-		//if(storedArray){
+		//check for duplicate keywords, if duplicate leave and do nothing
 		for (i = 0; i < storedArray.length; i++) {
 
 			//if(storedArray)
@@ -619,12 +641,14 @@ function setSession(areThereUrls, val1)
 		if (areThereUrls)
 		{
 			querystring = ("var=" + val1 + "&");
+			//!!!!!!!!!!!!!!!!!!!!
 			//querystring += string;
 		}
 		else
 		{
 
 			querystring = ("var=" + val1 + "&");
+			//querystring += string;
 		}
 
 		////////////
@@ -634,9 +658,14 @@ function setSession(areThereUrls, val1)
 		
 		//querystring += string;
 		}
+		else if(isfirst == true)
+		{
+			querystring = ("var=" + val1 + "&");
+		}
 	
 	
 	return [gflag, querystring];
+	 }
 	}
 
 
@@ -653,14 +682,14 @@ function deriveKeywordFromResult(result)
 				item = result.match("\\[.*]");
 				alert(item);
 				//more than one record, and only first record is not null
-				if (item == "[]")
-				{
-					alert("how many times?");
-					return;
-				}
-				else
-				{
-				alert("here");
+				//if (item == "[]")
+				//{
+				//	alert("how many times?");
+				//	//return;
+				//}
+				//else
+				//{
+				alert("here, ok?");
 				alert(item);
 				ourNewWord = result.replaceAll(item, '');
 				//ourNewWord = ourNewWord.replace(item, '')
@@ -677,9 +706,31 @@ function deriveKeywordFromResult(result)
 				alert(typeof(item1));
 				item1 = item1.substring(0, item1.length - 5);
 				alert(item1);
-				}
+				//}
 
 return [item1, ourNewWord, item];				
+}
+
+
+window.onload = function(){
+	//ajaxCall();
+
+
+
+
+var params = new URLSearchParams(window.location.search);
+var string1 = (params.get("val"));
+if(string1 == "1")
+  {
+	  alert("in here");
+	  //document.querySelector("#button6").click();	
+	  ajaxCall("1");
+  }
+};
+
+function ajax()
+{
+	alert("ajax");
 }
 
 </script>

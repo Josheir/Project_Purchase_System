@@ -298,9 +298,15 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 		stmt.Exec(UserID)
 
+		////////////
+
+		stmt2, err := db.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
 		if err != nil {
 			fmt.Println(err)
 		}
+		stmt2.Exec("[1]", UserID)
+
+		/////////////
 
 	} else {
 
@@ -1064,6 +1070,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	
+
+
+
 	if len(UserIDstring) != 0 {
 
 		//only one
@@ -1077,33 +1087,34 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//////////
 
-	db4 := dbConn()
+	//db4 := dbConn()
 	//get from dbase
 
-	var textstring = ""
-	//get the ounter for
-	stmt1, err := db4.Prepare("SELECT savedtext.GlobCounter FROM savedtext WHERE savedtext.UserID = ?")
+	/*
+		var textstring = ""
+		//get the ounter for
+		stmt1, err := db4.Prepare("SELECT savedtext.GlobCounter FROM savedtext WHERE savedtext.UserID = ?")
 
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	rows1, err := stmt1.Query(UserID)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//get string from database - is at least one record
-	for rows1.Next() {
-
-		err = rows1.Scan(&GlobCounter)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-	}
+		rows1, err := stmt1.Query(UserID)
 
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		//get string from database - is at least one record
+		for rows1.Next() {
+
+			err = rows1.Scan(&GlobCounter)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		}
+	*/
 	globKeyword := key1[0]
 
 	//var keywords []string
@@ -1180,10 +1191,16 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		}
 
+
+
+		
+
+
+
 		db3 := dbConn()
 		//get from dbase
 
-		textstring = ""
+		textstring := ""
 		//gets the element that is the current keyword element :  ie : ["apple1"]
 		stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
@@ -1211,14 +1228,14 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		//ONE KEYWORD IS BEING SENT BACK TO CLIENT, WHERE IT IS USED TO SET THE LINK
 		//
-		if marshalFlag == "yes" {
+		if marshalFlag == "yes" && textstring != "" {
 			err = json.Unmarshal([]byte(textstring), &ints)
 			if err != nil {
 				fmt.Println(err)
 			}
 		}
 
-		//check for duplicates
+		//check for duplicates, that is, if keyword apple1 and keyword apple2 are with same product only display one product
 		var flag1 = 0
 		var j = 0
 		for j = 0; j < len(ints); j++ {
@@ -1242,22 +1259,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			//	return
 		}
 
-		/*
-				//array to string
-			   	//get array of product ids from
-			   	var stringedarray, err := json.Marshal(ProdID)
-			       if err != nil {
-			   	}
-			   	json.Unmarshal([]byte(JSON),&info)
-
-				//ints is an array with ints
-				//string to ints
-			   	var ints []int
-			       err := json.Unmarshal([]byte(str), &ints)
-			       if err != nil {
-			           log.Fatal(err)
-			       }
-		*/
+		
 
 		//////////////////////////////
 		//////////////////////////////
@@ -1376,6 +1378,16 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			/////
 		}
+
+
+
+	
+
+
+
+
+
+
 		i := 0
 		prodBoughtInt := 0
 		isAmountPurchased := "no"
@@ -1423,6 +1435,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			AmountPurchased = 0
 		}
 
+
+		
+
+
+
 		var index1 = "a"
 		var k = 0
 		//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1439,9 +1456,14 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				keywords = append(keywords, str)
 			}
 
-		}
 
-		json.NewEncoder(w).Encode(keywords)
+
+		}
+	
+		
+			json.NewEncoder(w).Encode(keywords)
+		
+		
 
 		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
@@ -1460,11 +1482,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	stmt1, err = db.Prepare("UPDATE savedtext SET GlobCounter=? WHERE UserID=?")
-	if err != nil {
-		fmt.Println(err)
-	}
-	stmt1.Exec(GlobCounter, UserID)
+	//stmt1, err := db.Prepare("UPDATE savedtext SET GlobCounter=? WHERE UserID=?")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//stmt1.Exec(GlobCounter, UserID)
 
 }
 
