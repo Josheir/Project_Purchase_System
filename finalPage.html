@@ -49,12 +49,14 @@ loadData();
         let keys = Object.keys(sessionStorage);
 
       
+        var counter = -1;
         var array = [];
         for(let key of keys) {
 
 
           if(key == "keywords")
           {
+            counter++;
             alert("keywords");
            
             var item = sessionStorage.getItem(key);
@@ -123,20 +125,35 @@ loadData();
                     
                       document.getElementById('removeButton').innerHTML   = "";
 
-                      retVals = deriveKeywordFromResult(ourNewWord);
+                      //hack : i.e  ["apple3"] dispalyed above yellow when these two lines are not altered
+                      //var val1 = '["' + array[counter] +  '"]';
 
-                      document.getElementById('removeMe').innerHTML   = retVals[1];
-                      
-                      //result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
-                      ///document.getElementById('linksHere').innerHTML   += result1;
+                      //ourNewWord = ourNewWord.replaceAll(val1 , '');
 
                       //retVals = deriveKeywordFromResult(ourNewWord);
-                     
+
+                      //document.getElementById('removeMe').innerHTML   = retVals[1];
+                      
                       
 
 
                       for(var i = 0 ; i < array.length ; i++)
                       {
+                        ////
+
+                        //hack : i.e  ["apple3"] dispalyed above yellow when these four lines are not altered
+                        var val1 = '["' + array[i] +  '"]';
+
+                        ourNewWord = ourNewWord.replace(val1 , '');
+
+                        retVals = deriveKeywordFromResult(ourNewWord);
+
+                        document.getElementById('removeMe').innerHTML   = retVals[1];
+
+
+                        /////
+
+
                         var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
                         document.getElementById('linksHere').innerHTML   += result1a;
                       }
