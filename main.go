@@ -1,5 +1,7 @@
 package main
 
+//https://github.com/go-session/session
+
 //https://stackoverflow.com/questions/32087233/how-does-mysql-handle-concurrent-inserts
 //http://go-database-sql.org/prepared.html
 //https://stackoverflow.com/questions/37404989/whats-the-difference-between-db-query-and-db-preparestmt-query-in-golang
@@ -1123,6 +1125,25 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
+
+	_, ok := store.Get("isFirstUse")
+	if(!ok){
+
+	store.Set("isFirstUse", "yes")
+	err = store.Save()
+	if err != nil {
+		fmt.Fprint(w, err)
+		//	return
+	}
+
+	}
+	//foo, ok := store.Get("isFirstUse")
+	//if ok {
+	//	fmt.Println(foo)
+	//	
+	//}
+	
+
 	var m = 0
 	for m = 0; m < len(key1); m++ {
 
@@ -1230,6 +1251,18 @@ func display2(w http.ResponseWriter, r *http.Request) {
 				if ProductID == ints[j] {
 					//flag1 = 1
 					//break
+
+					var isFirst, ok = store.Get("isFirstUse")
+					if ok {
+						fmt.Println(err)
+						//	return
+					}
+
+					if(isFirst == "no"){
+						flag1 = 1
+						break
+					}
+
 				}
 
 			}
@@ -1455,6 +1488,13 @@ func display2(w http.ResponseWriter, r *http.Request) {
 		//}
 		//stmt1.Exec(GlobCounter, UserID)
 
+	}
+
+	store.Set("isFirstUse", "no")
+	err = store.Save()
+	if err != nil {
+		fmt.Fprint(w, err)
+		//	return
 	}
 }
 
