@@ -18,9 +18,9 @@
 	</head>  
 
 <body>
-	<script>
+	
 		
-	  </script>
+	  
 
 	<div>
 		
@@ -33,6 +33,7 @@
 
 				</style>   
 			</head>
+
 			
 			{{if(eq .Condition 1)}}
 
@@ -264,6 +265,8 @@
 
 			//called on 
             var gTotalOfPurchases = 0;
+
+			/*
 			function changeFields(originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
@@ -361,35 +364,14 @@
 
 
 				}
-				//not enough product
-			/*	else if( (parseInt(amountToBePurchased) < 0  ) && ((-1*(parseInt(amountToBePurchased)) + parseInt(amountInPurchasedField ) <= originalQuantity))){
-
-					alert("2");
-					//alert(amountToBePurchased);
-					//alert(amountInPurchasedField);
-					//alert(originalQuantity);
-					//alert("a");
-					//in field not submitted yet
-					value1 = document.getElementById(amountToPurchaseID).value; 
-					//total of amount for text box
-					value2  = parseInt(amountInPurchasedField) - parseInt(value1);
-					//alert(value2);
-					//change total in here
-					document.getElementById(quantityID).value = value2 ;
-					//amount purchaesd  subtracks amounttopurchase 
-					document.getElementById(amountPurchasedID).value = parseInt(amountPurchasedSoFar) + parseInt(amountToBePurchased);
-					
-					//?
-					//DONT FORGRT ABOUT SETTING VALUE TO 0, BELOW
-					//var amountToRefund = amountToBePurchased;
-					//setData(productID, amountToRefund, 1)
-				}
-				*/
+				
 				
 				document.getElementById(amountToPurchaseID).value = 0;
 
 								
 			}
+
+			
 
            var gCounter = -1;
 
@@ -400,6 +382,11 @@
 			//called by change fields
 			//if negative, the quantitytryingtoset is a possible value
 			//reduce bool is 1 for first section, quantity is being reduced 
+			
+			
+			
+
+			
 			function  setData(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
 			{
 				if(firstTime == "yes")
@@ -495,6 +482,9 @@
 
 			}
 
+			*/
+
+			
 
 			</script>
 
