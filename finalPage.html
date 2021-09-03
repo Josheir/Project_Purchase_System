@@ -27,6 +27,7 @@
 
 
 
+
 <script>  
 window.sessionStorage
 
@@ -159,8 +160,13 @@ loadData();
                         document.getElementById('linksHere').innerHTML   += result1a;
                       }
 
+                      document.getElementById('buttonHere').innerHTML   =
+                       " <input   id='button'  type='button' value='checkout'/> " +
+                       "<input   name = 'search' type='text' id='search' name='search' placeholder= 'apple1' value='apple2'/>" +
+                       "<input   id='button6' onclick = 'ajaxCall(\"0\")' type='button' value='Search'/> ";
 
 
+                      
 
                    
                     }
@@ -172,6 +178,230 @@ loadData();
       
     }
 
+    ///////////////
+    //function ajaxCall(flag)
+    //{
+    //  alert("made it here, 183");
+    //}
+
+    ///////////////////////////
+
+
+    //////////////////
+
+      	//flag2 set with a 1 means came from template2 and is returning to old keyword
+		function ajaxCall( flag2)
+		{
+
+		
+		//alert("button6");
+		var string = ""
+        let keys = Object.keys(sessionStorage);
+
+		//alert("keys");
+		for(let key of keys) {
+
+		
+        
+        var wasKeys = "no";
+
+     
+        
+		//alert("test here");
+		//if key is a number
+	
+		var keyAsInt =  parseInt(key); 
+		//alert(typeof keyAsInt);
+		//console.log(keyAsInt);
+		if (key != "session_userID" && key != "keywords") 
+		{
+			//alert("number here");
+			var item = sessionStorage.getItem(key);
+			
+       		string =  string + "id=" + key + "&quant=" + item + "&";
+  
+       		wasKeys = "yes";
+			   
+		}
+		
+		else if(key == "session_userID")
+        {
+			//alert("session here");
+			var item = sessionStorage.getItem(key);
+			string = string + "uid="  + item + "&";
+        }
+
+ 	// keyword checked below after ajax
+	}
+
+
+
+
+
+			
+
+		
+		/*else if(key == "searchterms")
+        {
+			var item = sessionStorage.getItem(key);
+
+			item = item.slice(2);
+			item = item.substr(0, item.length - 2);
+			
+			alert("did i get here?");
+			alert(item);
+
+			
+			string = string + "var=" + item + "&";
+			
+			continue;
+		}*/
+
+
+	
+		
+
+			/////////////
+
+			
+		//GLOBWORD :   ["APPLE"] is sent as result from display1 to index.html
+		//sent as keywords tried to make this just one element...uses K....
+		//these are held in store   and globcounter saved is counter of just one 
+	  var val1 = document.getElementById("search").value;
+
+	  //check if this keyword has any records, already have these records needs to be consideree
+	  //return yes or no to include  this in keyword list
+	  
+	  if(val1 == "" )
+	  {
+			return(1);
+	  }
+
+
+	  //alert("beyond there");
+	  //these are for keywords
+	  //THERE ARE URLS ALREADY
+	  var val2 = [];
+      if(wasKeys == "yes"){
+
+		val2 = setSession(true, val1, string, flag2);
+	  }
+	  //THERE ARNT URLS NOW 
+	  else
+      {
+		val2 = setSession(false, val1, string, flag2);
+
+	  }
+	  //alert("val2");
+	  //alert(val2);
+		var gflag = val2[0];
+		var querystring = val2[1] + string;
+
+		//flag2 is one if coming from template2
+		//otherwise 0
+		//ft : from template
+		//querystring = querystring + "ft=" + flag2 + "&";  
+		
+		alert(querystring);
+
+	
+		
+	///////////
+
+			
+
+
+	  ////////////
+	
+
+        //alert("querystring10a");
+        //alert(querystring);
+        
+       // alert(val1);
+	   
+          $.ajax({
+              url: "http://localhost:8080/display",
+              type: 'GET',
+              dataType: 'html',
+              contentType: "application/x-www-form-urlencoded",
+              crossDomain: true,
+              data: querystring,
+              success: function (result) {
+                var result1 = "";
+				let keys = Object.keys(sessionStorage);
+
+				//check if this link/keyword is first time and only useage
+				var  gkeywordArray = "";
+				
+				//alert("result");
+				alert(result)
+
+				var retVals = [];
+				//item1, ourNewWord = deriveKeywordFromResult(result);
+				retVals = deriveKeywordFromResult(result);
+				
+				var item1 = retVals[0];  
+				var ourNewWord = retVals[1]; 
+				var item = retVals[2];
+				//alert("ournewword");
+				//alert(item);
+				//alert(item1);
+				//alert(ourNewWord);
+
+			
+			for(let key of keys)
+			{
+				
+			
+			
+			//https://stackoverflow.com/questions/38083241/sessionstorage-into-array-and-print-all-values-in-the-array
+			//saved array of different keywords, like :  apple1, apple6, apple7
+			if (key == "keywords")
+			{
+				
+				
+
+
+			/////////this is the first item of this name so it is displayed one time for link above records
+			if (gflag == "isntin" && item != "[]" )
+			{
+				
+				result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+			}
+			
+
+			}
+
+			}
+
+
+				//alert("ournewword");
+				//alert(result1);
+				//alert(ourNewWord);
+
+
+
+
+      
+
+                document.getElementById('linksHere').innerHTML   += result1;
+
+                //web page rather for display records, this:
+                document.getElementById('buttonHere').innerHTML   += ourNewWord;
+                          
+                //$("#buttonHere").append(ourNewWord);
+                              
+             
+              
+                }
+         
+      });
+	
+
+		};
+
+
+    //////////////////
 
 
 //checkout button pressed, so is here!
@@ -191,8 +421,8 @@ var var1 = "hasntBeenHere";
 for(let key of keys) {
 
 
-  alert("keys here");
-  alert(key);
+  //alert("keys here");
+  //alert(key);
   if(key == "session_userID")
   {
     continue;
@@ -466,6 +696,130 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
                 
 
 			}*/
+  
+  /////////
+
+  //returns querystring
+//thi function checks if a keyword is already used and returns the queystring
+function setSession(areThereUrls, val1, string, flag2)
+{//NO URLS
+
+	//this flag means that this is a display that returned from template2, so is a special condition
+	if(flag2 == 1)
+	{
+		querystring = ("var=" + val1 + "&");
+		//cause a reaction by lieing about this
+		gflag = "isntin";
+		return [gflag, querystring];
+
+	}
+	else
+	{
+	var isfirst = false;
+	var querystring = "";
+	var counter = 0;
+		var gflag = "isntin";
+		
+		//alert("in here111");
+
+
+		//if no keywords than set search word as keyword. This is a list of keywords 
+		//so that the searhwords cant be used more than once 
+		var storedArray2 = [val1];
+		var storedArray = [];
+		//puts first variable into sessionStorage
+		if(!( storedArray = JSON.parse(sessionStorage.getItem("keywords"))))
+		{
+			isfirst = true
+			sessionStorage.setItem("keywords", JSON.stringify(storedArray2));
+			storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+			
+		}else
+		{
+			storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+			//sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+		
+		}
+
+		//check for duplicate keywords, if duplicate leave and do nothing
+		for (i = 0; i < storedArray.length; i++) {
+
+			//if(storedArray)
+			//{
+			if (storedArray[i] == val1 && isfirst == false)
+			{
+				gflag = "isin"
+				break;
+			}
+			
+		}
+		
+
+		//add a new keyword to session
+		if (gflag == "isntin")
+		{
+		
+		
+			if(isfirst == false)
+			{
+			storedArray.push(val1);	
+			sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+			}
+
+		//////////
+		
+		if (areThereUrls)
+		{
+			querystring = ("var=" + val1 + "&");
+			//!!!!!!!!!!!!!!!!!!!!
+			//querystring += string;
+		}
+		else
+		{
+
+			querystring = ("var=" + val1 + "&");
+			//querystring += string;
+		}
+
+		////////////
+
+
+
+		
+		//querystring += string;
+		}
+		else if(isfirst == true)
+		{
+			querystring = ("var=" + val1 + "&");
+		}
+	
+	
+	return [gflag, querystring];
+	 }
+	}
+
+  /////////
+  
+
+  function deriveKeywordFromResult(result)
+{
+
+				
+				var item = "";
+				var item1 = "";
+				var ourNewWord = "";
+				item = result.match("\\[.*]");
+				ourNewWord = result.replaceAll(item, '');
+				alert(ourNewWord);
+				var x = typeof(item);
+				item1 = JSON.stringify(item);
+				item1 = item1.slice(5);
+				item1 = item1.substring(0, item1.length - 5);
+				
+
+return [item1, ourNewWord, item];				
+}
+
   </script>
 
 
