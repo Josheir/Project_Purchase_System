@@ -20,8 +20,9 @@
 <div id = "div1"> </div>
   <input type="hidden" id="val" name="val" value="1">
   <div id = "removeButton">
-<center><input   id="button1" onclick = "display2()"  type="submit" value="Return to Purchase"/></center>
+<center><input   id="button1" onclick = "CallIndex()"  type="submit" value="Return to Purchase"/></center>
 </div>
+
 
 
 
@@ -31,6 +32,13 @@
 <script>  
 window.sessionStorage
 
+
+function CallIndex()
+{
+	alert("callindex");
+	window.location.href = "index.html?display2=1";
+
+}
 //loads ajax on page start
 $(function(){
 

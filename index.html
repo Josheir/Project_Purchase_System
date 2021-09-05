@@ -62,6 +62,29 @@ var3 = var1 + var2;
       
 <script>
 
+//loads ajax on page start
+$(function(){
+
+alert("stop here");	
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+var searchterm = urlParams.get('display2');
+//alert("search");
+if (searchterm == "1")
+{
+	alert("made it");
+	display2();
+	ajaxCall('0');
+}
+////////
+//alert("in fiunction");
+//loadData();
+
+////////
+//  loadajax();
+});
+
+
 var array1 = [];
 function insert(pid, quantLeft) {
     array1.push({
@@ -111,13 +134,10 @@ $(document).ready(function () {
 
 
 	
-	//var querystring = "";
-
-  //template button press - display searches a keyword
-    //$(document).ready(function () {
-      //$('#button6').on("click",function (e) {
+	
 		
 		//flag2 set with a 1 means came from template2 and is returning to old keyword
+		//a seperate call (not catch up)
 		function ajaxCall( flag2)
 		{
 			alert("made it");
@@ -333,7 +353,8 @@ $(document).ready(function () {
               //////////
               //calls purgehtml which calls template2.html - go
              alert("finalpage");
-              window.location.href = "finalPage.html";
+             window.location.href = "finalPage.html";
+
               
               
                 });  
@@ -712,6 +733,133 @@ function deriveKeywordFromResult(result)
 return [item1, ourNewWord, item];				
 }
 
+
+//////
+
+      //pressed return to purchase from template2
+	  function display2(){
+
+var querystring = "";
+alert("button1");
+let keys = Object.keys(sessionStorage);
+
+
+var counter = -1;
+var array = [];
+for(let key of keys) {
+
+
+  if(key == "keywords")
+  {
+	counter++;
+	alert("keywords");
+   
+	var item = sessionStorage.getItem(key);
+	
+	//item = item.slice(2);
+		  //item = item.substring(0, item.length - 2);
+	array = JSON.parse(item);
+   // alert(array);
+	//alert(array[0]);
+	//alert(array.length);
+
+	for(var i = 0; i<array.length ; i++)
+	{
+	
+	  querystring += "var=" + array[i] + "&";
+	}
+
+	alert(querystring);
+	//alert(item);
+
+  }
+  else if(key == "session_userID")
+  {
+
+  }
+  else
+  {
+	var item = sessionStorage.getItem(key);
+	querystring += "id=" + key + "&quant=" + item + "&";
+  } 
+
+}
+
+//document.getElementById(removeMe).display = "";
+
+
+var url = "http://localhost:8080/display2";
+//var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
+
+
+
+			$.ajax({
+			type:"GET",
+			url:url,
+			data:querystring,
+			async:false,
+			success: function (result) {
+
+			  ///alert("result");
+			  //alert(result);
+
+
+			var retVals = [];
+			
+			retVals = deriveKeywordFromResult(result);
+			
+			//final keyword
+			var item1 = retVals[0];  
+			//html with keyword removed
+			var ourNewWord = retVals[1]; 
+			var item = retVals[2];
+			alert("test");
+			//alert(array[0]);
+			alert(ourNewWord);
+			
+			
+			  
+
+
+			  for(var i = 0 ; i < array.length ; i++)
+			  {
+				////
+
+				
+				var val1 = '["' + array[i] +  '"]';
+
+				ourNewWord = ourNewWord.replace(val1 , '');
+
+				retVals = deriveKeywordFromResult(ourNewWord);
+
+				
+				//document.getElementById('removeMe').innerHTML   = retVals[1];
+
+
+				/////
+
+
+				var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
+				document.getElementById('buttons').innerHTML   += result1a;
+			  }
+
+			  document.getElementById('templateOneHere').innerHTML   += ourNewWord;
+			  
+
+			  
+			  
+
+		   
+			}
+		});
+
+
+
+
+
+}
+
+//////
 
 </script>
 
