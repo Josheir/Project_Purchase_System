@@ -142,6 +142,10 @@ $(document).ready(function () {
 		//a seperate call (not catch up) - this is display1
 		//from pressing search button
 		var array = [];
+		var storedArray  = [];
+
+
+		//pushed search (button 6) display1
 		function ajaxCall( flag2)
 		{
 
@@ -253,14 +257,21 @@ $(document).ready(function () {
 
 	  ///////
 	  
+
+	  
 	//no records displayed and checkout was pressed
-	var val2 = sessionStorage.getItem("checkoutPressed");
+	//var val2 = sessionStorage.getItem("checkoutPressed");
 	//remove item of keyword thata is  
-	if (val2 == "pressed" )
-	{
+	//if (val2 == "pressed" )
+	//{
+
+
+////////
 
 		storedArray = JSON.parse(sessionStorage.getItem("keywords"));
 
+		if(storedArray)
+		{
 		for(var i = 0; i < storedArray.length ; i++)
 		{
 		if (storedArray[i] == val1)
@@ -268,15 +279,23 @@ $(document).ready(function () {
 			//remove so that there wont be this and will allow search after checokout is pressed with no selections
 			//in template1 (display1)  form
 			
-			storedArray[i].removeItem(i);
-			break;
+			//storedArray[i].removeItem(i);
+			return(-1);
 		}
 		
 		
 		}
-		sessionStorage.setItem("keywords", JSON.stringify(storedArray));
-		
+		//sessionStorage.setItem("keywords", JSON.stringify(storedArray));
 	}
+
+
+//////
+
+
+		
+	//sessionStorage.setItem("checkoutPressed", "unpressed");
+
+	//}
 
 
 	  ////////
@@ -309,7 +328,7 @@ $(document).ready(function () {
 		//querystring = querystring + "ft=" + flag2 + "&";  
 		alert("is this right");
 		alert(val2[1]); // var = apple3&
-		alert(string);
+		//alert(string);
 
 		var url = "";
 		//go back to index
@@ -320,7 +339,9 @@ $(document).ready(function () {
 	  }else
 	  {
 
-	  }          $.ajax({
+	  }          
+	  alert("ishere?");
+	 		 $.ajax({
               url: "http://localhost:8080/display",
               type: 'GET',
               dataType: 'html',
@@ -651,6 +672,8 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 //returns querystring
 //thi function checks if a keyword is already used and returns the queystring
+
+//check if keyword exists already
 function setSession(areThereUrls, val1, string, flag2)
 {//NO URLS
 

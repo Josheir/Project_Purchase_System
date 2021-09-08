@@ -1960,17 +1960,17 @@ func main() {
 	one.HandleFunc("/HelloWorld", HelloWorld)
 	one.HandleFunc("/processLogin", processLogin)
 
-	two := http.NewServeMux()
+	//two := http.NewServeMux()
 
 	//
 	one.HandleFunc("/template2", createTemplate2)
 	one.HandleFunc("/spitBackAmounts", spitBackAmounts)
 
-	go func() {
+	//go func() {
+//
+//		http.ListenAndServe(":8080", one)
+//	}()
 
-		http.ListenAndServe(":8080", one)
-	}()
-
-	http.ListenAndServe(":8081", two)
+	http.ListenAndServe(":8080", one)
 
 }
