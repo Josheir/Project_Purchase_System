@@ -513,8 +513,12 @@ var url = "http://localhost:8080/template2";
 					  {
 						  val1 = "<br><center><h3>No Products Were Selected Yet!</center><br></h3>";
 						  val1 = val1 + data1;
+						  $('#div1').html(val1);
 					  }
-                      $('#div1').html(val1);
+					  else
+					  {
+                      $('#div1').html(data1);
+					  }
                    
                     }
                 });
