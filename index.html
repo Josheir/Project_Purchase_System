@@ -76,6 +76,8 @@ if (searchterm == "1")
 	display2();
 	ajaxCall('0');
 }
+
+return(1);
 ////////
 //alert("in fiunction");
 //loadData();
@@ -137,10 +139,23 @@ $(document).ready(function () {
 	
 		
 		//flag2 set with a 1 means came from template2 and is returning to old keyword
-		//a seperate call (not catch up)
+		//a seperate call (not catch up) - this is display1
+		//from pressing search button
+		var array = [];
 		function ajaxCall( flag2)
 		{
-			alert("made it");
+
+
+			
+	 
+
+
+	  
+
+		var reloadFlag = 1;
+		//alert("made it");
+		var querystring = "";
+		var counter = -1;
 		
 		//alert("button6");
 		var string = ""
@@ -148,27 +163,51 @@ $(document).ready(function () {
 
 		//alert("keys");
 		for(let key of keys) {
+		////////added//
 
+		//array = [];
+
+		if(key == "keywords")
+  		{
+		counter++;
+		//alert("keywords1");
+		alert("keywords...");
+		alert(key);
+	
+		//holds an array
+		var item = sessionStorage.getItem(key);
+		alert(item);
+		
+		array = JSON.parse(item);
+	    alert(array[0]);
+		
+		//for(var i = 0; i<array.length ; i++)
+		//{
+		//
+		//querystring += "var=" + val1 + "&";
+		//}
+
+
+		}
+
+		///////////////
 		
         
         var wasKeys = "no";
 
-     
-        
-		//alert("test here");
-		//if key is a number
-	
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
 		if (key != "session_userID" && key != "keywords") 
 		{
+			
 			//alert("number here");
 			var item = sessionStorage.getItem(key);
 			
        		string =  string + "id=" + key + "&quant=" + item + "&";
+			reloadFlag = 0;
   
-       		wasKeys = "yes";
+       		
 			   
 		}
 		
@@ -178,44 +217,31 @@ $(document).ready(function () {
 			var item = sessionStorage.getItem(key);
 			string = string + "uid="  + item + "&";
         }
+		else if(key == "keywords")
+		{
+			wasKeys = "yes";
+		}
 
  	// keyword checked below after ajax
 	}
 
 
 
-
-
-			
-
+	if(reloadFlag == 1)
+	{
+		reloadFlag = 0;
 		
-		/*else if(key == "searchterms")
-        {
-			var item = sessionStorage.getItem(key);
+		//window.location.href = "index.html?";
+    	
 
-			item = item.slice(2);
-			item = item.substr(0, item.length - 2);
-			
-			alert("did i get here?");
-			alert(item);
-
-			
-			string = string + "var=" + item + "&";
-			
-			continue;
-		}*/
-
-
-	
-		
-
-			/////////////
-
-			
+	}
 		//GLOBWORD :   ["APPLE"] is sent as result from display1 to index.html
 		//sent as keywords tried to make this just one element...uses K....
 		//these are held in store   and globcounter saved is counter of just one 
 	  var val1 = document.getElementById("search").value;
+
+		
+
 
 	  //check if this keyword has any records, already have these records needs to be consideree
 	  //return yes or no to include  this in keyword list
@@ -224,6 +250,38 @@ $(document).ready(function () {
 	  {
 			return(1);
 	  }
+
+	  ///////
+	  
+	//no records displayed and checkout was pressed
+	var val2 = sessionStorage.getItem("checkoutPressed");
+	//remove item of keyword thata is  
+	if (val2 == "pressed" )
+	{
+
+		storedArray = JSON.parse(sessionStorage.getItem("keywords"));
+
+		for(var i = 0; i < storedArray.length ; i++)
+		{
+		if (storedArray[i] == val1)
+		{
+			//remove so that there wont be this and will allow search after checokout is pressed with no selections
+			//in template1 (display1)  form
+			
+			storedArray[i].removeItem(i);
+			break;
+		}
+		
+		
+		}
+		sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+		
+	}
+
+
+	  ////////
+
+
 
 
 	  //alert("beyond there");
@@ -249,25 +307,20 @@ $(document).ready(function () {
 		//otherwise 0
 		//ft : from template
 		//querystring = querystring + "ft=" + flag2 + "&";  
-		
-		alert(querystring);
+		alert("is this right");
+		alert(val2[1]); // var = apple3&
+		alert(string);
 
-	
-		
-	///////////
+		var url = "";
+		//go back to index
+	  if(reloadFlag == 1)
+	  {
+		  querystring += "leave=1&";
 
-			
+	  }else
+	  {
 
-
-	  ////////////
-	
-
-        //alert("querystring10a");
-        //alert(querystring);
-        
-       // alert(val1);
-	   
-          $.ajax({
+	  }          $.ajax({
               url: "http://localhost:8080/display",
               type: 'GET',
               dataType: 'html',
@@ -281,54 +334,60 @@ $(document).ready(function () {
 				//check if this link/keyword is first time and only useage
 				var  gkeywordArray = "";
 				
-				//alert("result");
+				alert("result");
 				alert(result)
 
 				var retVals = [];
+				
+				var toRemove = "null";
+				result = result.replaceAll(toRemove, '');
+
+				alert("finishing");
+				alert(result);
 				//item1, ourNewWord = deriveKeywordFromResult(result);
 				retVals = deriveKeywordFromResult(result);
 				
+				
+
+
+
 				var item1 = retVals[0];  
+				alert(item1);
 				var ourNewWord = retVals[1]; 
 				var item = retVals[2];
-				//alert("ournewword");
-				//alert(item);
-				//alert(item1);
-				//alert(ourNewWord);
+				alert("ournewword");
+				alert(item);
+				alert(item1);
+				alert(ourNewWord);
 
-			
-			for(let key of keys)
-			{
 				
-			
-			
-			//https://stackoverflow.com/questions/38083241/sessionstorage-into-array-and-print-all-values-in-the-array
-			//saved array of different keywords, like :  apple1, apple6, apple7
-			if (key == "keywords")
-			{
+				
 				
 				
 
+				alert("arraylength1");
+				alert(array.length);
 
-			/////////this is the first item of this name so it is displayed one time for link above records
-			if (gflag == "isntin" && item != "[]" )
-			{
+				//for(var i = 0 ; i < array.length ; i++)
+			  	//{
+				////
+
+				alert("arraylength2");
+				alert(array.length);
+				alert(item1)
+				var val1a = '["' + item1 +  '"]';
+
+				ourNewWord = ourNewWord.replace(val1a , '');
 				
-				result1 = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
-			}
-			
 
-			}
+				//retVals = deriveKeywordFromResult(ourNewWord);
+				//}
+				var result1a = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+				document.getElementById('buttons').innerHTML   += result1a;
+			  	
 
-			}
 
-
-				//alert("ournewword");
-				//alert(result1);
-				//alert(ourNewWord);
-
-                document.getElementById('buttons').innerHTML   += result1;
-
+			  
                 document.getElementById('templateOneHere').innerHTML   += ourNewWord;
                               
                               
@@ -596,7 +655,7 @@ function setSession(areThereUrls, val1, string, flag2)
 {//NO URLS
 
 	//this flag means that this is a display that returned from template2, so is a special condition
-	if(flag2 == 1)
+	if(flag2 == "1")
 	{
 		querystring = ("var=" + val1 + "&");
 		//cause a reaction by lieing about this
@@ -618,6 +677,8 @@ function setSession(areThereUrls, val1, string, flag2)
 		//so that the searhwords cant be used more than once 
 		var storedArray2 = [val1];
 		var storedArray = [];
+		alert("arethere");
+		alert(val1);
 		//puts first variable into sessionStorage
 		if(!( storedArray = JSON.parse(sessionStorage.getItem("keywords"))))
 		{
@@ -672,6 +733,7 @@ function setSession(areThereUrls, val1, string, flag2)
 			//querystring += string;
 		}
 
+		alert(querystring);
 		////////////
 
 
@@ -684,6 +746,7 @@ function setSession(areThereUrls, val1, string, flag2)
 			querystring = ("var=" + val1 + "&");
 		}
 	
+		alert(querystring);
 	
 	return [gflag, querystring];
 	 }
@@ -693,21 +756,21 @@ function setSession(areThereUrls, val1, string, flag2)
 
 
 
-window.onload = function(){
+//window.onload = function(){
 	//ajaxCall();
 
 
+//}
 
-
-var params = new URLSearchParams(window.location.search);
-var string1 = (params.get("val"));
-if(string1 == "1")
-  {
-	  alert("in here");
-	  //document.querySelector("#button6").click();	
-	  ajaxCall("1");
-  }
-};
+//var params = new URLSearchParams(window.location.search);
+//var string1 = (params.get("val"));
+//if(string1 == "1")
+//  {
+//	  alert("in here");
+//	  //document.querySelector("#button6").click();	
+//	  ajaxCall("1");
+//  }
+//};
 
 function ajax()
 {
@@ -763,6 +826,7 @@ for(let key of keys) {
 	//alert(array[0]);
 	//alert(array.length);
 
+	//one iteration on fresh array
 	for(var i = 0; i<array.length ; i++)
 	{
 	
@@ -832,13 +896,6 @@ var url = "http://localhost:8080/display2";
 
 				retVals = deriveKeywordFromResult(ourNewWord);
 
-				
-				//document.getElementById('removeMe').innerHTML   = retVals[1];
-
-
-				/////
-
-
 				var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
 				document.getElementById('buttons').innerHTML   += result1a;
 			  }
@@ -857,7 +914,7 @@ var url = "http://localhost:8080/display2";
 
 
 
-}
+};
 
 //////
 

@@ -1502,6 +1502,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+
 	if len(UserIDstring) != 0 {
 
 		//only one
@@ -1849,7 +1850,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var index1 = "a"
 		var k = 0
 		//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
-		for k = 0; k <= 1; k++ {
+		for k = 0; k <= GlobCounter; k++ {
 
 			index1 = "K" + strconv.Itoa(k)
 
