@@ -21,8 +21,8 @@
     //https://stackoverflow.com/questions/4187146/truncate-number-to-two-decimal-places-without-rounding
     
   
-//for returning our of functions
-var MAXRECORDS = 1;
+//for returning our of functions - //this is in finalpage.html and index.html
+var MAXRECORDS = 2;
 var var1 =1;
 var var2 =1;
 var var3 ;
@@ -477,7 +477,7 @@ var gTotalOfPurchases = 0;
 function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 {
 
-
+				var val1 = "";
 				alert("A2") ;
 				if(val1 = sessionStorage.getItem("numberOfRecords"))
 				{
@@ -607,6 +607,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 				var keyFlag = ""
 				var bought, totalquantity = 0;
+				var val1 = "";
 
 				//alert("before");
 
@@ -683,6 +684,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 						////////
 						alert("A1") ;
+						
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
 							alert("a");
@@ -718,7 +720,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
 							
-							var varIntVal1 = parseint(val1);
+							var varIntVal1 = parseInt(val1);
 							sessionStorage.setItem("numberOfRecords", varIntVal1+1);
 							//if( varIntVal1 == 5)
 							//{
@@ -916,7 +918,7 @@ var gcounter1 = 0;
 
 		
 
-		sessionSTorage.setItem("numberOfRecords", "0");
+		sessionStorage.setItem("numberOfRecords", "0");
 
 for(let key of keys) {
 
@@ -964,8 +966,10 @@ for(let key of keys) {
   {
 	var val1 = "";
 	var item = sessionStorage.getItem(key);
+	alert(item);
 	if(item == "0")
 	{
+		
 		continue;
 	}
 	else{
@@ -976,17 +980,17 @@ for(let key of keys) {
 		alert("A5") ;
 		if(val1 = sessionStorage.getItem("numberOfRecords"))
 		{
-			var varIntVal1 = parseint(val1);
+			var varIntVal1 = parseInt(val1);
 			varIntVal1++;
 			//automatically changes variable to string
-			sessionSTorage.setItem("numberOfRecords", varIntVal1);
+			sessionStorage.setItem("numberOfRecords", varIntVal1);
 			querystring += "id=" + key + "&quant=" + item + "&";
 		}
 		else
 		{
-			sessionSTorage.setItem("numberOfRecords", "1");	
-			var varIntVal1 = parseint(val1);
-			varIntVal1++;
+			sessionStorage.setItem("numberOfRecords", "1");	
+			//var varIntVal1 = parseint(val1);
+			//varIntVal1++;
 			querystring += "id=" + key + "&quant=" + item + "&";
 
 		}
@@ -1072,6 +1076,11 @@ var url = "http://localhost:8080/display2";
 };
 
 //////
+
+function hideRow(rowId) 
+{
+    document.getElementById(rowId).style.display = "none";
+}
 
 </script>
 

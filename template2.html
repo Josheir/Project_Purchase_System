@@ -166,6 +166,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   //alert("encode to dbase");
   //var amtInBuyBox = document.getElementById(amttobuyID).value;
 
+  var val1 = "";
   //for amountinboxid
   var var1 = "A";
   //for costid
@@ -234,32 +235,32 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         var Product = (document.getElementById(ProductIDID).value); 
        
        
-       alert("cost");
-      alert(costInBox);
+       //alert("cost");
+      //alert(costInBox);
         
         //amount bought before purchase
         //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
         //string =  string + "id=" + key + "&quant=" + item + "&";
         var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
 
-        alert("key");
-        alert(key);
+        //alert("key");
+        //alert(key);
         if (item == "")
         { 
           alert("item is null print");
           item = bought;
         
-        alert("ready");
-        alert("amt in buybox");
-        alert(amtInBuyBox);
-        alert("item");
-        alert(item);
+        //alert("ready");
+        //alert("amt in buybox");
+        //alert(amtInBuyBox);
+        //alert("item");
+        //alert(item);
         //negative or has decimal
         }
         //check if is decimal
         if(item % 1 != 0)
         {
-          alert("in here1");
+          //alert("in here1");
           var str2 = amtInBuyBox.toString();
           //document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
@@ -291,7 +292,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   hideRow(oneDivID);
                   amtOfHiddenProducts++;
                  
-                  alert(Product);
+                  //alert(Product);
                  
                   //CHANGED THIS LOOK HERE
                   sessionStorage.setItem((Product), 0);
@@ -299,12 +300,17 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   ///////
 
 
-                  alert("A hide 1");
+                  //alert("A hide 1");
                   if(val1 = sessionStorage.getItem("numberOfRecords"))
                   {
+                    alert("b");
                     
-                    var varIntVal1 = parseint(val1);
-                    sessionStorage.setItem("numberOfRecords", varIntVal1-1);
+                    var varIntVal1 = parseInt(val1);
+                    var val2 = varIntVal1 - 1;
+
+                    sessionStorage.setItem("numberOfRecords", val2);
+                    var val3 = sessionStorage.getItem("numberOfRecords");
+                    alert(val3);
                     //if( varIntVal1 == 5)
                     //{
                     //	return(-1);
@@ -313,6 +319,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   }
                   else
                   {
+                    alert("c");
                     sessionStorage.setItem("numberOfRecords", "0");
                   }
 
@@ -321,7 +328,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                  
                   
                   
-                  alert("important");
+                 // alert("important");
                   
           continue;
           
@@ -1079,6 +1086,10 @@ Number.prototype.getPrecision = function() {
   return 0;
 }
 
+function hideRow(rowId)
+{
+    document.getElementById(rowId).style.display = "none";
+}
 
 
 </script>
