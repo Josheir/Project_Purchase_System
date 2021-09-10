@@ -153,8 +153,10 @@ function changeColorToBlack(AmountToBuyID)
  
 }
 
-
+//pressed checkout
 function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
+
+  //sessionStorage.removeItem("numberOfRecords");
 
   
   
@@ -208,6 +210,12 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
           //amtOfHiddenProducts--;
           continue;
         }
+        if(key =="numberOfRecords")
+        {
+          counter--;
+         
+          continue;
+        }
         
         //input boxes id
         AmountToBuyID = var1 + counter;
@@ -259,26 +267,59 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
         if(item == 0)
         {
+
+                  /////////////////
+                  /*
+                  var val1 = "";
+                  if(val1 = sessionStorage.getItem("numberOfRecords"))
+                  {
+                      var varIntVal1 = parseint(val1);
+                      varIntVal1--;
+                      //automatically changes variable to string
+                      sessionSTorage.setItem("numberOfRecords", varIntVal1);
+                  }
+                  else
+                  {
+                    sessionSTorage.setItem("numberOfRecords", "0");
+                  }
+                  */
+
+                  /////////////////
+
                   //sets template1 to zero
                   alert("important!!!B");
                   hideRow(oneDivID);
                   amtOfHiddenProducts++;
-                  //amtOfHiddenProducts++;
+                 
                   alert(Product);
-                  //document.getElementById(buyThisManyID).value = 0;
-                  
+                 
+                  //CHANGED THIS LOOK HERE
                   sessionStorage.setItem((Product), 0);
+
+                  ///////
+
+
+                  alert("A hide 1");
+                  if(val1 = sessionStorage.getItem("numberOfRecords"))
+                  {
+                    
+                    var varIntVal1 = parseint(val1);
+                    sessionStorage.setItem("numberOfRecords", varIntVal1-1);
+                    //if( varIntVal1 == 5)
+                    //{
+                    //	return(-1);
+                    //}
+                    
+                  }
+                  else
+                  {
+                    sessionStorage.setItem("numberOfRecords", "0");
+                  }
+
+
+                  /////////
                  
-                  //alert(counter);
-                 //alert(data1);
-                  //alert(data1[counter].ID);
-                 
-
-
-
-
-                  //amtOfHiddenProducts = amtOfHiddenProducts + 1;
-                  //document.getElementById(AmountOfQuantityID).value = "";
+                  
                   
                   alert("important");
                   
@@ -308,10 +349,28 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         }
 
 
-
-
+        /*
+        //checkout
         //quant is amount trying to buy
         string =  string + "id=" + key + "&quant=" + item + "&";
+
+     
+     
+        if(val1 = sessionStorage.getItem("numberOfRecords"))
+        {
+            var varIntVal1 = parseint(val1);
+            varIntVal1++;
+            //automatically changes variable to string
+            sessionSTorage.setItem("numberOfRecords", varIntVal1);
+        }
+        else
+        {
+          sessionSTorage.setItem("numberOfRecords", "1");
+        }
+        */
+
+
+
 
         //alert("string");
         //alert(string);
@@ -540,12 +599,34 @@ var queryString = string.substring(0, string.length-1);
                 {
                   alert("important!!!A");
 
+                  alert("A hide 2");
                   hideRow(oneDivID1);
                   amtOfHiddenProducts++;
                   document.getElementById(buyThisManyID).value = 0;
                   sessionStorage.setitem(data1[i].ID, 0);
                  
                   alert("important");
+
+                  /////////
+
+                  if(val1 = sessionStorage.getItem("numberOfRecords"))
+                  {
+                    
+                    var varIntVal1 = parseint(val1);
+                    sessionStorage.setItem("numberOfRecords", varIntVal1-1);
+                    //if( varIntVal1 == 5)
+                    //{
+                    //	return(-1);
+                    //}
+                    
+                  }
+                  else
+                  {
+                    sessionStorage.setItem("numberOfRecords", "0");
+                  }
+
+                  /////////
+
                   //alert(lst);
                   //lst[0].style.display = "none";
                   //document.getElementById(oneDivID1).value = "";
