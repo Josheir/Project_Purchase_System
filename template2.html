@@ -295,7 +295,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   //alert(Product);
                  
                   //CHANGED THIS LOOK HERE
-                  sessionStorage.setItem((Product), 0);
+                  sessionStorage.removeItem((Product), 0);
 
                   ///////
 
@@ -610,8 +610,13 @@ var queryString = string.substring(0, string.length-1);
                   hideRow(oneDivID1);
                   amtOfHiddenProducts++;
                   document.getElementById(buyThisManyID).value = 0;
-                  sessionStorage.setitem(data1[i].ID, 0);
-                 
+
+
+
+                  //sessionStorage.setItem(data1[i].ID, 0);
+                  sessionStorage.removeItem(data1[i].ID);
+                  
+                  
                   alert("important");
 
                   /////////
