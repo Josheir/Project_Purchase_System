@@ -23,6 +23,9 @@
   
 //for returning our of functions - //this is in finalpage.html and index.html
 var MAXRECORDS = 2;
+//keep these message boxes: 44 finalpages, 495 index, 163 index
+//first two use const above, and last is in ajaxcall for checking login
+
 var var1 =1;
 var var2 =1;
 var var3 ;
@@ -151,8 +154,16 @@ $(document).ready(function () {
 		{
 
 
-			
-	 
+			alert("getUser");
+		alert(getUser);
+		var getUser = sessionStorage.getItem("session_userID");
+		alert("getUser");
+		alert(getUser);
+		if (getUser == null)
+		{
+			alert("You Need to Login First!");
+			return(1);
+		}
 
 
 	  

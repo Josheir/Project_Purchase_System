@@ -1502,7 +1502,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-
 	if len(UserIDstring) != 0 {
 
 		//only one
@@ -1967,9 +1966,9 @@ func main() {
 	one.HandleFunc("/spitBackAmounts", spitBackAmounts)
 
 	//go func() {
-//
-//		http.ListenAndServe(":8080", one)
-//	}()
+	//
+	//		http.ListenAndServe(":8080", one)
+	//	}()
 
 	http.ListenAndServe(":8080", one)
 
