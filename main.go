@@ -504,6 +504,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			//database amount - amount purchased
 			//100 in database , 10 bought -> 90 left   so there is ten purchased in order (bought)
 			//intQuant, err := strconv.Atoi(allQuants[i])
+
+			
+			//check for being a non zero positive integer
 			_ = tx.QueryRow("Update products SET ProductQuantity = ? WHERE products.ProductID = ?", ProductQuantity-intQuant, allIds[i])
 
 			//get this with logon : custid
