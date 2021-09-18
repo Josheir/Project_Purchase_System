@@ -362,8 +362,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	
-
 	i := 0
 	j := 0
 	tx, err := db.Begin()
@@ -375,7 +373,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	var quant = 0
 
 	DatabaseQuantity := 0
-	
+
+	//this for loop saves quantities purchased, amount of product in database, and is there enough in a struct
+	//at the end of the function this is spit back to template2.  This is independant of the next for loop
+	//that saves purchases in an order table (as purchased status) and deducts product id from the "ready" statused productid
 	for j = 0; j < len(allIds); j++ {
 
 		//gets quantity for each product id
@@ -392,9 +393,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var enough bool = false
-		
+
 		//row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", allIds[j])
-		
+
 		//checks if enough product to remove the quantity in database
 		row := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= ?)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j])
 
@@ -422,13 +423,19 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//		}
 		//
 	}
+	err = tx.Commit()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	
+	tx, err = db.Begin()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	//var insertOrderFlag = "yes"
 	var orderid = 0
 	var nextProductID = 0
-	
 
 	orderid = 0
 	//get last order id
@@ -437,9 +444,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	if err3 != nil {
 		fmt.Println(err)
 	}
-	
-
-	
 
 	//get last productid
 	row = tx.QueryRowContext(ctx, "SELECT ID FROM products ORDER BY ProductID DESC LIMIT 1")
@@ -468,23 +472,24 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		//////////////
 
-		//this gets the record for insert of quant 
+		//this gets the record for insert of quant
 
-		
 		var ProductCost float64
 		var ProductQuantity, ProductID, AdminID, CustomerID, OrderID int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
 
-		err = tx.QueryRowContext(ctx, "SELECT * FROM products   WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[i]).Scan(&ProductID,
-		&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle,&gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
-		&OrderID, &ProductStatus, &AdminID)
+
+		//gets all the fields of data from  a particular productid
+		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[i]).Scan(&ProductID,
+			&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
+			&OrderID, &ProductStatus, &AdminID)
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-
-		//just change by productquantity by removing quatity to add to orders
+		
+		//updates productid fields to its quantity minus int-quant
 		_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductID = 'ready' ", ProductQuantity-intQuant, allIds[i])
 		if err != nil {
 			fmt.Println(err)
@@ -492,40 +497,34 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		datetime := time.Now()
 
-		
-		var id1 = 0;
-	
-		
+		var id1 = 0
+
 		//check if there is a product record ctreated to store in order table, if there is, than an order record has been created too.
-		err = tx.QueryRowContext(ctx, "SELECT ID FROM products WHERE products.ProductID =  ? and  products.ProductCategory = 'inordertable'" , allIds[i]).Scan(&id1)
-		
+		err = tx.QueryRowContext(ctx, "SELECT ID FROM products WHERE products.ProductID =  ? and  products.ProductCategory = 'inordertable'", allIds[i]).Scan(&id1)
 
 		//no record of product created to store in order, so create both
 		if err == sql.ErrNoRows {
 
-		//insert order table 
-		_, err = tx.ExecContext(ctx, "INSERT INTO orders (OrderID, OrderDate) values(?,?)", orderid, datetime)
+			//insert order table
+			_, err = tx.ExecContext(ctx, "INSERT INTO orders (OrderID, OrderDate) values(?,?)", orderid, datetime)
 
-		if err != nil {
-		fmt.Println(err)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//insert product to store in table - change quantity and status : purchased
+
+			ProductStatus = "purchased"
+			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductID, ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,gKeyword1, gKeyword2, gKeyword3, CustomerID, OrderID, ProductStatus, AdminID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductID, ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, OrderID, ProductStatus, AdminID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//there is a product created to store in order table so than the order table record has also been created, so no need to do anything
+		} else {
+
 		}
-
-
-		//insert product to store in table - change quantity and status : purchased
-
-		ProductStatus = "purchased"
-		_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductID, ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,gKeyword1, gKeyword2, gKeyword3, CustomerID, OrderID, ProductStatus, AdminID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",ProductID, ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, OrderID, ProductStatus, AdminID)
-
-		if err != nil {
-		fmt.Println(err)
-		}
-
-		//there is a product created to store in order table so than the order table record has also been created, so no need to do anything
-		}else{
-
-		}
-
-		
 
 		/////////////////////
 
@@ -536,10 +535,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err5)
 	}
 
-	
 	json.NewEncoder(w).Encode(ProductList2A)
 
-	
 }
 
 //https://github.com/strongo/decimal
@@ -1910,19 +1907,9 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(user)
 }
 
-
 ////////////
 
-
-
-
-
-
-
 /////////////
-
-
-
 
 func main() {
 
@@ -1956,4 +1943,3 @@ func main() {
 	http.ListenAndServe(":8080", one)
 
 }
-
