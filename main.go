@@ -358,51 +358,41 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present")
 	}
 
-	userID := userID1[0]
-
 	db := dbConn()
 
-	i := 0
-	j := 0
-	tx, err := db.Begin()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var counter = 0
-	var quant = 0
-
+	var thisProductID = 0
 	DatabaseQuantity := 0
-
-	//this for loop saves quantities purchased, amount of product in database, and is there enough in a struct
-	//at the end of the function this is spit back to template2.  This is independant of the next for loop
-	//that saves purchases in an order table (as purchased status) and deducts product id from the "ready" statused productid
+	var passesStruct bool = false
+	var haveWrittenOrder bool = false
+	var j = 0
 	for j = 0; j < len(allIds); j++ {
 
-		//gets quantity for each product id
-		quant, _ = (strconv.Atoi(allQuants[j]))
+		////////////
 
-		if quant == 0 {
-			continue
-		}
+		thisProductID, _ = strconv.Atoi(allIds[j])
 
-		/////////IMPORTANT!!!!!!/////
-		if counter == 0 {
-			//quant = 2000
-			counter++
+		tx, err := db.Begin()
+		if err != nil {
+			fmt.Println(err)
 		}
 
 		var enough bool = false
 
-		//row := tx.QueryRow("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", allIds[j])
-
 		//checks if enough product to remove the quantity in database
-		row := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= ?)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j])
+		err = tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= ?)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j]).Scan(&enough)
+		if err == sql.ErrNoRows {
+			passesStruct = false
+			err := tx.Commit()
+			if err != nil {
+				fmt.Println(err)
+			}
+			break
 
-		err = row.Scan(&enough)
-		if err != nil {
-			fmt.Println(err)
 		}
+		//err = row.Scan(&enough)
+		//if err != nil {
+		//		fmt.Println(err)
+		//	}
 
 		val1, err1 := strconv.Atoi(allIds[j])
 		if err1 != nil {
@@ -410,87 +400,55 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if !enough {
+
+			err5 := tx.Commit()
+			if err5 != nil {
+				fmt.Println(err5)
+			}
+
 			continue
 		}
 
 		makeListForLastpageA(enough, (val1), DatabaseQuantity)
 
-		//if (quant) > DatabaseQuantity || isEnoughInDatabase == "no" {
-		//
-		//			isEnoughInDatabase = "no"
-		//			//continue
-		//
-		//		}
-		//
-	}
-	err = tx.Commit()
-	if err != nil {
-		fmt.Println(err)
-	}
+		/////////////
 
-	tx, err = db.Begin()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	//var insertOrderFlag = "yes"
-	var orderid = 0
-	var nextProductID = 0
-
-	orderid = 0
-	//get last order id
-	row := tx.QueryRowContext(ctx, "SELECT OrderID FROM orders ORDER BY OrderID DESC LIMIT 1")
-	err3 := row.Scan(&orderid)
-	if err3 != nil {
-		fmt.Println(err)
-	}
-
-	//get last productid
-	row = tx.QueryRowContext(ctx, "SELECT ID FROM products ORDER BY ProductID DESC LIMIT 1")
-	err3 = row.Scan(&nextProductID)
-	if err3 != nil {
-		fmt.Println(err)
-	}
-
-	//////
-
-	//insertOrderFlag = "yes"
-
-	for i = 0; i < len(allIds); i++ {
-
-		intQuant, err := strconv.Atoi(allQuants[i])
+		intQuant, err := strconv.Atoi(allQuants[j])
 		if err != nil {
 			fmt.Println(err)
 		}
 
 		if intQuant <= 0 {
+
+			err5 := tx.Commit()
+			if err5 != nil {
+				fmt.Println(err5)
+			}
 			continue
 		}
-
-		orderid = orderid + 1
-		nextProductID = nextProductID + 1
-
-		//////////////
 
 		//this gets the record for insert of quant
 
 		var ProductCost float64
-		var ProductQuantity, ProductID, AdminID, CustomerID, OrderID int
+		var ProductQuantity, ProductID, AdminID, CustomerID, OrderID, ID int
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductStatus string
 
+		//if client b is passed this than quantity will be the same as client a, so whole thing needs to be transaction
+		//because productquantity is used
 
 		//gets all the fields of data from  a particular productid
-		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[i]).Scan(&ProductID,
+		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[j]).Scan(
 			&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
-			&OrderID, &ProductStatus, &AdminID)
+			&OrderID, &ProductStatus, &AdminID, &ProductID, &ID)
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		
+		ProductID = thisProductID
+		var thisQuant = ProductQuantity - intQuant
 		//updates productid fields to its quantity minus int-quant
-		_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductID = 'ready' ", ProductQuantity-intQuant, allIds[i])
+		_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, allIds[j])
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -500,22 +458,44 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		var id1 = 0
 
 		//check if there is a product record ctreated to store in order table, if there is, than an order record has been created too.
-		err = tx.QueryRowContext(ctx, "SELECT ID FROM products WHERE products.ProductID =  ? and  products.ProductCategory = 'inordertable'", allIds[i]).Scan(&id1)
-
+		err = tx.QueryRowContext(ctx, "SELECT ID FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1)
+		if err != nil {
+			fmt.Println(err)
+		}
 		//no record of product created to store in order, so create both
+
+		var lastID int64
+
 		if err == sql.ErrNoRows {
+			//if true {
 
 			//insert order table
-			_, err = tx.ExecContext(ctx, "INSERT INTO orders (OrderID, OrderDate) values(?,?)", orderid, datetime)
 
-			if err != nil {
-				fmt.Println(err)
+			//////////////
+			if haveWrittenOrder == false {
+				res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				lastID, err = res.LastInsertId()
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//lastID++
+
+				haveWrittenOrder = true
 			}
+			//////////
 
 			//insert product to store in table - change quantity and status : purchased
 
+			//ProductQuantity = intQuant
 			ProductStatus = "purchased"
-			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductID, ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,gKeyword1, gKeyword2, gKeyword3, CustomerID, OrderID, ProductStatus, AdminID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductID, ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, OrderID, ProductStatus, AdminID)
+			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, lastID, ProductStatus, AdminID, ProductID)
 
 			if err != nil {
 				fmt.Println(err)
@@ -524,18 +504,26 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			//there is a product created to store in order table so than the order table record has also been created, so no need to do anything
 		} else {
 
+			//update product with status of purchased from product table:  original quantity + intQuant
+			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", intQuant, allIds[j])
+			if err != nil {
+				fmt.Println(err)
+			}
+
 		}
 
 		/////////////////////
 
+		err5 := tx.Commit()
+		if err5 != nil {
+			fmt.Println(err5)
+		}
+
 	} //for
 
-	err5 := tx.Commit()
-	if err5 != nil {
-		fmt.Println(err5)
+	if passesStruct {
+		json.NewEncoder(w).Encode(ProductList2A)
 	}
-
-	json.NewEncoder(w).Encode(ProductList2A)
 
 }
 

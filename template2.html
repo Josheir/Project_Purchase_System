@@ -247,7 +247,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         //alert(key);
         if (item == "")
         { 
-          alert("item is null print");
+          //alert("item is null print");
           item = bought;
         
         //alert("ready");
@@ -288,7 +288,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   /////////////////
 
                   //sets template1 to zero
-                  alert("important!!!B");
+                  //alert("important!!!B");
                   hideRow(oneDivID);
                   amtOfHiddenProducts++;
                  
@@ -303,7 +303,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   //alert("A hide 1");
                   if(val1 = sessionStorage.getItem("numberOfRecords"))
                   {
-                    alert("b");
+                    //alert("b");
                     
                     var varIntVal1 = parseInt(val1);
                     var val2 = varIntVal1 - 1;
@@ -319,7 +319,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                   }
                   else
                   {
-                    alert("c");
+                    //alert("c");
                     sessionStorage.setItem("numberOfRecords", "0");
                   }
 
@@ -336,14 +336,14 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         
         else if(item < 0 ) //|| (item == Math.floor(item)))
         {
-          alert("in here2");
+          //alert("in here2");
           var str2 = amtInBuyBox.toString();
           //document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
         }
         else if (isNaN(item ))
         {
-          alert("in here3");
+          //alert("in here3");
           var str2 = amtInBuyBox.toString();
           //document.getElementById(AmountToBuyID).style.color = "green";
           flag = "isNegValue";
@@ -356,11 +356,11 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         }
 
 
-        /*
+        
         //checkout
         //quant is amount trying to buy
         string =  string + "id=" + key + "&quant=" + item + "&";
-
+        /*
      
      
         if(val1 = sessionStorage.getItem("numberOfRecords"))
@@ -385,7 +385,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
     //all procucts are hidden, therefore thet have a value of zero
     
-    alert("check this");
+    //alert("check this");
     alert(counter + 1); //1
     alert(amtOfHiddenProducts);  //2
     if (amtOfHiddenProducts == (counter + 1))
@@ -395,18 +395,19 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       window.location.href = "index.html";
     
       }
-    
+      //alert("here1");
     //remove the amperstand is right below
     string = string + "userid=" + sessionStorage.getItem("session_userID");
 
 
-//alert("here2");
+  //alert("here2");
 //goes backwards and last entered writes over
 var queryString = string.substring(0, string.length-1);
 
 //alert("spit test");
 //alert(queryString);
 
+//alert("here3");
 
               $.ajax({
               url: 'http://localhost:8080/spitBackAmounts',
@@ -423,7 +424,7 @@ var queryString = string.substring(0, string.length-1);
                 ////////////////
                 
                 
-
+                //alert("here4");
 
 
 
@@ -466,20 +467,20 @@ var queryString = string.substring(0, string.length-1);
                 for (var i = 0; i< data1.length ;i++)
                 {
 
-                  alert("i...");
-                  alert(i);
+                  //alert("i...");
+                  //alert(i);
                   
                   
                   
-                  alert("length");
-                  alert(data1.length);
+                  //alert("length");
+                  //alert(data1.length);
 
-                  alert("is eenough");
-                  alert(data1[i].IsEnoughQuantity);
+                  //alert("is eenough");
+                  //alert(data1[i].IsEnoughQuantity);
                   
                 if(data1[i].IsEnoughQuantity == "no")
                 {
-                  alert("not enough!!!!");
+                  //alert("not enough!!!!");
                 flag = "not enough";
                 break;
                 }
@@ -488,13 +489,13 @@ var queryString = string.substring(0, string.length-1);
                 //at least one product cant be purchased
                 if (flag == "not enough")
                 {
-                  alert("isn't enough");
+                  //alert("isn't enough");
                 }
               
                 //all products can be purchasee
                 else 
                 {
-                  alert("is enough");
+                  //alert("is enough");
                   window.location.href = "donePurchase.html";
                 }
 
@@ -503,7 +504,7 @@ var queryString = string.substring(0, string.length-1);
 
                 // GTotalWithTax 
 
-                alert(data1);
+                //alert(data1);
                 console.log(data1);
 
               //  type Product2 struct {
@@ -544,8 +545,8 @@ var queryString = string.substring(0, string.length-1);
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
-                  alert("i..");
-                  alert(i);
+                  //alert("i..");
+                  //alert(i);
                  
                   GTotalWithTax = 0;
                 //alert("lengthOfData");
@@ -593,7 +594,7 @@ var queryString = string.substring(0, string.length-1);
 
                 bought1 = document.getElementById(boughtid).value;
                 bought1 = parseFloat(bought1);
-                alert("really did get here!");
+                //alert("really did get here!");
 
                 amtBuying1 = document.getElementById(buyThisManyID).value;
                 amtBuying1 = parseFloat(amtBuying1);
@@ -604,9 +605,9 @@ var queryString = string.substring(0, string.length-1);
 
                 if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
-                  alert("important!!!A");
+                  //alert("important!!!A");
 
-                  alert("A hide 2");
+                  //alert("A hide 2");
                   hideRow(oneDivID1);
                   amtOfHiddenProducts++;
                   document.getElementById(buyThisManyID).value = 0;
@@ -617,7 +618,7 @@ var queryString = string.substring(0, string.length-1);
                   sessionStorage.removeItem(data1[i].ID);
                   
                   
-                  alert("important");
+                  //alert("important");
 
                   /////////
 
@@ -645,7 +646,7 @@ var queryString = string.substring(0, string.length-1);
                   //document.getElementById(oneDivID1).outerHTML = "bbb";
                   //document.getElementById(oneDivID1).innerHTML = "ccc";
                   //document.getElementsById(AmountOfQuantityID).style.display = "none";
-                  alert("html");
+                  //alert("html");
                   //alert(document.getElementById(oneDivID1).innerHTML);
 
                   continue;
@@ -690,9 +691,9 @@ var queryString = string.substring(0, string.length-1);
 
                   //string, however value is (example) : $1.00
                   TotalCost = document.getElementById(totalCostID).value ;
-                  alert("start");
-                  alert(typeof(TotalCost));
-                  alert(TotalCost);
+                  //alert("start");
+                  //alert(typeof(TotalCost));
+                  //alert(TotalCost);
                   TotalCost1 = TotalCost.slice(1);
                   //alert(TotalCost);
                   var TotalCostFloat = parseFloat(TotalCost1);
