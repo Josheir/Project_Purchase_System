@@ -496,8 +496,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		var id1 = 0
 
 		var productQuant int64
+		var order_ID int64
 		//check if there is a product record ctreated to store in order table, if there is, than an order record has been created too.
-		err = tx.QueryRowContext(ctx, "SELECT products.ID1, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
+		err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -516,7 +517,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err)
 				}
 
-				productQuant, err = res.LastInsertId()
+				order_ID, err = res.LastInsertId()
 
 				if err != nil {
 					fmt.Println(err)
@@ -532,7 +533,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			//ProductQuantity = intQuant
 			ProductStatus = "purchased"
-			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, id1, ProductStatus, AdminID, ProductID)
+			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
 
 			if err != nil {
 				fmt.Println(err)
@@ -542,7 +543,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		} else {
 
 			//update product with status of purchased from product table:  original quantity + intQuant
-			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), allIds[j])
+			//productquant is quantity of product
+			//intquant is database quantity taken from the allquant array
+			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
 			if err != nil {
 				fmt.Println(err)
 			}
