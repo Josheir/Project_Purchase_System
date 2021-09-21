@@ -386,8 +386,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//checks if enough product to remove the quantity in database
-		err = tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= ?)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j]).Scan(&enough)
-		if err == sql.ErrNoRows {
+		//scan is for the selected
+		err := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= 5000)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j]).Scan(&enough)
+		if err == sql.ErrNoRows || !enough {
 			//passesStruct = false
 			//makeListForLastpageA(enough, (val1), DatabaseQuantity)
 			didRollback = true
@@ -403,17 +404,18 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		if didRollback {
 
 			var k = 0
-			for k = j; k < len(allIds); k++ {
-				stmt, err := db.Prepare("SELECT products.ProductQuantity WHERE products.productID = ?")
+			for k = 0; k < len(allIds); k++ {
+				enough = false
+				stmt, err := db.Prepare("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready'")
 
 				if err != nil {
-					fmt.Fprint(w, err)
+					fmt.Println(err)
 				}
 
-				rows, err := stmt.Query(allIds[j])
+				rows, err := stmt.Query(allIds[k])
 
 				if err != nil {
-					fmt.Fprint(w, err)
+					fmt.Println(err)
 				}
 
 				var prodQuant int
@@ -430,7 +432,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 						fmt.Println(err)
 					}
 
-					quantPurchasing, err := strconv.Atoi(allQuants[j])
+					quantPurchasing, err := strconv.Atoi(allQuants[k])
 					if err != nil {
 						fmt.Println(err)
 					}
@@ -440,7 +442,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 						enough = true
 					}
 					makeListForLastpageA(enough, (val1), quantPurchasing)
-					enough = false
 
 				}
 			}
