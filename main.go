@@ -344,8 +344,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("filters not present")
 	}
 
-	//fmt.Println(allIds[0])
-
 	allQuants, present := query["quant"]
 	//in template 2 bought column
 	if !present || len(allQuants) == 0 {
@@ -362,7 +360,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	var thisProductID = 0
 	DatabaseQuantity := 0
-	//var passesStruct bool = false
+
 	var haveWrittenOrder bool = false
 	var j = 0
 	var didRollback = false
@@ -374,8 +372,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	for j = 0; j < len(allIds); j++ {
 
-		////////////
-
 		thisProductID, _ = strconv.Atoi(allIds[j])
 
 		var enough bool = false
@@ -386,25 +382,22 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//checks if enough product to remove the quantity in database
-		//scan is for the selected
+
 		err := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= 0)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", allIds[j]).Scan(&enough)
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		//if err == sql.ErrNoRows || !enough {
 		if !enough {
-			//passesStruct = false
-			//makeListForLastpageA(enough, (val1), DatabaseQuantity)
+
 			didRollback = true
 			err := tx.Rollback()
 			if err != nil {
 				fmt.Println(err)
 			}
-			//break
 
-		} ////////////
+		}
 
 		//after rollback finish with making list to pass to template2
 		if didRollback {
@@ -426,13 +419,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 				var prodQuant int
 
-				///var newQuant = ProallQuants[i]
-
 				for rows.Next() {
 
 					//database hold this
 					err = rows.Scan(&prodQuant)
-					////
 
 					if err != nil {
 						fmt.Println(err)
@@ -454,10 +444,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
-
-		///////////
-
-		/////////////
 
 		intQuant, err := strconv.Atoi(allQuants[j])
 		if err != nil {
@@ -481,7 +467,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//if client b is passed this than quantity will be the same as client a, so whole thing needs to be transaction
 		//because productquantity is used
 
-		//gets all the fields of data from  a particular productid
+		//gets all the fields of data from  a particular productid and ready status
 		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[j]).Scan(
 			&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
 			&OrderID, &ProductStatus, &AdminID, &ProductID, &ID)
@@ -512,11 +498,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//no record of product created to store in order, so create both
 
 		if err == sql.ErrNoRows {
-			//if true {
 
-			//insert order table
-
-			//////////////
 			if !haveWrittenOrder {
 				res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
 
@@ -534,11 +516,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 				haveWrittenOrder = true
 			}
-			//////////
 
-			//insert product to store in table - change quantity and status : purchased
+			//insert product to store in table - change quantity and status
 
-			//ProductQuantity = intQuant
 			ProductStatus = "purchased"
 			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
 
@@ -559,8 +539,6 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		/////////////////////
-
 	} //for
 
 	err5 := tx.Commit()
@@ -568,7 +546,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err5)
 	}
 
-	//if passesStruct {
+	//if !didRollback {
 	json.NewEncoder(w).Encode(ProductList2A)
 	//}
 
