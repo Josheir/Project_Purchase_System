@@ -287,8 +287,6 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 		passFlag = "password correct"
 
-		db := dbConn()
-
 		var UserID = 1
 		//var userID = 1
 		//DOES THIS PRODUCT RECORD ALREADY EXIST
@@ -1141,199 +1139,6 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Fprint(w, err)
 			}
-			/*
-				db3 := dbConn()
-				//get from dbase
-
-				textstring := ""
-				//gets the element that is the current keyword element :  ie : [1,3,4]
-				stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				rows1, err := stmt1.Query(UserID)
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//get string from database
-				for rows1.Next() {
-					marshalFlag = "yes"
-					err = rows1.Scan(&textstring)
-					if err != nil {
-						fmt.Println(err)
-					}
-
-				}
-
-				//change string to array
-
-				//
-				//json byte data (textstring) is converted to an array
-				if marshalFlag == "yes" && textstring != "" {
-					err = json.Unmarshal([]byte(textstring), &ints)
-					if err != nil {
-						fmt.Println(err)
-					}
-				}
-
-				//check for duplicates, that is, if keyword apple1 and keyword apple2 are with same product only display one product
-				var flag1 = 0
-				var j = 0
-				for j = 0; j < len(ints); j++ {
-					if ProductID == ints[j] {
-						//flag1 = 1
-						//break
-
-						var isFirst, ok = store.Get("isFirstUse")
-						if ok {
-							fmt.Println(err)
-							//	return
-						}
-
-						if isFirst == "no" {
-							flag1 = 1
-							break
-						}
-
-					}
-
-				}
-				if flag1 == 1 {
-
-					continue
-				}
-
-				//creates and sets records :  K1, K2...THIS IS FOR LOOKING AT GLOB WORD AND IS NOW ONLY ONE ELEMENT READ BELOW
-				var index = "K" + strconv.Itoa(GlobCounter)
-				store.Set(index, globKeyword)
-				err = store.Save()
-				if err != nil {
-					fmt.Fprint(w, err)
-					//	return
-				}
-
-				//////////////////////////////
-				//////////////////////////////
-				//////////////////////////////
-
-				//var globCounter = 0
-				//var globalIndex = ""
-				var stringText = ""
-				db1 := dbConn()
-
-				//var UserID = 1
-				//var userID = 1
-				//DOES THIS PRODUCT RECORD ALREADY EXIST
-				stmt1, err = db1.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				rows1, err = stmt1.Query(UserID)
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				var flag = 0
-
-				//get string from database - is at least one record
-				for rows1.Next() {
-					flag = 1
-					err = rows1.Scan(&stringText)
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					//change string to array
-					err := json.Unmarshal([]byte(stringText), &ints)
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					//push to array
-					ints = append(ints, ProductID)
-
-				}
-
-				//no database entry yet, so insert
-				if flag == 0 {
-
-					//pass in array and get string back
-					//var textstring, err = json.Marshal(ints)
-
-					stmt2, err := db.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					ints = append(ints, ProductID)
-
-					//change form array to byte code
-					var textstring, err1 = json.Marshal(ints)
-					if err1 != nil {
-						fmt.Println(err1)
-					}
-
-					stmt2.Exec(textstring)
-
-					//there is/are database entries, so update
-				} else {
-
-					var textstring, err1 = json.Marshal(ints)
-					if err1 != nil {
-						fmt.Println(err)
-					}
-
-					//update string
-
-					stmt1, err := db.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
-					if err != nil {
-						fmt.Println(err)
-					}
-					stmt1.Exec(textstring, UserID)
-
-				}
-
-				/////////
-
-				////////
-
-				stmt1, err = db.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				rows1, err = stmt1.Query(UserID)
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//get string from database
-				for rows1.Next() {
-
-					err = rows1.Scan(&stringText)
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					//change string byte code to array
-					err := json.Unmarshal([]byte(stringText), &ints) //
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					/////
-
-					/////
-				}*/
 
 			i := 0
 			prodBoughtInt := 0
@@ -1492,36 +1297,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		UserID = 1
 	}
 
-	//////////
-
-	//db4 := dbConn()
-	//get from dbase
-
-	/*
-		var textstring = ""
-		//get the ounter for
-		stmt1, err := db4.Prepare("SELECT savedtext.GlobCounter FROM savedtext WHERE savedtext.UserID = ?")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		rows1, err := stmt1.Query(UserID)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		//get string from database - is at least one record
-		for rows1.Next() {
-
-			err = rows1.Scan(&GlobCounter)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-		}
-	*/
 	globKeyword := key1[0]
 
 	//var keywords []string
@@ -1667,12 +1442,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//var globCounter = 0
 		//var globalIndex = ""
 		var stringText = ""
-		db1 := dbConn()
 
 		//var UserID = 1
 		//var userID = 1
 		//DOES THIS PRODUCT RECORD ALREADY EXIST
-		stmt1, err = db1.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
+		stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {
 			fmt.Println(err)
@@ -1711,7 +1485,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			//pass in array and get string back
 			//var textstring, err = json.Marshal(ints)
 
-			stmt2, err := db.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
+			stmt2, err := db3.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -1735,7 +1509,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			//update string
 
-			stmt1, err := db.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
+			stmt1, err := db3.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -1747,7 +1521,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		////////
 
-		stmt1, err = db.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
+		stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
 
 		if err != nil {
 			fmt.Println(err)
