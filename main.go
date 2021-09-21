@@ -362,54 +362,93 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	var thisProductID = 0
 	DatabaseQuantity := 0
-	var passesStruct bool = false
+	//var passesStruct bool = false
 	var haveWrittenOrder bool = false
 	var j = 0
+	var didRollback = false
+
+	tx, err := db.Begin()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	for j = 0; j < len(allIds); j++ {
 
 		////////////
 
 		thisProductID, _ = strconv.Atoi(allIds[j])
 
-		tx, err := db.Begin()
-		if err != nil {
-			fmt.Println(err)
-		}
-
 		var enough bool = false
-
-		//checks if enough product to remove the quantity in database
-		err = tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= ?)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j]).Scan(&enough)
-		if err == sql.ErrNoRows {
-			passesStruct = false
-			err := tx.Commit()
-			if err != nil {
-				fmt.Println(err)
-			}
-			break
-
-		}
-		//err = row.Scan(&enough)
-		//if err != nil {
-		//		fmt.Println(err)
-		//	}
 
 		val1, err1 := strconv.Atoi(allIds[j])
 		if err1 != nil {
 			fmt.Println(err)
 		}
 
-		if !enough {
+		//checks if enough product to remove the quantity in database
+		err = tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= ?)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j]).Scan(&enough)
+		if err == sql.ErrNoRows {
+			//passesStruct = false
+			//makeListForLastpageA(enough, (val1), DatabaseQuantity)
+			didRollback = true
+			err := tx.Rollback()
+			if err != nil {
+				fmt.Println(err)
+			}
+			//break
 
-			err5 := tx.Commit()
-			if err5 != nil {
-				fmt.Println(err5)
+		} ////////////
+
+		//after rollback finish with making list to pass to template2
+		if didRollback {
+
+			var k = 0
+			for k = j; k < len(allIds); k++ {
+				stmt, err := db.Prepare("SELECT products.ProductQuantity WHERE products.productID = ?")
+
+				if err != nil {
+					fmt.Fprint(w, err)
+				}
+
+				rows, err := stmt.Query(allIds[j])
+
+				if err != nil {
+					fmt.Fprint(w, err)
+				}
+
+				var prodQuant int
+
+				///var newQuant = ProallQuants[i]
+
+				for rows.Next() {
+
+					//database hold this
+					err = rows.Scan(&prodQuant)
+					////
+
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					quantPurchasing, err := strconv.Atoi(allQuants[j])
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					//in database for product -
+					if DatabaseQuantity-quantPurchasing >= 0 {
+						enough = true
+					}
+					makeListForLastpageA(enough, (val1), quantPurchasing)
+					enough = false
+
+				}
 			}
 
-			continue
+			return
 		}
 
-		makeListForLastpageA(enough, (val1), DatabaseQuantity)
+		///////////
 
 		/////////////
 
@@ -417,15 +456,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-
-		if intQuant <= 0 {
-
-			err5 := tx.Commit()
-			if err5 != nil {
-				fmt.Println(err5)
-			}
-			continue
+		//in database for product -
+		if DatabaseQuantity-intQuant >= 0 {
+			enough = true
 		}
+
+		//intQuant is amount purchasing
+		makeListForLastpageA(enough, (val1), intQuant)
+		enough = false
 
 		//this gets the record for insert of quant
 
@@ -457,14 +495,13 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		var id1 = 0
 
+		var productQuant int64
 		//check if there is a product record ctreated to store in order table, if there is, than an order record has been created too.
-		err = tx.QueryRowContext(ctx, "SELECT ID FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1)
+		err = tx.QueryRowContext(ctx, "SELECT products.ID1, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
 		if err != nil {
 			fmt.Println(err)
 		}
 		//no record of product created to store in order, so create both
-
-		var lastID int64
 
 		if err == sql.ErrNoRows {
 			//if true {
@@ -472,14 +509,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			//insert order table
 
 			//////////////
-			if haveWrittenOrder == false {
+			if !haveWrittenOrder {
 				res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
 
 				if err != nil {
 					fmt.Println(err)
 				}
 
-				lastID, err = res.LastInsertId()
+				productQuant, err = res.LastInsertId()
 
 				if err != nil {
 					fmt.Println(err)
@@ -495,7 +532,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			//ProductQuantity = intQuant
 			ProductStatus = "purchased"
-			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, lastID, ProductStatus, AdminID, ProductID)
+			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, intQuant, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, id1, ProductStatus, AdminID, ProductID)
 
 			if err != nil {
 				fmt.Println(err)
@@ -505,7 +542,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		} else {
 
 			//update product with status of purchased from product table:  original quantity + intQuant
-			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", intQuant, allIds[j])
+			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), allIds[j])
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -514,16 +551,16 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		/////////////////////
 
-		err5 := tx.Commit()
-		if err5 != nil {
-			fmt.Println(err5)
-		}
-
 	} //for
 
-	if passesStruct {
-		json.NewEncoder(w).Encode(ProductList2A)
+	err5 := tx.Commit()
+	if err5 != nil {
+		fmt.Println(err5)
 	}
+
+	//if passesStruct {
+	json.NewEncoder(w).Encode(ProductList2A)
+	//}
 
 }
 
