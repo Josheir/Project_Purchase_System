@@ -387,8 +387,14 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		//checks if enough product to remove the quantity in database
 		//scan is for the selected
-		err := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= 5000)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", DatabaseQuantity, allIds[j]).Scan(&enough)
-		if err == sql.ErrNoRows || !enough {
+		err := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= 0)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", allIds[j]).Scan(&enough)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		//if err == sql.ErrNoRows || !enough {
+		if !enough {
 			//passesStruct = false
 			//makeListForLastpageA(enough, (val1), DatabaseQuantity)
 			didRollback = true
