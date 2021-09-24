@@ -27,7 +27,7 @@
     
   
 //for returning our of functions - //this is in finalpage.html and index.html
-var MAXRECORDS = 2;
+var MAXRECORDS = 20;
 //keep these message boxes: 44 finalpages, 495 index, 163 index
 //first two use const above, and last is in ajaxcall for checking login
 
@@ -187,6 +187,12 @@ $(document).ready(function () {
 		////////added//
 
 		//array = [];
+
+		if(key ==  "numberOfRecords")
+		{
+			
+			continue;
+		}
 
 		if(key == "keywords")
   		{
@@ -359,7 +365,12 @@ $(document).ready(function () {
 	  }else
 	  {
 
-	  }          
+	  }
+	  
+	  
+	  //querystring = "var=apple&var=apple1";
+
+
 	  //alert("ishere?");
 	 		 $.ajax({
               url: "http://localhost:8080/display",
@@ -369,6 +380,9 @@ $(document).ready(function () {
               crossDomain: true,
               data: querystring,
               success: function (result) {
+
+
+				alert("is here!");
                 var result1 = "";
 				let keys = Object.keys(sessionStorage);
 
@@ -381,7 +395,7 @@ $(document).ready(function () {
 				var retVals = [];
 				
 				var toRemove = "null";
-				result = result.replaceAll(toRemove, '');
+				var result = result.replaceAll(toRemove, '');
 
 				//alert("finishing");
 				//alert(result);
@@ -508,7 +522,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 				
 
-				//alert(quantityID);
+				alert("should be here");
 
 				var makeYellow = document.getElementById(mainDiv);
 				makeYellow.style["background-color"] = "yellow";

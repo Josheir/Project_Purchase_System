@@ -31,22 +31,24 @@
 
 
 <script>  
+//alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!");
 window.sessionStorage
 
 //this is in finalpage.html and index.html
-var MAXRECORDS = 2
+var MAXRECORDS = 20
 
 function CallIndex()
 {
-	if(val1 = sessionStorage.getItem("numberOfRecords"))
-	{
-		
-		if (val1 == MAXRECORDS)
-		{
-			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!");
-			return;
-		}
-	}
+	
+	//if(val1 = sessionStorage.getItem("numberOfRecords"))
+	//{
+	//	
+	//	if (val1 == MAXRECORDS)
+	//	{
+	//		alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!");
+	//		return;
+	//	}
+	//}
 
 	//alert("callindex");
 	window.location.href = "index.html?display2=1";
@@ -341,9 +343,10 @@ loadData();
         
        // alert(val1);
 	   
+	   querystring = "var=apple&var=apple1";
           $.ajax({
               url: "http://localhost:8080/display",
-              type: 'GET',
+              type: 'POST',
               dataType: 'html',
               contentType: "application/x-www-form-urlencoded",
               crossDomain: true,
