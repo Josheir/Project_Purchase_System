@@ -999,7 +999,7 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-var counter1 = -1
+//var counter1 = -1
 
 //////////
 
@@ -1184,7 +1184,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			if isAmountPurchased == "yes" {
 				AmountPurchased = prodBoughtInt
 			} else {
-				AmountPurchased = 0
+				AmountPurchased = 10
 			}
 
 			//var index1 = "a"
@@ -1241,6 +1241,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 /////////
 
 var GlobCounter = -1
+var counter1 = -1
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
@@ -1373,11 +1374,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var marshalFlag = "no"
 
 	//var lastProductID = -1
-
+	//counter1 = -1
 	for rows.Next() {
 
+		counter1++
+
 		marshalFlag = "no"
-		counter1 = counter1 + 1
+		//counter1 = counter1 + 1
 		Condition++
 		var ProductCost float64
 		var ProductQuantity, CondYellow int
@@ -1575,36 +1578,35 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			/////
 		}
 
-		//i := 0
-		//prodBoughtInt := 0
-		//isAmountPurchased := "yes"
+		i := 0
+		prodBoughtInt := 0
+		isAmountPurchased := "no"
 
 		AmountPurchased := 0
 
-		/*
-			for i = 0; i < len(ProdID); i++ {
-				prodIDStr := ProdID[i]
+		for i = 0; i < len(ProdID); i++ {
+			prodIDStr := ProdID[i]
 
-				prodIDInt, err := strconv.Atoi(prodIDStr)
-				if err != nil {
-				}
-
-				prodBoughtStr := keyTotalAmountBought[i]
-				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
-				if err != nil {
-				}
-
-				//if prodIDInt == ProductID {
-				//	//counter1++
-				//	ProductQuantity = ProductQuantity - prodBoughtInt
-				//	isAmountPurchased = "yes"
-				//	CondYellow = 1
-				//	break
-				//}
-
+			prodIDInt, err := strconv.Atoi(prodIDStr)
+			if err != nil {
 			}
-		*/
 
+			prodBoughtStr := keyTotalAmountBought[i]
+			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+			if err != nil {
+			}
+
+			if prodIDInt == ProductID {
+				//counter1++
+				ProductQuantity = ProductQuantity - prodBoughtInt
+				isAmountPurchased = "yes"
+				CondYellow = 1
+				break
+			}
+
+		}
+
+		//counter1++
 		str := strconv.Itoa(counter1)
 
 		//var inputID = "inputID" + str
@@ -1619,12 +1621,15 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		AmountToPurchaseID = "amountID" + str
 		AmountPurchasedID = "amountPID" + str
 
-		//if isAmountPurchased == "yes" {
-		//	AmountPurchased = prodBoughtInt
-		//} else {
-		//	//AmountPurchased = ProductQuantity - prodBoughtInt
-		//
-		//}
+		if isAmountPurchased == "yes" {
+			AmountPurchased = 2000
+			//AmountPurchased = prodBoughtInt
+		} else {
+			//AmountPurchased = ProductQuantity - prodBoughtInt
+			//AmountPurchased = prodBoughtInt
+			AmountPurchased = 1000
+
+		}
 
 		var index1 = "a"
 		var k = 0
