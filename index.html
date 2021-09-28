@@ -371,8 +371,10 @@ $(document).ready(function () {
 	  //querystring = "var=apple&var=apple1";
 
 
-	  //alert("ishere?");
-	 		 $.ajax({
+	  		alert("querystring");
+			alert(querystring);
+	 		
+			  $.ajax({
               url: "http://localhost:8080/display",
               type: 'GET',
               dataType: 'html',
@@ -415,7 +417,7 @@ $(document).ready(function () {
 				//alert(item1);
 				//alert(ourNewWord);
 
-				
+				alert("testing2");
 				
 				
 				
@@ -442,10 +444,12 @@ $(document).ready(function () {
 			  	
 
 
-			  
+				alert("testing3");
                 document.getElementById('templateOneHere').innerHTML   += ourNewWord;
-                              
-                              
+				alert("testing4");             
+                document.getElementById('amountPID1').innerHTML = "888";  
+				//document.getElementById('amountPID0').value = 500
+				
              
               
                 }
@@ -453,6 +457,8 @@ $(document).ready(function () {
       });
 	
 
+	  		
+	  		
 		};
 
 //});
@@ -614,8 +620,14 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 
+	
 				}
-      }
+    
+				
+				//amountPurchasedID
+	
+	
+			}
 
 
       //called from changefields because of submit button

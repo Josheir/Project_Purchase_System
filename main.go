@@ -1302,6 +1302,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	ProdID, present3 := query["id"]
 	if !present3 || len(ProdID) == 0 {
 		fmt.Println("filters not present3")
+
 	}
 
 	UserIDstring, present4 := query["uid"]
@@ -1594,6 +1595,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			prodBoughtStr := keyTotalAmountBought[i]
 			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
 			if err != nil {
+
 			}
 
 			if prodIDInt == ProductID {
@@ -1607,6 +1609,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//counter1++
+		counter1 = 0
 		str := strconv.Itoa(counter1)
 
 		//var inputID = "inputID" + str
@@ -1621,13 +1624,15 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		AmountToPurchaseID = "amountID" + str
 		AmountPurchasedID = "amountPID" + str
 
+		//prodBoughtInt = 1000
 		if isAmountPurchased == "yes" {
 			AmountPurchased = 2000
 			//AmountPurchased = prodBoughtInt
 		} else {
 			//AmountPurchased = ProductQuantity - prodBoughtInt
 			//AmountPurchased = prodBoughtInt
-			AmountPurchased = 1000
+
+			AmountPurchased = prodBoughtInt
 
 		}
 
@@ -1673,7 +1678,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Println(err)
 	//}
 	//stmt1.Exec(GlobCounter, UserID)
-
+	return
 }
 
 //func submitfunc(w http.ResponseWriter, r *http.Request) {
@@ -1743,6 +1748,7 @@ func main() {
 	one.HandleFunc("/getMessages", getMessages)
 
 	one.HandleFunc("/display", display1)
+
 	one.HandleFunc("/display2", display2)
 
 	one.HandleFunc("/HelloWorld", HelloWorld)
