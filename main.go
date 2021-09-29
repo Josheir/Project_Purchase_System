@@ -1003,6 +1003,8 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 
 //////////
 
+
+//this function displays all the keywords in the url, these records are the records already been displayed in display1
 func display2(w http.ResponseWriter, r *http.Request) {
 
 	//ARRAY OF INTS  [3,4,7]
@@ -1243,6 +1245,13 @@ func display2(w http.ResponseWriter, r *http.Request) {
 var GlobCounter = -1
 var counter1 = -1
 
+
+//the purpose of this function is to display the information of the keyword sent here.
+//the actual ids are stored in a database when  they have been used
+//if there are no ID/Quantity ordered url parameters than the function creates a new 
+//record with zero value for AmountPurchased.  Otherwise there is an array of ids and 
+//quants at top of function.  A for loop loops through all the ids and 
+			
 func display1(w http.ResponseWriter, r *http.Request) {
 
 	//ARRAY OF INTS  [3,4,7]
@@ -1311,6 +1320,18 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	//var i = 0
+	//if (len(ProdID) != 0 ){
+	//for i = 0; i <  len(ProdID) ; i++ {
+	//if ProdID[len(ProdID)-1] == "10"{
+
+	//continue 
+	//}
+//}
+//}
+		
+
+	//}
 	if len(UserIDstring) != 0 {
 
 		//only one
@@ -1404,7 +1425,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//get from dbase
 
 		textstring := ""
-		//gets the element that is the current keyword element :  ie : ["apple1"]
+		//selects all the product ids with quantity
 		stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {
@@ -1438,7 +1459,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		//check for duplicates, that is, if keyword apple1 and keyword apple2 are with same product only display one product
+		//check for duplicates, that is if productID already has been displayed don't display again
 		var flag1 = 0
 		var j = 0
 		for j = 0; j < len(ints); j++ {
@@ -1656,6 +1677,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(keywords)
 
+		
+		//AmountPurchased = prodBoughtInt
 		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 

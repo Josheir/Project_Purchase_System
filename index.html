@@ -445,7 +445,13 @@ $(document).ready(function () {
 
 
 				alert("testing3");
-                document.getElementById('templateOneHere').innerHTML   += ourNewWord;
+                
+				
+				//document.getElementById('templateOneHere').innerHTML   += ourNewWord;
+
+				document.getElementById('templateOneHere').insertAdjacentHTML('beforeend',ourNewWord) ;
+
+
 				alert("testing4");             
                 document.getElementById('amountPID1').innerHTML = "888";  
 				//document.getElementById('amountPID0').value = 500
