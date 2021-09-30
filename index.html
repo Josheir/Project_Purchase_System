@@ -453,7 +453,7 @@ $(document).ready(function () {
 
 
 				alert("testing4");             
-                document.getElementById('amountPID1').innerHTML = "888";  
+                //document.getElementById('amountPID1').innerHTML = "888";  
 				//document.getElementById('amountPID0').value = 500
 				
              
@@ -544,14 +544,14 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				var value1 = 0;
 				var value2 = 0;
 				//total of product with server
-				amountInPurchasedField = document.getElementById(quantityID).value;
+				amountInPurchasedField = Number(document.getElementById(quantityID).value);
 				//already purchased
-				amountPurchasedSoFar = document.getElementById(amountPurchasedID).value;
+				mountPurchasedSoFar = Number(document.getElementById(amountPurchasedID).value);
 				//alert("in the amount purchased");
 				//alert(amountPurchasedSoFar);
 				
 				//amount held for subtraction when submit button pressed
-				amountToBePurchased = document.getElementById(amountToPurchaseID).value;
+				amountToBePurchased = Number(document.getElementById(amountToPurchaseID).value);
 				//alert(amountToBePurchased);
 				
 				//alert(amountToBePurchased);
@@ -564,12 +564,13 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 					
 					//
-					value1 = document.getElementById(amountToPurchaseID).value; 
+					value1 = Number(document.getElementById(amountToPurchaseID).value); 
+					
 					//value2 = amountopurchase + amountpurchaseedsofar
 					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
 					if(value2 < 0)
 					{
-						document.getElementById(amountToPurchaseID).value = 0;
+						Number(document.getElementById(amountToPurchaseID).value = 0);
 						return;
 					}
 					//alert("values");
@@ -578,12 +579,12 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//alert(amountPurchasedSoFar)
 					
 					//puts total in here
-					document.getElementById(amountPurchasedID).value = value2 ;
+					Number(document.getElementById(amountPurchasedID).value = value2) ;
 					
 					if(value1 > 0){
 
 						//alert("a");
-					document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased) ;
+						Number(document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased)) ;
 					}else if (value1 == 0)
 					{
 						//alert("b");
@@ -595,9 +596,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						//alert("in neg");
 						//alert(amountInPurchasedField);
 						//alert( amountToBePurchased);
-						document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased) ;
+						Number(document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased)) ;
 						//
-						document.getElementById(amountToPurchaseID).value = 0;
+						Number(document.getElementById(amountToPurchaseID).value = 0);
 					}
 
 
@@ -608,7 +609,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//alert(amountToBePurchased);
 					
 					if(gTotalOfPurchases > 0){
-                        document.getElementById(amountToPurchaseID).value = 0;
+                        Number(document.getElementById(amountToPurchaseID).value = 0);
                         //alert("here");
 						//alert(amountToBePurchased);
 						

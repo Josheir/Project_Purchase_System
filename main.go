@@ -889,8 +889,7 @@ func receiveAjax(w http.ResponseWriter, r *http.Request) {
 */
 
 type forTemplate struct {
-	CondYellow int
-
+	CondYellow      int
 	Link            string
 	Condition       int
 	AmountPurchased int
@@ -1002,7 +1001,6 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 //var counter1 = -1
 
 //////////
-
 
 //this function displays all the keywords in the url, these records are the records already been displayed in display1
 func display2(w http.ResponseWriter, r *http.Request) {
@@ -1243,15 +1241,14 @@ func display2(w http.ResponseWriter, r *http.Request) {
 /////////
 
 var GlobCounter = -1
-var counter1 = -1
-
+var counter1 = 0
 
 //the purpose of this function is to display the information of the keyword sent here.
 //the actual ids are stored in a database when  they have been used
-//if there are no ID/Quantity ordered url parameters than the function creates a new 
-//record with zero value for AmountPurchased.  Otherwise there is an array of ids and 
-//quants at top of function.  A for loop loops through all the ids and 
-			
+//if there are no ID/Quantity ordered url parameters than the function creates a new
+//record with zero value for AmountPurchased.  Otherwise there is an array of ids and
+//quants at top of function.  A for loop loops through all the ids and
+
 func display1(w http.ResponseWriter, r *http.Request) {
 
 	//ARRAY OF INTS  [3,4,7]
@@ -1325,11 +1322,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//for i = 0; i <  len(ProdID) ; i++ {
 	//if ProdID[len(ProdID)-1] == "10"{
 
-	//continue 
+	//continue
 	//}
-//}
-//}
-		
+	//}
+	//}
 
 	//}
 	if len(UserIDstring) != 0 {
@@ -1397,9 +1393,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//var lastProductID = -1
 	//counter1 = -1
+
+	counter1 = 0
 	for rows.Next() {
 
-		counter1++
+		//counter1++
 
 		marshalFlag = "no"
 		//counter1 = counter1 + 1
@@ -1605,8 +1603,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		isAmountPurchased := "no"
 
 		AmountPurchased := 0
-
+		var flag2 = 0
+		//counter1 = 0
 		for i = 0; i < len(ProdID); i++ {
+
+			flag2 = 1
 			prodIDStr := ProdID[i]
 
 			prodIDInt, err := strconv.Atoi(prodIDStr)
@@ -1619,80 +1620,117 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			if prodIDInt == ProductID {
-				//counter1++
-				ProductQuantity = ProductQuantity - prodBoughtInt
-				isAmountPurchased = "yes"
-				CondYellow = 1
-				break
+			
+			
+
+			counter1++
+			//counter1 =2
+			str := strconv.Itoa(counter1)
+
+			//var inputID = "inputID" + str
+			var mainDivID = "mainDivID" + str
+			var titleID = "titleID" + str
+			var descID = "descID" + str
+			var costID = "costID" + str
+			var quantityID = "quantityID" + str
+			var key1ID = "key1ID" + str
+			var key2ID = "key2ID" + str
+			var key3ID = "key3ID" + str
+			AmountToPurchaseID = "amountID" + str
+			AmountPurchasedID = "amountPID" + str
+
+			//prodBoughtInt = 1000
+			if isAmountPurchased == "yes" {
+				AmountPurchased = 2000
+				//AmountPurchased = prodBoughtInt
+			} else {
+				//AmountPurchased = ProductQuantity - prodBoughtInt
+				//AmountPurchased = prodBoughtInt
+
+				AmountPurchased = prodBoughtInt
+
+			}
+
+			var index1 = "a"
+			var k = 0
+			//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
+			for k = 0; k <= GlobCounter; k++ {
+
+				index1 = "K" + strconv.Itoa(k)
+
+				var1, ok := store.Get(index1)
+
+				if ok {
+					str := fmt.Sprintf("%v", var1)
+					//this array is reset at reload and is always just this one keyword
+					keywords = nil
+					keywords = append(keywords, str)
+				}
+
+			}
+
+			json.NewEncoder(w).Encode(keywords)
+
+			//AmountPurchased = prodBoughtInt
+			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+			fmt.Println(templ1)
+
+			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+			//err1 := globt.Execute(w, testvar)
+			var err1 = globt.Execute(w, templ1)
+
+			if err1 != nil {
+				fmt.Println("---------------")
+				fmt.Println(err.Error())
+			}
+
+			//return
+		}
+
+		/////////
+
+		if flag2 == 0 {
+
+			counter1++
+			//counter1 = 0
+			str := strconv.Itoa(counter1)
+
+			//var inputID = "inputID" + str
+			var mainDivID = "mainDivID" + str
+			var titleID = "titleID" + str
+			var descID = "descID" + str
+			var costID = "costID" + str
+			var quantityID = "quantityID" + str
+			var key1ID = "key1ID" + str
+			var key2ID = "key2ID" + str
+			var key3ID = "key3ID" + str
+			AmountToPurchaseID = "amountID" + str
+			AmountPurchasedID = "amountPID" + str
+
+			//AmountPurchased = 120
+			json.NewEncoder(w).Encode(keywords)
+
+			//AmountPurchased = prodBoughtInt
+			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+			fmt.Println(templ1)
+
+			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+			//err1 := globt.Execute(w, testvar)
+			var err1 = globt.Execute(w, templ1)
+
+			if err1 != nil {
+				fmt.Println("---------------")
+				fmt.Println(err.Error())
 			}
 
 		}
-
-		//counter1++
-		counter1 = 0
-		str := strconv.Itoa(counter1)
-
-		//var inputID = "inputID" + str
-		var mainDivID = "mainDivID" + str
-		var titleID = "titleID" + str
-		var descID = "descID" + str
-		var costID = "costID" + str
-		var quantityID = "quantityID" + str
-		var key1ID = "key1ID" + str
-		var key2ID = "key2ID" + str
-		var key3ID = "key3ID" + str
-		AmountToPurchaseID = "amountID" + str
-		AmountPurchasedID = "amountPID" + str
-
-		//prodBoughtInt = 1000
-		if isAmountPurchased == "yes" {
-			AmountPurchased = 2000
-			//AmountPurchased = prodBoughtInt
-		} else {
-			//AmountPurchased = ProductQuantity - prodBoughtInt
-			//AmountPurchased = prodBoughtInt
-
-			AmountPurchased = prodBoughtInt
-
-		}
-
-		var index1 = "a"
-		var k = 0
-		//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
-		for k = 0; k <= GlobCounter; k++ {
-
-			index1 = "K" + strconv.Itoa(k)
-
-			var1, ok := store.Get(index1)
-
-			if ok {
-				str := fmt.Sprintf("%v", var1)
-				//this array is reset at reload and is always just this one keyword
-				keywords = nil
-				keywords = append(keywords, str)
-			}
-
-		}
-
-		json.NewEncoder(w).Encode(keywords)
-
-		
-		//AmountPurchased = prodBoughtInt
-		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-		fmt.Println(templ1)
-
-		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-		//err1 := globt.Execute(w, testvar)
-		var err1 = globt.Execute(w, templ1)
-
-		if err1 != nil {
-			fmt.Println("---------------")
-			fmt.Println(err.Error())
-		}
+		//////////
 
 	}
 
