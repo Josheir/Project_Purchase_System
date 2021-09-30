@@ -1247,7 +1247,8 @@ var counter1 = 0
 //the actual ids are stored in a database when  they have been used
 //if there are no ID/Quantity ordered url parameters than the function creates a new
 //record with zero value for AmountPurchased.  Otherwise there is an array of ids and
-//quants at top of function.  A for loop loops through all the ids and
+//quants at top of function.  A for loop loops through all the ids and creates displayed
+//records to be displayed after the execution at end.
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
@@ -1317,17 +1318,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//var i = 0
-	//if (len(ProdID) != 0 ){
-	//for i = 0; i <  len(ProdID) ; i++ {
-	//if ProdID[len(ProdID)-1] == "10"{
-
-	//continue
-	//}
-	//}
-	//}
-
-	//}
+	
 	if len(UserIDstring) != 0 {
 
 		//only one
@@ -1341,9 +1332,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	globKeyword := key1[0]
 
-	//var keywords []string
-	//var globCounter = ""
-	//var globalIndex = ""
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -1353,12 +1341,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	//var m = 0
-	//for m = 0; m < len(key1); m++ {
-
-	//globKeyword = key1[m]
-
-	//get records that use keywords
+	
 
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
@@ -1369,11 +1352,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//	//panic(err.Error())
 	}
 
-	//counter++
-	//var var3 = ""
-
-	//globCounter++
-
+	
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
 	if err != nil {
