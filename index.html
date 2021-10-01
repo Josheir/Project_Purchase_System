@@ -348,14 +348,7 @@ $(document).ready(function () {
 		var gflag = val2[0];
 		var querystring = val2[1] + string;
 
-		//flag2 is one if coming from template2
-		//otherwise 0
-		//ft : from template
-		//querystring = querystring + "ft=" + flag2 + "&";  
-		//alert("is this right");
-		//alert(val2[1]); // var = apple3&
-		//alert(string);
-
+		
 		var url = "";
 		//go back to index
 	  if(reloadFlag == 1)
@@ -391,47 +384,25 @@ $(document).ready(function () {
 				//check if this link/keyword is first time and only useage
 				var  gkeywordArray = "";
 				
-				//alert("result");
-				//alert(result)
-
 				var retVals = [];
 				
 				var toRemove = "null";
 				var result = result.replaceAll(toRemove, '');
 
-				//alert("finishing");
-				//alert(result);
-				//item1, ourNewWord = deriveKeywordFromResult(result);
+				
 				retVals = deriveKeywordFromResult(result);
 				
-				
-
-
-
 				var item1 = retVals[0];  
 				//alert(item1);
 				var ourNewWord = retVals[1]; 
 				var item = retVals[2];
-				//alert("ournewword");
-				//alert(item);
-				//alert(item1);
-				//alert(ourNewWord);
-
+				
 				alert("testing2");
 				
 				
 				
 
-				//alert("arraylength1");
-				//alert(array.length);
-
-				//for(var i = 0 ; i < array.length ; i++)
-			  	//{
-				////
-
-				//alert("arraylength2");
-				//alert(array.length);
-				//alert(item1)
+				
 				var val1a = '["' + item1 +  '"]';
 
 				ourNewWord = ourNewWord.replace(val1a , '');

@@ -22,7 +22,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/go-session/session"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -1250,6 +1249,8 @@ var counter1 = 0
 //quants at top of function.  A for loop loops through all the ids and creates displayed
 //records to be displayed after the execution at end.
 
+//this function is used when search is pressed in the index.html
+
 func display1(w http.ResponseWriter, r *http.Request) {
 
 	//ARRAY OF INTS  [3,4,7]
@@ -1258,13 +1259,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//product is checked with array and if exists is contniues
 
 	GlobCounter++
-	store, err := session.Start(context.Background(), w, r)
+	//store, err := session.Start(context.Background(), w, r)
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
 
-	var UserID = 1
+	//var UserID = 1
 
 	/*
 
@@ -1318,11 +1319,15 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	
+	var val1 = ""
+	val1 = UserIDstring[0]
+	//var err1 = ""
+	var UserID int
+	var err error
 	if len(UserIDstring) != 0 {
 
 		//only one
-		UserID, _ = strconv.Atoi(UserIDstring[0])
+		UserID, err = strconv.Atoi(val1)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -1332,7 +1337,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	globKeyword := key1[0]
 
-
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	string1 = ""
@@ -1341,9 +1345,35 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	
+	//////
 
-	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+	var numRecords = 0
+	stmt, err := db.Prepare("SELECT COUNT(*) FROM products WHERE ((products.ProductKeyWord1 = ?) OR (products.ProductKeyWord2 = ?) OR " +
+		"(products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for rows.Next() {
+
+		err = rows.Scan(numRecords)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+
+	//////
+
+	stmt, err = db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
 		"((products.ProductKeyWord1 = ?) OR " +
@@ -1352,8 +1382,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//	//panic(err.Error())
 	}
 
-	
-	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
+	rows, err = stmt.Query(globKeyword, globKeyword, globKeyword)
 
 	if err != nil {
 		fmt.Fprint(w, err)
@@ -1366,7 +1395,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var Condition = 0
 	//saved text product ids :  1,11,5,7
 	var ints []int
-	var keywords []string
+	//var keywords []string
 
 	var marshalFlag = "no"
 
@@ -1374,8 +1403,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//counter1 = -1
 
 	counter1 = 0
+	var counterOfRecords = 0
 	for rows.Next() {
 
+		counterOfRecords++
 		//counter1++
 
 		marshalFlag = "no"
@@ -1427,8 +1458,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		//change string to array
 
-		//ONE KEYWORD IS BEING SENT BACK TO CLIENT, WHERE IT IS USED TO SET THE LINK
-		//
 		if marshalFlag == "yes" && textstring != "" {
 			err = json.Unmarshal([]byte(textstring), &ints)
 			if err != nil {
@@ -1452,24 +1481,17 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//creates and sets records :  K1, K2...THIS IS FOR LOOKING AT GLOB WORD AND IS NOW ONLY ONE ELEMENT READ BELOW
-		var index = "K" + strconv.Itoa(GlobCounter)
+		/*var index = "K" + strconv.Itoa(GlobCounter)
 		store.Set(index, globKeyword)
 		err = store.Save()
 		if err != nil {
 			fmt.Fprint(w, err)
 			//	return
 		}
+		*/
 
-		//////////////////////////////
-		//////////////////////////////
-		//////////////////////////////
-
-		//var globCounter = 0
-		//var globalIndex = ""
 		var stringText = ""
 
-		//var UserID = 1
-		//var userID = 1
 		//DOES THIS PRODUCT RECORD ALREADY EXIST
 		stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
@@ -1582,96 +1604,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		isAmountPurchased := "no"
 
 		AmountPurchased := 0
-		var flag2 = 0
-		//counter1 = 0
-		for i = 0; i < len(ProdID); i++ {
 
-			flag2 = 1
-			prodIDStr := ProdID[i]
+		//is last run through : first regular keyword function
+		//and than processes url params: Id and Quant of all the records, write (and write-over) all the records with new or same quants
+		//if not working, reinstate :  keywords
+		if counterOfRecords == numRecords {
 
-			prodIDInt, err := strconv.Atoi(prodIDStr)
-			if err != nil {
-			}
-
-			prodBoughtStr := keyTotalAmountBought[i]
-			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
-			if err != nil {
-
-			}
-
-			
-			
-
-			counter1++
-			//counter1 =2
-			str := strconv.Itoa(counter1)
-
-			//var inputID = "inputID" + str
-			var mainDivID = "mainDivID" + str
-			var titleID = "titleID" + str
-			var descID = "descID" + str
-			var costID = "costID" + str
-			var quantityID = "quantityID" + str
-			var key1ID = "key1ID" + str
-			var key2ID = "key2ID" + str
-			var key3ID = "key3ID" + str
-			AmountToPurchaseID = "amountID" + str
-			AmountPurchasedID = "amountPID" + str
-
-			//prodBoughtInt = 1000
-			if isAmountPurchased == "yes" {
-				AmountPurchased = 2000
-				//AmountPurchased = prodBoughtInt
-			} else {
-				//AmountPurchased = ProductQuantity - prodBoughtInt
-				//AmountPurchased = prodBoughtInt
-
-				AmountPurchased = prodBoughtInt
-
-			}
-
-			var index1 = "a"
-			var k = 0
-			//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
-			for k = 0; k <= GlobCounter; k++ {
-
-				index1 = "K" + strconv.Itoa(k)
-
-				var1, ok := store.Get(index1)
-
-				if ok {
-					str := fmt.Sprintf("%v", var1)
-					//this array is reset at reload and is always just this one keyword
-					keywords = nil
-					keywords = append(keywords, str)
-				}
-
-			}
-
-			json.NewEncoder(w).Encode(keywords)
-
-			//AmountPurchased = prodBoughtInt
-			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-			fmt.Println(templ1)
-
-			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-			//err1 := globt.Execute(w, testvar)
-			var err1 = globt.Execute(w, templ1)
-
-			if err1 != nil {
-				fmt.Println("---------------")
-				fmt.Println(err.Error())
-			}
-
-			//return
-		}
-
-		/////////
-
-		if flag2 == 0 {
+			//////////
 
 			counter1++
 			//counter1 = 0
@@ -1690,7 +1629,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			AmountPurchasedID = "amountPID" + str
 
 			//AmountPurchased = 120
-			json.NewEncoder(w).Encode(keywords)
+			json.NewEncoder(w).Encode(globKeyword)
 
 			//AmountPurchased = prodBoughtInt
 			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
@@ -1708,24 +1647,135 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err.Error())
 			}
 
+			//////////
+
+			//loop through array of prodcutids that were gotten from url parameters
+			//set the already existing records with new proper quants and rewrite the others
+			for i = 0; i < len(ProdID); i++ {
+
+				prodIDStr := ProdID[i]
+
+				prodIDInt, err := strconv.Atoi(prodIDStr)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				prodBoughtStr := keyTotalAmountBought[i]
+				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+				if err != nil {
+					fmt.Println(err)
+
+				}
+
+				counter1++
+				//counter1 =2
+				str := strconv.Itoa(counter1)
+
+				//var inputID = "inputID" + str
+				var mainDivID = "mainDivID" + str
+				var titleID = "titleID" + str
+				var descID = "descID" + str
+				var costID = "costID" + str
+				var quantityID = "quantityID" + str
+				var key1ID = "key1ID" + str
+				var key2ID = "key2ID" + str
+				var key3ID = "key3ID" + str
+				AmountToPurchaseID = "amountID" + str
+				AmountPurchasedID = "amountPID" + str
+
+				//prodBoughtInt = 1000
+				if isAmountPurchased == "yes" {
+					AmountPurchased = 2000
+
+				} else {
+
+					AmountPurchased = prodBoughtInt
+
+				}
+
+				//var index1 = "a"
+				//var k = 0
+
+				/*
+					for k = 0; k <= GlobCounter; k++ {
+
+						index1 = "K" + strconv.Itoa(k)
+
+						var1, ok := store.Get(index1)
+
+						if ok {
+							str := fmt.Sprintf("%v", var1)
+							//this array is reset at reload and is always just this one keyword
+							keywords = nil
+							keywords = append(keywords, str)
+						}
+
+					}
+				*/
+
+				json.NewEncoder(w).Encode(globKeyword)
+
+				//AmountPurchased = prodBoughtInt
+				templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+					key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+				fmt.Println(templ1)
+
+				globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+				//err1 := globt.Execute(w, testvar)
+				var err1 = globt.Execute(w, templ1)
+
+				if err1 != nil {
+					fmt.Println("---------------")
+					fmt.Println(err.Error())
+				}
+
+			}
+			return
 		}
-		//////////
 
-	}
+		/////////
+		//create a displayed record wiht zero amountPurchased
 
-	//stmt1, err := db.Prepare("UPDATE savedtext SET GlobCounter=? WHERE UserID=?")
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//stmt1.Exec(GlobCounter, UserID)
+		counter1++
+		//counter1 = 0
+		str := strconv.Itoa(counter1)
+
+		var mainDivID = "mainDivID" + str
+		var titleID = "titleID" + str
+		var descID = "descID" + str
+		var costID = "costID" + str
+		var quantityID = "quantityID" + str
+		var key1ID = "key1ID" + str
+		var key2ID = "key2ID" + str
+		var key3ID = "key3ID" + str
+		AmountToPurchaseID = "amountID" + str
+		AmountPurchasedID = "amountPID" + str
+
+		//AmountPurchased = 120
+		json.NewEncoder(w).Encode(globKeyword)
+
+		//AmountPurchased = prodBoughtInt
+		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+		fmt.Println(templ1)
+
+		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+		//err1 := globt.Execute(w, testvar)
+		var err1 = globt.Execute(w, templ1)
+
+		if err1 != nil {
+			fmt.Println("---------------")
+			fmt.Println(err.Error())
+		}
+
+	} //rows next
+
 	return
 }
-
-//func submitfunc(w http.ResponseWriter, r *http.Request) {
-//
-//	fmt.Println("aarg ")
-//	fmt.Println("aarg ")
-//}
 
 //send from client to server and
 //send form server to client
