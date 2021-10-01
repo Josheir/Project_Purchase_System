@@ -219,7 +219,7 @@ $(document).ready(function () {
 
 		///////////////
 		
-        
+        var theCounter = 0;
         var wasKeys = "no";
 
 		var keyAsInt =  parseInt(key); 
@@ -227,6 +227,10 @@ $(document).ready(function () {
 		//console.log(keyAsInt);
 		if (key != "session_userID" && key != "keywords") 
 		{
+
+			theCounter++;
+			alert("theCounter");
+			alert(theCounter);
 			
 			//alert("number here");
 			var item = sessionStorage.getItem(key);
@@ -347,7 +351,8 @@ $(document).ready(function () {
 	  //alert(val2);
 		var gflag = val2[0];
 		var querystring = val2[1] + string;
-
+	  	//alert("val1");
+		//alert(val2[1]);
 		
 		var url = "";
 		//go back to index
@@ -378,6 +383,9 @@ $(document).ready(function () {
 
 
 				alert("is here!");
+				//alert(result);
+
+				
                 var result1 = "";
 				let keys = Object.keys(sessionStorage);
 
@@ -389,13 +397,19 @@ $(document).ready(function () {
 				var toRemove = "null";
 				var result = result.replaceAll(toRemove, '');
 
-				
-				retVals = deriveKeywordFromResult(result);
-				
+
+
+				//call this over and over again as many times as amount of records 
+				alert("zzzzz");
+				retVals = deriveKeywordFromResult(result, val1);
+				//alert(result);
 				var item1 = retVals[0];  
-				//alert(item1);
-				var ourNewWord = retVals[1]; 
-				var item = retVals[2];
+				alert("is it here ??");
+				alert(item1); //apple2
+				var ourNewWord2 = retVals[1]; //
+				alert(ourNewWord2);	//no apple
+				var item = retVals[2]; 
+				alert(item);  //"apple2"
 				
 				alert("testing2");
 				
@@ -403,14 +417,43 @@ $(document).ready(function () {
 				
 
 				
-				var val1a = '["' + item1 +  '"]';
-
-				ourNewWord = ourNewWord.replace(val1a , '');
+				//var val1a = '["' + item1 +  '"]';
+				var val1a = '"' + item1 +  '"';
+				alert(val1a);
 				
+
+				////////////
+				/*
+
+				for(var i = 0 ; i < array.length ; i++)
+			  {
+				////
+
+				
+				var val1 = '["' + array[i] +  '"]';
+
+				ourNewWord = ourNewWord.replace(val1 , '');
+
+				retVals = deriveKeywordFromResult(ourNewWord);
+
+				var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
+				document.getElementById('buttons').innerHTML   += result1a;
+			  }
+
+			  document.getElementById('templateOneHere').innerHTML   += ourNewWord;
+			  
+			  */
+
+
+				////////////
+				
+				//var ourNewWord = ourNewWord.replace(val1a , '');
+				//alert(ourNewWord);
 
 				//retVals = deriveKeywordFromResult(ourNewWord);
 				//}
 				var result1a = "<a href='#" + item1 + "'>" + item1 + "</a><br>";
+				alert(result1a);
 				document.getElementById('buttons').innerHTML   += result1a;
 			  	
 
@@ -420,7 +463,7 @@ $(document).ready(function () {
 				
 				//document.getElementById('templateOneHere').innerHTML   += ourNewWord;
 
-				document.getElementById('templateOneHere').insertAdjacentHTML('beforeend',ourNewWord) ;
+				document.getElementById('templateOneHere').insertAdjacentHTML('beforeend',ourNewWord2);
 
 
 				alert("testing4");             
@@ -896,21 +939,52 @@ function ajax()
 	alert("ajax");
 }
 
-function deriveKeywordFromResult(result)
+//item  "apple2"
+//item1 = apple2
+function deriveKeywordFromResult(result, val1)
 {
-
-				
-				var item = "";
-				var item1 = "";
+				var item1 = val1
+				var item = '"' + val1 + '"';
+				//item = val1
+				alert("derive");
+				//alert(item);   // "apple2"
+				//alert(item1);	//apple2
+				//var item = "";
+				//var item1 = "";
 				var ourNewWord = "";
-				item = result.match("\\[.*]");
-				ourNewWord = result.replaceAll(item, '');
-				//alert(ourNewWord);
-				var x = typeof(item);
-				item1 = JSON.stringify(item);
-				item1 = item1.slice(5);
-				item1 = item1.substring(0, item1.length - 5);
+				//item = result.match("\\[.*]");
+				var item2 = result.match(item);
+				//item = '"apple2"';
+				//alert(item);    // "apple2"
+				ourNewWord = result.replace(item2, '');
+				//alert(ourNewWord);  // no apple2 - right
+				//item1 = val1
+
+				var string = typeof(item1);
+				//alert("type");
+				var x = typeof(item1);  // string
+				var y = typeof(string);	//string
+				//alert(x);
+				//alert(y);
+				//alert(string);
+				//alert(item1)  //apple2
 				
+				//item1 = JSON.stringify(item1);
+				//var x = typeof(item1);
+				//alert("type");
+				//alert(x);
+				
+				//alert("stringify");
+				//alert(item1);
+				//alert(item2);
+				//alert(ourNewWord);
+				//alert(string);
+
+
+				//item1 = item1.slice(2);
+				//alert(item1);
+				//item1 = item1.substring(0, item1.length - 2);
+				//alert(item1);
 
 return [item1, ourNewWord, item];				
 }
@@ -1043,6 +1117,7 @@ var url = "http://localhost:8080/display2";
 			async:false,
 			success: function (result) {
 
+				alert("qqq");
 			  ///alert("result");
 			  //alert(result);
 
@@ -1050,7 +1125,7 @@ var url = "http://localhost:8080/display2";
 			var retVals = [];
 			
 			retVals = deriveKeywordFromResult(result);
-			
+			alert("abc");
 			//final keyword
 			var item1 = retVals[0];  
 			//html with keyword removed
@@ -1058,7 +1133,10 @@ var url = "http://localhost:8080/display2";
 			var item = retVals[2];
 			//alert("test");
 			//alert(array[0]);
+			alert("derived here");
 			alert(ourNewWord);
+			alert(item);
+			alert(item1);
 			
 			
 			  

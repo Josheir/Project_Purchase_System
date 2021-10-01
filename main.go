@@ -1361,6 +1361,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+
 	var val1 = ""
 	val1 = UserIDstring[0]
 	//var err1 = ""
@@ -1378,6 +1379,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	}
 
 	globKeyword := key1[0]
+	
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
