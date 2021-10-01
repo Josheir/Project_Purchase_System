@@ -1242,6 +1242,48 @@ func display2(w http.ResponseWriter, r *http.Request) {
 var GlobCounter = -1
 var counter1 = 0
 
+////////
+func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, CondYellow *int, Link *string, Condition *int, AmountPurchased *int, ProductID *int, ProductCatTitle *string, ProductName *string, ProductDescription *string, ProductCost *float64, ProductQuantity *int,
+	gKeyword1 *string, gKeyword2 *string, gKeyword3 *string, ProductFilename *string) {
+	*counter1++
+	//counter1 = 0
+	str := strconv.Itoa(*counter1)
+
+	//var inputID = "inputID" + str
+	var mainDivID = "mainDivID" + str
+	var titleID = "titleID" + str
+	var descID = "descID" + str
+	var costID = "costID" + str
+	var quantityID = "quantityID" + str
+	var key1ID = "key1ID" + str
+	var key2ID = "key2ID" + str
+	var key3ID = "key3ID" + str
+	var AmountToPurchaseID = "amountID" + str
+	var AmountPurchasedID = "amountPID" + str
+
+	//AmountPurchased = 120
+	json.NewEncoder(*w).Encode(globKeyword)
+
+	//AmountPurchased = prodBoughtInt
+	templ1 := forTemplate{*CondYellow, *Link, *Condition, *AmountPurchased, *ProductID, *ProductCatTitle, titleID, *ProductName, descID, *ProductDescription, costID, *ProductCost, quantityID, *ProductQuantity,
+		key1ID, *gKeyword1, key2ID, *gKeyword2, key3ID, *gKeyword3, *ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+
+	fmt.Println(templ1)
+
+	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+	//err1 := globt.Execute(w, testvar)
+	var err1 = globt.Execute(*w, templ1)
+
+	if err1 != nil {
+		fmt.Println("---------------")
+		fmt.Println(err1.Error())
+
+	}
+}
+
+////////
+
 //the purpose of this function is to display the information of the keyword sent here.
 //the actual ids are stored in a database when  they have been used
 //if there are no ID/Quantity ordered url parameters than the function creates a new
@@ -1402,7 +1444,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//var lastProductID = -1
 	//counter1 = -1
 
-	counter1 = 0
+	//counter1 = 0
 	var counterOfRecords = 0
 	for rows.Next() {
 
@@ -1612,40 +1654,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			//////////
 
-			counter1++
-			//counter1 = 0
-			str := strconv.Itoa(counter1)
-
-			//var inputID = "inputID" + str
-			var mainDivID = "mainDivID" + str
-			var titleID = "titleID" + str
-			var descID = "descID" + str
-			var costID = "costID" + str
-			var quantityID = "quantityID" + str
-			var key1ID = "key1ID" + str
-			var key2ID = "key2ID" + str
-			var key3ID = "key3ID" + str
-			AmountToPurchaseID = "amountID" + str
-			AmountPurchasedID = "amountPID" + str
-
-			//AmountPurchased = 120
-			json.NewEncoder(w).Encode(globKeyword)
-
-			//AmountPurchased = prodBoughtInt
-			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-			fmt.Println(templ1)
-
-			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-			//err1 := globt.Execute(w, testvar)
-			var err1 = globt.Execute(w, templ1)
-
-			if err1 != nil {
-				fmt.Println("---------------")
-				fmt.Println(err.Error())
-			}
+			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
 			//////////
 
@@ -1693,26 +1703,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-				//var index1 = "a"
-				//var k = 0
-
-				/*
-					for k = 0; k <= GlobCounter; k++ {
-
-						index1 = "K" + strconv.Itoa(k)
-
-						var1, ok := store.Get(index1)
-
-						if ok {
-							str := fmt.Sprintf("%v", var1)
-							//this array is reset at reload and is always just this one keyword
-							keywords = nil
-							keywords = append(keywords, str)
-						}
-
-					}
-				*/
-
 				json.NewEncoder(w).Encode(globKeyword)
 
 				//AmountPurchased = prodBoughtInt
@@ -1732,45 +1722,18 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				}
 
 			}
-			return
+			//return
 		}
 
 		/////////
 		//create a displayed record wiht zero amountPurchased
 
-		counter1++
-		//counter1 = 0
-		str := strconv.Itoa(counter1)
+		//////
 
-		var mainDivID = "mainDivID" + str
-		var titleID = "titleID" + str
-		var descID = "descID" + str
-		var costID = "costID" + str
-		var quantityID = "quantityID" + str
-		var key1ID = "key1ID" + str
-		var key2ID = "key2ID" + str
-		var key3ID = "key3ID" + str
-		AmountToPurchaseID = "amountID" + str
-		AmountPurchasedID = "amountPID" + str
+		sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+			&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-		//AmountPurchased = 120
-		json.NewEncoder(w).Encode(globKeyword)
-
-		//AmountPurchased = prodBoughtInt
-		templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-			key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-		fmt.Println(templ1)
-
-		globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-		//err1 := globt.Execute(w, testvar)
-		var err1 = globt.Execute(w, templ1)
-
-		if err1 != nil {
-			fmt.Println("---------------")
-			fmt.Println(err.Error())
-		}
+		/////////////
 
 	} //rows next
 
