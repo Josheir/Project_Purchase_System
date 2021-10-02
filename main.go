@@ -1205,7 +1205,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			//}
 
 			//sends, and is sent as a string (serialization)
-			json.NewEncoder(w).Encode(keywords)
+			//json.NewEncoder(w).Encode(keywords)
 
 			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
@@ -1262,7 +1262,7 @@ func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, 
 	var AmountPurchasedID = "amountPID" + str
 
 	//AmountPurchased = 120
-	json.NewEncoder(*w).Encode(globKeyword)
+	//json.NewEncoder(*w).Encode(globKeyword)
 
 	//AmountPurchased = prodBoughtInt
 	templ1 := forTemplate{*CondYellow, *Link, *Condition, *AmountPurchased, *ProductID, *ProductCatTitle, titleID, *ProductName, descID, *ProductDescription, costID, *ProductCost, quantityID, *ProductQuantity,
@@ -1705,7 +1705,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 				}
 
-				json.NewEncoder(w).Encode(globKeyword)
+				//json.NewEncoder(w).Encode(globKeyword)
 
 				//AmountPurchased = prodBoughtInt
 				templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
