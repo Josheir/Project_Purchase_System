@@ -1083,7 +1083,46 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	*/
 
 	var m = 0
+	//var lastUseOf = false
+	var numRecords1 = 0
+	var oneTime = true
+	var recordCounter = 0
 	for m = 0; m < len(key1); m++ {
+
+		recordCounter = 0
+		//////////
+
+		//get amount of records for the last keyword, one time
+		if m == (len(key1)-1) && oneTime == true {
+			oneTime = false
+			db4 := dbConn()
+
+			stmt, err := db4.Prepare("SELECT COUNT(*) FROM products WHERE ((products.ProductKeyWord1 = ?) OR (products.ProductKeyWord2 = ?) OR " +
+				"(products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			for rows.Next() {
+
+				err = rows.Scan(&numRecords1)
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+			}
+
+		}
+
+		///////////
 
 		globKeyword = key1[m]
 
@@ -1119,6 +1158,8 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		for rows.Next() {
 
+			recordCounter++
+
 			//marshalFlag = "no"
 
 			Condition++
@@ -1143,26 +1184,12 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			prodBoughtInt := 0
 			isAmountPurchased := "no"
 
-			for i = 0; i < len(ProdID); i++ {
-				prodIDStr := ProdID[i]
-
-				prodIDInt, err := strconv.Atoi(prodIDStr)
-				if err != nil {
-				}
-
-				prodBoughtStr := keyTotalAmountBought[i]
-				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
-				if err != nil {
-				}
-
-				if prodIDInt == ProductID {
-					ProductQuantity = ProductQuantity - prodBoughtInt
-					isAmountPurchased = "yes"
-					CondYellow = 1
-					break
-				}
-
-			}
+			//if prodIDInt == ProductID {
+			//	ProductQuantity = ProductQuantity - prodBoughtInt
+			//	isAmountPurchased = "yes"
+			//	CondYellow = 1
+			//	break
+			//}
 
 			counter1 = counter1 + 1
 			str := strconv.Itoa(counter1)
@@ -1183,7 +1210,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			if isAmountPurchased == "yes" {
 				AmountPurchased = prodBoughtInt
 			} else {
-				AmountPurchased = 10
+				AmountPurchased = prodBoughtInt
 			}
 
 			//var index1 = "a"
@@ -1222,9 +1249,44 @@ func display2(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err.Error())
 			}
 
-		}
+			//}
 
-	}
+			////////
+
+			//run this one time, when on last record for last keyword
+			if numRecords1 == recordCounter && m == (len(key1)-1) {
+				//lasttUseOf = false
+				var i = 0
+				for i = 0; i < len(ProdID); i++ {
+					prodIDStr := ProdID[i]
+
+					_, err := strconv.Atoi(prodIDStr)
+					if err != nil {
+					}
+
+					prodBoughtStr := keyTotalAmountBought[i]
+					prodBoughtInt, err := strconv.Atoi(prodBoughtStr)
+					if err != nil {
+					}
+
+					/////
+
+					AmountPurchased = prodBoughtInt
+					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+						&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
+
+					/////
+				}
+
+			}
+
+			////////////////
+
+		} //row
+
+		/////////
+
+	} //main loop
 
 	/*
 		store.Set("isFirstUse", "no")
