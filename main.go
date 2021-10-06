@@ -1134,7 +1134,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			"((products.ProductKeyWord1 = ?) OR " +
 			"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
 		if err != nil {
-
+			fmt.Println(err)
 		}
 
 		rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
@@ -1143,16 +1143,11 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		}
 
-		var templ1 forTemplate
+		//var templ1 forTemplate
 
 		var Link = globKeyword
 
 		var Condition = 0
-		//saved text product ids :  1,11,5,7
-		//var ints []int
-		var keywords []string
-
-		//var marshalFlag = "no"
 
 		var lastProductID = -1
 
@@ -1165,7 +1160,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			Condition++
 			var ProductCost float64
 			var ProductQuantity, CondYellow int
-			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
+			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
 
 			CondYellow = 0
 			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
@@ -1177,125 +1172,55 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			lastProductID = ProductID
 
 			if err != nil {
-				fmt.Fprint(w, err)
+				fmt.Println(err)
 			}
 
-			i := 0
-			prodBoughtInt := 0
-			isAmountPurchased := "no"
-
-			//if prodIDInt == ProductID {
-			//	ProductQuantity = ProductQuantity - prodBoughtInt
-			//	isAmountPurchased = "yes"
-			//	CondYellow = 1
-			//	break
-			//}
-
+			///////////////
+			var i = 0
+			var continueFlag = "no"
 			counter1 = counter1 + 1
-			str := strconv.Itoa(counter1)
-			AmountPurchased := 0
+			//if finds a record that aleady exists as a passed in url parameter, than create the template with the value and continue the main for.
+			for i = 0; i < len(ProdID); i++ {
 
-			//var inputID = "inputID" + str
-			var mainDivID = "mainDivID" + str
-			var titleID = "titleID" + str
-			var descID = "descID" + str
-			var costID = "costID" + str
-			var quantityID = "quantityID" + str
-			var key1ID = "key1ID" + str
-			var key2ID = "key2ID" + str
-			var key3ID = "key3ID" + str
-			AmountToPurchaseID = "amountID" + str
-			AmountPurchasedID = "amountPID" + str
+				prodID, err := strconv.Atoi(ProdID[i])
+				if err != nil {
+					fmt.Println(err)
+				}
 
-			if isAmountPurchased == "yes" {
-				AmountPurchased = prodBoughtInt
-			} else {
-				AmountPurchased = prodBoughtInt
-			}
-
-			//var index1 = "a"
-			//var k = 0
-			//CHANGED!!!!!!!!!!!!!!!!!!!!!!!!!!
-			//for k = 0; k <= 1; k++ {
-
-			//index1 = "K" + strconv.Itoa(k)
-
-			//var1, ok := store.Get(index1)
-
-			{
-				//str := fmt.Sprintf("%v", var1)
-				//this array is reset at reload and is always just this one keyword
-				keywords = nil
-				keywords = append(keywords, globKeyword)
-			}
-
-			//}
-
-			//sends, and is sent as a string (serialization)
-			//json.NewEncoder(w).Encode(keywords)
-
-			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, ProductID, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-			fmt.Println(templ1)
-
-			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-			//err1 := globt.Execute(w, testvar)
-			var err1 = globt.Execute(w, templ1)
-
-			if err1 != nil {
-				fmt.Println("---------------")
-				fmt.Println(err.Error())
-			}
-
-			//}
-
-			////////
-
-			//run this one time, when on last record for last keyword
-			if numRecords1 == recordCounter && m == (len(key1)-1) {
-				//lasttUseOf = false
-				var i = 0
-				for i = 0; i < len(ProdID); i++ {
-					prodIDStr := ProdID[i]
-
-					_, err := strconv.Atoi(prodIDStr)
-					if err != nil {
-					}
+				if prodID == ProductID {
+					continueFlag = "continue"
 
 					prodBoughtStr := keyTotalAmountBought[i]
 					prodBoughtInt, err := strconv.Atoi(prodBoughtStr)
 					if err != nil {
+						fmt.Println(err)
 					}
 
-					/////
-
-					AmountPurchased = prodBoughtInt
+					AmountPurchased := prodBoughtInt
 					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 						&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-					/////
-				}
+					break
+				} //if
 
+			} //for i
+
+			//productid found a record that already existed, so get next productid
+			if continueFlag == "continue" {
+				continue
 			}
 
-			////////////////
+			///////////////the productid record does not exist yet, create the record which is part of the current keyword
+
+			AmountPurchased := 0
+			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
 		} //row
 
 		/////////
 
 	} //main loop
-
-	/*
-		store.Set("isFirstUse", "no")
-		err = store.Save()
-		if err != nil {
-			fmt.Fprint(w, err)
-			//	return
-		}
-	*/
 
 }
 
