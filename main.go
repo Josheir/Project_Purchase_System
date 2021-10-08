@@ -230,28 +230,48 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
+	/*
+		err = r.ParseForm()
+
+		array := r.Form["var"][1]
+		fmt.Println(array)
+
+		value := r.Form["var"]
+
+		a := value[0]
+
+	*/
+
 	User = nil
 
-	query := r.URL.Query()
-
-	userid, present := query["userid"]
-
-	if !present || len(userid) == 0 {
-		fmt.Println("filters not present")
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Fprint(w, err)
 	}
 
+	//query := r.URL.Query()
+
+	//userid, present := query["userid"]
+	userid := r.Form["userid"][0]
+
+	//if !present || len(userid) == 0 {
+	//	fmt.Println("filters not present")
+	//}
+
 	//string to int
-	userid1, err := (strconv.Atoi(userid[0]))
+	userid1, err := (strconv.Atoi(userid))
 
 	if err != nil {
 		fmt.Fprint(w, err)
 	}
 
-	pass, present := query["pass"]
+	//pass, present := query["pass"]
 
-	if !present || len(pass) == 0 {
-		fmt.Println("filters not present")
-	}
+
+	//if !present || len(pass) == 0 {
+	//	fmt.Println("filters not present")
+	//}
+	pass := r.Form["pass"][0]
 
 	db := dbConn()
 
@@ -282,7 +302,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 	if PasswordID == "" {
 		passFlag = "password wrong"
-	} else if PasswordID == pass[0] {
+	} else if PasswordID == pass {
 
 		passFlag = "password correct"
 
