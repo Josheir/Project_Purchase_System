@@ -47,20 +47,29 @@ alert("query");
             var querystring = "pass=" + pass + "&userid=" + userid;
 
            
+            ///////
+
             
+            
+            ///////
+
+
 
             $.ajax({
                 url: "http://localhost:8080/processLogin",
                 type: 'GET',
                 dataType: 'json',
                 
-                crossDomain: true,
+                
                 data: querystring,
+                crossDomain: true,
                 success: function (result) {
 
-                  
+                  alert("pass");
+                  //alert(result);
                   if (result[0].Text == "password correct")
                   {
+                    alert("2");
                     //template / table works when this is commented out
                     sessionStorage.setItem("session_userID", result[0].UserID);
                     

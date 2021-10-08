@@ -1012,14 +1012,6 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	GlobCounter++
 	//store, err := session.Start(context.Background(), w, r)
 
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-
-	//var UserID = 1
-
-	////////
-
 	fmt.Println("+++++++++++++++++")
 
 	query := r.URL.Query()
@@ -1046,17 +1038,19 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	if len(UserIDstring) != 0 {
+	//var UID = 0
+	//var err= ""
+	//if len(UserIDstring) != 0 {
 
-		//only one  // UserID =
-		_, err := strconv.Atoi(UserIDstring[0])
-		if err != nil {
-			fmt.Println(err)
-		}
-	} else {
-		//isnt used (is still in dispaly1, for int[] array saved in db as string):
-		//UserID = 1
+	//only one  // UserID =
+	UID, err := strconv.Atoi(UserIDstring[0])
+	if err != nil {
+		fmt.Println(err)
 	}
+	//} else {
+	//isnt used (is still in dispaly1, for int[] array saved in db as string):
+	//UserID = 1
+	//}
 
 	globKeyword := key1[0]
 
@@ -1151,7 +1145,53 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		var lastProductID = -1
 
+		var stringText = ""
+		var ints []int
 		for rows.Next() {
+
+			/////////////
+
+			db5 := dbConn()
+			stmt1, err := db5.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			rows1, err := stmt1.Query(UID)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//get string from database
+			for rows1.Next() {
+
+				err = rows1.Scan(&stringText)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//change string to array
+				err := json.Unmarshal([]byte(stringText), &ints) //
+				if err != nil {
+					fmt.Println(err)
+				}
+
+			}
+
+			////////////
+
+			var j = 0
+			//check if productID was already created in display1
+			for j = 0; j < len(ints); j++ {
+				if ProductID == ints[j] {
+
+					continue
+				}
+
+			}
+			/////////////
 
 			recordCounter++
 
@@ -1196,6 +1236,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 						fmt.Println(err)
 					}
 
+					CondYellow = 1
 					AmountPurchased := prodBoughtInt
 					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 						&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
@@ -1290,20 +1331,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	GlobCounter++
 	//store, err := session.Start(context.Background(), w, r)
 
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-
-	//var UserID = 1
-
 	/*
-
 		err = r.ParseForm()
-		if err != nil {
-
-			fmt.Println(err)
-
-		}
 
 		array := r.Form["var"][1]
 		fmt.Println(array)
@@ -1311,16 +1340,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		value := r.Form["var"]
 
 		a := value[0]
-		fmt.Println(value)
-		fmt.Println(a)
-
-
-
-		//apple1. apple2
-		// 10      20
-		fmt.Println("+++++++++++++++++")
-
-
 	*/
 
 	query := r.URL.Query()
@@ -1623,52 +1642,40 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 
-			/////
-
-			/////
 		}
 
 		i := 0
 		prodBoughtInt := 0
-		isAmountPurchased := "no"
 
 		AmountPurchased := 0
 
-		//is last run through : first regular keyword function
-		//and than processes url params: Id and Quant of all the records, write (and write-over) all the records with new or same quants
-		//if not working, reinstate :  keywords
-		if counterOfRecords == numRecords {
+		var flagProductIDHasBeenTemplated = false
+		//is records with product amounts already
+		for i = 0; i < len(ProdID); i++ {
+			prodIDStr := ProdID[i]
 
-			//////////
+			prodIDInt, err := strconv.Atoi(prodIDStr)
+			if err != nil {
+				fmt.Println(err)
+			}
 
-			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
+			prodBoughtStr := keyTotalAmountBought[i]
+			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+			if err != nil {
+				fmt.Println(err)
 
-			//////////
+			}
 
-			//loop through array of prodcutids that were gotten from url parameters
-			//set the already existing records with new proper quants and rewrite the others
-			for i = 0; i < len(ProdID); i++ {
+			productIDInt, err := strconv.Atoi(ProdID[i])
 
-				prodIDStr := ProdID[i]
+			//write over with values, already existed with url parameters
+			if ProductID == productIDInt {
 
-				prodIDInt, err := strconv.Atoi(prodIDStr)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				prodBoughtStr := keyTotalAmountBought[i]
-				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
-				if err != nil {
-					fmt.Println(err)
-
-				}
-
+				flagProductIDHasBeenTemplated = true
 				counter1++
-				//counter1 =2
+
 				str := strconv.Itoa(counter1)
 
-				//var inputID = "inputID" + str
 				var mainDivID = "mainDivID" + str
 				var titleID = "titleID" + str
 				var descID = "descID" + str
@@ -1680,19 +1687,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				AmountToPurchaseID = "amountID" + str
 				AmountPurchasedID = "amountPID" + str
 
-				//prodBoughtInt = 1000
-				if isAmountPurchased == "yes" {
-					AmountPurchased = 2000
+				AmountPurchased = prodBoughtInt
 
-				} else {
-
-					AmountPurchased = prodBoughtInt
-
-				}
-
-				//json.NewEncoder(w).Encode(globKeyword)
-
-				//AmountPurchased = prodBoughtInt
 				templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
 					key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
@@ -1700,7 +1696,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 				globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
 
-				//err1 := globt.Execute(w, testvar)
 				var err1 = globt.Execute(w, templ1)
 
 				if err1 != nil {
@@ -1708,24 +1703,32 @@ func display1(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err.Error())
 				}
 
+				//create a displayed record wiht zero amountPurchased
+
+				//create a zero amount new productID record
+
+				sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+					&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
+
+				break
 			}
-			//return
+
+		}
+		if !flagProductIDHasBeenTemplated {
+
+			AmountPurchased = 0
+
+			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
+
 		}
 
-		/////////
-		//create a displayed record wiht zero amountPurchased
-
-		//////
-
-		sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-			&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
-
-		/////////////
-
-	} //rows next
-
-	return
+	}
 }
+
+//////////
+
+/////////////
 
 //send from client to server and
 //send form server to client

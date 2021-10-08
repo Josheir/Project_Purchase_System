@@ -83,7 +83,7 @@ if (searchterm == "1")
 {
 	//alert("made it");
 	display2();
-	ajaxCall('0');
+	//ajaxCall('0');
 }
 
 return(1);
@@ -1063,7 +1063,8 @@ for(let key of keys) {
   }
   else if(key == "session_userID")
   {
-
+		var item = sessionStorage.getItem(key);
+		querystring += "uid=" + item + "&";
   }
   else if(key == "numberOfRecords")
   {

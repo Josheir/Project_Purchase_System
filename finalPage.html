@@ -105,7 +105,8 @@ loadData();
           }
           else if(key == "session_userID")
           {
-
+			var item = sessionStorage.getItem(key);
+			querystring += "uid=" + item + "&"
           }
           else
           {
