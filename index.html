@@ -369,14 +369,33 @@ $(document).ready(function () {
 
 	  		alert("querystring");
 			alert(querystring);
+
+			////////
+			var struct1 = {
+				//lo: data.location.lng,
+				a1: ["1.0", "2.0"],
+				//la: data.location.lat,
+				a2: 2.0,
+				//ac: data.accuracy,
+				a3: 3,
+				a4: 4
+
+
+			};
+
+			//struct
+
+			
+
+			///////
 	 		
 			  $.ajax({
               url: "http://localhost:8080/display",
-              type: 'GET',
+              type: 'POST',
               dataType: 'html',
               contentType: "application/x-www-form-urlencoded",
               crossDomain: true,
-              data: querystring,
+              data: JSON.stringify(struct1),
               success: function (result) {
 
 

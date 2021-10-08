@@ -1340,8 +1340,25 @@ func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, 
 //records to be displayed after the execution at end.
 
 //this function is used when search is pressed in the index.html
+type geoData struct {
+    Var [] string  `json:"a1"`
+    Id  int  `json:"a2"`
+    Quant  int `json:"a3"`
+	UID int `json:"a4"`
+	
+}
 
 func display1(w http.ResponseWriter, r *http.Request) {
+
+
+	decoder := json.NewDecoder(r.Body)
+    var geoRec geoData
+    if err := decoder.Decode(&geoRec); err != nil {
+        fmt.Println(err)
+    }
+    defer r.Body.Close()
+    fmt.Println(geoRec)
+
 
 	//ARRAY OF INTS  [3,4,7]
 	//thesse ints are kept in database and changed to an array to see if they have aleady been
