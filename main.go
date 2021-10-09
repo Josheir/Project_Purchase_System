@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"html/template"
 
+	//"bytes"
 	"net/http"
 
 	"context"
@@ -266,7 +267,6 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//pass, present := query["pass"]
-
 
 	//if !present || len(pass) == 0 {
 	//	fmt.Println("filters not present")
@@ -1341,24 +1341,62 @@ func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, 
 
 //this function is used when search is pressed in the index.html
 type geoData struct {
-    Var [] string  `json:"a1"`
-    Id  int  `json:"a2"`
-    Quant  int `json:"a3"`
-	UID int `json:"a4"`
-	
+	Var   []string
+	Id    []int
+	Quant []int
+	UID   int `json:"a4"`
+}
+
+type try1 struct {
+}
+
+//type geoData[4]
+type display_ struct {
+	Var   string `json:"var"`
+	Id    int    `json:"id"`
+	Quant int    `json:"quant"`
+	Uid   int    `json:"uid"`
 }
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
+	/////////////
+	queries := r.URL.Query()
+	fmt.Println(queries)
+	val2 := ""
+	for key, val := range queries {
 
-	decoder := json.NewDecoder(r.Body)
-    var geoRec geoData
-    if err := decoder.Decode(&geoRec); err != nil {
-        fmt.Println(err)
-    }
-    defer r.Body.Close()
-    fmt.Println(geoRec)
+		fmt.Println(key)
+		fmt.Println(val)
 
+		val2 = val[0]
+		fmt.Println(val2)
+
+	}
+
+	bytes := []byte(val2)
+	var display2 []display_
+	json.Unmarshal(bytes, &display2)
+
+	for l := range display2 {
+		fmt.Printf("Id = %v, Name = %v", display2[l].Id, display2[l].Var)
+		fmt.Println()
+	}
+
+	//var biArray [][]string
+
+	//json.Unmarshal([]byte(` [["keyword1","keyword2"],["1","2"],["2","2"],["2"]]`), &biArray)
+	//"[{\"var\":\"test\",\"id\":10,\"quant\":1,\"uid\":1},{\"var\":\"test2\",\"id\":100,\"quant\":2,\"uid\":2}]"
+	//b := json.Unmarshal([]byte(`[{\"var\":\"test\",\"id\":10,\"quant\":1,\"uid\":1},{\"var\":\"test2\",\"id\":100,\"quant\":2,\"uid\":2}]`), &biArray )
+	//c := json.Unmarshal([]byte(`[{"var":"test","id":10,"quant":1,"uid":1},{"var":"test2","id":100,"quant":2,"uid":2}]`), &biArray)
+	//d := json.Unmarshal([]byte(val2), &biArray)
+
+	//for index, element := range d {
+	//	fmt.Println(index, "=>", element)
+	//	//fmt.Println(d)
+	//	//fmt.Println(c)
+
+	//}
 
 	//ARRAY OF INTS  [3,4,7]
 	//thesse ints are kept in database and changed to an array to see if they have aleady been

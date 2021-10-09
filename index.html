@@ -370,32 +370,73 @@ $(document).ready(function () {
 	  		alert("querystring");
 			alert(querystring);
 
-			////////
-			var struct1 = {
-				//lo: data.location.lng,
-				a1: ["1.0", "2.0"],
-				//la: data.location.lat,
-				a2: 2.0,
-				//ac: data.accuracy,
-				a3: 3,
-				a4: 4
+/*
+			var variable2 = new Array(4);
+	  		variable2[0] = new Array(1);
+			variable2[1] = new Array(1);
+	  		variable2[2] = new Array(1)
+			variable2[3] = new Array(1);
+
+			variable2[0][0] = "keyword1";
+			variable2[0][1] = "keyword2";
+			variable2[1][0] = 1;
+			variable2[1][1] = 2;
+			variable2[2][0] = 2;
+			variable2[2][1] = 2;
+			variable2[3][0] = 2;
+			//variable2[3][1] = 2;
+
+			var answer = JSON.stringify(variable2)
+			console.log(answer);
+			
+			alert("check it");
+			//alert(variable2);
+*/
 
 
-			};
+var num = 100;
+let cars = [
+  {
+    "var": "test",
+    "id": 10,
+    "quant": 1,
+    "uid": 1
+  }]
 
-			//struct
 
+
+  let car = {
+ "var": "test2",
+ "id": num,
+ "quant": 2,
+ "uid": 2
+}
+cars.push(car);
+
+console.log(JSON.stringify(cars));
+			alert("check it");
+
+
+/*
+			var variable = new Object();
+
+			variable.a1 = "a";
+			variable.a2 = "b";
+			variable.a1 = "c";
+			variable.a2 = "d";
+
+*/			
 			
 
 			///////
 	 		
 			  $.ajax({
               url: "http://localhost:8080/display",
-              type: 'POST',
+              type: 'GET',
               dataType: 'html',
               contentType: "application/x-www-form-urlencoded",
               crossDomain: true,
-              data: JSON.stringify(struct1),
+              data:  "mydata=" + JSON.stringify(cars),
               success: function (result) {
 
 
