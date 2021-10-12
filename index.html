@@ -127,7 +127,7 @@ $(document).ready(function () {
               dataType: 'json',
               contentType: "application/json",
               //data: { name: "John", age: 30, city: "New York" },
-              data:{post_data: 'hello world'}, //JSON.stringify({ "name": name, "city": city }),
+              data:{post_data: cars}, //JSON.stringify({ "name": name, "city": city }),
               crossDomain: true,
              
             success: function (data1) {
@@ -411,7 +411,7 @@ let cars = [
  "quant": 2,
  "uid": 2
 }
-cars.push(car);
+//cars.push(car);
 
 console.log(JSON.stringify(cars));
 			alert("check it");
@@ -428,17 +428,39 @@ console.log(JSON.stringify(cars));
 */			
 			
 
-			///////
+//var val10 = get(JSON.parse(this.responseText))
+
+//function get(data) {
+    const tmpl = [{
+        var: "var",
+        id: 1,
+        quant: 1,
+        uid: 1
+	}]
+//      }]
+
+
+
+			/////
+			//var display2 = `[{"var":"test","id":"10","quant":"1","uid":"1"}]`;
+			var display2 = `{"var":"test","id":"10","quant":"1","uid":"1"}, `;
+			
 	 		
+			//var display2='{{"var" : "10"}, {"var" : "20"}}';
+			//var membersJSONString=JSON.stringify(members);
 			  $.ajax({
               url: "http://localhost:8080/display",
-              type: 'GET',
-              dataType: 'html',
-              contentType: "application/x-www-form-urlencoded",
+              type: 'POST',
+              dataType: 'json',
+              //contentType: "application/json; charset=utf-8",
+			  contentType: "multipart/form-data; charset=utf-8",
+			  
               crossDomain: true,
-              data:  "mydata=" + JSON.stringify(cars),
+              data:  display2,
+			  processData: true,
               success: function (result) {
 
+			////
 
 				ourNewWord2 = result;
 
