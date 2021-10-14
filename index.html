@@ -441,14 +441,76 @@ console.log(JSON.stringify(cars));
 
 
 
+		////////
+
+/*		
+ const data = { username: '1' } ;
+ fetch('http://localhost:8080/display')
+.then(response => response.json())
+.then(data => console.log(data));
+
+
+
+		fetch('http://localhost:8080/display', {
+		method: 'POST', // or 'PUT'
+		headers: {
+			'Content-Type': 'application/json',
+		},
+
+		body: JSON.stringify({
+        username: 'dean',
+        
+		})
+		//body: JSON.stringify(data),
+		})
+		.then(response => response.json())
+		.then(data => {
+		console.log('Success:', data);
+		})
+		.catch((error) => {
+		console.error('Error:', error);
+		});
+
+
+
+*/
+		//////////
+
+
+
+			
 			/////
-			//var display2 = `[{"var":"test","id":"10","quant":"1","uid":"1"}]`;
-			var display2 = `{"var":"test","id":"10","quant":"1","uid":"1"}, `;
+			
+			/*
+			var display2 = `{"var":"test","id":"10","quant":"1","uid":"1"}`;
+			//var display2 = `[{"var":"test","id":1,"quant":"1","uid":"1"}, {"var":"test2","id": 2 ,"quant":"12","uid":"12"}]`;
 			
 	 		
 			//var display2='{{"var" : "10"}, {"var" : "20"}}';
 			//var membersJSONString=JSON.stringify(members);
-			  $.ajax({
+			  
+			//////
+			fetch("http://localhost:8080/display", {
+			credentials: "include",
+			method: "POST",
+			headers:{
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(display2)})
+			.then(response=>response.json())
+			.then(data => displayResponse(data));
+			
+			alert("am here");
+			//alert(data);
+			*/
+			
+
+
+		
+			//////
+			//////
+			/*
+			$.ajax({
               url: "http://localhost:8080/display",
               type: 'POST',
               dataType: 'json',
@@ -459,8 +521,32 @@ console.log(JSON.stringify(cars));
               data:  display2,
 			  processData: true,
               success: function (result) {
+			 */
+			 ///////
 
-			////
+
+			 /////////
+
+			 $.ajax({
+                url: "http://localhost:8080/display",
+                type: 'POST',
+                dataType: 'html',
+                
+                
+                data: querystring,
+                //crossDomain: true,
+                success: function (result) {
+
+                  alert("pass");
+                  //alert(result);
+                  //if (result[0].Text == "password correct")
+                  //{
+				  //}
+
+				
+
+
+			 /////////
 
 				ourNewWord2 = result;
 
@@ -568,15 +654,15 @@ console.log(JSON.stringify(cars));
              
               
                 }
-         
+         //both jquery
       });
-	
+		
 
 	  		
 	  		
-		};
+		}
 
-//});
+
 	  
 
 

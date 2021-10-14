@@ -14,7 +14,8 @@ import (
 	//"errors"
 	"fmt"
 	"html/template"
-	//"io/ioutil"
+
+	"io/ioutil"
 
 	//"log"
 	//"strings"
@@ -1358,11 +1359,17 @@ type try1 struct {
 
 //type geoData[4]
 
+type display6 struct {
+
+	Username string `json:"username"`
+
+
+}
 type display5 struct {
 	Var   string `json:"var"`
-	Id    string `json:"id"`
-	Quant string `json:"quant"`
-	Uid   string `json:"uid"`
+	Id    string   `json:"id"`
+	Quant string    `json:"quant"`
+	Uid   string    `json:"uid"`
 }
 
 type Display3 struct {
@@ -1371,305 +1378,99 @@ type Display3 struct {
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
-	//w.Header().Set("Content-Type", "application/json")
-
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	
+	//////
 	var myArray display5
 
 	c := json.NewDecoder(r.Body)
-	var err80 = c.Decode(&myArray)
-	if err80 != nil {
-		fmt.Println(err80)
+	var err81 = c.Decode(&myArray)
+	if err81 != nil {
+		fmt.Println(err81)
 		fmt.Println(c)
 		fmt.Println(myArray)
 
 	}
 
-	//err78 := json.Unmarshal([]byte(c), &myArray)
-	//if err78 != nil {
-	//	fmt.Println(c)
+
+	//////
+
+
+	entireArray := display6{}
+	//c := json.NewDecoder(r.Body)
+
+	body, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
+		fmt.Println(readErr)
+		fmt.Println(body)
+	}
+	fmt.Println(body)
+
+	//if err99 := json.NewDecoder(r.Body).Decode(&entireArray); err99 != nil {
 //
+//		fmt.Println(err99)
 //	}
 
+	//w.Header().Set("Content-Type", "application/json")
+
+	
+	c = json.NewDecoder(r.Body)
+	var err80 = c.Decode(&entireArray)
+	if err80 != nil {
+		//fmt.Println(err80)
+		//fmt.Println(c)
+		//fmt.Println(myArray[0].Quant)
+
+	}
+
+	//fmt.Println(entireArray[0].Id)
+	//fmt.Println(entireArray[1].Var)
+
+	//fmt.Println(err80)
+	//fmt.Println(c)
+
+	//var Var []string
+	//var Id [] int
+	//var Quant [] int
+	//var Uid [] int
+
+	//var i = 0
+
+//	for i = 0; i < len(entireArray); i++ {
+//
+//		Var[i] = entireArray[i].Var
+//
+//	}
+//
+//	fmt.Println(entireArray[0].Var)
+//	fmt.Println(entireArray[1].Var)
+
 	/*
-	//req := endpoint.AddRequest{}
-
-	//req := endpoint.AddRequest{}
-
-	//req, err := http.NewRequest("POST", url, strings.NewReader(form.Encode()))
-
-	//var unknown map[string]interface{}
-
-	var myArray []display5
-
-	b, err77 := ioutil.ReadAll(r.Body)
-	var c = string(b)
-	fmt.Println(c)
-
-	//r.ParseForm()
-	//err79 := json.NewDecoder(r.Body).Decode(&myArray)
-	//if err79 != nil {
-	//	fmt.Print(err79)
-	//	fmt.Println(c)
-	//
-	//}
-
-	err78 := json.Unmarshal([]byte(c), &myArray)
-	if err78 != nil {
-		fmt.Println(c)
-
-	}
-
-	fmt.Println(c)
-	fmt.Println(myArray)
-
-	for index, element := range myArray {
-		fmt.Println(index, "=>", element)
-	}
-
-	//unknown[]
-	//	fmt.Println(unknown[0])
-
-	fmt.Println(b)
-	fmt.Println(err77)
-
-	c = string(b)
-	fmt.Println(string(b))
-	fmt.Println(c)
-*/
-	r.ParseForm()
-	var body1 string
-	for key, _ := range r.Form {
-		body1 = string(key)
-		fmt.Println(body1)
-		fmt.Println(string(body1))
-		break
-	}
-
-	array := r.Form["var"]
-	fmt.Println(array)
-
-	var a = r.FormValue("var")
-	fmt.Println(a)
-	queries := r.URL.Query()
-	fmt.Println(queries)
-
-	//var display2 Display2
-	//r.ParseForm()
-	//err3 := json.NewDecoder(r.Body).Decode(&display2)
-	//if err3 != nil {
-	//	fmt.Println(err3)
-	//	fmt.Println(r.Body)
-	//	//fmt.Println(r.)
-	//
-	//	}
-
-	//val12, err100 := r.GetBody()
-
-	//fmt.Println(val12)
-	//fmt.Println(err100)
-
-	////////1591
-	/*r.ParseForm()
-	userid := r.Form["Var"]
-	fmt.Println(userid)
-
-	fmt.Println(r.Body)
-	//var p display__
-	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
-	dec := json.NewDecoder(r.Body)
-	dec.DisallowUnknownFields()
-
-	//err9 := dec.Decode(&p)
-	if err9 != nil {
-		var syntaxError *json.SyntaxError
-		var unmarshalTypeError *json.UnmarshalTypeError
-
-		switch {
-		// Catch any syntax errors in the JSON and send an error message
-		// which interpolates the location of the problem to make it
-		// easier for the client to fix.
-		case errors.As(err9, &syntaxError):
-			msg := fmt.Sprintf("Request body contains badly-formed JSON (at position %d)", syntaxError.Offset)
-			http.Error(w, msg, http.StatusBadRequest)
-
-		// In some circumstances Decode() may also return an
-		// io.ErrUnexpectedEOF error for syntax errors in the JSON. There
-		// is an open issue regarding this at
-		// https://github.com/golang/go/issues/25956.
-		case errors.Is(err9, io.ErrUnexpectedEOF):
-			msg := fmt.Sprintf("Request body contains badly-formed JSON")
-			http.Error(w, msg, http.StatusBadRequest)
-
-		// Catch any type errors, like trying to assign a string in the
-		// JSON request body to a int field in our Person struct. We can
-		// interpolate the relevant field name and position into the error
-		// message to make it easier for the client to fix.
-		case errors.As(err9, &unmarshalTypeError):
-			msg := fmt.Sprintf("Request body contains an invalid value for the %q field (at position %d)", unmarshalTypeError.Field, unmarshalTypeError.Offset)
-			http.Error(w, msg, http.StatusBadRequest)
-
-		// Catch the error caused by extra unexpected fields in the request
-		// body. We extract the field name from the error message and
-		// interpolate it in our custom error message. There is an open
-		// issue at https://github.com/golang/go/issues/29035 regarding
-		// turning this into a sentinel error.
-		case strings.HasPrefix(err9.Error(), "json: unknown field "):
-			fieldName := strings.TrimPrefix(err9.Error(), "json: unknown field ")
-			msg := fmt.Sprintf("Request body contains unknown field %s", fieldName)
-			http.Error(w, msg, http.StatusBadRequest)
-
-		// An io.EOF error is returned by Decode() if the request body is
-		// empty.
-		case errors.Is(err9, io.EOF):
-			msg := "Request body must not be empty"
-			http.Error(w, msg, http.StatusBadRequest)
-
-		// Catch the error caused by the request body being too large. Again
-		// there is an open issue regarding turning this into a sentinel
-		// error at https://github.com/golang/go/issues/30715.
-		case err9.Error() == "http: request body too large":
-			msg := "Request body must not be larger than 1MB"
-			http.Error(w, msg, http.StatusRequestEntityTooLarge)
-
-		// Otherwise default to logging the error and sending a 500 Internal
-		// Server Error response.
-		default:
-			log.Println(err9.Error())
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		for index, element := range myArray {
+			fmt.Println(index, "=>", element)
 		}
-		return
-	}
 
-	//err3 := json.NewDecoder(r.Body).Decode(&p)
-	//if err3 != nil {
-	//	fmt.Println(err3)
-	//	fmt.Println(r.Body)
-	//	//fmt.Println(r.)
-	//
-	//}
 
-	//err5 := r.ParseForm()
-	//if err5 != nil {
-	//	fmt.Println(err5)
-	//}
-
-	//userid := r.Form["Id"][0]
-	//fmt.Println(userid)
-
-	//val3 := r.FormValue("mydata")
-	//fmt.Println(val3)
-
-	var result interface{}
-	err7 := json.NewDecoder(r.Body).Decode(&result)
-	if err7 != nil {
-
-	}
-	//err5 := r.ParseForm()
-	//if err5 != nil {
-	//	fmt.Println(err5)
-	//}
-	//userid := r.Form["var"][0]
-	//fmt.Println(userid)
-
-	var j = `{"var":"test","id":10,"quant":1,"uid":1}`
-
-	var it display_
-
-	val11 := json.Unmarshal([]byte(j), &it)
-	fmt.Println(val11)
-
-	if err7 != nil {
-		panic(err7)
-	}
-	//fmt.Println(it)
-
-	//	body, err6 := ioutil.ReadAll(r.Body)
-	//if err6 != nil {
-	//    panic(err6)
-	//}
-	//
-	//fmt.Println(body)
-
-	//fmt.Println(key)
-
-	//	var p display_
-
-	// Try to decode the request body into the struct. If there is an error,
-	// respond to the client with the error message and a 400 status code.
-	//  err3 := json.NewDecoder(r.Body).Decode(&p)
-	//	if err3 != nil {
-	//		fmt.Println(w, err3)
-	//	}
-
-	//fmt.Println(p)
-
-	err4 := r.ParseForm()
-	if err4 != nil {
-		fmt.Println(w, err4)
-	}
-
-	//query := r.URL.Query()
-
-	//r.Body
-	//userid, present := query["userid"]
-	//userid := r.Form["Var"][0]
-	//userid = r.Form["Id"][1]
-	//userid = r.Form["Id"][2]
-
-	//for key, val := range userid {
-	///
-	//		fmt.Println(key)
-	//		fmt.Println(val)
-	//	}
-	//
-	//	fmt.Println(userid)
-
-	/////////////
-	//queries := r.URL.Query()
-	fmt.Println(queries)
-	val2 := ""
-	for key, val := range queries {
-
-		fmt.Println(key)
-		fmt.Println(val)
-
-		val2 = val[0]
-		fmt.Println(val2)
-
-	}
-
-	//var biArray [][]string
-
-	//json.Unmarshal([]byte(` [["keyword1","keyword2"],["1","2"],["2","2"],["2"]]`), &biArray)
-	//"[{\"var\":\"test\",\"id\":10,\"quant\":1,\"uid\":1},{\"var\":\"test2\",\"id\":100,\"quant\":2,\"uid\":2}]"
-	//b := json.Unmarshal([]byte(`[{\"var\":\"test\",\"id\":10,\"quant\":1,\"uid\":1},{\"var\":\"test2\",\"id\":100,\"quant\":2,\"uid\":2}]`), &biArray )
-	//c := json.Unmarshal([]byte(`[{"var":"test","id":10,"quant":1,"uid":1},{"var":"test2","id":100,"quant":2,"uid":2}]`), &biArray)
-	//d := json.Unmarshal([]byte(val2), &biArray)
-
-	//for index, element := range d {
-	//	fmt.Println(index, "=>", element)
-	//	//fmt.Println(d)
-	//	//fmt.Println(c)
-
-	//}
-
-	//ARRAY OF INTS  [3,4,7]
-	//thesse ints are kept in database and changed to an array to see if they have aleady been
-	//displayed so continue.  Does not effect the client side is an int
-	//product is checked with array and if exists is contniues
-
-	GlobCounter++
-	//store, err := session.Start(context.Background(), w, r)
 	*/
-	/*
-		err = r.ParseForm()
 
-		array := r.Form["var"][1]
+	/*
+		r.ParseForm()
+		var body1 string
+		for key, _ := range r.Form {
+			body1 = string(key)
+			fmt.Println(body1)
+			fmt.Println(string(body1))
+			break
+		}
+
+		array := r.Form["var"]
 		fmt.Println(array)
 
-		value := r.Form["var"]
+		var a = r.FormValue("var")
+		fmt.Println(a)
+		queries := r.URL.Query()
+		fmt.Println(queries)
 
-		a := value[0]
 	*/
 
 	query := r.URL.Query()
