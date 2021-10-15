@@ -1361,7 +1361,7 @@ type try1 struct {
 
 type display6 struct {
 
-	Username string `json:"username"`
+	Vari string `json:"username"`
 
 
 }
@@ -1380,6 +1380,74 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	
+
+	//////
+
+	var err1 = r.ParseForm()
+	if err1 != nil {
+		fmt.Fprint(w, err1)
+	}
+
+	//query := r.URL.Query()
+
+	//userid, present := query["userid"]
+	userid := r.Form["userid"][0]
+	fmt.Println(userid)
+
+	/////////
+
+	str := strconv.Itoa(counter1)
+
+				//var mainDivID = "mainDivID" + str
+				var titleID = "titleID" + str
+				var descID = "descID" + str
+				var costID = "costID" + str
+				var quantityID = "quantityID" + str
+				var key1ID = "key1ID" + str
+				var key2ID = "key2ID" + str
+				var key3ID = "key3ID" + str
+				var AmountToPurchaseID1 = "amountID" + str
+				var AmountPurchasedID1 = "amountPID" + str
+
+				var AmountPurchased = 111
+				var Link1 = "1"
+				var prodIDInt = 1
+
+	var ProductCost float64
+		var ProductQuantity, CondYellow int
+		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
+		var mainDivID1 = "1"
+
+	    templ11 := forTemplate{CondYellow, Link1, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+		key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID1, AmountPurchasedID1, mainDivID1}
+
+	fmt.Println(templ11)
+
+	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+
+	var err3 = globt.Execute(w, templ11)
+
+	if err3 != nil {
+		fmt.Println("---------------")
+		fmt.Println(err3.Error())
+	}
+
+	return
+
+
+	//////////
+
+
+
+
+	//if !present || len(userid) == 0 {
+	//	fmt.Println("filters not present")
+	//}
+
+	//string to int
+	//userid, err2 := (strconv.Atoi(userid))
+
+	//////
 	//////
 	var myArray display5
 

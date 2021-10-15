@@ -524,7 +524,8 @@ console.log(JSON.stringify(cars));
 			 */
 			 ///////
 
-
+			var querystring1 = "userid=10";
+			 var display2='{"Vari" : "10"}';
 			 /////////
 
 			 $.ajax({
@@ -533,8 +534,10 @@ console.log(JSON.stringify(cars));
                 dataType: 'html',
                 
                 
-                data: querystring,
-                //crossDomain: true,
+                //data: querystring,
+                 data: querystring1,
+				
+				//crossDomain: true,
                 success: function (result) {
 
                   alert("pass");
@@ -551,7 +554,7 @@ console.log(JSON.stringify(cars));
 				ourNewWord2 = result;
 
 				///////////
-				/*
+				
 
 				alert("is here!");
 				//alert(result);
@@ -596,7 +599,7 @@ console.log(JSON.stringify(cars));
 
 
 
-				*/
+				
 				//////////////
 
 
@@ -604,8 +607,8 @@ console.log(JSON.stringify(cars));
 
 
 				////////////
-				/*
-
+				
+				var ourNewWord = ""
 				for(var i = 0 ; i < array.length ; i++)
 			  {
 				////
@@ -623,7 +626,7 @@ console.log(JSON.stringify(cars));
 
 			  document.getElementById('templateOneHere').innerHTML   += ourNewWord;
 			  
-			  */
+			  
 
 
 				////////////
@@ -660,7 +663,7 @@ console.log(JSON.stringify(cars));
 
 	  		
 	  		
-		}
+		};
 
 
 	  
