@@ -15,8 +15,6 @@ import (
 	"fmt"
 	"html/template"
 
-	"io/ioutil"
-
 	//"log"
 	//"strings"
 
@@ -1360,26 +1358,31 @@ type try1 struct {
 //type geoData[4]
 
 type display6 struct {
-
 	Vari string `json:"username"`
-
-
 }
 type display5 struct {
 	Var   string `json:"var"`
-	Id    string   `json:"id"`
-	Quant string    `json:"quant"`
-	Uid   string    `json:"uid"`
+	Id    string `json:"id"`
+	Quant string `json:"quant"`
+	Uid   string `json:"uid"`
 }
 
 type Display3 struct {
 	Var int `json:"var"`
 }
 
+///////////
+//	ProdID, present3 := query["id"]
+//	if !present3 || len(ProdID) == 0 {
+//		fmt.Println("filters not present3")
+//
+//	}
+
+//////////
+
 func display1(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	//////
 
@@ -1388,139 +1391,77 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err1)
 	}
 
-	//query := r.URL.Query()
+	//var lengthOfKeyword string
+	//var lengthOfID string
+	var ProdID []string
+	var keyTotalAmountBought []string
+	var key1 []string
+	var UserIDstring string
 
-	//userid, present := query["userid"]
-	userid := r.Form["userid"][0]
-	fmt.Println(userid)
+	//multiple product ids - handle please
+	var i = 0
+
+	//product ID and quantity purchased
+
+	var length = len(r.Form["id"])
+	//subtract keywords and userids
+
+	length = length - 2
+
+	for i = 0; i < (length); i++ {
+		ProdID[i] = r.Form["id"][i]
+		keyTotalAmountBought[i] = r.Form["quant"][i]
+	}
+
+	//keywords - could change to single non array variable to be better
+	//for i = 0; i < len(r.Form["var"]); i++ {
+
+	key1[0] = r.Form["var"][0]
+	//}
+
+	//id of user
+	UserIDstring = r.Form["uid"][0]
+	//UserIDstring, err1 = strconv.Atoi(UserIDstring)
 
 	/////////
 
-	str := strconv.Itoa(counter1)
-
-				//var mainDivID = "mainDivID" + str
-				var titleID = "titleID" + str
-				var descID = "descID" + str
-				var costID = "costID" + str
-				var quantityID = "quantityID" + str
-				var key1ID = "key1ID" + str
-				var key2ID = "key2ID" + str
-				var key3ID = "key3ID" + str
-				var AmountToPurchaseID1 = "amountID" + str
-				var AmountPurchasedID1 = "amountPID" + str
-
-				var AmountPurchased = 111
-				var Link1 = "1"
-				var prodIDInt = 1
-
-	var ProductCost float64
-		var ProductQuantity, CondYellow int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
-		var mainDivID1 = "1"
-
-	    templ11 := forTemplate{CondYellow, Link1, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-		key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID1, AmountPurchasedID1, mainDivID1}
-
-	fmt.Println(templ11)
-
-	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-	var err3 = globt.Execute(w, templ11)
-
-	if err3 != nil {
-		fmt.Println("---------------")
-		fmt.Println(err3.Error())
-	}
-
-	return
-
-
 	//////////
 
-
-
-
-	//if !present || len(userid) == 0 {
-	//	fmt.Println("filters not present")
-	//}
-
-	//string to int
-	//userid, err2 := (strconv.Atoi(userid))
-
-	//////
-	//////
-	var myArray display5
-
-	c := json.NewDecoder(r.Body)
-	var err81 = c.Decode(&myArray)
-	if err81 != nil {
-		fmt.Println(err81)
-		fmt.Println(c)
-		fmt.Println(myArray)
-
-	}
-
-
-	//////
-
-
-	entireArray := display6{}
-	//c := json.NewDecoder(r.Body)
-
-	body, readErr := ioutil.ReadAll(r.Body)
-	if readErr != nil {
-		fmt.Println(readErr)
-		fmt.Println(body)
-	}
-	fmt.Println(body)
-
-	//if err99 := json.NewDecoder(r.Body).Decode(&entireArray); err99 != nil {
-//
-//		fmt.Println(err99)
-//	}
-
-	//w.Header().Set("Content-Type", "application/json")
-
-	
-	c = json.NewDecoder(r.Body)
-	var err80 = c.Decode(&entireArray)
-	if err80 != nil {
-		//fmt.Println(err80)
-		//fmt.Println(c)
-		//fmt.Println(myArray[0].Quant)
-
-	}
-
-	//fmt.Println(entireArray[0].Id)
-	//fmt.Println(entireArray[1].Var)
-
-	//fmt.Println(err80)
-	//fmt.Println(c)
-
-	//var Var []string
-	//var Id [] int
-	//var Quant [] int
-	//var Uid [] int
-
-	//var i = 0
-
-//	for i = 0; i < len(entireArray); i++ {
-//
-//		Var[i] = entireArray[i].Var
-//
-//	}
-//
-//	fmt.Println(entireArray[0].Var)
-//	fmt.Println(entireArray[1].Var)
-
 	/*
-		for index, element := range myArray {
-			fmt.Println(index, "=>", element)
+		c := json.NewDecoder(r.Body)
+		var err81 = c.Decode(&myArray)
+		if err81 != nil {
+			fmt.Println(err81)
+			fmt.Println(c)
+			fmt.Println(myArray)
+
 		}
-
-
 	*/
 
+	//////
+
+	/*
+		entireArray := display6{}
+		//c := json.NewDecoder(r.Body)
+
+		body, readErr := ioutil.ReadAll(r.Body)
+		if readErr != nil {
+			fmt.Println(readErr)
+			fmt.Println(body)
+		}
+		fmt.Println(body)
+	*/
+
+	/*
+		c = json.NewDecoder(r.Body)
+		var err80 = c.Decode(&entireArray)
+		if err80 != nil {
+			//fmt.Println(err80)
+			//fmt.Println(c)
+			//fmt.Println(myArray[0].Quant)
+
+		}
+	*/
 	/*
 		r.ParseForm()
 		var body1 string
@@ -1530,6 +1471,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(string(body1))
 			break
 		}
+
+	*/
+
+	/*
 
 		array := r.Form["var"]
 		fmt.Println(array)
@@ -1541,33 +1486,38 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	*/
 
-	query := r.URL.Query()
+	/*
 
-	//this is the searchterm in order from first to last now
-	key1, present := query["var"]
+		query := r.URL.Query()
 
-	if !present || len(key1) == 0 {
-		fmt.Println("filters not present1")
-	}
+		//this is the searchterm in order from first to last now
+		key1, present := query["var"]
 
-	keyTotalAmountBought, present2 := query["quant"]
-	if !present2 || len(keyTotalAmountBought) == 0 {
-		fmt.Println("filters not present2")
-	}
-	ProdID, present3 := query["id"]
-	if !present3 || len(ProdID) == 0 {
-		fmt.Println("filters not present3")
+		if !present || len(key1) == 0 {
+			fmt.Println("filters not present1")
+		}
 
-	}
+		keyTotalAmountBought, present2 := query["quant"]
+		if !present2 || len(keyTotalAmountBought) == 0 {
+			fmt.Println("filters not present2")
+		}
+		ProdID, present3 := query["id"]
+		if !present3 || len(ProdID) == 0 {
+			fmt.Println("filters not present3")
 
-	UserIDstring, present4 := query["uid"]
-	if !present4 || len(UserIDstring) == 0 {
-		fmt.Println("filters not present4")
+		}
 
-	}
+		UserIDstring, present4 := query["uid"]
+		if !present4 || len(UserIDstring) == 0 {
+			fmt.Println("filters not present4")
+
+		}
+
+
+	*/
 
 	var val1 = ""
-	val1 = UserIDstring[0]
+	val1 = UserIDstring
 	//var err1 = ""
 	var UserID int
 	var err error
@@ -1583,7 +1533,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	}
 
 	globKeyword := key1[0]
-
+	//globKeyword := key1
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	string1 = ""
