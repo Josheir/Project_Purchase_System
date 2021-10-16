@@ -461,37 +461,7 @@ console.log(JSON.stringify(cars));
 
 		////////
 
-/*		
- const data = { username: '1' } ;
- fetch('http://localhost:8080/display')
-.then(response => response.json())
-.then(data => console.log(data));
 
-
-
-		fetch('http://localhost:8080/display', {
-		method: 'POST', // or 'PUT'
-		headers: {
-			'Content-Type': 'application/json',
-		},
-
-		body: JSON.stringify({
-        username: 'dean',
-        
-		})
-		//body: JSON.stringify(data),
-		})
-		.then(response => response.json())
-		.then(data => {
-		console.log('Success:', data);
-		})
-		.catch((error) => {
-		console.error('Error:', error);
-		});
-
-
-
-*/
 		//////////
 
 
@@ -505,44 +475,13 @@ console.log(JSON.stringify(cars));
 			
 	 		
 			//var display2='{{"var" : "10"}, {"var" : "20"}}';
-			//var membersJSONString=JSON.stringify(members);
-			  
-			//////
-			fetch("http://localhost:8080/display", {
-			credentials: "include",
-			method: "POST",
-			headers:{
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(display2)})
-			.then(response=>response.json())
-			.then(data => displayResponse(data));
 			
-			alert("am here");
-			//alert(data);
 			*/
 			
 
 
 		
-			//////
-			//////
-			/*
-			$.ajax({
-              url: "http://localhost:8080/display",
-              type: 'POST',
-              dataType: 'json',
-              //contentType: "application/json; charset=utf-8",
-			  contentType: "multipart/form-data; charset=utf-8",
-			  
-              crossDomain: true,
-              data:  display2,
-			  processData: true,
-              success: function (result) {
-			 */
-			 ///////
-
-			 //var querystring1 = "userid=10";
+			
 			 //var display2='{"Vari" : "10"}';
 			 /////////
 
@@ -628,7 +567,8 @@ console.log(JSON.stringify(cars));
 
 				////////////
 				
-				var ourNewWord = ourNewWord2
+				//var ourNewWord = ourNewWord2
+				var ourNewWord = "";
 				for(var i = 0 ; i < array.length ; i++)
 			  {
 				////
@@ -637,7 +577,7 @@ console.log(JSON.stringify(cars));
 				let val1 = '["' + array[i] +  '"]';
 				alert("aaaa");
 				alert(console.log(array));
-				ourNewWord = ourNewWord.replace(val1 , '');
+				ourNewWord =  ourNewWord.replace(val1 , '');
 
 				retVals = deriveKeywordFromResult(ourNewWord);
 

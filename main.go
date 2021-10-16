@@ -1391,25 +1391,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err1)
 	}
 
-	//var lengthOfKeyword string
-	//var lengthOfID string
 	var ProdID []string
 	var keyTotalAmountBought []string
 	var key1 []string
 	var UserIDstring []string
 
-	////
-
-	//var a = r.FormValue("var")
-	//fmt.Println(a)
-	/////
-
-	//multiple product ids - handle please
 	var i = 0
 
-	//product ID and quantity purchased
-
-	//length of all parameters , for example a length of four would mean four of these would exist, total
 	var length = len(r.Form["uid"])
 
 	if length > 0 {
@@ -1419,29 +1407,25 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			UserIDstring = append(UserIDstring, r.Form["uid"][i])
 		}
 
-		//length of two and higher in this display there will always be one or no keyword
 	} else {
-		//UserIDstring[0] = "1"
+
 	}
 
 	length = len(r.Form["var"])
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			//key1[i] = r.Form["var"][i]
 			key1 = append(key1, r.Form["var"][i])
 		}
 	} else {
 
-		//key1 = append(key1, "")
 	}
 
 	length = len(r.Form["id"])
 	if length > 0 {
-		//lentth is at least 3, so will be four because there are two values here
+
 		for i = 0; i < (length); i++ {
-			//ProdID[i] = r.Form["id"][i]
-			//keyTotalAmountBought[i] = r.Form["quant"][i]
+
 			ProdID = append(ProdID, r.Form["id"][i])
 			keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
 
@@ -1449,11 +1433,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 
-		//ProdID = append(ProdID, "")
-		//keyTotalAmountBought = append(keyTotalAmountBought, "")
 	}
-
-	/////////
 
 	//////////
 
@@ -1631,7 +1611,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//counter1 = 0
 	var counterOfRecords = 0
-	
+
 	for rows.Next() {
 
 		counterOfRecords++
