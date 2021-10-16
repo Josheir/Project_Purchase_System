@@ -1382,7 +1382,7 @@ type Display3 struct {
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	//////
 
@@ -1396,32 +1396,62 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var ProdID []string
 	var keyTotalAmountBought []string
 	var key1 []string
-	var UserIDstring string
+	var UserIDstring []string
+
+	////
+
+	//var a = r.FormValue("var")
+	//fmt.Println(a)
+	/////
 
 	//multiple product ids - handle please
 	var i = 0
 
 	//product ID and quantity purchased
 
-	var length = len(r.Form["id"])
-	//subtract keywords and userids
+	//length of all parameters , for example a length of four would mean four of these would exist, total
+	var length = len(r.Form["uid"])
 
-	length = length - 2
+	if length > 0 {
+		for i = 0; i < (length); i++ {
 
-	for i = 0; i < (length); i++ {
-		ProdID[i] = r.Form["id"][i]
-		keyTotalAmountBought[i] = r.Form["quant"][i]
+			//UserIDstring[i]  = r.Form["uid"][i]
+			UserIDstring = append(UserIDstring, r.Form["uid"][i])
+		}
+
+		//length of two and higher in this display there will always be one or no keyword
+	} else {
+		//UserIDstring[0] = "1"
 	}
 
-	//keywords - could change to single non array variable to be better
-	//for i = 0; i < len(r.Form["var"]); i++ {
+	length = len(r.Form["var"])
+	if length > 0 {
+		for i = 0; i < (length); i++ {
 
-	key1[0] = r.Form["var"][0]
-	//}
+			//key1[i] = r.Form["var"][i]
+			key1 = append(key1, r.Form["var"][i])
+		}
+	} else {
 
-	//id of user
-	UserIDstring = r.Form["uid"][0]
-	//UserIDstring, err1 = strconv.Atoi(UserIDstring)
+		//key1 = append(key1, "")
+	}
+
+	length = len(r.Form["id"])
+	if length > 0 {
+		//lentth is at least 3, so will be four because there are two values here
+		for i = 0; i < (length); i++ {
+			//ProdID[i] = r.Form["id"][i]
+			//keyTotalAmountBought[i] = r.Form["quant"][i]
+			ProdID = append(ProdID, r.Form["id"][i])
+			keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
+
+		}
+
+	} else {
+
+		//ProdID = append(ProdID, "")
+		//keyTotalAmountBought = append(keyTotalAmountBought, "")
+	}
 
 	/////////
 
@@ -1517,11 +1547,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	*/
 
 	var val1 = ""
-	val1 = UserIDstring
+	val1 = UserIDstring[0]
 	//var err1 = ""
 	var UserID int
 	var err error
-	if len(UserIDstring) != 0 {
+	if len(UserIDstring[0]) != 0 {
 
 		//only one
 		UserID, err = strconv.Atoi(val1)
@@ -1534,7 +1564,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	globKeyword := key1[0]
 	//globKeyword := key1
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	string1 = ""
 
@@ -1601,6 +1631,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//counter1 = 0
 	var counterOfRecords = 0
+	
 	for rows.Next() {
 
 		counterOfRecords++
