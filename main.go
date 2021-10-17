@@ -1035,33 +1035,102 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	//product is checked with array and if exists is contniues
 
 	GlobCounter++
-	//store, err := session.Start(context.Background(), w, r)
 
-	fmt.Println("+++++++++++++++++")
+	/////////
 
-	query := r.URL.Query()
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//this is the searchterm in order from first to last now
-	key1, present := query["var"]
+	/////
 
-	if !present || len(key1) == 0 {
-		fmt.Println("filters not present1")
+	//var numOfKeywords []string
+	//numOfKeywords= r.Form["numofkeywords"]
+	//var intNumOfKeywords, _ = strconv.Atoi(numOfKeywords[0]);
+	//////
+
+	//////
+
+	var err1 = r.ParseForm()
+	if err1 != nil {
+		fmt.Fprint(w, err1)
 	}
 
-	keyTotalAmountBought, present2 := query["quant"]
-	if !present2 || len(keyTotalAmountBought) == 0 {
-		fmt.Println("filters not present2")
+	var ProdID []string
+	var keyTotalAmountBought []string
+	var key1 []string
+	var UserIDstring []string
+
+	var i = 0
+
+	var length = len(r.Form["uid"])
+
+	if length > 0 {
+		for i = 0; i < (length); i++ {
+
+			//UserIDstring[i]  = r.Form["uid"][i]
+			UserIDstring = append(UserIDstring, r.Form["uid"][i])
+		}
+
+	} else {
+
 	}
-	ProdID, present3 := query["id"]
-	if !present3 || len(ProdID) == 0 {
-		fmt.Println("filters not present3")
+	//var is keyword
+	length = len(r.Form["var"])
+	if length > 0 {
+		for i = 0; i < (length); i++ {
+
+			key1 = append(key1, r.Form["var"][i])
+		}
+	} else {
+
 	}
 
-	UserIDstring, present4 := query["uid"]
-	if !present4 || len(UserIDstring) == 0 {
-		fmt.Println("filters not present4")
+	length = len(r.Form["id"])
+	if length > 0 {
+
+		for i = 0; i < (length); i++ {
+
+			ProdID = append(ProdID, r.Form["id"][i])
+			keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
+
+		}
+
+	} else {
 
 	}
+
+	///////////
+	/*
+		//store, err := session.Start(context.Background(), w, r)
+
+		fmt.Println("+++++++++++++++++")
+
+		query := r.URL.Query()
+
+		//this is the searchterm in order from first to last now
+		key1, present := query["var"]
+
+		if !present || len(key1) == 0 {
+			fmt.Println("filters not present1")
+		}
+
+		keyTotalAmountBought, present2 := query["quant"]
+		if !present2 || len(keyTotalAmountBought) == 0 {
+			fmt.Println("filters not present2")
+		}
+		ProdID, present3 := query["id"]
+		if !present3 || len(ProdID) == 0 {
+			fmt.Println("filters not present3")
+		}
+
+		UserIDstring, present4 := query["uid"]
+		if !present4 || len(UserIDstring) == 0 {
+			fmt.Println("filters not present4")
+
+		}
+
+
+
+	*/
 
 	//var UID = 0
 	//var err= ""
@@ -1079,7 +1148,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	globKeyword := key1[0]
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	//w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	string1 = ""
 
