@@ -33,7 +33,7 @@ window.sessionStorage
 ///////////
 
 var userid = "";
-alert("query");
+//alert("query");
     $(document).ready(function () {
         $('#button1').click(function () {
 
@@ -65,11 +65,11 @@ alert("query");
                 //crossDomain: true,
                 success: function (result) {
 
-                  alert("pass");
+                  //alert("pass");
                   //alert(result);
                   if (result[0].Text == "password correct")
                   {
-                    alert("2");
+                    //alert("2");
                     //template / table works when this is commented out
                     sessionStorage.setItem("session_userID", result[0].UserID);
                     

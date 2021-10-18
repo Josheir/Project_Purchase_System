@@ -441,6 +441,8 @@ var queryString = string.substring(0, string.length-1);
                   
                   for(let key of keys) {
        
+                    alert("keys here...");
+                    alert(key);
                   if(key =="session_userID")
                   {
                     continue;
@@ -478,9 +480,9 @@ var queryString = string.substring(0, string.length-1);
                   //alert("is eenough");
                   //alert(data1[i].IsEnoughQuantity);
                   
-                if(data1[i].IsEnoughQuantity == "no")
+                if(data1[i].IsEnoughQuantity == false)
                 {
-                  //alert("not enough!!!!");
+                  alert("not enough!!!!");
                 flag = "not enough";
                 break;
                 }
@@ -489,13 +491,14 @@ var queryString = string.substring(0, string.length-1);
                 //at least one product cant be purchased
                 if (flag == "not enough")
                 {
-                  //alert("isn't enough");
+                  
+                  alert("isn't enough");
                 }
               
                 //all products can be purchasee
                 else 
                 {
-                  //alert("is enough");
+                  alert("is enough");
                   window.location.href = "donePurchase.html";
                 }
 
@@ -558,37 +561,15 @@ var queryString = string.substring(0, string.length-1);
                 var totalCostID = "TC" + i;
                 var GrandTotalStringID = "GT" + i;
                 var oneDivID1 =  "V" + i;
+                //quantity available
                 var what = document.getElementById(quantity).value;
 
                 /////////
 
-
+                //
                 var amounttobuy = document.getElementById(buyThisManyID).value;
 
-                //var i1 = -1;
-                //for(let key of keys) {
                 
-                   
-                 // if(key =="session_userID")
-                 // {
-                 //   continue;
-                 // }
-
-                 // if(key =="searchterms")
-                 // {
-                 //   continue;
-                 // }
-                 
-                  //alert("in this new section");
-                  //alert(amounttobuy);
-                  //neet to run this when amount to buy in template2 is zero
-                  //if(amounttobuy == 0 )
-                  //{
-                  //    sessionStorage.setitem(data1[i].ID, 0);
-                  // 
-                  //  //var item = sessionStorage.getitem(key);
-                  //}
-                    
                
                 /////////
 
@@ -638,16 +619,7 @@ var queryString = string.substring(0, string.length-1);
                     sessionStorage.setItem("numberOfRecords", "0");
                   }
 
-                  /////////
-
-                  //alert(lst);
-                  //lst[0].style.display = "none";
-                  //document.getElementById(oneDivID1).value = "";
-                  //document.getElementById(oneDivID1).outerHTML = "bbb";
-                  //document.getElementById(oneDivID1).innerHTML = "ccc";
-                  //document.getElementsById(AmountOfQuantityID).style.display = "none";
-                  //alert("html");
-                  //alert(document.getElementById(oneDivID1).innerHTML);
+                  
 
                   continue;
                 }
@@ -656,19 +628,19 @@ var queryString = string.substring(0, string.length-1);
 
                 /////////
              
-                var str2= "";
+                var str1 = false;
                 str1 = data1[i].IsEnoughQuantity;
 
+                alert("shazam");
+                alert(str1);
                 var num = data1[i].QuantityAvailable;
                 str2 = num.toString();
                 //alert("str2");
                 //alert(str2);
-                //DatabaseQuantity < quant)
-
-
+               
 
                 //wasnt enough, so make red
-                if (str1 == "no")
+                if (str1 == false)
                 {
 
                   gFlagIsEnoughProduct = "no";
@@ -815,7 +787,7 @@ var queryString = string.substring(0, string.length-1);
                 alert("total");
                 alert(gRedTextAmount);
                 alert(lengthOfData);
-                if (gRedTextAmount == lengthOfData - 1)
+                if (gRedTextAmount == lengthOfData)
                 {
                   stringGrandTotal = "Grand Total: $" + "0.00";
                 }

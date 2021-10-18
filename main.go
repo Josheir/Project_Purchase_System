@@ -215,7 +215,7 @@ func makeListForLastpageA(enough bool, id int, quant int) {
 }
 
 //this last page is where the data is spat back to html to note any database changes that cause purchase impossible
-//func makeListForLastpage(id int, quant int) {
+//func tpage(id int, quant int) {
 //
 //	//to spit back to html
 //	prod := Product2{
@@ -358,7 +358,49 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	ProductList2A = nil
 
-	query := r.URL.Query()
+	/////////
+
+	var err1 = r.ParseForm()
+	if err1 != nil {
+		fmt.Fprint(w, err1)
+	}
+
+	var i = 0
+
+	var allIds []string
+	var allQuants []string
+	//var userID1 []string
+
+	var length = len(r.Form["userid"])
+
+	if length > 0 {
+		for i = 0; i < (length); i++ {
+
+			//userID1 = append(userID1, []string{r.Form["uid"][i]}...)
+
+		}
+
+	} else {
+
+	}
+
+	length = len(r.Form["id"])
+	if length > 0 {
+
+		for i = 0; i < (length); i++ {
+
+			allIds = append(allIds, []string{r.Form["id"][i]}...)
+			allQuants = append(allQuants, []string{r.Form["quant"][i]}...)
+
+		}
+
+	} else {
+
+	}
+
+	//////////
+
+	/*query := r.URL.Query()
 
 	allIds, present := query["id"]
 
@@ -377,108 +419,87 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	if !present || len(userID1) == 0 {
 		fmt.Println("filters not present")
 	}
-
+	*/
 	db := dbConn()
 
 	var thisProductID = 0
-	DatabaseQuantity := 0
+	//DatabaseQuantity := 0
 
 	var haveWrittenOrder bool = false
 	var j = 0
-	var didRollback = false
-
+	//quant trying to buy
+	var prodQuant int
 	tx, err := db.Begin()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	for j = 0; j < len(allIds); j++ {
+	var enough bool = false
 
-		thisProductID, _ = strconv.Atoi(allIds[j])
+	var k = 0
+	for k = 0; k < len(allIds); k++ {
 
-		var enough bool = false
+		enough = false
 
-		val1, err1 := strconv.Atoi(allIds[j])
+		//////
+		thisProductID, _ = strconv.Atoi(allIds[k])
+
+		val1, err1 := strconv.Atoi(allIds[k])
 		if err1 != nil {
 			fmt.Println(err)
 		}
 
-		//checks if enough product to remove the quantity in database
+		//////
 
-		err := tx.QueryRowContext(ctx, "SELECT (products.ProductQuantity >= 0)  FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready' ", allIds[j]).Scan(&enough)
+		enough = false
+		//one record gets quantity
+		stmt, err := db.Prepare("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready'")
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		if !enough {
+		rows, err := stmt.Query(allIds[k])
 
-			didRollback = true
-			err := tx.Rollback()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		//runs one time
+		for rows.Next() {
+
+			//database hold this
+			err = rows.Scan(&prodQuant)
+
 			if err != nil {
 				fmt.Println(err)
 			}
 
-		}
-
-		//after rollback finish with making list to pass to template2
-		if didRollback {
-
-			var k = 0
-			for k = 0; k < len(allIds); k++ {
-				enough = false
-				stmt, err := db.Prepare("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready'")
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				rows, err := stmt.Query(allIds[k])
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				var prodQuant int
-
-				for rows.Next() {
-
-					//database hold this
-					err = rows.Scan(&prodQuant)
-
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					quantPurchasing, err := strconv.Atoi(allQuants[k])
-					if err != nil {
-						fmt.Println(err)
-					}
-
-					//in database for product -
-					if DatabaseQuantity-quantPurchasing >= 0 {
-						enough = true
-					}
-					makeListForLastpageA(enough, (val1), quantPurchasing)
-
-				}
+			quantPurchasing, err := strconv.Atoi(allQuants[k])
+			if err != nil {
+				fmt.Println(err)
 			}
 
-			return
+			//not enough in database
+			if prodQuant-quantPurchasing < 0 {
+				enough = false
+				makeListForLastpageA(enough, (val1), quantPurchasing)
+				continue
+
+			} else {
+				enough = true
+			}
+			// val2 is int id
+			makeListForLastpageA(enough, (val1), quantPurchasing)
+
 		}
 
-		intQuant, err := strconv.Atoi(allQuants[j])
+		//////********************************/////
+
+		intQuant, err := strconv.Atoi(allQuants[k])
 		if err != nil {
 			fmt.Println(err)
 		}
-		//in database for product -
-		if DatabaseQuantity-intQuant >= 0 {
-			enough = true
-		}
-
-		//intQuant is amount purchasing
-		makeListForLastpageA(enough, (val1), intQuant)
-		enough = false
 
 		//this gets the record for insert of quant
 
@@ -489,7 +510,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//if client b is passed this than quantity will be the same as client a, so whole thing needs to be transaction
 		//because productquantity is used
 
-		//gets all the fields of data from  a particular productid and ready status
+		//gets all the fields of data from  a particular productid and ready status, so that an update may happen
+		//checked at beginnnig if this exists
+		//get all attributes to update with
 		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[j]).Scan(
 			&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
 			&OrderID, &ProductStatus, &AdminID, &ProductID, &ID)
@@ -499,78 +522,84 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ProductID = thisProductID
-		var thisQuant = ProductQuantity - intQuant
-		//updates productid fields to its quantity minus int-quant
-		_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, allIds[j])
-		if err != nil {
-			fmt.Println(err)
-		}
+		var thisQuant = prodQuant - intQuant
+		if thisQuant > 0 {
+			//updates productid fields to its quantity minus int-quant from above
+			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, allIds[j])
+			if err != nil {
+				fmt.Println(err)
+			}
 
-		datetime := time.Now()
+			datetime := time.Now()
 
-		var id1 = 0
+			var id1 = 0
 
-		var productQuant int64
-		var order_ID int64
-		//check if there is a product record ctreated to store in order table, if there is, than an order record has been created too.
-		err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
-		if err != nil {
-			fmt.Println(err)
-		}
-		//no record of product created to store in order, so create both
+			var productQuant int64
+			var order_ID int64
 
-		if err == sql.ErrNoRows {
+			//check if there is an order id created for the product record, if there isn't than create the order table
 
-			if !haveWrittenOrder {
-				res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
+			err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//no order id stored in product record so create both
+			if err == sql.ErrNoRows {
+
+				if !haveWrittenOrder {
+					res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
+
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					order_ID, err = res.LastInsertId()
+
+					if err != nil {
+						fmt.Println(err)
+					}
+
+					//lastID++
+
+					haveWrittenOrder = true
+				}
+
+				//also need to create a new product table because there is no order record, so there is no orderid
+
+				ProductStatus = "purchased"
+				_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
 
 				if err != nil {
 					fmt.Println(err)
 				}
 
-				order_ID, err = res.LastInsertId()
+				//there is an order id in product so there is a product order table too... they are created together, so update this instead of create it
+			} else {
 
+				//update product with status of purchased from product table:  original quantity + intQuant
+				//productquant is quantity of product
+				//intquant is database quantity taken from the allquant array
+				_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
 				if err != nil {
 					fmt.Println(err)
 				}
 
-				//lastID++
-
-				haveWrittenOrder = true
-			}
-
-			//insert product to store in table - change quantity and status
-
-			ProductStatus = "purchased"
-			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			//there is a product created to store in order table so than the order table record has also been created, so no need to do anything
-		} else {
-
-			//update product with status of purchased from product table:  original quantity + intQuant
-			//productquant is quantity of product
-			//intquant is database quantity taken from the allquant array
-			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
-			if err != nil {
-				fmt.Println(err)
 			}
 
 		}
+		//for
 
-	} //for
+		err5 := tx.Commit()
+		if err5 != nil {
+			fmt.Println(err5)
+		}
 
-	err5 := tx.Commit()
-	if err5 != nil {
-		fmt.Println(err5)
-	}
+		//if !didRollback {
+		//json.NewEncoder(w).Encode(ProductList2A)
+	} // k
 
-	//if !didRollback {
 	json.NewEncoder(w).Encode(ProductList2A)
-	//}
 
 }
 
@@ -1067,19 +1096,25 @@ func display2(w http.ResponseWriter, r *http.Request) {
 		for i = 0; i < (length); i++ {
 
 			//UserIDstring[i]  = r.Form["uid"][i]
-			UserIDstring = append(UserIDstring, r.Form["uid"][i])
+			UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
+			//UserIDstring = append(UserIDstring, r.Form["uid"][i])
 		}
 
 	} else {
 
 	}
 	//var is keyword
+	//16900
 	length = len(r.Form["var"])
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			key1 = append(key1, r.Form["var"][i])
+			key1 = append(key1, []string{r.Form["var"][i]}...)
 		}
+
+		var themaxlength = len(key1)
+		fmt.Println(themaxlength)
+
 	} else {
 
 	}
@@ -1089,8 +1124,11 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		for i = 0; i < (length); i++ {
 
-			ProdID = append(ProdID, r.Form["id"][i])
-			keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
+			ProdID = append(ProdID, []string{r.Form["id"][i]}...)
+			keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
+
+			//ProdID = append(ProdID, r.Form["id"][i])
+			//keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
 
 		}
 
@@ -1473,7 +1511,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		for i = 0; i < (length); i++ {
 
 			//UserIDstring[i]  = r.Form["uid"][i]
-			UserIDstring = append(UserIDstring, r.Form["uid"][i])
+			UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
+			//UserIDstring = append(UserIDstring, r.Form["uid"][i])
 		}
 
 	} else {
@@ -1484,8 +1523,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			key1 = append(key1, r.Form["var"][i])
+			key1 = append(key1, []string{r.Form["var"][i]}...)
+			//key1 = append(key1, r.Form["var"][i])
 		}
+
 	} else {
 
 	}
@@ -1495,8 +1536,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		for i = 0; i < (length); i++ {
 
-			ProdID = append(ProdID, r.Form["id"][i])
-			keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
+			ProdID = append(ProdID, []string{r.Form["id"][i]}...)
+			keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
+
+			//ProdID = append(ProdID, r.Form["id"][i])
+			//keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
 
 		}
 

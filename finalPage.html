@@ -69,6 +69,7 @@ loadData();
       //pressed return to purchase from template2
         function display2(){
 
+			alert("zzzzzzzzzz");
         var querystring = "";
         //alert("button1");
         let keys = Object.keys(sessionStorage);
@@ -216,7 +217,7 @@ loadData();
 		function ajaxCall( flag2)
 		{
 
-		
+			alert("zzzzzzzzzz");
 		//alert("button6");
 		var string = ""
         let keys = Object.keys(sessionStorage);
@@ -343,8 +344,10 @@ loadData();
         
        // alert(val1);
 	   
-	   querystring = "var=apple&var=apple1";
-          $.ajax({
+	   //querystring = "var=apple&var=apple1";
+       
+	 
+	 	  $.ajax({
               url: "http://localhost:8080/display",
               type: 'POST',
               dataType: 'html',
@@ -446,8 +449,8 @@ var var1 = "hasntBeenHere";
 for(let key of keys) {
 
 
-  //alert("keys here");
-  //alert(key);
+  alert("keys here");
+  alert(key);
   if(key == "session_userID")
   {
     continue;
@@ -464,8 +467,8 @@ for(let key of keys) {
   //check for not an integer
 
   var item = sessionStorage.getItem(key);
-  //alert("item");
-  //alert(item);
+  alert("item");
+  alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
 
   
