@@ -15,10 +15,12 @@
 
 <body>
 
+	
 
 
   <script>
-    window.sessionStorage
+    //alert text : 164 (4), 183
+	window.sessionStorage
 
 	//all keywords need to  be filled out! to make search product work
 	
@@ -55,6 +57,8 @@ var3 = var1 + var2;
       <input   id="button7"  type="button" value="checkout"/>
       <input   name = "search" type="text" id="search" name="search" placeholder= "apple4" value="apple4"/>
       <input   id="button6" onclick = "ajaxCall('0')" type="button" value="Search"/>
+	  <input   id="button8" onclick = "resetCall()" type="button" value="Reset"/>
+
 
       <br>
       <div id = "firstdiv" ></div>
@@ -82,7 +86,7 @@ var searchterm = urlParams.get('display2');
 if (searchterm == "1")
 {
 	//alert("made it");
-	display2();
+	//display2();
 	//ajaxCall('0');
 }
 
@@ -152,12 +156,50 @@ $(document).ready(function () {
 		//from pressing search button
 		var array = [];
 		var storedArray  = [];
+		//var counterOfKeywords = 0;
+		var globtest = 0;
+
+
+		///////////
+
+		
+		function resetCall()
+		{
+			sessionStorage.clear();
+			var urlValue = "http://localhost/golangproj/index.html";
+			var val1 = sessionStorage.getItem("session_userID");
+			//var val2 = sessionStorage.getItem("amtOfKeywords");
+			sessionStorage.clear();
+			sessionStorage.setItem("session_userID", val1);
+			sessionStorage.setItem("amtOfKeywords", 1);
+			window.location.assign(urlValue);
+			//ajaxCall('0');
+		}
+
+
+
+		///////////
+
 
 
 		//pushed search (button 6) display1
 		function ajaxCall( flag2)
 		{
+			alert("ajaxcall");
+			let amt2 = sessionStorage.getItem("amtOfKeywords");
+			alert(amt2);
+			let amt2Int = parseInt(amt2);
+			alert(amt2Int);
+			if (amt2Int > 1)
+			{
+				alert("Maximum Keywords Selected!");
+				return(1);
+			}
 
+
+			//alert("globvariabletest - glob variable is ");
+			//globtest++;
+			//alert(globtest);
 
 			alert("keys -A");
 			
@@ -509,6 +551,23 @@ console.log(JSON.stringify(cars));
 				crossDomain: true,
                 success: function (result) {
 
+					//alert("check values");
+					
+					//set in login
+					var amt1 = sessionStorage.getItem("amtOfKeywords");
+					if (amt1 != "")
+					{
+						alert("more than one");
+						amt1Int = parseInt(amt1);
+						sessionStorage.setItem("amtOfKeywords", amt1Int + 1);
+					}
+					else
+					{
+						
+						//sessionStorage.setItem("amtOfKeywords", 1);
+						//alert("zero");
+
+					}
                   //alert("pass");
                   //alert(b);
 					//alert(val1);
