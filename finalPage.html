@@ -531,9 +531,17 @@ var url = "http://localhost:8080/template2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
 
+////////
+
+
+
+
+////////
+
   					var val1 = ""
                     $.ajax({
-                    type:"GET",
+                    type:'POST',
+					datatype: 'html',
                     url:url,
                     data:queryString,
                     async:false,

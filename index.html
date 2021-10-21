@@ -1672,11 +1672,14 @@ var url = "http://localhost:8080/display2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
 
+
+
 			alert("query3")
 			alert(querystring);
 
 			$.ajax({
-			type:"GET",
+			type:"POST",
+			datatype: 'html',
 			url:url,
 			data:querystring,
 			async:false,
