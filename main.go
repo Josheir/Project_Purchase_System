@@ -1980,8 +1980,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 				//create a zero amount new productID record
 
-				sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-					&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
+				//sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+				//	&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
 				break
 			}

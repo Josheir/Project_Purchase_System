@@ -19,6 +19,9 @@
 
 
   <script>
+
+	  //753 text message (4)
+
     //alert text : 164 (4), 183
 	window.sessionStorage
 
@@ -29,7 +32,7 @@
     
   
 //for returning our of functions - //this is in finalpage.html and index.html
-var MAXRECORDS = 20;
+var MAXRECORDS = 2;
 //keep these message boxes: 44 finalpages, 495 index, 163 index
 //first two use const above, and last is in ajaxcall for checking login
 
@@ -86,7 +89,7 @@ var searchterm = urlParams.get('display2');
 if (searchterm == "1")
 {
 	//alert("made it");
-	//display2();
+	display2();
 	//ajaxCall('0');
 }
 
@@ -168,10 +171,10 @@ $(document).ready(function () {
 			sessionStorage.clear();
 			var urlValue = "http://localhost/golangproj/index.html";
 			var val1 = sessionStorage.getItem("session_userID");
-			//var val2 = sessionStorage.getItem("amtOfKeywords");
+			
 			sessionStorage.clear();
 			sessionStorage.setItem("session_userID", val1);
-			sessionStorage.setItem("amtOfKeywords", 1);
+			
 			window.location.assign(urlValue);
 			//ajaxCall('0');
 		}
@@ -185,16 +188,17 @@ $(document).ready(function () {
 		//pushed search (button 6) display1
 		function ajaxCall( flag2)
 		{
-			alert("ajaxcall");
-			let amt2 = sessionStorage.getItem("amtOfKeywords");
-			alert(amt2);
-			let amt2Int = parseInt(amt2);
-			alert(amt2Int);
-			if (amt2Int > 1)
+
+			let amt1 = sessionStorage.getItem("amtOfSelectedRecords");
+			let amt1Int = parseInt(amt1);
+			if(amt1Int == 1)
 			{
-				alert("Maximum Keywords Selected!");
+				alert("At Order Limit");
 				return(1);
 			}
+
+			alert("ajaxcall");
+			
 
 
 			//alert("globvariabletest - glob variable is ");
@@ -242,6 +246,11 @@ $(document).ready(function () {
 			
 			continue;
 		}
+		if(key ==  "alreadyZero")
+		{
+			
+			continue;
+		}
 
 		if(key == "keywords")
   		{
@@ -281,10 +290,11 @@ $(document).ready(function () {
 			
 			
 			var item = sessionStorage.getItem(key);
-
 			
 			
        		string =  string + "id=" + key + "&quant=" + item + "&";
+			
+			
 			reloadFlag = 0;
   
        		
@@ -540,6 +550,8 @@ console.log(JSON.stringify(cars));
 			 ///////////
 
 
+			 alert("query1");
+			 alert(querystring);
 				//val1 = "here";
 				var b = 0;
 			 $.ajax({
@@ -551,23 +563,12 @@ console.log(JSON.stringify(cars));
 				crossDomain: true,
                 success: function (result) {
 
+			alert("query2");
+			 alert(querystring);
 					//alert("check values");
 					
 					//set in login
-					var amt1 = sessionStorage.getItem("amtOfKeywords");
-					if (amt1 != "")
-					{
-						alert("more than one");
-						amt1Int = parseInt(amt1);
-						sessionStorage.setItem("amtOfKeywords", amt1Int + 1);
-					}
-					else
-					{
-						
-						//sessionStorage.setItem("amtOfKeywords", 1);
-						//alert("zero");
-
-					}
+					
                   //alert("pass");
                   //alert(b);
 					//alert(val1);
@@ -742,9 +743,24 @@ xhr.send(formdata);
 var gTotalOfPurchases = 0;
 
 //template number one presses submit this and changes values in quantity and amount purchased
+//needs to reduce numberofrecords by one when changed to zero first time
+//template1, enters a zero...
 function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 {
 
+				//this is the check when submitted if there are already to many records
+				//the count is incremented in setdata and reduced when the value
+				//*is removed in template2 when hidden  hidden
+				//*aso it needs to be reduced when zero is entered in here
+				
+				
+				
+				
+				//val1 = sessionStorage.getItem("numberOfRecords");
+				//alert("session");
+				//alert(val1);
+				
+				/*
 				var val1 = "";
 				//alert("A2") ;
 				if(val1 = sessionStorage.getItem("numberOfRecords"))
@@ -756,7 +772,12 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						return(1);
 					}
 				}
-				
+				*/
+
+
+
+
+
 
 				
 
@@ -772,12 +793,24 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				//total of product with server
 				amountInPurchasedField = Number(document.getElementById(quantityID).value);
 				//already purchased
-				mountPurchasedSoFar = Number(document.getElementById(amountPurchasedID).value);
+				amountPurchasedSoFar = Number(document.getElementById(amountPurchasedID).value);
 				//alert("in the amount purchased");
 				//alert(amountPurchasedSoFar);
 				
 				//amount held for subtraction when submit button pressed
 				amountToBePurchased = Number(document.getElementById(amountToPurchaseID).value);
+
+				/////
+
+				if(amountInPurchasedField - amountToBePurchased != 0)
+				{
+					
+				}
+
+
+				//////
+
+
 				//alert(amountToBePurchased);
 				
 				//alert(amountToBePurchased);
@@ -863,32 +896,142 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 			}
 
 
-      //called from changefields because of submit button
+			var alreadyZeroArray = [];
+      //called from changefields because of submit button for display1
+	  //numberofrcords is set in logon and should have two new sets in this only fucntion (only) 
       function  setData(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
-			{
+	  {
+		  	/////
 
-				////////////////
+			  
+
+				
+			  
+
+
+
+			/////
+				alert("productID");
+				alert(productID);
+				var firstArray = [];
+				var lastQuant;
+				let val = "";
+				var storedArray = JSON.parse(sessionStorage.getItem("alreadyZero"))
+				
+				
+				alert("stored");
+				alert(storedArray);
+				if (storedArray == null)
+				{
+					if (quantityTryingToSet == 0)
+					{
+						/////
+						//if(val1 = sessionStorage.getItem("numberOfRecords"))
+						//var varIntVal1 = parseInt(val1);
+						//varIntVal1++;
+						//sessionStorage.setItem("numberOfRecords", varIntVal1);
+
+						/////
+					}
+					else
+					{
+						/////
+
+						alert("increse");
+						if(val1 = sessionStorage.getItem("numberOfRecords"))
+						var varIntVal1 = parseInt(val1);
+						varIntVal1++;
+						sessionStorage.setItem("numberOfRecords", varIntVal1);
+
+						/////
+					}
+				
+					
+
+				
+				alert("storedArray");
+				alert(storedArray);
+				}else if (storedArray != null)
+				{
+
+
+
+					var flag1 = false;
+					for (i = 0; i < storedArray.length; ) 
+					{
+					if(storedArray[i] == productID)
+					{
+						flag1 = true;
+						lastQuant = storedArray[i+1];
+						break;
+					}
+
+					i=i+2;
+					}
+					if(flag1 == false)
+					{
+						lastQuant = -1;
+					}
+
+
+
+
+
+
+
+					alert("checkit");
+					alert(lastQuant);
+					alert(quantityTryingToSet);
+					//putting quantity into a textbox that was empty
+					if (lastQuant == 0 && quantityTryingToSet != 0 )
+					{
+						alert("check1");
+						if(val1 = sessionStorage.getItem("numberOfRecords"))
+						var varIntVal1 = parseInt(val1);
+						varIntVal1++;
+						sessionStorage.setItem("numberOfRecords", varIntVal1);
+					}
+					//setting record to zero after there was a record
+					else if (lastQuant != 0 && quantityTryingToSet == 0 )
+					{
+						alert("check2");
+						if(val1 = sessionStorage.getItem("numberOfRecords"))
+						var varIntVal1 = parseInt(val1);
+						varIntVal1--;
+						sessionStorage.setItem("numberOfRecords", varIntVal1);
+					}
+				}
+
+				val1 = sessionStorage.getItem("numberOfRecords");
+				alert("session");
+				alert(val1);
+
+
+				if (val1 > 1)
+				{
+					return(1);
+					//continue;
+				}
+
+
+
 
 				
 				
 
+//------------------------------------
+				
+				//firstArray.push(ProductID); 
+				//firstArray.push(LastQuantityAmount); 
+				//window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
 
-
-				////////////////
-				
-				
-				
 				var string = "";
 				
 				var keyFlag = ""
 				var bought, totalquantity = 0;
-				var val1 = "";
+				val1 = "";
 
 				//alert("before");
-
-
-
-
 
 				let keys = Object.keys(sessionStorage);
 				//console.log(keys);
@@ -915,7 +1058,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//document.getElementById(amountPurchasedID).value = bought;
 					//alert(quantityOfProduct);
 					//quantity of records is decreasing
-					var totalquantity = 0;
+					totalquantity = 0;
 					
 					//if (reduceBool)
 					//{
@@ -1014,8 +1157,17 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				}
 				
 
+				
+				
+				firstArray.push(productID); 
+				firstArray.push(quantityTryingToSet); 
+				window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
 
-                
+
+				///////////////
+
+				
+                /////////////////
 
 			}
 
@@ -1204,8 +1356,10 @@ return [item1, ourNewWord, item];
 
 //////
 
-      //pressed return to purchase from template2
-	  function display2(){
+//pressed return to purchase from template2
+function display2(){
+
+	alert("check if getting here before panid");
 
 var querystring = "";
 //alert("button1");
@@ -1224,8 +1378,7 @@ var gcounter1 = 0;
 
 		
 
-		sessionStorage.setItem("numberOfRecords", "0");
-
+		
 for(let key of keys) {
 
 	
@@ -1269,6 +1422,11 @@ for(let key of keys) {
   {
 
   }
+  else if(key == "alreadyZero")
+  {
+
+  }
+
   else
   {
 	var val1 = "";
@@ -1285,22 +1443,22 @@ for(let key of keys) {
 
 		gflag1 = 1;
 		alert("A5") ;
-		if(val1 = sessionStorage.getItem("numberOfRecords"))
-		{
-			var varIntVal1 = parseInt(val1);
-			varIntVal1++;
+		//if(val1 = sessionStorage.getItem("numberOfRecords"))
+		//{
+			//var varIntVal1 = parseInt(val1);
+			//varIntVal1++;
 			//automatically changes variable to string
-			sessionStorage.setItem("numberOfRecords", varIntVal1);
+			//sessionStorage.setItem("numberOfRecords", varIntVal1);
 			querystring += "id=" + key + "&quant=" + item + "&";
-		}
-		else
-		{
-			sessionStorage.setItem("numberOfRecords", "1");	
+		//}
+		//else
+		//{
+			//sessionStorage.setItem("numberOfRecords", "1");	
 			//var varIntVal1 = parseint(val1);
 			//varIntVal1++;
-			querystring += "id=" + key + "&quant=" + item + "&";
+			//querystring += "id=" + key + "&quant=" + item + "&";
 
-		}
+		//}
 	}
 	
   } 
@@ -1321,6 +1479,7 @@ if (gflag1 == 4)
 
 
 // 8237
+/*
 querystring = "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "&"
 	  				+ "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "&"
 	  				+ "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" +"&"
@@ -1512,7 +1671,7 @@ querystring = "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb"
 	  				+ "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" +"&"
 	  				+ "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb"; 
 	  				
-
+*/
 
 
 
@@ -1527,6 +1686,8 @@ var url = "http://localhost:8080/display2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
 
+			alert("query3")
+			alert(querystring);
 
 			$.ajax({
 			type:"GET",
@@ -1535,6 +1696,8 @@ var url = "http://localhost:8080/display2";
 			async:false,
 			success: function (result) {
 
+				alert("query4")
+				alert(querystring);
 				alert("qqq");
 			  ///alert("result");
 			  //alert(result);

@@ -58,7 +58,7 @@ function CallIndex()
 $(function(){
 
 ////////
-//alert("in fiunction");
+alert("in fiunction");
 loadData();
 
 ////////
@@ -66,10 +66,10 @@ loadData();
 });
 
 
-      //pressed return to purchase from template2
+      //pressed return to order near checkout to display2
         function display2(){
 
-			alert("zzzzzzzzzz");
+			alert("zzzzzzzzzznot here i hope");
         var querystring = "";
         //alert("button1");
         let keys = Object.keys(sessionStorage);
@@ -237,7 +237,7 @@ loadData();
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
-		if (key != "session_userID" && key != "keywords") 
+		if (key != "session_userID" && key != "keywords" && key  != "alreadyZero" && key !=  "numberOfRecords") 
 		{
 			//alert("number here");
 			var item = sessionStorage.getItem(key);
@@ -438,9 +438,10 @@ loadData();
 var gFlag1 = 0;
 var queryString= ""; 
 
+//calls template2
 function loadData() {
  
-
+alert("is it getting here");
  var string = "";
 //////////////////////
 
@@ -449,7 +450,7 @@ var var1 = "hasntBeenHere";
 for(let key of keys) {
 
 
-  alert("keys here");
+  alert("keys hereaaa");
   alert(key);
   if(key == "session_userID")
   {
@@ -463,6 +464,13 @@ for(let key of keys) {
   {
 		continue;
   }
+  else if(key == "alreadyZero")
+  {
+		continue;
+  }
+
+
+  
   
   //check for not an integer
 
@@ -470,7 +478,7 @@ for(let key of keys) {
   alert("item");
   alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
-
+  alert(string);
   
   var1 = "hasBeenHere";
   
@@ -515,8 +523,9 @@ else
 	//alert("queryString2");
 	//queryString = "";
 }
-//alert("queryString");
-//alert(queryString);
+
+alert("queryString");
+alert(queryString);
 
 var url = "http://localhost:8080/template2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";

@@ -153,7 +153,8 @@ function changeColorToBlack(AmountToBuyID)
  
 }
 
-//pressed checkout
+//entered data and pressed checkout in template2 
+//before hide, amount of numberofrecords is decremented 
 function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
   //sessionStorage.removeItem("numberOfRecords");
@@ -217,6 +218,13 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
          
           continue;
         }
+        if(key =="alreadyZero")
+        {
+          counter--;
+         
+          continue;
+        }
+
         
         //input boxes id
         AmountToBuyID = var1 + counter;
@@ -296,11 +304,25 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                  
                   //CHANGED THIS LOOK HERE
                   sessionStorage.removeItem((Product), 0);
+                  
 
+
+                  //Use this if design is changed to keep return screen updated, isn't yet
+                  //in two places (hide is the search word) 
+                  //subtract a number from session level variabl
+                  //because remove has been used
+                  /*
+                  val1 = SessionStorage.getItem("numberOfRecords" )
+                  var val1int1 = parseInt(val1);
+                  val1int1--;
+                  sessionStorage.setItem("numberOfRecords", val1int1 );
+                  */
                   ///////
 
 
                   //alert("A hide 1");
+                  
+                  /*
                   if(val1 = sessionStorage.getItem("numberOfRecords"))
                   {
                     //alert("b");
@@ -322,7 +344,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
                     //alert("c");
                     sessionStorage.setItem("numberOfRecords", "0");
                   }
-
+                    */
 
                   /////////
                  
@@ -593,16 +615,28 @@ var queryString = string.substring(0, string.length-1);
                   amtOfHiddenProducts++;
                   document.getElementById(buyThisManyID).value = 0;
 
+                  ////////
+                 
 
+                  /*
+                  ////////
 
-                  //sessionStorage.setItem(data1[i].ID, 0);
+                  //Use this if design is changed to keep return screen updated, isn't yet
+                  //in two places (hide is the search word) 
                   sessionStorage.removeItem(data1[i].ID);
+                  /////
+                  let val1 = SessionStorage.getItem("numberOfRecords" )
+                  let val1int1 = parseInt(val1);
+                  val1int1--;
+                  sessionStorage.setItem("numberOfRecords", val1int1 );
+                  /////
+                  */
                   
-                  
-                  //alert("important");
+                 
 
                   /////////
 
+                  /*
                   if(val1 = sessionStorage.getItem("numberOfRecords"))
                   {
                     
@@ -618,7 +652,7 @@ var queryString = string.substring(0, string.length-1);
                   {
                     sessionStorage.setItem("numberOfRecords", "0");
                   }
-
+                  */
                   
 
                   continue;
