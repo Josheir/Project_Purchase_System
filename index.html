@@ -873,7 +873,8 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						//alert(amountToBePurchased);
 						
 						//so far, so good is still in database!
-						setData(originalQuantity, productID, amountToBePurchased, 0)
+						//amount purchased, quantity, amount to purchase
+						setData(amountPurchasedSoFar, amountInPurchasedField, productID, amountToBePurchased, 0)
                         return (1);
                     }
 
@@ -899,7 +900,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 			var alreadyZeroArray = [];
       //called from changefields because of submit button for display1
 	  //numberofrcords is set in logon and should have two new sets in this only fucntion (only) 
-      function  setData(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
+      function  setData(amountPurchasedSoFar, quantityOfProduct, productID, quantityTryingToSet, reduceBool)
 	  {
 		  	/////
 
@@ -911,7 +912,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 			/////
+			quantityOfProduct = quantityOfProduct - quantityTryingToSet - amountPurchasedSoFar;
 				alert("productID");
+				alert(quantityOfProduct);
 				alert(productID);
 				var firstArray = [];
 				var lastQuant;
@@ -951,6 +954,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 				alert("storedArray");
 				alert(storedArray);
+				alert(quantityOfProduct);
 				}else if (storedArray != null)
 				{
 
@@ -986,9 +990,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 					alert("checkit");
 					alert(lastQuant);
-					alert(quantityTryingToSet);
+					alert(quantityOfProduct);
 					//putting quantity into a textbox that was empty
-					if (lastQuant == 0 && quantityTryingToSet != 0 )
+					if (lastQuant == 0 || lastQuant == -1 && quantityOfProduct != 0 )
 					{
 						alert("check1");
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
@@ -997,7 +1001,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						sessionStorage.setItem("numberOfRecords", varIntVal1);
 					}
 					//setting record to zero after there was a record
-					else if (lastQuant != 0 && quantityTryingToSet == 0 )
+					else if (lastQuant != 0  && quantityOfProduct == 0 )
 					{
 						alert("check2");
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
