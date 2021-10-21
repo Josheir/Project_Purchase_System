@@ -1032,12 +1032,13 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 				val1 = sessionStorage.getItem("numberOfRecords");
-				alert("session");
+				alert("session - returning");
 				alert(val1);
 
 
 				if (val1 > 1)
 				{
+					alert("returning");
 					return(1);
 					//continue;
 				}
@@ -1054,10 +1055,10 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				//firstArray.push(LastQuantityAmount); 
 				//window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
 
-				var string = "";
+				let string = "";
 				
-				var keyFlag = ""
-				var bought, totalquantity = 0;
+				let keyFlag = ""
+				let bought, totalquantity = 0;
 				val1 = "";
 
 				//alert("before");
@@ -1097,7 +1098,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//}
 					//quantity of records is acummulating
 					//else 
-					{
+					//{
 						//alert("1b");
 						//alert(quantityOfProduct);
 						//alert(quantityTryingToSet);
@@ -1113,7 +1114,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						//alert("totalquantity");
 						//alert(totalquantity);
 						
-					}
+					//}
 					
 					
 					//overwrites
@@ -1125,75 +1126,28 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					alert(totalquantity);
 					
 
-					if(totalquantity != 0)
-					{
-						sessionStorage.setItem(productID, totalquantity);
+					//if(totalquantity != 0)
+					//{
+						sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
 
-						////////
-						alert("A1") ;
 						
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
-						{
-							alert("a");
-							var varIntVal1 = parseint(val1);
-							sessionStorage.setItem("numberOfRecords", varIntVal1+1);
-							//if( varIntVal1 == 5)
-							//{
-							//	return(-1);
-							//}
-							
-						}
-						else
-						{
-							alert("b");
-							sessionStorage.setItem("numberOfRecords", 1);
-						}
-						
-						
-						////////
 
-					}
+					//}
 					
-					break;
+					//break;
 				
-					}
-				}
+					}//is already a record
+				}//keys for
+
 				//there is no productID record yet, make one here 
-				if (keyFlag !=  "found"  && quantityTryingToSet != 0)
-				{
-					//alert("new item");
-					//////////
-
-					if(val1 = sessionStorage.getItem("numberOfRecords"))
-						{
-							
-							var varIntVal1 = parseInt(val1);
-							sessionStorage.setItem("numberOfRecords", varIntVal1+1);
-							//if( varIntVal1 == 5)
-							//{
-							//	return(-1);
-							//}
-							
-						}
-						else
-						{
-							sessionStorage.setItem("numberOfRecords", "1");
-						}
-
-
-					//////////
-					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
-				}
+				//if (keyFlag !=  "found"  && quantityTryingToSet != 0)
+				//{
+				//	//alert("new item");
+				//	
+				//	sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
+				//}
 				
 
-				
-				
-				
-
-				///////////////
-
-				
-                /////////////////
 
 			}
 
