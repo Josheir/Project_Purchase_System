@@ -937,11 +937,11 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					{
 						/////
 
-						alert("increse");
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
-						var varIntVal1 = parseInt(val1);
-						varIntVal1++;
-						sessionStorage.setItem("numberOfRecords", varIntVal1);
+						//alert("increse");
+						//if(val1 = sessionStorage.getItem("numberOfRecords"))
+						//var varIntVal1 = parseInt(val1);
+						//varIntVal1++;
+						//sessionStorage.setItem("numberOfRecords", varIntVal1);
 
 						/////
 					}
@@ -959,6 +959,11 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					var flag1 = false;
 					for (i = 0; i < storedArray.length; ) 
 					{
+
+						alert("storredarray");
+						alert(storedArray[i]);
+						alert(productID);
+
 					if(storedArray[i] == productID)
 					{
 						flag1 = true;
@@ -1160,7 +1165,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 				
 				firstArray.push(productID); 
-				firstArray.push(quantityTryingToSet); 
+				firstArray.push(quantityOfProduct); 
 				window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
 
 
