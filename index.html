@@ -32,7 +32,7 @@
     
   
 //for returning our of functions - //this is in finalpage.html and index.html
-var MAXRECORDS = 2;
+var MAXRECORDS = 1;
 //keep these message boxes: 44 finalpages, 495 index, 163 index
 //first two use const above, and last is in ajaxcall for checking login
 
@@ -1036,13 +1036,19 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				alert(val1);
 
 
-				if (val1 > 1)
-				{
-					alert("returning");
-					return(1);
-					//continue;
-				}
+				///////
 
+		if(val1 = sessionStorage.getItem("numberOfRecords"))
+		{
+		
+		if (val1 == MAXRECORDS)
+		{
+			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!");
+			return(1);
+		}
+	
+
+				
 
 
 

@@ -429,15 +429,27 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	var j = 0
 	//quant trying to buy
 	var prodQuant int
-	tx, err := db.Begin()
-	if err != nil {
-		fmt.Println(err)
-	}
+	
+	
+	
+	
+	
+
+
+
+
 
 	var enough bool = false
 
 	var k = 0
 	for k = 0; k < len(allIds); k++ {
+
+
+		tx, err := db.Begin()
+		if err != nil {
+		fmt.Println(err)
+		}
+
 
 		enough = false
 
@@ -910,7 +922,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("ProductList2")
 	//fmt.Println(fmt.Sprintf("%+v", ProductList))
 
-	err1 := globt.Execute(w, ProductList)
+	err1 = globt.Execute(w, ProductList)
 
 	if err1 != nil {
 		//fmt.Println("CC---------------")
