@@ -617,29 +617,95 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	//fmt.Println("+++++++++++++++++++++++++++++++++++++AAAAAAAAAAAAAAAAAAAAAAAAAA++++++++++++++++")
-	fmt.Println("GET params were:", r.URL.Query())
+	////
 
-	query := r.URL.Query()
+	//////
 
-	//filters=["color", "price", "brand"]
-	allIds, present := query["id"]
-	fmt.Println("allIds")
-	fmt.Println(allIds)
+	var err1 = r.ParseForm()
+	if err1 != nil {
+		fmt.Fprint(w, err1)
+	}
 
-	if !present || len(allIds) == 0 {
+	var allIds []string
+	var allQuants []string
+	//var key1 []string
+	//var UserIDstring []string
 
-		fmt.Println("filters not present")
+	//var i = 0
+
+	/*
+		var length = len(r.Form["uid"])
+
+
+		if length > 0 {
+			for i = 0; i < (length); i++ {
+
+
+				UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
+
+			}
+
+		} else {
+
+		}
+
+		length = len(r.Form["var"])
+		if length > 0 {
+			for i = 0; i < (length); i++ {
+
+				key1 = append(key1, []string{r.Form["var"][i]}...)
+
+			}
+
+		} else {
+
+		}
+	*/
+
+	var i = 0
+	length := len(r.Form["id"])
+	if length > 0 {
+
+		for i = 0; i < (length); i++ {
+
+			allIds = append(allIds, []string{r.Form["id"][i]}...)
+			allQuants = append(allQuants, []string{r.Form["quant"][i]}...)
+
+		}
+
+	} else {
 
 	}
 
-	//fmt.Println(allIds[0])
+	//////
 
-	allQuants, present := query["quant"]
+	////
 
-	if !present || len(allQuants) == 0 {
-		fmt.Println("filters not present")
-	}
+	/*
+		fmt.Println("GET params were:", r.URL.Query())
+
+		query := r.URL.Query()
+
+		//filters=["color", "price", "brand"]
+		allIds, present := query["id"]
+		fmt.Println("allIds")
+		fmt.Println(allIds)
+
+		if !present || len(allIds) == 0 {
+
+			fmt.Println("filters not present")
+
+		}
+
+		//fmt.Println(allIds[0])
+
+		allQuants, present := query["quant"]
+
+		if !present || len(allQuants) == 0 {
+			fmt.Println("filters not present")
+		}
+
+	*/
 
 	/////////////
 
@@ -662,7 +728,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	//var j = 1
 	//var ProductID = 2
-	var i = 0
+	i = 0
 
 	//fmt.Println("how many times!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	Condition++
@@ -1510,9 +1576,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			//UserIDstring[i]  = r.Form["uid"][i]
 			UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
-			//UserIDstring = append(UserIDstring, r.Form["uid"][i])
+
 		}
 
 	} else {
@@ -1524,7 +1589,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		for i = 0; i < (length); i++ {
 
 			key1 = append(key1, []string{r.Form["var"][i]}...)
-			//key1 = append(key1, r.Form["var"][i])
+
 		}
 
 	} else {
@@ -1539,16 +1604,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			ProdID = append(ProdID, []string{r.Form["id"][i]}...)
 			keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
 
-			//ProdID = append(ProdID, r.Form["id"][i])
-			//keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
-
 		}
 
 	} else {
 
 	}
 
-	//////////
+	//////
 
 	/*
 		c := json.NewDecoder(r.Body)
