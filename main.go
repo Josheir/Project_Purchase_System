@@ -425,7 +425,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	var thisProductID = 0
 	//DatabaseQuantity := 0
 
-	var haveWrittenOrder bool = false
+	//var haveWrittenOrder bool = false
 	var j = 0
 	//quant trying to buy
 	var prodQuant int
@@ -464,7 +464,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//////
 
 		enough = false
-		//one record gets quantity
+		//one record gets quantity using productID and is "ready"
 		stmt, err := db.Prepare("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready'")
 
 		if err != nil {
@@ -480,7 +480,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//runs one time
 		for rows.Next() {
 
-			//database hold this
+			//database held this
 			err = rows.Scan(&prodQuant)
 
 			if err != nil {
@@ -513,7 +513,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		//this gets the record for insert of quant
+		//this gets the record for update
 
 		var ProductCost float64
 		var ProductQuantity, ProductID, AdminID, CustomerID, OrderID, ID int
@@ -551,15 +551,17 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			//check if there is an order id created for the product record, if there isn't than create the order table
 
-			err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
-			if err != nil {
-				fmt.Println(err)
-			}
+			//err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
+			//if err != nil {
+			//	fmt.Println(err)
+			//}
 
 			//no order id stored in product record so create both
-			if err == sql.ErrNoRows {
+			//if err == sql.ErrNoRows {
 
-				if !haveWrittenOrder {
+				//if !haveWrittenOrder {
+
+					//gets orderid for insert product, is zero if no order record
 					res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
 
 					if err != nil {
@@ -574,11 +576,12 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 					//lastID++
 
-					haveWrittenOrder = true
-				}
+					//haveWrittenOrder = true
+				//}
 
 				//also need to create a new product table because there is no order record, so there is no orderid
 
+				//create a purchased record
 				ProductStatus = "purchased"
 				_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
 
@@ -587,17 +590,17 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 				}
 
 				//there is an order id in product so there is a product order table too... they are created together, so update this instead of create it
-			} else {
-
-				//update product with status of purchased from product table:  original quantity + intQuant
-				//productquant is quantity of product
-				//intquant is database quantity taken from the allquant array
-				_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
-				if err != nil {
-					fmt.Println(err)
-				}
-
-			}
+			//} else {
+			//
+			//	//update product with status of purchased from product table:  original quantity + intQuant
+			//	//productquant is quantity of product
+			//	//intquant is database quantity taken from the allquant array
+			//	_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
+			//	if err != nil {
+			//		fmt.Println(err)
+			//	}
+			//
+			//}
 
 		}
 		//for
