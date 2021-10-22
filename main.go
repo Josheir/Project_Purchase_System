@@ -429,27 +429,16 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	var j = 0
 	//quant trying to buy
 	var prodQuant int
-	
-	
-	
-	
-	
-
-
-
-
 
 	var enough bool = false
 
 	var k = 0
 	for k = 0; k < len(allIds); k++ {
 
-
 		tx, err := db.Begin()
 		if err != nil {
-		fmt.Println(err)
+			fmt.Println(err)
 		}
-
 
 		enough = false
 
@@ -559,37 +548,37 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			//no order id stored in product record so create both
 			//if err == sql.ErrNoRows {
 
-				//if !haveWrittenOrder {
+			//if !haveWrittenOrder {
 
-					//gets orderid for insert product, is zero if no order record
-					res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
+			//gets orderid for insert product, is zero if no order record
+			res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
 
-					if err != nil {
-						fmt.Println(err)
-					}
+			if err != nil {
+				fmt.Println(err)
+			}
 
-					order_ID, err = res.LastInsertId()
+			order_ID, err = res.LastInsertId()
 
-					if err != nil {
-						fmt.Println(err)
-					}
+			if err != nil {
+				fmt.Println(err)
+			}
 
-					//lastID++
+			//lastID++
 
-					//haveWrittenOrder = true
-				//}
+			//haveWrittenOrder = true
+			//}
 
-				//also need to create a new product table because there is no order record, so there is no orderid
+			//also need to create a new product table because there is no order record, so there is no orderid
 
-				//create a purchased record
-				ProductStatus = "purchased"
-				_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
+			//create a purchased record
+			ProductStatus = "purchased"
+			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
 
-				if err != nil {
-					fmt.Println(err)
-				}
+			if err != nil {
+				fmt.Println(err)
+			}
 
-				//there is an order id in product so there is a product order table too... they are created together, so update this instead of create it
+			//there is an order id in product so there is a product order table too... they are created together, so update this instead of create it
 			//} else {
 			//
 			//	//update product with status of purchased from product table:  original quantity + intQuant
@@ -1271,7 +1260,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	string1 = ""
 
-	fmt.Println("in display 1")
+	fmt.Println("in display 2")
 
 	db := dbConn()
 
@@ -1718,7 +1707,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	var val1 = ""
 	val1 = UserIDstring[0]
-	//var err1 = ""
+
 	var UserID int
 	var err error
 	if len(UserIDstring[0]) != 0 {
@@ -1730,11 +1719,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		UserID = 1
+		
 	}
 
 	globKeyword := key1[0]
-	//globKeyword := key1
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	string1 = ""
 
@@ -1744,33 +1732,36 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	//////
 
-	var numRecords = 0
-	stmt, err := db.Prepare("SELECT COUNT(*) FROM products WHERE ((products.ProductKeyWord1 = ?) OR (products.ProductKeyWord2 = ?) OR " +
-		"(products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for rows.Next() {
-
-		err = rows.Scan(&numRecords)
+	/*
+		var numRecords = 0
+		stmt, err := db.Prepare("SELECT COUNT(*) FROM products WHERE ((products.ProductKeyWord1 = ?) OR (products.ProductKeyWord2 = ?) OR " +
+			"(products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
 
 		if err != nil {
 			fmt.Println(err)
 		}
 
-	}
+		rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		for rows.Next() {
+
+			err = rows.Scan(&numRecords)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		}
+
+	*/
 	//////
 
-	stmt, err = db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+	//selects many productid
+	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
 		"FROM products WHERE " +
 		"((products.ProductKeyWord1 = ?) OR " +
@@ -1779,7 +1770,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//	//panic(err.Error())
 	}
 
-	rows, err = stmt.Query(globKeyword, globKeyword, globKeyword)
+	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
 	if err != nil {
 		fmt.Fprint(w, err)
@@ -1792,20 +1783,15 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var Condition = 0
 	//saved text product ids :  1,11,5,7
 	var ints []int
-	//var keywords []string
 
 	var marshalFlag = "no"
 
-	//var lastProductID = -1
-	//counter1 = -1
-
-	//counter1 = 0
 	var counterOfRecords = 0
 
+	//get many productids
 	for rows.Next() {
 
 		counterOfRecords++
-		//counter1++
 
 		marshalFlag = "no"
 		//counter1 = counter1 + 1
@@ -1815,6 +1801,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
 
 		CondYellow = 0
+		//many prodid, get all the data here...
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
 		//if ProductID == lastProductID {
@@ -1828,7 +1815,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 
 		db3 := dbConn()
-		//get from dbase
 
 		textstring := ""
 		//selects all the product ids with quantity
@@ -1863,6 +1849,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		/////////
+
+		////////////move this
+
 		//check for duplicates, that is if productID already has been displayed don't display again
 		var flag1 = 0
 		var j = 0
@@ -1878,54 +1868,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		//creates and sets records :  K1, K2...THIS IS FOR LOOKING AT GLOB WORD AND IS NOW ONLY ONE ELEMENT READ BELOW
-		/*var index = "K" + strconv.Itoa(GlobCounter)
-		store.Set(index, globKeyword)
-		err = store.Save()
-		if err != nil {
-			fmt.Fprint(w, err)
-			//	return
-		}
-		*/
+		//////////////
 
-		var stringText = ""
-
-		//DOES THIS PRODUCT RECORD ALREADY EXIST
-		stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		rows1, err = stmt1.Query(UserID)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		var flag = 0
-
-		//get string from database - is at least one record
-		for rows1.Next() {
-			flag = 1
-			err = rows1.Scan(&stringText)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			//change string to array
-			err := json.Unmarshal([]byte(stringText), &ints)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			//push to array
-			ints = append(ints, ProductID)
-
-		}
+		//array
+		//ints = append(ints, ProductID)
 
 		//no database entry yet, so insert
-		if flag == 0 {
+		if marshalFlag == "no" {
 
 			//pass in array and get string back
 			//var textstring, err = json.Marshal(ints)
@@ -1937,6 +1886,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			ints = append(ints, ProductID)
 
+			//array to stringn for database
 			var textstring, err1 = json.Marshal(ints)
 			if err1 != nil {
 				fmt.Println(err1)
@@ -1944,9 +1894,10 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			stmt2.Exec(textstring)
 
-			//there is/are database entries, so update
+		//there is/are database entries, so update
 		} else {
 
+			//array to string for database
 			var textstring, err1 = json.Marshal(ints)
 			if err1 != nil {
 				fmt.Println(err)
@@ -1962,37 +1913,39 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		/////////
+		/*
+			var stringText = ""
 
-		////////
+			stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
 
-		stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		rows1, err = stmt1.Query(UserID)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		//get string from database
-		for rows1.Next() {
-
-			err = rows1.Scan(&stringText)
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			//change string to array
-			err := json.Unmarshal([]byte(stringText), &ints) //
+			rows1, err = stmt1.Query(UserID)
+
 			if err != nil {
 				fmt.Println(err)
 			}
 
-		}
+			//get string from database
+			for rows1.Next() {
+
+				err = rows1.Scan(&stringText)
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//change string to array
+				err := json.Unmarshal([]byte(stringText), &ints) //
+				if err != nil {
+					fmt.Println(err)
+				}
+
+			}
+
+
+		*/
 
 		i := 0
 		prodBoughtInt := 0
