@@ -32,7 +32,7 @@
     
   
 //for returning our of functions - //this is in finalpage.html and index.html
-var MAXRECORDS = 1;
+var MAXRECORDS = 2;
 //keep these message boxes: 44 finalpages, 495 index, 163 index
 //first two use const above, and last is in ajaxcall for checking login
 
@@ -283,11 +283,11 @@ $(document).ready(function () {
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
-		if (key != "session_userID" && key != "keywords") 
+		if (key != "session_userID" && key != "keywords" && key != "numberOfRecords" && key != "alreadyZero" ) 
 		{
 
 			
-			
+			ajax("got in here!");
 			
 			var item = sessionStorage.getItem(key);
 			
@@ -748,6 +748,18 @@ var gTotalOfPurchases = 0;
 function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 {
 
+	if(val1 = sessionStorage.getItem("numberOfRecords"))
+		{
+		
+		if (val1 == MAXRECORDS)
+		{
+			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
+			return(1);
+		}
+	
+		}
+
+
 				//this is the check when submitted if there are already to many records
 				//the count is incremented in setdata and reduced when the value
 				//*is removed in template2 when hidden  hidden
@@ -899,7 +911,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 			var alreadyZeroArray = [];
       //called from changefields because of submit button for display1
-	  //numberofrcords is set in logon and should have two new sets in this only fucntion (only) 
+	  //numberofrcords is set in logon and should have two new sets in this only fucntion (only)
+	  //in here :  sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
+ 
       function  setData(amountPurchasedSoFar, quantityOfProduct, productID, quantityTryingToSet, reduceBool)
 	  {
 		  	/////
@@ -1024,6 +1038,12 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					}
 				}
 
+				///////////
+
+				
+
+				///////////
+
 
 				firstArray.push(productID); 
 				firstArray.push(quantityOfProduct); 
@@ -1038,17 +1058,18 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 				///////
 
+		/*		
 		if(val1 = sessionStorage.getItem("numberOfRecords"))
 		{
 		
 		if (val1 == MAXRECORDS)
 		{
-			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!");
+			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
 			return(1);
 		}
 	
-
-				
+		}
+		*/		
 
 
 
@@ -1078,6 +1099,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//alert(productID)
 				
 				//total the quantity and overwrite - is already a record
+
 				if(key == (productID.toString())){
 				
 					//alert("in this place");
@@ -1122,7 +1144,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						
 					//}
 					
-					
+								
 					//overwrites
 					sessionStorage.removeItem(productID);
 					//alert("set");
@@ -1134,7 +1156,25 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 					//if(totalquantity != 0)
 					//{
+
+						alert("1a");
+						alert(productID);
+						alert(totalquantity);
 						sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
+
+						//////
+						if(val1 = sessionStorage.getItem("numberOfRecords"))
+						{
+						
+						if (val1 == MAXRECORDS)
+						{
+							alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
+							return(1);
+						}
+					
+						}
+
+						//////
 
 						
 
@@ -1147,11 +1187,48 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 				//there is no productID record yet, make one here 
 				//if (keyFlag !=  "found"  && quantityTryingToSet != 0)
-				//{
-				//	//alert("new item");
-				//	
-				//	sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
-				//}
+				if (keyFlag !=  "found")
+				{
+
+					alert("2a");
+						//alert(productID);
+						//alert(totalquantity);
+						//alert(quantityTryingToSet);
+					/////////////
+
+					//bought = sessionStorage.getItem(key);
+					
+					//totalquantity = 0;
+
+					//totalquantity = parseInt(bought) + parseInt(quantityTryingToSet);
+
+					////////////
+				
+					alert("zzhere");
+					alert(productID);
+					alert(quantityTryingToSet)
+					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
+				
+				 	//sessionStorage.setItem( parseInt(productID),  parseInt(totalquantity));
+					
+
+					 ///////
+					if(val1 = sessionStorage.getItem("numberOfRecords"))
+					{
+					
+					if (val1 == MAXRECORDS)
+					{
+						alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
+						return(1);
+					}
+				
+					}
+
+
+					///////
+
+					
+				}
 				
 
 

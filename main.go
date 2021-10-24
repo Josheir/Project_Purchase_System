@@ -426,7 +426,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	//DatabaseQuantity := 0
 
 	//var haveWrittenOrder bool = false
-	var j = 0
+	//var j = 0
 	//quant trying to buy
 	var prodQuant int
 
@@ -452,6 +452,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		//////
 
+		//too do this better combine both queries - taking to long, so kept it!
 		enough = false
 		//one record gets quantity using productID and is "ready"
 		stmt, err := db.Prepare("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready'")
@@ -514,7 +515,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//gets all the fields of data from  a particular productid and ready status, so that an update may happen
 		//checked at beginnnig if this exists
 		//get all attributes to update with
-		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[j]).Scan(
+		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[k]).Scan(
 			&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
 			&OrderID, &ProductStatus, &AdminID, &ProductID, &ID)
 
@@ -523,17 +524,17 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ProductID = thisProductID
-		var thisQuant = prodQuant - intQuant
+		var thisQuant = ProductQuantity - intQuant
 		if thisQuant > 0 {
 			//updates productid fields to its quantity minus int-quant from above
-			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, allIds[j])
+			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, ProductID)
 			if err != nil {
 				fmt.Println(err)
 			}
 
 			datetime := time.Now()
 
-			var id1 = 0
+			//var id1 = 0
 
 			var productQuant int64
 			var order_ID int64
@@ -632,39 +633,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	var allIds []string
 	var allQuants []string
-	//var key1 []string
-	//var UserIDstring []string
-
-	//var i = 0
-
-	/*
-		var length = len(r.Form["uid"])
-
-
-		if length > 0 {
-			for i = 0; i < (length); i++ {
-
-
-				UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
-
-			}
-
-		} else {
-
-		}
-
-		length = len(r.Form["var"])
-		if length > 0 {
-			for i = 0; i < (length); i++ {
-
-				key1 = append(key1, []string{r.Form["var"][i]}...)
-
-			}
-
-		} else {
-
-		}
-	*/
 
 	var i = 0
 	length := len(r.Form["id"])
@@ -711,11 +679,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	*/
 
-	/////////////
-
-	//////////
-	/////////
-
 	string1 = ""
 
 	db := dbConn()
@@ -728,13 +691,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var6 = "GT"
 	var var7 = "V"
 	var var8 = "P"
-	//yes this is right product starts at one
 
-	//var j = 1
-	//var ProductID = 2
 	i = 0
 
-	//fmt.Println("how many times!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	Condition++
 	var Condition2 = 0
 
@@ -768,7 +727,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		//Total := ""
+		//get fields for each product ID
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
 			"products.ProductID = ? AND products.ProductStatus = 'ready'")
@@ -1719,7 +1678,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		UserID = 1
-		
+
 	}
 
 	globKeyword := key1[0]
@@ -1817,7 +1776,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		db3 := dbConn()
 
 		textstring := ""
-		//selects all the product ids with quantity
+		//selects products already listed for user : is set as [1] in main.go login
 		stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {
@@ -1849,11 +1808,16 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+
+
 		/////////
 
-		////////////move this
+
+		////////////
 
 		//check for duplicates, that is if productID already has been displayed don't display again
+		/////////////
+
 		var flag1 = 0
 		var j = 0
 		for j = 0; j < len(ints); j++ {
@@ -1870,6 +1834,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		//////////////
 
+		//ints = append(ints, []int{ProductID}...)
+
+
+
+
+		//////////////
+
 		//array
 		//ints = append(ints, ProductID)
 
@@ -1879,10 +1850,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			//pass in array and get string back
 			//var textstring, err = json.Marshal(ints)
 
-			stmt2, err := db3.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
-			if err != nil {
-				fmt.Println(err)
-			}
 
 			ints = append(ints, ProductID)
 
@@ -1892,10 +1859,17 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err1)
 			}
 
+			stmt2, err := db3.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
+			if err != nil {
+				fmt.Println(err)
+			}
+
 			stmt2.Exec(textstring)
 
-		//there is/are database entries, so update
+			//there is/are database entries, so update
 		} else {
+
+			ints = append(ints, ProductID)
 
 			//array to string for database
 			var textstring, err1 = json.Marshal(ints)
