@@ -1169,57 +1169,17 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	///////////
-	/*
-		//store, err := session.Start(context.Background(), w, r)
-
-		fmt.Println("+++++++++++++++++")
-
-		query := r.URL.Query()
-
-		//this is the searchterm in order from first to last now
-		key1, present := query["var"]
-
-		if !present || len(key1) == 0 {
-			fmt.Println("filters not present1")
-		}
-
-		keyTotalAmountBought, present2 := query["quant"]
-		if !present2 || len(keyTotalAmountBought) == 0 {
-			fmt.Println("filters not present2")
-		}
-		ProdID, present3 := query["id"]
-		if !present3 || len(ProdID) == 0 {
-			fmt.Println("filters not present3")
-		}
-
-		UserIDstring, present4 := query["uid"]
-		if !present4 || len(UserIDstring) == 0 {
-			fmt.Println("filters not present4")
-
-		}
-
-
-
-	*/
-
-	//var UID = 0
-	//var err= ""
-	//if len(UserIDstring) != 0 {
-
-	//only one  // UserID =
 	UID, err := strconv.Atoi(UserIDstring[0])
 	if err != nil {
 		fmt.Println(err)
 	}
-	//} else {
-	//isnt used (is still in dispaly1, for int[] array saved in db as string):
-	//UserID = 1
-	//}
+
+	var savedProductIDs []int
+	
 
 	globKeyword := key1[0]
 
-	//w.Header().Set("Access-Control-Allow-Origin", "*")
+	
 
 	string1 = ""
 
@@ -1227,24 +1187,12 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	/*
-		_, ok := store.Get("isFirstUse")
-		if !ok {
-
-			store.Set("isFirstUse", "yes")
-			err = store.Save()
-			if err != nil {
-				fmt.Fprint(w, err)
-				//	return
-			}
-
-		}
-	*/
+	
 
 	var m = 0
 	//var lastUseOf = false
-	var numRecords1 = 0
-	var oneTime = true
+	//var numRecords1 = 0
+	//var oneTime = true
 	var recordCounter = 0
 	for m = 0; m < len(key1); m++ {
 
@@ -1277,55 +1225,41 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		var Condition1 = 0
 
-		var lastProductID = -1
+		//var lastProductID = -1
 
-		var stringText = ""
-		var ints []int
+		//var stringText = ""
+		//var ints []int
+		var flag1 = 0
 		for rows.Next() {
 
 			/////////////
 
-			db5 := dbConn()
-			stmt1, err := db5.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
 
-			if err != nil {
-				fmt.Println(err)
-			}
 
-			rows1, err := stmt1.Query(UID)
 
-			if err != nil {
-				fmt.Println(err)
-			}
 
-			//get string from database
-			for rows1.Next() {
-
-				err = rows1.Scan(&stringText)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//change string to array
-				err := json.Unmarshal([]byte(stringText), &ints) //
-				if err != nil {
-					fmt.Println(err)
-				}
-
-			}
-
-			////////////
 
 			var j = 0
-			//check if productID was already created in display1
-			for j = 0; j < len(ints); j++ {
-				if ProductID == ints[j] {
-
-					continue
-				}
-
+		for j = 0; j < len(savedProductIDs); j++ {
+			//record exists already
+			if ProductID == savedProductIDs[j] {
+				flag1 = 1
+				break
 			}
+
+		}
+		if flag1 == 1 {
+			Condition1--;
+			continue
+		}
+		//https://stackoverflow.com/questions/33834742/remove-and-adding-elements-to-array-in-go-lang
+		savedProductIDs = append(savedProductIDs, ProductID)
 			/////////////
+
+
+
+
+
 
 			recordCounter++
 
@@ -1339,21 +1273,22 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			CondYellow = 0
 			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
-			if ProductID == lastProductID {
-				continue
-			}
-
-			lastProductID = ProductID
-
+			
 			if err != nil {
 				fmt.Println(err)
 			}
 
 			///////////////
 			var i = 0
-			var continueFlag = "no"
+			
 			counter1 = counter1 + 1
+			
+			
+			
+			var prodBoughtInt = 0
 			//if finds a record that aleady exists as a passed in url parameter, than create the template with the value and continue the main for.
+			
+			var AmountPurchased = 0
 			for i = 0; i < len(ProdID); i++ {
 
 				prodID, err := strconv.Atoi(ProdID[i])
@@ -1362,38 +1297,32 @@ func display2(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if prodID == ProductID {
-					continueFlag = "continue"
+				
 
+					CondYellow = 1
 					prodBoughtStr := keyTotalAmountBought[i]
-					prodBoughtInt, err := strconv.Atoi(prodBoughtStr)
+					prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
 					if err != nil {
 						fmt.Println(err)
 					}
 
-					CondYellow = 1
-					AmountPurchased := prodBoughtInt
+				AmountPurchased = prodBoughtInt
+				break
+				}
+			}
+
+
+
+					
+					
+					
 					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 						&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-					break
-				} //if
-
-			} //for i
-
-			//productid found a record that already existed, so get next productid
-			if continueFlag == "continue" {
-				continue
-			}
-
-			///////////////the productid record does not exist yet, create the record which is part of the current keyword
-
-			AmountPurchased := 0
-			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
-
+						
 		} //row
 
-		/////////
+		
 
 	} //main loop
 
@@ -1919,12 +1848,19 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//Link = globKeyword
 		//var flagProductIDHasBeenTemplated = false
 		//is records with product amounts already
-		//for i = 0; i < len(ProdID); i++ {
+		
+		
+		
+		
+		var AmountPurchased = 0
+		for i = 0; i < len(ProdID); i++ {
 
-		/*
+		
 			///
 
 			prodIDStr := ProdID[i]
+
+			
 
 			prodIDInt, err := strconv.Atoi(prodIDStr)
 			if err != nil {
@@ -1932,15 +1868,29 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(prodIDInt)
 			}
 
+			if(ProductID == prodIDInt){
+				if err != nil {
+					//fmt.Println(ProdIDStr)
+				}
+
 			prodBoughtStr := keyTotalAmountBought[i]
 			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
 			if err != nil {
 				fmt.Println(err)
 
 			}
+			AmountPurchased = prodBoughtInt
+
+			break;
+		}
+	}
 
 			///
-		*/
+		
+
+
+
+
 
 		//productIDInt, err := strconv.Atoi(ProdID[i])
 		//if err != nil {
@@ -1954,8 +1904,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//this productID has already been displayed
 		//if ProductID == productIDInt {
 
-		AmountPurchased := prodBoughtInt
-
+		
 		/*
 			Condition = 0
 			//flagProductIDHasBeenTemplated = true
@@ -2003,8 +1952,12 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//}
 
 		//}
+
+	//	}
 	}
 }
+
+
 
 //////////
 
