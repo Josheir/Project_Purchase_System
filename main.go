@@ -1250,38 +1250,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		recordCounter = 0
 		//////////
-
-		//get amount of records for the last keyword, one time
-		if m == (len(key1)-1) && oneTime == true {
-			oneTime = false
-			db4 := dbConn()
-
-			stmt, err := db4.Prepare("SELECT COUNT(*) FROM products WHERE ((products.ProductKeyWord1 = ?) OR (products.ProductKeyWord2 = ?) OR " +
-				"(products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			for rows.Next() {
-
-				err = rows.Scan(&numRecords1)
-
-				if err != nil {
-					fmt.Println(err)
-				}
-
-			}
-
-		}
-
-		///////////
+	
 
 		globKeyword = key1[m]
 
