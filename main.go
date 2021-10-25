@@ -324,11 +324,11 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 		////////////
 
-		stmt2, err := db.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
-		if err != nil {
-			fmt.Println(err)
-		}
-		stmt2.Exec("[1]", UserID)
+		//stmt2, err := db.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
+		//if err != nil {
+		//	fmt.Println(err)
+		//}
+		//stmt2.Exec("[1]", UserID)
 
 		/////////////
 
@@ -1675,6 +1675,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		UserID, err = strconv.Atoi(val1)
 		if err != nil {
 			fmt.Println(err)
+			fmt.Println(UserID)
 		}
 	} else {
 		UserID = 1
@@ -1783,7 +1784,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		rows1, err := stmt1.Query(UserID)
+		rows1, err := stmt1.Query(UserIDstring[0])
 
 		if err != nil {
 			fmt.Println(err)
@@ -1799,7 +1800,12 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//change string to array
+		if textstring == "" {
+
+		}
+
+		//change string to array, initially is set to nothing, so there is a new productID every time
+		//so, updates or creates record after no match in the snippet below
 
 		if marshalFlag == "yes" && textstring != "" {
 			err = json.Unmarshal([]byte(textstring), &ints)
@@ -1808,10 +1814,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-
-
 		/////////
-
 
 		////////////
 
@@ -1821,6 +1824,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		var flag1 = 0
 		var j = 0
 		for j = 0; j < len(ints); j++ {
+			//record exists already
 			if ProductID == ints[j] {
 				flag1 = 1
 				break
@@ -1832,12 +1836,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
+		//below creates or updates the text stored in the database
+
 		//////////////
 
 		//ints = append(ints, []int{ProductID}...)
-
-
-
 
 		//////////////
 
@@ -1850,7 +1853,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			//pass in array and get string back
 			//var textstring, err = json.Marshal(ints)
 
-
 			ints = append(ints, ProductID)
 
 			//array to stringn for database
@@ -1859,12 +1861,14 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err1)
 			}
 
-			stmt2, err := db3.Prepare("INSERT INTO savedtext(Text) VALUES(?)")
+
+			
+			stmt2, err := db3.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			stmt2.Exec(textstring)
+			stmt2.Exec(textstring, UserIDstring[0])
 
 			//there is/are database entries, so update
 		} else {
@@ -1883,7 +1887,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println(err)
 			}
-			stmt1.Exec(textstring, UserID)
+			stmt1.Exec(textstring, UserIDstring[0])
 
 		}
 
@@ -1926,7 +1930,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		AmountPurchased := 0
 
-		var flagProductIDHasBeenTemplated = false
+		Link = globKeyword
+		//var flagProductIDHasBeenTemplated = false
 		//is records with product amounts already
 		for i = 0; i < len(ProdID); i++ {
 			prodIDStr := ProdID[i]
@@ -1946,9 +1951,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			productIDInt, err := strconv.Atoi(ProdID[i])
 
 			//write over with values, already existed with url parameters
+			//has been templated
+
+			
 			if ProductID == productIDInt {
 
-				flagProductIDHasBeenTemplated = true
+				Condition = 0
+				//flagProductIDHasBeenTemplated = true
 				counter1++
 
 				str := strconv.Itoa(counter1)
@@ -1980,29 +1989,20 @@ func display1(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err.Error())
 				}
 
-				//create a displayed record wiht zero amountPurchased
+				
+			}else{
 
-				//create a zero amount new productID record
-
-				//sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-				//	&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
-
-				break
-			}
-
-		}
-		if !flagProductIDHasBeenTemplated {
-
+			Condition = 1
 			AmountPurchased = 0
 
 			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-		}
+			}
 
+		}
 	}
 }
-
 //////////
 
 /////////////
