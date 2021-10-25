@@ -142,7 +142,7 @@ $(document).ready(function () {
               console.log(data1[2].Age);
               
               //alert("in here!!!");
-              //alert(v)
+              
               }
               });
           
@@ -154,12 +154,10 @@ $(document).ready(function () {
 	
 	
 		
-		//flag2 set with a 1 means came from template2 and is returning to old keyword
-		//a seperate call (not catch up) - this is display1
-		//from pressing search button
+		
 		var array = [];
 		var storedArray  = [];
-		//var counterOfKeywords = 0;
+		
 		var globtest = 0;
 
 
@@ -176,7 +174,7 @@ $(document).ready(function () {
 			sessionStorage.setItem("session_userID", val1);
 			
 			window.location.assign(urlValue);
-			//ajaxCall('0');
+			
 		}
 
 
@@ -200,18 +198,10 @@ $(document).ready(function () {
 			alert("ajaxcall");
 			
 
-
-			//alert("globvariabletest - glob variable is ");
-			//globtest++;
-			//alert(globtest);
-
 			alert("keys -A");
-			
-			//alert("getUser");
-		//alert(getUser);
+		
 		var getUser = sessionStorage.getItem("session_userID");
-		//alert("getUser");
-		//alert(getUser);
+		
 		if (getUser == null)
 		{
 			alert("You Need to Login First!");
@@ -222,11 +212,11 @@ $(document).ready(function () {
 	  
 
 		var reloadFlag = 1;
-		//alert("made it");
+		
 		var querystring = "";
 		var counter = -1;
 		
-		//alert("button6");
+		
 		var string = "";
         let keys = Object.keys(sessionStorage);
 
@@ -237,9 +227,7 @@ $(document).ready(function () {
 		for(let key of keys) {
 		alert(key);
 			
-		////////added//
-
-		//array = [];
+		
 
 		if(key ==  "numberOfRecords")
 		{
@@ -255,22 +243,12 @@ $(document).ready(function () {
 		if(key == "keywords")
   		{
 		counter++;
-		//alert("keywords1");
-		//alert("keywords...");
-		//alert(key);
-	
-		//holds an array
+		
 		var item = sessionStorage.getItem(key);
-		//alert(item);
+		
 		
 		array = JSON.parse(item);
-	    //alert(array[0]);
-		
-		//for(var i = 0; i<array.length ; i++)
-		//{
-		//
-		//querystring += "var=" + val1 + "&";
-		//}
+	    
 
 
 		}
@@ -325,10 +303,6 @@ $(document).ready(function () {
     	
 
 	}
-		//GLOBWORD :   ["APPLE"] is sent as result from display1 to index.html
-		//sent as keywords tried to make this just one element...uses K....
-		//these are held in store   and globcounter saved is counter of just one 
-	  
 		
 		var val1 = document.getElementById("search").value;
 
@@ -345,18 +319,7 @@ $(document).ready(function () {
 			return(1);
 	  }
 
-	  ///////
 	  
-
-	  
-	//no records displayed and checkout was pressed
-	//var val2 = sessionStorage.getItem("checkoutPressed");
-	//remove item of keyword thata is  
-	//if (val2 == "pressed" )
-	//{
-
-
-////////
 
 		//cehck for duplicates
 		storedArray = JSON.parse(sessionStorage.getItem("keywords"));
@@ -367,36 +330,17 @@ $(document).ready(function () {
 		{
 		if (storedArray[i] == val1)
 		{
-			//remove so that there wont be this and will allow search after checokout is pressed with no selections
-			//in template1 (display1)  form
 			
-			//storedArray[i].removeItem(i);
 			return(-1);
 		}
 		
 		
 		}
-		//sessionStorage.setItem("keywords", JSON.stringify(storedArray));
+		
 	}
 
 
-//////
 
-
-		
-	//sessionStorage.setItem("checkoutPressed", "unpressed");
-
-	//}
-
-
-	  ////////
-
-
-
-
-	  //alert("beyond there");
-	  //these are for keywords
-	  //THERE ARE URLS ALREADY
 	  var val2 = [];
       if(wasKeys == "yes"){
 
@@ -409,17 +353,13 @@ $(document).ready(function () {
 
 	  }
 
-	  //alert("val1 --");
-	  //alert(val1);
-	  //alert("val2");
-	  //alert(val2);
+	  
 		var gflag = val2[0];
 		var querystring = val2[1] + string;
-	  	//alert("val1");
-		//alert(val2[1]);
+	  	
 		
 		var url = "";
-		//go back to index
+		
 	  if(reloadFlag == 1)
 	  {
 		  querystring += "leave=1&";
@@ -430,125 +370,20 @@ $(document).ready(function () {
 	  }
 	  
 	  
-	  //querystring = "var=apple&var=apple1";
+	 
 
 
-	  		//alert("querystring");
-			//alert(querystring);
-
-/*
-			var variable2 = new Array(4);
-	  		variable2[0] = new Array(1);
-			variable2[1] = new Array(1);
-	  		variable2[2] = new Array(1)
-			variable2[3] = new Array(1);
-
-			variable2[0][0] = "keyword1";
-			variable2[0][1] = "keyword2";
-			variable2[1][0] = 1;
-			variable2[1][1] = 2;
-			variable2[2][0] = 2;
-			variable2[2][1] = 2;
-			variable2[3][0] = 2;
-			//variable2[3][1] = 2;
-
-			var answer = JSON.stringify(variable2)
-			console.log(answer);
-			
-			alert("check it");
-			//alert(variable2);
-*/
-
-/*
-var num = 100;
-let cars = [
-  {
-    "var": "test",
-    "id": 10,
-    "quant": 1,
-    "uid": 1
-  }]
-
-
-
-  let car = {
- "var": "test2",
- "id": num,
- "quant": 2,
- "uid": 2
-}
-//cars.push(car);
-
-console.log(JSON.stringify(cars));
-			alert("check it");
-
-
-			alert(val1);
-
-*/
-
-
-
-/*
-			var variable = new Object();
-
-			variable.a1 = "a";
-			variable.a2 = "b";
-			variable.a1 = "c";
-			variable.a2 = "d";
-
-*/			
-			
-
-//var val10 = get(JSON.parse(this.responseText))
-
-//function get(data) {
-//    const tmpl = [{
-//        var: "var",
-//        id: 1,
- //       quant: 1,
-//        uid: 1
-//	}]
-//      }]
-
-
-
-		////////
-
-
-		//////////
 
 
 
 			
-			/////
-			
-			/*
-			var display2 = `{"var":"test","id":"10","quant":"1","uid":"1"}`;
-			//var display2 = `[{"var":"test","id":1,"quant":"1","uid":"1"}, {"var":"test2","id": 2 ,"quant":"12","uid":"12"}]`;
-			
-	 		
-			//var display2='{{"var" : "10"}, {"var" : "20"}}';
-			
-			*/
-			
 
 
-		
+
+
+
 			
-			 //var display2='{"Vari" : "10"}';
-			 /////////
-
-			 //alert("xxx");
-			 //alert(val99);
-			 //alert(querystring);
 			
-			 //////////
-
-			 
-
-			 ///////////
-
 
 			 alert("query1");
 			 alert(querystring);
@@ -571,31 +406,17 @@ console.log(JSON.stringify(cars));
 					
 			alert("query2");
 			 alert(querystring);
-					//alert("check values");
 					
-					//set in login
-					
-                  //alert("pass");
-                  //alert(b);
-					//alert(val1);
-				
-
-
-			 /////////
 
 				ourNewWord2 = result;
 
-				///////////
 				
-
-				//alert("is here!");
-				//alert(result);
 
 				
                 var result1 = "";
 				let keys = Object.keys(sessionStorage);
 
-				//check if this link/keyword is first time and only useage
+				
 				var  gkeywordArray = "";
 				
 				var retVals = [];
@@ -605,64 +426,33 @@ console.log(JSON.stringify(cars));
 
 
 
-				//call this over and over again as many times as amount of records 
-				//alert("zzzzz");
-				//alert(val1);
+				
 				retVals = deriveKeywordFromResult(result, val1);
-				//alert(result);
-				//alert("yyyy");
-				//alert(val1);
+				
 				var item1 = retVals[0];  
-				//alert("is it here ??");
-				//alert(item1); //apple2  - undefined
+				
 				var ourNewWord2 = retVals[1]; //
-				//alert(ourNewWord2);	//no apple
+				
 				var item = retVals[2]; 
-				//alert(item);  //"apple2" - undefined
-				
-				//alert("testing2");
 				
 				
 				
-
 				
-				//var val1a = '["' + item1 +  '"]';
-				var val1a = '"' + item1 +  '"';   //- undefined
-				//alert(val1a);
+				
 				
 
+				
+				
+				var val1a = '"' + item1 +  '"';   
+				
+				
+
 
 
 
 				
-				//////////////
-
-
-
-
-
-				////////////
 				
-				//var ourNewWord = ourNewWord2
-			//	var ourNewWord = "";
-			//	for(var i = 0 ; i < array.length ; i++)
-			//  {
-			//	////
-			//
-			//	
-			//	let val1 = '["' + array[i] +  '"]';
-			//	alert("aaaa");
-			//	alert(console.log(array));
-			//	ourNewWord =  ourNewWord.replace(val1 , '');
-			//
-			//	retVals = deriveKeywordFromResult(ourNewWord);
-			//
-			//	//var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
-			//	//document.getElementById('buttons').innerHTML   += result1a;
-			//  }
-			//
-			//  document.getElementById('templateOneHere').innerHTML   += ourNewWord;
-			  
+				
 			  
 
 
@@ -670,26 +460,12 @@ console.log(JSON.stringify(cars));
 				
 				result1a = "<a href='#" + val1 + "'>" + val1 + "</a><br>";
 				
-				//alert("bbbbbbbb");
-				//alert(val1);
-				//alert(result1a);
+				
 				document.getElementById('buttons').innerHTML   += result1a;
 			  	
 
-
-				//alert("testing3");
-                
-				
-				//document.getElementById('templateOneHere').innerHTML   += ourNewWord;
-
 				document.getElementById('templateOneHere').insertAdjacentHTML('beforeend',ourNewWord2);
 
-
-				//alert("testing4");             
-                //document.getElementById('amountPID1').innerHTML = "888";  
-				//document.getElementById('amountPID0').value = 500
-				
-             
               
                 }
          //both jquery
@@ -709,9 +485,7 @@ console.log(JSON.stringify(cars));
   //checkout button
   $(document).ready(function () {
       $('#button7').click(function () {
-              //////////
-              //calls purgehtml which calls template2.html - go
-             //alert("finalpage");
+              
              window.location.href = "finalPage.html";
 
               
@@ -728,7 +502,7 @@ function uploadandProcessImage(){
 ///////////////////////////////////
 //https://stackoverflow.com/questions/25493706/ajax-upload-file-to-golang-server-with-content-type-multipart
 var xhr = new XMLHttpRequest();
-    //boundary=Math.random().toString().substr(2);
+   
 
 
     var input = document.querySelector('input[type=file]'),
@@ -765,40 +539,6 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 	
 		}
 
-
-				//this is the check when submitted if there are already to many records
-				//the count is incremented in setdata and reduced when the value
-				//*is removed in template2 when hidden  hidden
-				//*aso it needs to be reduced when zero is entered in here
-				
-				
-				
-				
-				//val1 = sessionStorage.getItem("numberOfRecords");
-				//alert("session");
-				//alert(val1);
-				
-				/*
-				var val1 = "";
-				//alert("A2") ;
-				if(val1 = sessionStorage.getItem("numberOfRecords"))
-				{
-					var varIntVal1 = parseInt(val1);
-					if(varIntVal1 == MAXRECORDS)
-					{
-						alert("TOTAL NUMBER OF RECORDS AT LIMIT!");
-						return(1);
-					}
-				}
-				*/
-
-
-
-
-
-
-				
-
 				alert("should be here");
 
 				var makeYellow = document.getElementById(mainDiv);
@@ -826,13 +566,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				}
 
 
-				//////
-
-
-				//alert(amountToBePurchased);
 				
-				//alert(amountToBePurchased);
-				//document.getElementById(amountPurchasedID).value="";
 
 				
 				//if there is enough product go in here - take from quantity amount
