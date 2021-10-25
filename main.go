@@ -31,6 +31,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var globaltest = 0
+
 var globalFlagisVariable = "no"
 
 type product struct {
@@ -235,6 +237,8 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	globaltest++
 
 	/*
 		err = r.ParseForm()
@@ -1302,7 +1306,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		var Link = globKeyword
 
-		var Condition = 0
+		var Condition1 = 0
 
 		var lastProductID = -1
 
@@ -1358,7 +1362,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 			//marshalFlag = "no"
 
-			Condition++
+			Condition1++
 			var ProductCost float64
 			var ProductQuantity, CondYellow int
 			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
@@ -1399,7 +1403,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 					CondYellow = 1
 					AmountPurchased := prodBoughtInt
-					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 						&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
 					break
@@ -1516,9 +1520,14 @@ type Display3 struct {
 
 //////////
 
+var savedProductIDs []int
+
 func display1(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	//globaltest++
+	//return
 
 	//////
 
@@ -1635,7 +1644,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	*/
 
 	/*
-
 		query := r.URL.Query()
 
 		//this is the searchterm in order from first to last now
@@ -1660,8 +1668,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("filters not present4")
 
 		}
-
-
 	*/
 
 	var val1 = ""
@@ -1736,29 +1742,30 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err)
 	}
 
-	var templ1 forTemplate
+	//var templ1 forTemplate
 
 	var Link = globKeyword
 
-	var Condition = 0
+	var Condition1 = 0
 	//saved text product ids :  1,11,5,7
-	var ints []int
 
-	var marshalFlag = "no"
+	//var ints []int
+
+	//var marshalFlag = "no"
 
 	var counterOfRecords = 0
 
-	//get many productids
+	//get many productids for keyword
 	for rows.Next() {
 
 		counterOfRecords++
 
-		marshalFlag = "no"
-		//counter1 = counter1 + 1
-		Condition++
+		//marshalFlag = "no"
+		counter1 = counter1 + 1
+		Condition1++
 		var ProductCost float64
 		var ProductQuantity, CondYellow int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, AmountToPurchaseID, AmountPurchasedID string
+		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string //AmountToPurchaseID, AmountPurchasedID string
 
 		CondYellow = 0
 		//many prodid, get all the data here...
@@ -1768,54 +1775,57 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//	continue
 		//}
 
-		//lastProductID = ProductID
+		/*
+				////////////
 
-		if err != nil {
-			fmt.Fprint(w, err)
-		}
 
-		db3 := dbConn()
+				lastProductID = ProductID
 
-		textstring := ""
-		//selects products already listed for user : is set as [1] in main.go login
-		stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
+			if err != nil {
+				fmt.Fprint(w, err)
+			}
 
-		if err != nil {
-			fmt.Println(err)
-		}
+			db3 := dbConn()
 
-		rows1, err := stmt1.Query(UserIDstring[0])
+			textstring := ""
+			//selects products already listed for user : is set as [1] in main.go login
+			stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
 
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		//get string from database
-		for rows1.Next() {
-			marshalFlag = "yes"
-			err = rows1.Scan(&textstring)
 			if err != nil {
 				fmt.Println(err)
 			}
 
-		}
+			rows1, err := stmt1.Query(UserIDstring[0])
 
-		if textstring == "" {
-
-		}
-
-		//change string to array, initially is set to nothing, so there is a new productID every time
-		//so, updates or creates record after no match in the snippet below
-
-		if marshalFlag == "yes" && textstring != "" {
-			err = json.Unmarshal([]byte(textstring), &ints)
 			if err != nil {
 				fmt.Println(err)
 			}
-		}
 
-		/////////
+			//get string from database
+			for rows1.Next() {
+				marshalFlag = "yes"
+				err = rows1.Scan(&textstring)
+				if err != nil {
+					fmt.Println(err)
+				}
 
+			}
+
+			if textstring == "" {
+
+			}
+
+			//change string to array, initially is set to nothing, so there is a new productID every time
+			//so, updates or creates record after no match in the snippet below
+
+			if marshalFlag == "yes" && textstring != "" {
+				err = json.Unmarshal([]byte(textstring), &ints)
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+
+		*/
 		////////////
 
 		//check for duplicates, that is if productID already has been displayed don't display again
@@ -1823,18 +1833,20 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		var flag1 = 0
 		var j = 0
-		for j = 0; j < len(ints); j++ {
+		for j = 0; j < len(savedProductIDs); j++ {
 			//record exists already
-			if ProductID == ints[j] {
+			if ProductID == savedProductIDs[j] {
 				flag1 = 1
 				break
 			}
 
 		}
 		if flag1 == 1 {
-
+			Condition1--;
 			continue
 		}
+		//https://stackoverflow.com/questions/33834742/remove-and-adding-elements-to-array-in-go-lang
+		savedProductIDs = append(savedProductIDs, ProductID)
 
 		//below creates or updates the text stored in the database
 
@@ -1847,49 +1859,55 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//array
 		//ints = append(ints, ProductID)
 
-		//no database entry yet, so insert
-		if marshalFlag == "no" {
+		/*
+			//////////////
 
-			//pass in array and get string back
-			//var textstring, err = json.Marshal(ints)
+			//no database entry yet, so insert
+			if marshalFlag == "no" {
 
-			ints = append(ints, ProductID)
+				//pass in array and get string back
+				//var textstring, err = json.Marshal(ints)
 
-			//array to stringn for database
-			var textstring, err1 = json.Marshal(ints)
-			if err1 != nil {
-				fmt.Println(err1)
+				ints = append(ints, ProductID)
+
+				//array to stringn for database
+				var textstring, err1 = json.Marshal(ints)
+				if err1 != nil {
+					fmt.Println(err1)
+				}
+
+
+
+				stmt2, err := db3.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				stmt2.Exec(textstring, UserIDstring[0])
+
+				//there is/are database entries, so update
+			} else {
+
+				ints = append(ints, ProductID)
+
+				//array to string for database
+				var textstring, err1 = json.Marshal(ints)
+				if err1 != nil {
+					fmt.Println(err)
+				}
+
+				//update string
+
+				stmt1, err := db3.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
+				if err != nil {
+					fmt.Println(err)
+				}
+				stmt1.Exec(textstring, UserIDstring[0])
+
 			}
 
-
-			
-			stmt2, err := db3.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			stmt2.Exec(textstring, UserIDstring[0])
-
-			//there is/are database entries, so update
-		} else {
-
-			ints = append(ints, ProductID)
-
-			//array to string for database
-			var textstring, err1 = json.Marshal(ints)
-			if err1 != nil {
-				fmt.Println(err)
-			}
-
-			//update string
-
-			stmt1, err := db3.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
-			if err != nil {
-				fmt.Println(err)
-			}
-			stmt1.Exec(textstring, UserIDstring[0])
-
-		}
+			////////////
+		*/
 
 		/*
 			var stringText = ""
@@ -1925,20 +1943,24 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		*/
 
-		i := 0
+		//i := 0
 		prodBoughtInt := 0
 
-		AmountPurchased := 0
-
-		Link = globKeyword
+		//AmountPurchased := 0
+		//Link = globKeyword
 		//var flagProductIDHasBeenTemplated = false
 		//is records with product amounts already
-		for i = 0; i < len(ProdID); i++ {
+		//for i = 0; i < len(ProdID); i++ {
+
+		/*
+			///
+
 			prodIDStr := ProdID[i]
 
 			prodIDInt, err := strconv.Atoi(prodIDStr)
 			if err != nil {
 				fmt.Println(err)
+				fmt.Println(prodIDInt)
 			}
 
 			prodBoughtStr := keyTotalAmountBought[i]
@@ -1948,61 +1970,73 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			productIDInt, err := strconv.Atoi(ProdID[i])
+			///
+		*/
 
-			//write over with values, already existed with url parameters
-			//has been templated
+		//productIDInt, err := strconv.Atoi(ProdID[i])
+		//if err != nil {
+		///	fmt.Println(err)
+		//
+		//}
 
-			
-			if ProductID == productIDInt {
+		//write over with values, already existed with url parameters
+		//has been templated
 
-				Condition = 0
-				//flagProductIDHasBeenTemplated = true
-				counter1++
+		//this productID has already been displayed
+		//if ProductID == productIDInt {
 
-				str := strconv.Itoa(counter1)
+		AmountPurchased := prodBoughtInt
 
-				var mainDivID = "mainDivID" + str
-				var titleID = "titleID" + str
-				var descID = "descID" + str
-				var costID = "costID" + str
-				var quantityID = "quantityID" + str
-				var key1ID = "key1ID" + str
-				var key2ID = "key2ID" + str
-				var key3ID = "key3ID" + str
-				AmountToPurchaseID = "amountID" + str
-				AmountPurchasedID = "amountPID" + str
+		/*
+			Condition = 0
+			//flagProductIDHasBeenTemplated = true
+			counter1++
 
-				AmountPurchased = prodBoughtInt
+			str := strconv.Itoa(counter1)
 
-				templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-					key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
+			var mainDivID = "mainDivID" + str
+			var titleID = "titleID" + str
+			var descID = "descID" + str
+			var costID = "costID" + str
+			var quantityID = "quantityID" + str
+			var key1ID = "key1ID" + str
+			var key2ID = "key2ID" + str
+			var key3ID = "key3ID" + str
+			AmountToPurchaseID = "amountID" + str
+			AmountPurchasedID = "amountPID" + str
 
-				fmt.Println(templ1)
+			//AmountPurchased = prodBoughtInt
 
-				globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
+			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
+				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
 
-				var err1 = globt.Execute(w, templ1)
+			fmt.Println(templ1)
 
-				if err1 != nil {
-					fmt.Println("---------------")
-					fmt.Println(err.Error())
-				}
+			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
 
-				
-			}else{
+			var err1 = globt.Execute(w, templ1)
 
-			Condition = 1
-			AmountPurchased = 0
-
-			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
-
+			if err1 != nil {
+				fmt.Println("---------------")
+				fmt.Println(err.Error())
 			}
 
-		}
+		*/
+		//}else{
+
+		//Condition = 1
+		//AmountPurchased = 0
+
+		counter1++
+		sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+			&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
+
+		//}
+
+		//}
 	}
 }
+
 //////////
 
 /////////////
