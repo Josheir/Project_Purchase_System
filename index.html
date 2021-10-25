@@ -563,6 +563,12 @@ console.log(JSON.stringify(cars));
 				crossDomain: true,
                 success: function (result) {
 
+
+					if(result == "")
+					{
+						return(1);
+					}
+					
 			alert("query2");
 			 alert(querystring);
 					//alert("check values");
