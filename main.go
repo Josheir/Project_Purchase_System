@@ -653,35 +653,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	//////
-
-	////
-
-	/*
-		fmt.Println("GET params were:", r.URL.Query())
-
-		query := r.URL.Query()
-
-		//filters=["color", "price", "brand"]
-		allIds, present := query["id"]
-		fmt.Println("allIds")
-		fmt.Println(allIds)
-
-		if !present || len(allIds) == 0 {
-
-			fmt.Println("filters not present")
-
-		}
-
-		//fmt.Println(allIds[0])
-
-		allQuants, present := query["quant"]
-
-		if !present || len(allQuants) == 0 {
-			fmt.Println("filters not present")
-		}
-
-	*/
+	
 
 	string1 = ""
 
@@ -701,9 +673,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	Condition++
 	var Condition2 = 0
 
-	//error when making two product and pressing checkout displays all table data below main table with another checkout button
-	//6/26/21
-
+	
 	ID := 0
 	bought := 0
 	numTotal := 0.0
@@ -746,24 +716,18 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		//var counter = 0
-
-		//var templ1 product
+		
 
 		var ProductQuantity int
 
 		var ProductName, ProductCatTitle, ProductCost, TotalCost string
 
-		//fmt.Println("ProductList")
-		//fmt.Println(fmt.Sprintf("%+v", ProductList))
-
-		//defer rows.Close()
+		
 
 		//jumps past this, first run through
 		for rows.Next() {
 
-			//fmt.Println("ProductList1")
-			//fmt.Println(fmt.Sprintf("%+v", ProductList))
+			
 
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
@@ -795,15 +759,16 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			} //for
 
-			//value1 is product ID
+			//first iteration of product ids
 			if i == 0 {
 				Condition = 1
 
-				//fmt.Println("++++++++++++++++++this is important, here.++++++++++++++++++++++++++++++")
+			//not first, so don't display message that is placed before each starting series of records by keyword
 			} else {
 				Condition = 0
 
 			}
+			//if on last record by keyword, do whatever this condition does
 			if i == (len(allIds) - 1) {
 				Condition2 = -1
 			}
@@ -813,6 +778,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(var2)
 			}
 
+
+			//the ideas is to use variables that are whole and not decimals and than move the decimal point at the very end
 			//https://yourbasic.org/golang/round-float-2-decimal-places/
 			//https://stackoverflow.com/questions/20596428/how-to-represent-currency-in-go
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
@@ -834,6 +801,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			ProductCostFloat = ProductCostFloat / (math.Pow(10, 2))
 			//take care of decimals - ready for display
 			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
+
+
+
 
 			//in cents and wholenumber
 			TotalCostFloat := QuantityFloat * ProductCostFloat2
@@ -865,40 +835,31 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
-		//fmt.Println("ProductListXXX")
-		//fmt.Println(fmt.Sprintf("%+v", ProductList))
+		
 
 	} //for next loop
 
-	///////////
+	
 
 	//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
 	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
-	//fmt.Println("ProductList2")
-	//fmt.Println(fmt.Sprintf("%+v", ProductList))
+	
 
 	err1 = globt.Execute(w, ProductList)
 
 	if err1 != nil {
-		//fmt.Println("CC---------------")
+		
 		fmt.Println(err1.Error())
 
-		//panic(err1.Error())
+		
 
 	}
 
-	///////////
+	
 
 }
 
-//func removeAllProducts() {
-//
-//	if globalFlagisVariable == "yes" {
-//
-//		ProductList = ProductList[:0]
-//
-//	}
-//}
+
 
 func addProduct(productidid string, removerecorddivID string, totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
@@ -924,27 +885,26 @@ func addProduct(productidid string, removerecorddivID string, totalID string, to
 	}
 	flag := "nonefound"
 
-	//ProductList = append(ProductList, prod)
+	
 
 	//could be done better, if time allows
 	for i := 0; i < len(ProductList); i++ {
 		if (ProductList[i].ProductID) == prodid {
-			//ProductQuantityFloat = float64(ProductQuantity)
-			//prod.Bought = prod.Bought + bought
-			ProductList[i].ProductQuantity = ProductQuantity
-			ProductList[i].Bought = bought
-			ProductList[i].TotalCost = totalcost
-			//break out
-			globalFlagisVariable = "yes"
-			flag = "found"
-			i = 100
+			
+			//ProductList[i].ProductQuantity = ProductQuantity
+			//ProductList[i].Bought = bought
+			//ProductList[i].TotalCost = totalcost
+			
+			//globalFlagisVariable = "yes"
+			//flag = "found"
+			//i = 100
 		}
 	}
 
 	if flag != "found" {
-		//prod.ProductQuantity = prod.ProductQuantity - prod.Bought
+		
 		ProductList = append(ProductList, prod)
-		globalFlagisVariable = "yes"
+		//globalFlagisVariable = "yes"
 	}
 }
 
