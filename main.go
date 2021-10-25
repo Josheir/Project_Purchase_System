@@ -1169,10 +1169,10 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	UID, err := strconv.Atoi(UserIDstring[0])
-	if err != nil {
-		fmt.Println(err)
-	}
+	//UID, err := strconv.Atoi(UserIDstring[0])
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
 
 	var savedProductIDs []int
 	
