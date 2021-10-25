@@ -933,32 +933,32 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 			/////
 			quantityOfProduct = quantityOfProduct - quantityTryingToSet;
-				alert("productID");
-				alert(quantityOfProduct);
-				alert(productID);
-				alert(sessionStorage.getItem("numberOfRecords"));
+				//alert("productID");
+				//alert(quantityOfProduct);
+				//alert(productID);
+				//alert(sessionStorage.getItem("numberOfRecords"));
 				var firstArray = [];
 				var lastQuant;
 				let val = "";
 				var storedArray = JSON.parse(sessionStorage.getItem("alreadyZero"))
 				
 				
-				alert("stored");
-				alert(storedArray);
+				//alert("stored");
+				//alert(storedArray);
 				let val1 = ""
 				if (storedArray == null)
 				{
 					if (quantityOfProduct == 0)
 					{
 						/////
-						alert("what1");
+						//alert("what1");
 						
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
-						alert(val1)
+						//alert(val1)
 						var varIntVal1 = parseInt(val1);
 						varIntVal1--;
-						alert(varIntVal1);
+						//alert(varIntVal1);
 						if(varIntVal1 < 0)
 						{
 							varIntVal1 = 0;
@@ -971,12 +971,12 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					{
 						/////
 
-						alert("increse");
+						//alert("increse");
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
 						var varIntVal1 = parseInt(val1);
 						varIntVal1++;
-						alert(varIntVal1);
+						//alert(varIntVal1);
 						sessionStorage.setItem("numberOfRecords", varIntVal1);
 						}
 						/////
@@ -985,9 +985,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					
 
 				
-				alert("storedArray");
-				alert(storedArray);
-				alert(quantityOfProduct);
+				//alert("storedArray");
+				//alert(storedArray);
+				//alert(quantityOfProduct);
 				}else if (storedArray != null)
 				{
 
@@ -997,9 +997,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					for (i = 0; i < storedArray.length; ) 
 					{
 
-						alert("storredarray");
-						alert(storedArray[i]);
-						alert(productID);
+						//alert("storredarray");
+						//alert(storedArray[i]);
+						//alert(productID);
 
 					if(storedArray[i] == productID)
 					{
@@ -1014,20 +1014,20 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					{
 						lastQuant = -1;
 					}
-					alert(lastQuant);
+					//alert(lastQuant);
 
 
 
 
 
 
-					alert("checkit");
-					alert(lastQuant);
-					alert(quantityOfProduct);
+					//alert("checkit");
+					//alert(lastQuant);
+					//alert(quantityOfProduct);
 					//putting quantity into a textbox that was empty
 					if (lastQuant == 0  && quantityOfProduct != 0 )
 					{
-						alert("check1");
+						//alert("check1");
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
 						var varIntVal1 = parseInt(val1);
 						varIntVal1++;
@@ -1036,7 +1036,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//setting record to zero after there was a record
 					else if (lastQuant != 0  && quantityOfProduct == 0 )
 					{
-						alert("check2");
+						//alert("check2");
 						if(val1 = sessionStorage.getItem("numberOfRecords"))
 						var varIntVal1 = parseInt(val1);
 						varIntVal1--;
@@ -1058,8 +1058,8 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 				val1 = sessionStorage.getItem("numberOfRecords");
-				alert("session - returning");
-				alert(val1);
+				//alert("session - returning");
+				//alert(val1);
 
 
 				///////
@@ -1156,16 +1156,16 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//alert("set");
 					//alert(productID);
 
-					alert("totalquantity");
-					alert(totalquantity);
+					//alert("totalquantity");
+					//alert(totalquantity);
 					
 
 					//if(totalquantity != 0)
 					//{
 
-						alert("1a");
-						alert(productID);
-						alert(totalquantity);
+						//alert("1a");
+						//alert(productID);
+						//alert(totalquantity);
 						sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
 
 						//////
@@ -1196,10 +1196,10 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				if (keyFlag !=  "found")
 				{
 
-					alert("2a");
+					//alert("2a");
 						//alert(productID);
 						//alert(totalquantity);
-						alert(quantityTryingToSet);
+						//alert(quantityTryingToSet);
 					/////////////
 
 					//bought = sessionStorage.getItem(key);
@@ -1210,9 +1210,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 					////////////
 				
-					alert("zzhere");
-					alert(productID);
-					alert(quantityTryingToSet)
+					//alert("zzhere");
+					//alert(productID);
+					//alert(quantityTryingToSet)
 					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
 				
 				 	//sessionStorage.setItem( parseInt(productID),  parseInt(totalquantity));

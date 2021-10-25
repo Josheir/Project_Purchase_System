@@ -1091,25 +1091,14 @@ func updateForm(w http.ResponseWriter, r *http.Request) {
 //this function displays all the keywords in the url, these records are the records already been displayed in display1
 func display2(w http.ResponseWriter, r *http.Request) {
 
-	//ARRAY OF INTS  [3,4,7]
-	//thesse ints are kept in database and changed to an array to see if they have aleady been
-	//displayed so continue.  Does not effect the client side is an int
-	//product is checked with array and if exists is contniues
-
+	
 	GlobCounter++
 
 	/////////
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	/////
-
-	//var numOfKeywords []string
-	//numOfKeywords= r.Form["numofkeywords"]
-	//var intNumOfKeywords, _ = strconv.Atoi(numOfKeywords[0]);
-	//////
-
-	//////
+	
 
 	var err1 = r.ParseForm()
 	if err1 != nil {
@@ -1128,9 +1117,9 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			//UserIDstring[i]  = r.Form["uid"][i]
+			
 			UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
-			//UserIDstring = append(UserIDstring, r.Form["uid"][i])
+			
 		}
 
 	} else {
@@ -1160,9 +1149,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			ProdID = append(ProdID, []string{r.Form["id"][i]}...)
 			keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
 
-			//ProdID = append(ProdID, r.Form["id"][i])
-			//keyTotalAmountBought = append(keyTotalAmountBought, r.Form["quant"][i])
-
+			
 		}
 
 	} else {
@@ -1190,9 +1177,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	
 
 	var m = 0
-	//var lastUseOf = false
-	//var numRecords1 = 0
-	//var oneTime = true
+	
 	var recordCounter = 0
 	for m = 0; m < len(key1); m++ {
 
@@ -1219,16 +1204,13 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		}
 
-		//var templ1 forTemplate
+		
 
 		var Link = globKeyword
 
 		var Condition1 = 0
 
-		//var lastProductID = -1
-
-		//var stringText = ""
-		//var ints []int
+		
 		var flag1 = 0
 		for rows.Next() {
 
@@ -1256,14 +1238,9 @@ func display2(w http.ResponseWriter, r *http.Request) {
 		savedProductIDs = append(savedProductIDs, ProductID)
 			/////////////
 
-
-
-
-
-
 			recordCounter++
 
-			//marshalFlag = "no"
+			
 
 			Condition1++
 			var ProductCost float64
@@ -1278,7 +1255,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 
-			///////////////
+			
 			var i = 0
 			
 			counter1 = counter1 + 1
@@ -1541,32 +1518,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	*/
 
-	/*
-		query := r.URL.Query()
-
-		//this is the searchterm in order from first to last now
-		key1, present := query["var"]
-
-		if !present || len(key1) == 0 {
-			fmt.Println("filters not present1")
-		}
-
-		keyTotalAmountBought, present2 := query["quant"]
-		if !present2 || len(keyTotalAmountBought) == 0 {
-			fmt.Println("filters not present2")
-		}
-		ProdID, present3 := query["id"]
-		if !present3 || len(ProdID) == 0 {
-			fmt.Println("filters not present3")
-
-		}
-
-		UserIDstring, present4 := query["uid"]
-		if !present4 || len(UserIDstring) == 0 {
-			fmt.Println("filters not present4")
-
-		}
-	*/
+	
 
 	var val1 = ""
 	val1 = UserIDstring[0]
@@ -1594,35 +1546,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	//////
-
-	/*
-		var numRecords = 0
-		stmt, err := db.Prepare("SELECT COUNT(*) FROM products WHERE ((products.ProductKeyWord1 = ?) OR (products.ProductKeyWord2 = ?) OR " +
-			"(products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		for rows.Next() {
-
-			err = rows.Scan(&numRecords)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-		}
-
-	*/
-	//////
+	
 
 	//selects many productid
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
@@ -1631,7 +1555,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		"((products.ProductKeyWord1 = ?) OR " +
 		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
 	if err != nil {
-		//	//panic(err.Error())
+		
 	}
 
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
@@ -1645,12 +1569,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var Link = globKeyword
 
 	var Condition1 = 0
-	//saved text product ids :  1,11,5,7
-
-	//var ints []int
-
-	//var marshalFlag = "no"
-
+	
 	var counterOfRecords = 0
 
 	//get many productids for keyword
@@ -1669,61 +1588,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//many prodid, get all the data here...
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
-		//if ProductID == lastProductID {
-		//	continue
-		//}
-
-		/*
-				////////////
-
-
-				lastProductID = ProductID
-
-			if err != nil {
-				fmt.Fprint(w, err)
-			}
-
-			db3 := dbConn()
-
-			textstring := ""
-			//selects products already listed for user : is set as [1] in main.go login
-			stmt1, err := db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedtext.UserID = ?")
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			rows1, err := stmt1.Query(UserIDstring[0])
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			//get string from database
-			for rows1.Next() {
-				marshalFlag = "yes"
-				err = rows1.Scan(&textstring)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-			}
-
-			if textstring == "" {
-
-			}
-
-			//change string to array, initially is set to nothing, so there is a new productID every time
-			//so, updates or creates record after no match in the snippet below
-
-			if marshalFlag == "yes" && textstring != "" {
-				err = json.Unmarshal([]byte(textstring), &ints)
-				if err != nil {
-					fmt.Println(err)
-				}
-			}
-
-		*/
+		
 		////////////
 
 		//check for duplicates, that is if productID already has been displayed don't display again
@@ -1746,110 +1611,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//https://stackoverflow.com/questions/33834742/remove-and-adding-elements-to-array-in-go-lang
 		savedProductIDs = append(savedProductIDs, ProductID)
 
-		//below creates or updates the text stored in the database
-
-		//////////////
-
-		//ints = append(ints, []int{ProductID}...)
-
-		//////////////
-
-		//array
-		//ints = append(ints, ProductID)
-
-		/*
-			//////////////
-
-			//no database entry yet, so insert
-			if marshalFlag == "no" {
-
-				//pass in array and get string back
-				//var textstring, err = json.Marshal(ints)
-
-				ints = append(ints, ProductID)
-
-				//array to stringn for database
-				var textstring, err1 = json.Marshal(ints)
-				if err1 != nil {
-					fmt.Println(err1)
-				}
-
-
-
-				stmt2, err := db3.Prepare("INSERT INTO savedtext(Text, UserID) VALUES(?,?)")
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				stmt2.Exec(textstring, UserIDstring[0])
-
-				//there is/are database entries, so update
-			} else {
-
-				ints = append(ints, ProductID)
-
-				//array to string for database
-				var textstring, err1 = json.Marshal(ints)
-				if err1 != nil {
-					fmt.Println(err)
-				}
-
-				//update string
-
-				stmt1, err := db3.Prepare("UPDATE savedtext SET Text=? WHERE UserID=?")
-				if err != nil {
-					fmt.Println(err)
-				}
-				stmt1.Exec(textstring, UserIDstring[0])
-
-			}
-
-			////////////
-		*/
-
-		/*
-			var stringText = ""
-
-			stmt1, err = db3.Prepare("SELECT savedtext.Text FROM savedtext WHERE savedText.UserID = ?")
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			rows1, err = stmt1.Query(UserID)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			//get string from database
-			for rows1.Next() {
-
-				err = rows1.Scan(&stringText)
-				if err != nil {
-					fmt.Println(err)
-				}
-
-				//change string to array
-				err := json.Unmarshal([]byte(stringText), &ints) //
-				if err != nil {
-					fmt.Println(err)
-				}
-
-			}
-
-
-		*/
-
-		//i := 0
 		prodBoughtInt := 0
 
-		//AmountPurchased := 0
-		//Link = globKeyword
-		//var flagProductIDHasBeenTemplated = false
-		//is records with product amounts already
-		
-		
 		
 		
 		var AmountPurchased = 0
@@ -1885,75 +1648,13 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-			///
 		
-
-
-
-
-
-		//productIDInt, err := strconv.Atoi(ProdID[i])
-		//if err != nil {
-		///	fmt.Println(err)
-		//
-		//}
-
-		//write over with values, already existed with url parameters
-		//has been templated
-
-		//this productID has already been displayed
-		//if ProductID == productIDInt {
-
-		
-		/*
-			Condition = 0
-			//flagProductIDHasBeenTemplated = true
-			counter1++
-
-			str := strconv.Itoa(counter1)
-
-			var mainDivID = "mainDivID" + str
-			var titleID = "titleID" + str
-			var descID = "descID" + str
-			var costID = "costID" + str
-			var quantityID = "quantityID" + str
-			var key1ID = "key1ID" + str
-			var key2ID = "key2ID" + str
-			var key3ID = "key3ID" + str
-			AmountToPurchaseID = "amountID" + str
-			AmountPurchasedID = "amountPID" + str
-
-			//AmountPurchased = prodBoughtInt
-
-			templ1 = forTemplate{CondYellow, Link, Condition, AmountPurchased, prodIDInt, ProductCatTitle, titleID, ProductName, descID, ProductDescription, costID, ProductCost, quantityID, ProductQuantity,
-				key1ID, gKeyword1, key2ID, gKeyword2, key3ID, gKeyword3, ProductFilename, AmountToPurchaseID, AmountPurchasedID, mainDivID}
-
-			fmt.Println(templ1)
-
-			globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template1.html"))
-
-			var err1 = globt.Execute(w, templ1)
-
-			if err1 != nil {
-				fmt.Println("---------------")
-				fmt.Println(err.Error())
-			}
-
-		*/
-		//}else{
-
-		//Condition = 1
-		//AmountPurchased = 0
 
 		counter1++
 		sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 			&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-		//}
-
-		//}
-
-	//	}
+		
 	}
 }
 
