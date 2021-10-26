@@ -146,33 +146,26 @@
 
 
 
-function changeColorToBlack(AmountToBuyID)
-{
-  document.getElementById(AmountToBuyID).style.color = "black";
-  //document.getElementById(AmountToBuyID).value = "";
- 
-}
+//function changeColorToBlack(AmountToBuyID)
+//{
+//  document.getElementById(AmountToBuyID).style.color = "black";
+//  //document.getElementById(AmountToBuyID).value = "";
+// 
+//}
 
 //entered data and pressed checkout in template2 
 //before hide, amount of numberofrecords is decremented 
 function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
-  //sessionStorage.removeItem("numberOfRecords");
-
-  
-  
   var gtotal = parseFloat(gtotal);
   
-  
-  //alert("encode to dbase");
-  //var amtInBuyBox = document.getElementById(amttobuyID).value;
 
   var val1 = "";
-  //for amountinboxid
+  
   var var1 = "A";
-  //for costid
+  
   var var2 = "C";
-  //for div - availablr
+ 
   var var3 = "D"; 
 
   var var4 = "B";
@@ -190,10 +183,10 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   var AmountOfQuantityID = 0; 
   var bought = 0;
   
-    //var flag = "wasntHere"
+    
     var flag = "isNotNegValue";
     let keys = Object.keys(sessionStorage);
-    //this starts at zero just like counter
+    
     var amtOfHiddenProducts = 0;
 
     //each iteration is one purchase
@@ -202,14 +195,14 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         if(key =="session_userID")
         {
           counter--;
-         // amtOfHiddenProducts--;
+         
           continue;
         }
-        //???????????
+        
         if(key =="keywords")
         {
           counter--;
-          //amtOfHiddenProducts--;
+          
           continue;
         }
         if(key =="numberOfRecords")
@@ -233,9 +226,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         BoughtID = var4 + counter;
         oneDivID = var5 + counter;
         ProductIDID = var6 + counter;
-      //alert("quantity");
-      //alert(AmountOfQuantityID);
-        //amount in box
+      
         var bought = (document.getElementById(BoughtID).value);
         var amtInBuyBox =(document.getElementById(AmountToBuyID).value);
         var quantityInBox = (document.getElementById(AmountOfQuantityID).value);
@@ -243,114 +234,35 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         var Product = (document.getElementById(ProductIDID).value); 
        
        
-       //alert("cost");
-      //alert(costInBox);
+       
         
-        //amount bought before purchase
-        //var item = parseInt(sessionStorage.getItem(key)) + amtInBuyBox;
-        //string =  string + "id=" + key + "&quant=" + item + "&";
         var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
 
-        //alert("key");
-        //alert(key);
         if (item == "")
         { 
-          //alert("item is null print");
+          
           item = bought;
         
-        //alert("ready");
-        //alert("amt in buybox");
-        //alert(amtInBuyBox);
-        //alert("item");
-        //alert(item);
-        //negative or has decimal
         }
         //check if is decimal
         if(item % 1 != 0)
         {
-          //alert("in here1");
+          
           var str2 = amtInBuyBox.toString();
-          //document.getElementById(AmountToBuyID).style.color = "green";
+          
           flag = "isNegValue";
         }
 
         if(item == 0)
         {
 
-                  /////////////////
-                  /*
-                  var val1 = "";
-                  if(val1 = sessionStorage.getItem("numberOfRecords"))
-                  {
-                      var varIntVal1 = parseint(val1);
-                      varIntVal1--;
-                      //automatically changes variable to string
-                      sessionSTorage.setItem("numberOfRecords", varIntVal1);
-                  }
-                  else
-                  {
-                    sessionSTorage.setItem("numberOfRecords", "0");
-                  }
-                  */
-
-                  /////////////////
-
-                  //sets template1 to zero
-                  //alert("important!!!B");
+                  
                   hideRow(oneDivID);
                   amtOfHiddenProducts++;
                  
-                  //alert(Product);
-                 
-                  //CHANGED THIS LOOK HERE
+                  
                   sessionStorage.removeItem((Product), 0);
                   
-
-
-                  //Use this if design is changed to keep return screen updated, isn't yet
-                  //in two places (hide is the search word) 
-                  //subtract a number from session level variabl
-                  //because remove has been used
-                  /*
-                  val1 = SessionStorage.getItem("numberOfRecords" )
-                  var val1int1 = parseInt(val1);
-                  val1int1--;
-                  sessionStorage.setItem("numberOfRecords", val1int1 );
-                  */
-                  ///////
-
-
-                  //alert("A hide 1");
-                  
-                  /*
-                  if(val1 = sessionStorage.getItem("numberOfRecords"))
-                  {
-                    //alert("b");
-                    
-                    var varIntVal1 = parseInt(val1);
-                    var val2 = varIntVal1 - 1;
-
-                    sessionStorage.setItem("numberOfRecords", val2);
-                    var val3 = sessionStorage.getItem("numberOfRecords");
-                    alert(val3);
-                    //if( varIntVal1 == 5)
-                    //{
-                    //	return(-1);
-                    //}
-                    
-                  }
-                  else
-                  {
-                    //alert("c");
-                    sessionStorage.setItem("numberOfRecords", "0");
-                  }
-                    */
-
-                  /////////
-                 
-                  
-                  
-                 // alert("important");
                   
           continue;
           
@@ -358,20 +270,20 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         
         else if(item < 0 ) //|| (item == Math.floor(item)))
         {
-          //alert("in here2");
+          
           var str2 = amtInBuyBox.toString();
-          //document.getElementById(AmountToBuyID).style.color = "green";
+         
           flag = "isNegValue";
         }
         else if (isNaN(item ))
         {
-          //alert("in here3");
+          
           var str2 = amtInBuyBox.toString();
-          //document.getElementById(AmountToBuyID).style.color = "green";
+         
           flag = "isNegValue";
         }
 
-        //leave function with green semblance, there is a problem here, notify of first
+        
         if (flag == "isNegValue")
         {
           return;
@@ -379,37 +291,19 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
 
         
-        //checkout
+        
         //quant is amount trying to buy
         string =  string + "id=" + key + "&quant=" + item + "&";
-        /*
-     
-     
-        if(val1 = sessionStorage.getItem("numberOfRecords"))
-        {
-            var varIntVal1 = parseint(val1);
-            varIntVal1++;
-            //automatically changes variable to string
-            sessionSTorage.setItem("numberOfRecords", varIntVal1);
-        }
-        else
-        {
-          sessionSTorage.setItem("numberOfRecords", "1");
-        }
-        */
+        
 
 
 
 
-        //alert("string");
-        //alert(string);
+        
     }
 
-    //all procucts are hidden, therefore thet have a value of zero
     
-    //alert("check this");
-    alert(counter + 1); //1
-    alert(amtOfHiddenProducts);  //2
+    
     if (amtOfHiddenProducts == (counter + 1))
     {
       
@@ -417,19 +311,11 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       window.location.href = "index.html";
     
       }
-      //alert("here1");
-    //remove the amperstand is right below
+      
     string = string + "userid=" + sessionStorage.getItem("session_userID");
 
-
-  //alert("here2");
-//goes backwards and last entered writes over
 var queryString = string.substring(0, string.length-1);
 
-//alert("spit test");
-//alert(queryString);
-
-//alert("here3");
 
               $.ajax({
               url: 'http://localhost:8080/spitBackAmounts',
@@ -442,25 +328,11 @@ var queryString = string.substring(0, string.length-1);
              
               success: function (data1) {
 
-
-                ////////////////
-                
-                
-                //alert("here4");
-
-
-
-                ////////////////
-                
-
                 var flag = "is enough";
 
-                //no records, no need to remove assumed zero
+                
                 if(data1.length == null){
 
-                  ///////
-                  
-                  
                   for(let key of keys) {
        
                     alert("keys here...");
@@ -481,8 +353,6 @@ var queryString = string.substring(0, string.length-1);
 
                 window.location.href = "index.html";
             
-                  ///////
-                  
                 }
 
                       
@@ -491,16 +361,7 @@ var queryString = string.substring(0, string.length-1);
                 for (var i = 0; i< data1.length ;i++)
                 {
 
-                  //alert("i...");
-                  //alert(i);
                   
-                  
-                  
-                  //alert("length");
-                  //alert(data1.length);
-
-                  //alert("is eenough");
-                  //alert(data1[i].IsEnoughQuantity);
                   
                 if(data1[i].IsEnoughQuantity == false)
                 {
@@ -524,58 +385,28 @@ var queryString = string.substring(0, string.length-1);
                   window.location.href = "donePurchase.html";
                 }
 
-                
-                
-
-                // GTotalWithTax 
-
-                //alert(data1);
                 console.log(data1);
-
-              //  type Product2 struct {
-              //	ID                  int
-	            //  QuantityAvailable   int
-	            //  IsNotEnoughQuantity string
-              //  }
 
                 var newGrandTotalString = "a";
               
-              //total all elemetst, two per array.
+             
               var lengthOfData = data1.length;
               
-              //var lengthOfData = data1.length;
-              //alert("start");
-              //alert("length");
-              //alert(var3);
-              //alert(data1.length);
-              //alert(data1[0].QuantityAvailable);
-              //alert(data1[1].QuantityAvailable);
-              //alert(data1[0].ID);
-              //alert(data1[0].ID);
-              //alert("finish");
-              //console.log(data1[i].QuantityAvailable);
-              //alert(data1);
-                
-
-             
 
               var TotalCost = "string";
                   
               var GTotalWithTax = 0.0;
                 gFlagIsEnoughProduct = "yes";
                 
-                //amount of products
+               
 
                 var gRedTextAmount = 0;
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
-                  //alert("i..");
-                  //alert(i);
                  
                   GTotalWithTax = 0;
-                //alert("lengthOfData");
-                //alert(lengthOfData);
+                
                 var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
                 var availableID =  "D" + i;
@@ -583,12 +414,9 @@ var queryString = string.substring(0, string.length-1);
                 var totalCostID = "TC" + i;
                 var GrandTotalStringID = "GT" + i;
                 var oneDivID1 =  "V" + i;
-                //quantity available
+                
                 var what = document.getElementById(quantity).value;
 
-                /////////
-
-                //
                 var amounttobuy = document.getElementById(buyThisManyID).value;
 
                 
@@ -597,7 +425,7 @@ var queryString = string.substring(0, string.length-1);
 
                 bought1 = document.getElementById(boughtid).value;
                 bought1 = parseFloat(bought1);
-                //alert("really did get here!");
+                
 
                 amtBuying1 = document.getElementById(buyThisManyID).value;
                 amtBuying1 = parseFloat(amtBuying1);
@@ -608,51 +436,14 @@ var queryString = string.substring(0, string.length-1);
 
                 if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
-                  //alert("important!!!A");
-
-                  //alert("A hide 2");
+                  
                   hideRow(oneDivID1);
                   amtOfHiddenProducts++;
                   document.getElementById(buyThisManyID).value = 0;
 
-                  ////////
-                 
-
-                  /*
-                  ////////
-
-                  //Use this if design is changed to keep return screen updated, isn't yet
-                  //in two places (hide is the search word) 
-                  sessionStorage.removeItem(data1[i].ID);
-                  /////
-                  let val1 = SessionStorage.getItem("numberOfRecords" )
-                  let val1int1 = parseInt(val1);
-                  val1int1--;
-                  sessionStorage.setItem("numberOfRecords", val1int1 );
-                  /////
-                  */
                   
-                 
 
-                  /////////
-
-                  /*
-                  if(val1 = sessionStorage.getItem("numberOfRecords"))
-                  {
-                    
-                    var varIntVal1 = parseint(val1);
-                    sessionStorage.setItem("numberOfRecords", varIntVal1-1);
-                    //if( varIntVal1 == 5)
-                    //{
-                    //	return(-1);
-                    //}
-                    
-                  }
-                  else
-                  {
-                    sessionStorage.setItem("numberOfRecords", "0");
-                  }
-                  */
+                  
                   
 
                   continue;
@@ -669,10 +460,7 @@ var queryString = string.substring(0, string.length-1);
                 alert(str1);
                 var num = data1[i].QuantityAvailable;
                 str2 = num.toString();
-                //alert("str2");
-                //alert(str2);
-               
-
+                
                 //wasnt enough, so make red
                 if (str1 == false)
                 {
@@ -683,141 +471,36 @@ var queryString = string.substring(0, string.length-1);
                   
                   document.getElementById(availableID).style.color = 'red';
                   gRedTextAmount = gRedTextAmount + 1;
-                  //var value = document.getElementById(availableID);
-                  //value.value = str2;
-
-
-                  
-
-
-
                   
                   
                   document.getElementById(boughtid).value = 0;
 
                   //string, however value is (example) : $1.00
                   TotalCost = document.getElementById(totalCostID).value ;
-                  //alert("start");
-                  //alert(typeof(TotalCost));
-                  //alert(TotalCost);
+                  
                   TotalCost1 = TotalCost.slice(1);
-                  //alert(TotalCost);
+                  
                   var TotalCostFloat = parseFloat(TotalCost1);
 
-                  //alert("TotalCostFloat");
-                  //alert(TotalCostFloat);
-
-                  //alert("totalcostfloat1");
-                  //alert(TotalCostFloat);
-
-                  //alert("type1");
-                  //alert(typeof(TotalCost));
-                  //makes these variables cents 
-                  //gtotal =  gtotal * (10 ** 2);
-                    
-                    //$9.23
-                    //alert("totalcost1");
-                    //alert(TotalCost);
-                    //TotalCost =  TotalCost.slice(1);
-                    //TotalCostFloat =  TotalCostFloat * (10 ** 2);
-                    //alert("totalcostfloat2");
-                    //alert(TotalCostFloat);
-                    //923
-                    //alert("totalcost2");
-                    //alert(TotalCost);
-                    //the five represents the tax of .05%
+                  
                     var tax =  TotalCostFloat * 5 ;
-                    //4615
-                    //alert("tax");
-                    //alert(tax);
+                    
                     TotalCostFloat = TotalCostFloat * (10 ** 2);
-                    //alert("totalcostfloat3");
-                    //alert(TotalCostFloat);
-
-                    //alert("totalcost3");
-                    //alert(TotalCost);
-                    //alert("GTotalWithTax");
-                    //alert(GTotalWithTax);
-
-                    //($1.05)
-                    //105
+                    
                     GTotalWithTax =  GTotalWithTax +  tax + TotalCostFloat;
 
-
-                    //GTotalWithTax = GTotalWithTax / (10 ** 2)
-
-                    //alert("GTotalWithTax");
-                    //alert(GTotalWithTax);
-
-                    //alert("gtotal");
-                    //alert(gtotal);
                     gtotal = gtotal * (10 ** 2);
                     gtotal = gtotal - GTotalWithTax;
                     gtotal = gtotal / (10 ** 2);
 
-                    //alert("gtotal");
-                    //alert(gtotal);
-
-                    //96915
-                   
-
-                    //alert("tax");
-                    //alert(tax);
-
-                    //alert("totalcost1");
-                    //alert(TotalCostFloat);
-
-                    //96915
-                    //alert("GTotalWithTax2");
-                    //alert(GTotalWithTax);
-                    //969
-                    //alert("gtotal");
-                    //alert(gtotal);
-                    //96915
-                    //alert("GTotalWithTax");
-                    //alert(GTotalWithTax);
-
-                ///////////
-                //string - is the value so has dollar sign
-                //var costEach = document.getElementById(costID).value;
-                //alert("costeach");
-                //alert(costEach);
-                //costEach = costEach.slice(1);
-                //costEach =  costEach * (10 ** 2);
-               //whole number
                 document.getElementById(boughtid).value = 0;
-               // alert("bought");
-               // alert(bought);
-               // alert("costeach");
-               // alert(costEach);
-              //var total = (bought * costEach);
-                //alert("total");
-                //alert(total);
-               //reinstate decimals
-                //total = total / (10 ** 2);
-               //  alert("total");
-               //  alert(total);
-               //  alert("costeach");
-               //  alert(costEach);
-               //  alert("bought");
-               //  alert(bought);
-               //https://learnersbucket.com/examples/javascript/learn-how-to-round-to-2-decimal-places-in-javascript/
-               //var roundedTotal = Math.round(total * 100) / 100
-                //total = total.toFixed(2); 
-                //alert("total");
-                //alert(total);
+               
                 TotalCostString = "$0.00"; 
-
-                
-                
-                //alert("TotalCostString");
-                //alert(TotalCostString);
 
                 document.getElementById(totalCostID).value = (TotalCostString);
                 var check = document.getElementById(buyThisManyID );    
                 check.value = "";
-                  ///////////
-                  
+                
                 alert("total");
                 alert(gRedTextAmount);
                 alert(lengthOfData);
@@ -828,94 +511,36 @@ var queryString = string.substring(0, string.length-1);
 
                 document.getElementById(grandTotalID).value = stringGrandTotal;
 
-
-
-
-                  ///////////
-
-
-
-
-                }//there wasn't enough product
-                //there is plenty of product for this record...
+                }
                 else
                 {
 
-                  /////////////////////////////////begin work to do
-                  //alert("in new section");
-
-                
 
                 //remove totalcost determined at purchase interface, so that amount to buy times cost will equal this
                 //products total
                 var initialTotalCost = document.getElementById(totalCostID).value;
-                //alert("typeof1");
-                //alert(typeof(initialTotalCost));
-
+                
                 initialTotalCost = initialTotalCost.slice(1);
 
-                //alert("typeof2");
-                //alert(typeof(initialTotalCost));
-                //float
                 initialTotalCost = parseFloat(initialTotalCost);
-                //alert("typeof2");
-                //alert(typeof(initialTotalCost));
-
-                //alert("initialTotalCostA");
-                //alert(initialTotalCost);
-                  
                 
                 var initialTotalCost = initialTotalCost * (10 ** 2);
 
                 //whole number
                 var tax1 = initialTotalCost * 5;
-                //alert("tax1");
-                //alert(tax1);
-
+                
 
                 var initialTotalCost = initialTotalCost * (10 ** 2);
 
-                //alert("initialTotalCostB");
-                //alert(initialTotalCost);
-
+                
                 initialTotalCost = initialTotalCost + tax1;
-                //alert("initialTotalCostC");
-                //alert(initialTotalCost);
-                  
-
-                //intialTotalCost = initialTotalCost / (10 ** 4);
-
-
-                //intialTotalCost = initialTotalCost * (10 ** 2);
-
-
-
-                ///////////////////////end work to do
-
-                //211.01
-                //alert("gtotal1");
-                //alert(gtotal);
-
-                //gtotal = 2110100
+                
                 gtotal = gtotal * (10 ** 4);
-                //alert("gtotal2");
-                //alert(gtotal);
-                //2110080
-                //alert("initialTotalCost");
-                //alert(initialTotalCost);
+                
                 gtotal = gtotal - initialTotalCost;
                 intialTotalCost = initialTotalCost / (10 ** 2);
                 gtotal = gtotal / (10 ** 4);
-                //alert("gtotal3!!!!");
-                //alert(gtotal);
-
                 
-                //gtotal = gtotal / (10 ** 4);
-
-                //alert("gtotal4");
-                //alert(gtotal);
-
-
                 GTotalWithTax = 0;
 
                 var amtAvailable = document.getElementById(availableID).value;
@@ -927,37 +552,27 @@ var queryString = string.substring(0, string.length-1);
                 var amtBuying = document.getElementById(buyThisManyID).value;
                 amtBuying = parseFloat(amtBuying);
 
-
-                //alert("near error");
-                //alert(amtBuying);
-
                 if(amtBuying == "" || (isNaN(amtBuying)) )
                 {
-                  //alert("did it go here?");
+                  
                   amtBuying = bought;
                 }
-                //alert(amtAvailable);
-                //alert(bought);
-                //alert(amtBuying);
                
                   //94   1    2
                 var newAvailable = amtAvailable + bought - amtBuying;
-                //alert(newAvailable);
+               
                 document.getElementById(availableID).value = newAvailable;
 
-                //alert("newAvailable");
-                //alert(newAvailable);
                 //example : 1.11 - string
                 var costEach = document.getElementById(costID).value;
                 costEach = costEach.slice(1);
                 
-                //alert(costEach);
+                
                 costEach = parseFloat(costEach);
                 //move decimal right
                 costEach =  costEach * (10 ** 2);
 
-                //alert("costEach");
-                //alert(costEach);
+                
                 //save new bought
                 document.getElementById(boughtid).value = amtBuying; 
                 
@@ -976,17 +591,11 @@ var queryString = string.substring(0, string.length-1);
                 
                 //round
                 total = total.toFixed(2); 
-                 // alert("total");
-                 // alert(total);
-
-
+                 
                 TotalCostString = total.toString(); 
-                //no dollar sign
-                //alert("TotalCostString");
-                //alert(TotalCostString);
+                
                 TotalCostString = "$" +  TotalCostString; 
-                //alert("TotalCostString");
-                //alert(TotalCostString);
+                
 
                 document.getElementById(totalCostID).value = (TotalCostString);
 
@@ -996,65 +605,26 @@ var queryString = string.substring(0, string.length-1);
 
                 totalCopy = totalCopy * (10 ** 2);
                 tax = parseFloat(tax);
-                  
-                //alert("totalCopy");
-                //alert(totalCopy);
-                //alert("tax");
-                //alert(tax);
-
-                //alert("totalCopy");
-                //alert(totalCopy);
-                //example:
-                //($1.05)
-                //10500
-                //alert("GTotalWithTax1");
-                //alert(GTotalWithTax);
-
+                 
                 GTotalWithTax =  tax + totalCopy;
-
-
-               // alert("total");
-                //alert(GTotalWithTax);
-
-                //alert("gtotal!!!!!");
-                //alert(gtotal);
-                //alert("GTotalWithTax1");
-                //alert(GTotalWithTax);
 
                 gtotal = gtotal * (10 ** 2);
                 
                 gtotal = gtotal + GTotalWithTax;
-               // alert("gtotal");
-               // alert(gtotal);
-
+               
                 gtotal = gtotal / (10 ** 2); 
                 
-                //alert("gtotalcopy");
-                //alert(gtotalCopy);
                 var gtotalCopy = gtotal;
-                //4220160
-              //  alert("gtotalCopy1A");
-              //  alert(gtotalCopy);
+                
 
                 gtotalCopy = gtotalCopy / (10 ** 2);
 
-             //   alert("gtotalCopy2");
-             //   alert(gtotalCopy);
-
+             
                 var stringGrandTotal = gtotalCopy.toFixed(2); 
                 alert(typeof(stringGrandTotal));
 
-                
-                //alert("stringGrandTotal");
-                //alert(stringGrandTotal);
-
-               
                 stringGrandTotal = "Grand Total: $" + stringGrandTotal;
-                //iterated one more because for loop failed, so subtract one
                 
-                //alert("total");
-                //alert(gRedTextAmount);
-                //alert(lengthOfData);
                 if (gRedTextAmount == lengthOfData - 1)
                 {
                   stringGrandTotal = "Grand Total: $" + "0.00";
@@ -1081,7 +651,7 @@ var queryString = string.substring(0, string.length-1);
 
 }//end
 
-
+/*
 Number.prototype.getPrecision = function() {
   var v = this.valueOf();
   if (Math.floor(v) === v) return 0;
@@ -1102,7 +672,7 @@ function hideRow(rowId)
 {
     document.getElementById(rowId).style.display = "none";
 }
-
+*/
 
 </script>
 

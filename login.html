@@ -26,33 +26,20 @@
 <script>
 
 window.sessionStorage
-///////////
 
-
-
-///////////
 
 var userid = "";
-//alert("query");
+
     $(document).ready(function () {
         $('#button1').click(function () {
 
 
             var pass = document.getElementById("pass").value;
-            //string type
+            
             userid = document.getElementById("userid").value;
 
-            
 
             var querystring = "pass=" + pass + "&userid=" + userid;
-
-           
-            ///////
-
-            
-            
-            ///////
-
 
 
             $.ajax({
@@ -65,14 +52,11 @@ var userid = "";
                 //crossDomain: true,
                 success: function (result) {
 
-                  //alert("pass");
-                  alert(result);
-                  alert(result[0]);
+                  
                   
                   if (result[0].Text == "password correct")
                   {
-                    //alert("212121");
-                    //template / table works when this is commented out
+                    
                     sessionStorage.setItem("session_userID", result[0].UserID);
                     
                     sessionStorage.setItem("numberOfRecords", "0");
