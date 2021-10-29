@@ -58,7 +58,7 @@ function CallIndex()
 $(function(){
 
 ////////
-alert("in fiunction");
+//alert("in fiunction");
 loadData();
 
 ////////
@@ -444,7 +444,7 @@ var queryString= "";
 //calls template2
 function loadData() {
  
-alert("is it getting here");
+//alert("is it getting here");
  var string = "";
 //////////////////////
 
@@ -453,8 +453,8 @@ var var1 = "hasntBeenHere";
 for(let key of keys) {
 
 
-  alert("keys hereaaa");
-  alert(key);
+  //alert("keys hereaaa");
+  //alert(key);
   if(key == "session_userID")
   {
     continue;
@@ -478,10 +478,10 @@ for(let key of keys) {
   //check for not an integer
 
   var item = sessionStorage.getItem(key);
-  alert("item");
-  alert(item);
+  //alert("item");
+  //alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
-  alert(string);
+  //alert(string);
   
   var1 = "hasBeenHere";
   
@@ -527,8 +527,8 @@ else
 	//queryString = "";
 }
 
-alert("queryString");
-alert(queryString);
+/////alert("queryString");
+//alert(queryString);
 
 var url = "http://localhost:8080/template2";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";

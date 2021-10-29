@@ -143,18 +143,19 @@
 
   
   
+function changeColorToBlack(AmountToBuyID)
+{
+  document.getElementById(AmountToBuyID).style.color = "black";
+  document.getElementById(AmountToBuyID).value = "";
+ 
+}
+
+function hideRow(rowId)
+{
+    document.getElementById(rowId).style.display = "none";
+}
 
 
-
-//function changeColorToBlack(AmountToBuyID)
-//{
-//  document.getElementById(AmountToBuyID).style.color = "black";
-//  //document.getElementById(AmountToBuyID).value = "";
-// 
-//}
-
-//entered data and pressed checkout in template2 
-//before hide, amount of numberofrecords is decremented 
 function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
   var gtotal = parseFloat(gtotal);
@@ -218,8 +219,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
           continue;
         }
 
-        
-        //input boxes id
+        //if here, is productid and a quantity
         AmountToBuyID = var1 + counter;
         AmountOfCostID = var2 + counter;
         AmountOfQuantityID = var3 + counter;
@@ -233,11 +233,9 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         var costInBox = (document.getElementById(AmountOfCostID).value); 
         var Product = (document.getElementById(ProductIDID).value); 
        
+        var item = amtInBuyBox;
        
-       
-        
-        var item = /*parseInt(sessionStorage.getItem(key)) +*/ amtInBuyBox;
-
+        //because amount to buy is nothing than change buying to nothing
         if (item == "")
         { 
           
@@ -248,27 +246,21 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         if(item % 1 != 0)
         {
           
-          var str2 = amtInBuyBox.toString();
           
-          flag = "isNegValue";
         }
 
         if(item == 0)
         {
 
-                  
+                 
                   hideRow(oneDivID);
                   amtOfHiddenProducts++;
                  
-                  
-                  sessionStorage.removeItem((Product), 0);
-                  
-                  
-          continue;
+          //continue;
           
         }
         
-        else if(item < 0 ) //|| (item == Math.floor(item)))
+        else if(item < 0 ) 
         {
           
           var str2 = amtInBuyBox.toString();
@@ -289,17 +281,9 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
           return;
         }
 
-
-        
-        
         //quant is amount trying to buy
         string =  string + "id=" + key + "&quant=" + item + "&";
-        
-
-
-
-
-        
+                
     }
 
     
@@ -310,7 +294,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 
       window.location.href = "index.html";
     
-      }
+    }
       
     string = string + "userid=" + sessionStorage.getItem("session_userID");
 
@@ -357,7 +341,7 @@ var queryString = string.substring(0, string.length-1);
 
                       
                         
-
+                var flag = "enough";
                 for (var i = 0; i< data1.length ;i++)
                 {
 
@@ -365,47 +349,26 @@ var queryString = string.substring(0, string.length-1);
                   
                 if(data1[i].IsEnoughQuantity == false)
                 {
-                  alert("not enough!!!!");
+              
                 flag = "not enough";
-                break;
-                }
+               
                 }
 
-                //at least one product cant be purchased
-                if (flag == "not enough")
-                {
-                  
-                  alert("isn't enough");
                 }
-              
-                //all products can be purchasee
-                else 
+
+                if (flag == "enough")
                 {
                   alert("is enough");
                   window.location.href = "donePurchase.html";
                 }
 
-                console.log(data1);
-
-                var newGrandTotalString = "a";
-              
-             
               var lengthOfData = data1.length;
-              
-
-              var TotalCost = "string";
-                  
-              var GTotalWithTax = 0.0;
-                gFlagIsEnoughProduct = "yes";
-                
-               
-
-                var gRedTextAmount = 0;
+              var grandTotal = 0;
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
 
                  
-                  GTotalWithTax = 0;
+                  //GTotalWithTax = 0;
                 
                 var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
@@ -415,38 +378,21 @@ var queryString = string.substring(0, string.length-1);
                 var GrandTotalStringID = "GT" + i;
                 var oneDivID1 =  "V" + i;
                 
-                var what = document.getElementById(quantity).value;
-
-                var amounttobuy = document.getElementById(buyThisManyID).value;
-
                 
-               
                 /////////
 
-                bought1 = document.getElementById(boughtid).value;
-                bought1 = parseFloat(bought1);
+                //buying
+                //bought1 = document.getElementById(boughtid).value;
+                //bought1 = parseFloat(bought1);
                 
-
-                amtBuying1 = document.getElementById(buyThisManyID).value;
-                amtBuying1 = parseFloat(amtBuying1);
-
-
-
-
-
-                if(bought1 == 0 && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
+                bought1 = 1;
+                if(bought1 == 0)// && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
+                  //alert("hide2a");
                   
                   hideRow(oneDivID1);
                   amtOfHiddenProducts++;
-                  document.getElementById(buyThisManyID).value = 0;
-
                   
-
-                  
-                  
-
-                  continue;
                 }
 
 
@@ -456,223 +402,114 @@ var queryString = string.substring(0, string.length-1);
                 var str1 = false;
                 str1 = data1[i].IsEnoughQuantity;
 
-                alert("shazam");
-                alert(str1);
-                var num = data1[i].QuantityAvailable;
-                str2 = num.toString();
                 
+                //var num = data1[i].QuantityAvailable;
+                //str2 = num.toString();
+                
+               
                 //wasnt enough, so make red
                 if (str1 == false)
-                {
+                {  
+                  debugger;
 
-                  gFlagIsEnoughProduct = "no";
-
-                  GTotalWithTax = 0.0;
-                  
                   document.getElementById(availableID).style.color = 'red';
-                  gRedTextAmount = gRedTextAmount + 1;
                   
-                  
+                  //amount to buy
+                  document.getElementById(buyThisManyID).value = 0;
+                  //buying
                   document.getElementById(boughtid).value = 0;
+                  //total cost for productID
+                  document.getElementById(totalCostID).value = "$0.00";
 
-                  //string, however value is (example) : $1.00
-                  TotalCost = document.getElementById(totalCostID).value ;
+                }else{
+                
+                  debugger;
+                  ////////////
+
+                  //get amount to buy : 2
+                  var amtBuying = document.getElementById(buyThisManyID).value; 
+                  //get cost : $10.00
+                  var costEach = document.getElementById(costID).value;
+                  //remove $ : 10.00
+                  costEach = costEach.slice(1); //10.00
+                  //move decimal two to right
+                  costEach = costEach * (10 ** 2);//1000
+                  //set bought from amt to buy
+                  document.getElementById(boughtid).value = amtBuying;
+                  //2000
+                  var total = (amtBuying * costEach);
+                  //total = total *  (10 ** 2);  
+
+                  alert(total);
+                  var totalWithDecimal = total /   (10 ** 2);
+                  tax = .05;
+                  //5
+                  tax = tax * (10 ** 2);
+                  //10000
+                  taxOfTotal = total * tax;
+
+                  total = total * (10 ** 2);
+                  //100
+                  //taxOfTotal = taxOfTotal / (10 ** 2);
+                  alert("problem1");
+                  alert(taxOfTotal); //2990  // 
+                  alert(total);     //59800  // 4
+
                   
-                  TotalCost1 = TotalCost.slice(1);
-                  
-                  var TotalCostFloat = parseFloat(TotalCost1);
+                  //2100
+                  total1 = total + taxOfTotal;
+                  alert(total1);
+                  total1copyWithOutDecimal = total1;
+                  alert("total1");
+                  alert(total1);
+                  //total1 = total1 / (10 ** 4);
+                  alert(total1);
+                  //changes number to string with 2 decimal places
+                  alert("fix");
+                  //total1 = total1.toFixed(2);
+                  alert(total1);
+                  /*
+                  total1 = 5;
+                  total1 = total1.toFixed(2);//5.00
+                  alert(total1);
+                  total1 = 5.00;
+                  total1 = total1.toFixed(2);//5.00
+                  alert(total1);
+                  total1 = 5.1;
+                  total1 = total1.toFixed(2);//5.10
+                  alert(total1);
+                  */
+                  //okay
+                  document.getElementById(totalCostID).value = "$" + totalWithDecimal;
 
-                  
-                    var tax =  TotalCostFloat * 5 ;
-                    
-                    TotalCostFloat = TotalCostFloat * (10 ** 2);
-                    
-                    GTotalWithTax =  GTotalWithTax +  tax + TotalCostFloat;
 
-                    gtotal = gtotal * (10 ** 2);
-                    gtotal = gtotal - GTotalWithTax;
-                    gtotal = gtotal / (10 ** 2);
 
-                document.getElementById(boughtid).value = 0;
-               
-                TotalCostString = "$0.00"; 
 
-                document.getElementById(totalCostID).value = (TotalCostString);
-                var check = document.getElementById(buyThisManyID );    
-                check.value = "";
+                  //parsefloat changes string to float
+                  //total1copyWithOutDecimal : tax added to non decimal variable that is total and tax
+                  grandTotal = parseFloat(grandTotal) + parseFloat(total1);
+                  alert("grandTotal");
+                  alert(grandTotal);
+
+
+
+
                 
-                alert("total");
-                alert(gRedTextAmount);
-                alert(lengthOfData);
-                if (gRedTextAmount == lengthOfData)
-                {
-                  stringGrandTotal = "Grand Total: $" + "0.00";
                 }
-
-                document.getElementById(grandTotalID).value = stringGrandTotal;
-
-                }
-                else
-                {
-
-
-                //remove totalcost determined at purchase interface, so that amount to buy times cost will equal this
-                //products total
-                var initialTotalCost = document.getElementById(totalCostID).value;
+              }//for
+                  grandTotal = grandTotal / (10 ** 4);
+                  alert(grandTotal);
+                  grandTotal = grandTotal.toFixed(2);
+                  stringGrandTotal = "Grand Total:  $" + parseFloat(grandTotal);
+                  document.getElementById(grandTotalID).value = stringGrandTotal;
                 
-                initialTotalCost = initialTotalCost.slice(1);
+              
 
-                initialTotalCost = parseFloat(initialTotalCost);
-                
-                var initialTotalCost = initialTotalCost * (10 ** 2);
+            }////sucesss - goto spitback and return values
+});//ajax
 
-                //whole number
-                var tax1 = initialTotalCost * 5;
-                
+}//function
 
-                var initialTotalCost = initialTotalCost * (10 ** 2);
-
-                
-                initialTotalCost = initialTotalCost + tax1;
-                
-                gtotal = gtotal * (10 ** 4);
-                
-                gtotal = gtotal - initialTotalCost;
-                intialTotalCost = initialTotalCost / (10 ** 2);
-                gtotal = gtotal / (10 ** 4);
-                
-                GTotalWithTax = 0;
-
-                var amtAvailable = document.getElementById(availableID).value;
-                amtAvailable = parseFloat(amtAvailable);
-               
-                var bought = document.getElementById(boughtid).value;
-                bought = parseFloat(bought);
-                
-                var amtBuying = document.getElementById(buyThisManyID).value;
-                amtBuying = parseFloat(amtBuying);
-
-                if(amtBuying == "" || (isNaN(amtBuying)) )
-                {
-                  
-                  amtBuying = bought;
-                }
-               
-                  //94   1    2
-                var newAvailable = amtAvailable + bought - amtBuying;
-               
-                document.getElementById(availableID).value = newAvailable;
-
-                //example : 1.11 - string
-                var costEach = document.getElementById(costID).value;
-                costEach = costEach.slice(1);
-                
-                
-                costEach = parseFloat(costEach);
-                //move decimal right
-                costEach =  costEach * (10 ** 2);
-
-                
-                //save new bought
-                document.getElementById(boughtid).value = amtBuying; 
-                
-                
-                var total = (amtBuying * costEach);
-                total = parseFloat(total);
-                var totalNoDecimals = total;
-
-                
-
-                var totalCopy = total;
-               
-                //has two deicmals - 20096
-                total = total / (10 ** 2);
-               
-                
-                //round
-                total = total.toFixed(2); 
-                 
-                TotalCostString = total.toString(); 
-                
-                TotalCostString = "$" +  TotalCostString; 
-                
-
-                document.getElementById(totalCostID).value = (TotalCostString);
-
-                //grand total with tax :
-                //50000
-                var tax =  totalCopy * 5 ;
-
-                totalCopy = totalCopy * (10 ** 2);
-                tax = parseFloat(tax);
-                 
-                GTotalWithTax =  tax + totalCopy;
-
-                gtotal = gtotal * (10 ** 2);
-                
-                gtotal = gtotal + GTotalWithTax;
-               
-                gtotal = gtotal / (10 ** 2); 
-                
-                var gtotalCopy = gtotal;
-                
-
-                gtotalCopy = gtotalCopy / (10 ** 2);
-
-             
-                var stringGrandTotal = gtotalCopy.toFixed(2); 
-                alert(typeof(stringGrandTotal));
-
-                stringGrandTotal = "Grand Total: $" + stringGrandTotal;
-                
-                if (gRedTextAmount == lengthOfData - 1)
-                {
-                  stringGrandTotal = "Grand Total: $" + "0.00";
-                }
-
-                document.getElementById(grandTotalID).value = stringGrandTotal;
-                
-                   
-                 
-                }//not enough product
-                
-
-                
-                }//for
-
-                
-                
-
-
-                ////////
-
-              }//sucesss - goto spitback and return values
-              });
-
-}//end
-
-/*
-Number.prototype.getPrecision = function() {
-  var v = this.valueOf();
-  if (Math.floor(v) === v) return 0;
-  var str = this.toString();
-  var ep = str.split("e-");
-  if (ep.length > 1) {
-    var np = Number(ep[0]);
-    return np.getPrecision() + Number(ep[1]);
-  }
-  var dp = str.split(".");
-  if (dp.length > 1) {
-    return dp[1].length;
-  }
-  return 0;
-}
-
-function hideRow(rowId)
-{
-    document.getElementById(rowId).style.display = "none";
-}
-*/
 
 </script>
 

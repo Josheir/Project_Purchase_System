@@ -22,7 +22,7 @@ import (
 	"net/http"
 
 	"context"
-	"math"
+	//"math"
 
 	//"os"
 	"strconv"
@@ -653,8 +653,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	
-
 	string1 = ""
 
 	db := dbConn()
@@ -673,7 +671,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	Condition++
 	var Condition2 = 0
 
-	
 	ID := 0
 	bought := 0
 	numTotal := 0.0
@@ -716,18 +713,12 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		
-
 		var ProductQuantity int
 
 		var ProductName, ProductCatTitle, ProductCost, TotalCost string
 
-		
-
 		//jumps past this, first run through
 		for rows.Next() {
-
-			
 
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
@@ -763,7 +754,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if i == 0 {
 				Condition = 1
 
-			//not first, so don't display message that is placed before each starting series of records by keyword
+				//not first, so don't display message that is placed before each starting series of records by keyword
 			} else {
 				Condition = 0
 
@@ -777,7 +768,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err3 == nil {
 				fmt.Println(var2)
 			}
-
 
 			//the ideas is to use variables that are whole and not decimals and than move the decimal point at the very end
 			//https://yourbasic.org/golang/round-float-2-decimal-places/
@@ -794,29 +784,31 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println(err)
 			}
+
+			
+
 			//cents
-			ProductCostFloat2 := ProductCostFloat
+			//ProductCostFloat2 := ProductCostFloat
 
 			//move decimal
-			ProductCostFloat = ProductCostFloat / (math.Pow(10, 2))
+			//ProductCostFloat = ProductCostFloat / (math.Pow(10, 2))
 			//take care of decimals - ready for display
-			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
-
-
-
+			//fmt.Sprintf("%.6f", input_num)
+			//ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat) // = fmt.Sprintf("%f", ProductCostFloat)
+			
 
 			//in cents and wholenumber
-			TotalCostFloat := QuantityFloat * ProductCostFloat2
+			TotalCostFloat := QuantityFloat * ProductCostFloat
 
 			//cents
-			TotalCostFloat2 := TotalCostFloat
+			//TotalCostFloat2 := TotalCostFloat
 			//move decimal
-			TotalCostFloat = TotalCostFloat / (math.Pow(10, 2))
+			//TotalCostFloat = TotalCostFloat / (math.Pow(10, 2))
 			//take care of decimals
 			TotalCost = fmt.Sprintf("%.2f", TotalCostFloat)
 
 			//cents
-			numTotal = numTotal + TotalCostFloat2
+			numTotal = numTotal + TotalCostFloat
 
 			tax := 0.0
 
@@ -824,42 +816,32 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//this is the tax  amount
 			var GrandTotalString = "this text doesnt display"
 			if i == (len(allIds) - 1) {
-				tax = numTotal * 5
-				numTotal = numTotal * 100
+				tax = numTotal * .05
+				//numTotal = numTotal * 100
 				numTotal = numTotal + tax
 
-				numTotal = numTotal / math.Pow(10, 4)
+				//numTotal = numTotal / math.Pow(10, 4)
 				GrandTotalString = fmt.Sprintf("%.2f", numTotal)
 			}
 
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
-		
 
 	} //for next loop
 
-	
-
 	//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
 	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
-	
 
 	err1 = globt.Execute(w, ProductList)
 
 	if err1 != nil {
-		
-		fmt.Println(err1.Error())
 
-		
+		fmt.Println(err1.Error())
 
 	}
 
-	
-
 }
-
-
 
 func addProduct(productidid string, removerecorddivID string, totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
@@ -885,16 +867,14 @@ func addProduct(productidid string, removerecorddivID string, totalID string, to
 	}
 	flag := "nonefound"
 
-	
-
 	//could be done better, if time allows
 	for i := 0; i < len(ProductList); i++ {
 		if (ProductList[i].ProductID) == prodid {
-			
+
 			//ProductList[i].ProductQuantity = ProductQuantity
 			//ProductList[i].Bought = bought
 			//ProductList[i].TotalCost = totalcost
-			
+
 			//globalFlagisVariable = "yes"
 			//flag = "found"
 			//i = 100
@@ -902,7 +882,7 @@ func addProduct(productidid string, removerecorddivID string, totalID string, to
 	}
 
 	if flag != "found" {
-		
+
 		ProductList = append(ProductList, prod)
 		//globalFlagisVariable = "yes"
 	}
@@ -974,6 +954,7 @@ type VAR1 struct {
 
 //var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
 
+/*
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var Var1 = "abc"
@@ -992,6 +973,10 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+*/
+
+/*
+
 
 func Hello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -1000,65 +985,16 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	template.Execute(w, name)
 }
 
-func updateForm(w http.ResponseWriter, r *http.Request) {
-	/*
-		var var1 = r.FormValue("productID")
-		var var18 = r.FormValue("ProductCatTitle")
-		var var2 = r.FormValue("mainDiv")
-		var var3 = r.FormValue("titleID")
-		var var4 = r.FormValue("ProductName")
-		var var5 = r.FormValue("descID")
-		var var6 = r.FormValue("ProductDescription")
-		var var7 = r.FormValue("costID")
-		var var8 = r.FormValue("ProductCost")
-		var var9 = r.FormValue("quantityID")
-		var var10 = r.FormValue("ProductQuantity")
-		var var11 = r.FormValue("key1ID")
-		var var12 = r.FormValue("globKeyword")
-		var var13 = r.FormValue("key2ID")
-		var var14 = r.FormValue("globKeyword")
-		var var15 = r.FormValue("key3ID")
-		var var16 = r.FormValue("globKeyword")
-		var var17 = r.FormValue("amountPurchased")
-		var var19 = r.FormValue("ProductFilename")
-
-		//enough product
-
-		str, _ := strconv.Atoi(var17)
-		str2, _ := strconv.Atoi(var10)
-		str3, _ := strconv.Atoi(var1)
-		str4, _ := strconv.Atoi(var8)
-
-		if str <= str2 {
-
-			var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
-
-			fmt.Println(templ1)
-
-			_ = globt.Execute(w, templ1)
-
-		} else {
-
-			return
-		}
-	*/
-}
-
-//var counter1 = -1
-
-//////////
+*/
 
 //this function displays all the keywords in the url, these records are the records already been displayed in display1
 func display2(w http.ResponseWriter, r *http.Request) {
 
-	
 	GlobCounter++
 
 	/////////
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	
 
 	var err1 = r.ParseForm()
 	if err1 != nil {
@@ -1077,9 +1013,8 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			
 			UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
-			
+
 		}
 
 	} else {
@@ -1109,7 +1044,6 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			ProdID = append(ProdID, []string{r.Form["id"][i]}...)
 			keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
 
-			
 		}
 
 	} else {
@@ -1122,11 +1056,8 @@ func display2(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	var savedProductIDs []int
-	
 
 	globKeyword := key1[0]
-
-	
 
 	string1 = ""
 
@@ -1134,16 +1065,13 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	
-
 	var m = 0
-	
+
 	var recordCounter = 0
 	for m = 0; m < len(key1); m++ {
 
 		recordCounter = 0
 		//////////
-	
 
 		globKeyword = key1[m]
 
@@ -1164,43 +1092,33 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, err)
 		}
 
-		
-
 		var Link = globKeyword
 
 		var Condition1 = 0
 
-		
 		var flag1 = 0
 		for rows.Next() {
 
 			/////////////
 
-
-
-
-
-
 			var j = 0
-		for j = 0; j < len(savedProductIDs); j++ {
-			//record exists already
-			if ProductID == savedProductIDs[j] {
-				flag1 = 1
-				break
-			}
+			for j = 0; j < len(savedProductIDs); j++ {
+				//record exists already
+				if ProductID == savedProductIDs[j] {
+					flag1 = 1
+					break
+				}
 
-		}
-		if flag1 == 1 {
-			Condition1--;
-			continue
-		}
-		//https://stackoverflow.com/questions/33834742/remove-and-adding-elements-to-array-in-go-lang
-		savedProductIDs = append(savedProductIDs, ProductID)
+			}
+			if flag1 == 1 {
+				Condition1--
+				continue
+			}
+			//https://stackoverflow.com/questions/33834742/remove-and-adding-elements-to-array-in-go-lang
+			savedProductIDs = append(savedProductIDs, ProductID)
 			/////////////
 
 			recordCounter++
-
-			
 
 			Condition1++
 			var ProductCost float64
@@ -1210,21 +1128,17 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			CondYellow = 0
 			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
-			
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			
 			var i = 0
-			
+
 			counter1 = counter1 + 1
-			
-			
-			
+
 			var prodBoughtInt = 0
 			//if finds a record that aleady exists as a passed in url parameter, than create the template with the value and continue the main for.
-			
+
 			var AmountPurchased = 0
 			for i = 0; i < len(ProdID); i++ {
 
@@ -1234,7 +1148,6 @@ func display2(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if prodID == ProductID {
-				
 
 					CondYellow = 1
 					prodBoughtStr := keyTotalAmountBought[i]
@@ -1243,23 +1156,15 @@ func display2(w http.ResponseWriter, r *http.Request) {
 						fmt.Println(err)
 					}
 
-				AmountPurchased = prodBoughtInt
-				break
+					AmountPurchased = prodBoughtInt
+					break
 				}
 			}
 
+			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
+				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-
-					
-					
-					
-					sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
-						&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
-
-						
 		} //row
-
-		
 
 	} //main loop
 
@@ -1478,8 +1383,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	*/
 
-	
-
 	var val1 = ""
 	val1 = UserIDstring[0]
 
@@ -1506,8 +1409,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	db := dbConn()
 
-	
-
 	//selects many productid
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
 		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
@@ -1515,7 +1416,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		"((products.ProductKeyWord1 = ?) OR " +
 		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
 	if err != nil {
-		
+
 	}
 
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
@@ -1529,7 +1430,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	var Link = globKeyword
 
 	var Condition1 = 0
-	
+
 	var counterOfRecords = 0
 
 	//get many productids for keyword
@@ -1548,7 +1449,6 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//many prodid, get all the data here...
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
-		
 		////////////
 
 		//check for duplicates, that is if productID already has been displayed don't display again
@@ -1565,7 +1465,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		}
 		if flag1 == 1 {
-			Condition1--;
+			Condition1--
 			continue
 		}
 		//https://stackoverflow.com/questions/33834742/remove-and-adding-elements-to-array-in-go-lang
@@ -1573,17 +1473,12 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		prodBoughtInt := 0
 
-		
-		
 		var AmountPurchased = 0
 		for i = 0; i < len(ProdID); i++ {
 
-		
 			///
 
 			prodIDStr := ProdID[i]
-
-			
 
 			prodIDInt, err := strconv.Atoi(prodIDStr)
 			if err != nil {
@@ -1591,39 +1486,35 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(prodIDInt)
 			}
 
-			if(ProductID == prodIDInt){
+			if ProductID == prodIDInt {
 				if err != nil {
 					//fmt.Println(ProdIDStr)
 				}
 
-			prodBoughtStr := keyTotalAmountBought[i]
-			prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
-			if err != nil {
-				fmt.Println(err)
+				prodBoughtStr := keyTotalAmountBought[i]
+				prodBoughtInt, err = strconv.Atoi(prodBoughtStr)
+				if err != nil {
+					fmt.Println(err)
 
+				}
+				AmountPurchased = prodBoughtInt
+
+				break
 			}
-			AmountPurchased = prodBoughtInt
-
-			break;
 		}
-	}
-
-		
 
 		counter1++
 		sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 			&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
-		
 	}
 }
-
-
 
 //////////
 
 /////////////
 
+/*
 //send from client to server and
 //send form server to client
 //this is a good example
@@ -1668,6 +1559,8 @@ func getMessages(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(user)
 }
 
+*/
+
 ////////////
 
 /////////////
@@ -1676,19 +1569,17 @@ func main() {
 
 	one := http.NewServeMux()
 
-	//mux := http.NewServeMux()
-
 	//has an id value passed in url
-	one.HandleFunc("/updateForm/", updateForm)
+	//one.HandleFunc("/updateForm/", updateForm)
 
 	//button3 - just read session for right now
-	one.HandleFunc("/getMessages", getMessages)
+	//one.HandleFunc("/getMessages", getMessages)
 
 	one.HandleFunc("/display", display1)
 
 	one.HandleFunc("/display2", display2)
 
-	one.HandleFunc("/HelloWorld", HelloWorld)
+	//one.HandleFunc("/HelloWorld", HelloWorld)
 	one.HandleFunc("/processLogin", processLogin)
 
 	//two := http.NewServeMux()
@@ -1696,11 +1587,6 @@ func main() {
 	//
 	one.HandleFunc("/template2", createTemplate2)
 	one.HandleFunc("/spitBackAmounts", spitBackAmounts)
-
-	//go func() {
-	//
-	//		http.ListenAndServe(":8080", one)
-	//	}()
 
 	http.ListenAndServe(":8080", one)
 
