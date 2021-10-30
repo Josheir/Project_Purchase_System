@@ -423,6 +423,7 @@ var queryString = string.substring(0, string.length-1);
 
                 }else{
                 
+                  //this is the second time I wrote this...
                   debugger;
                   ////////////
 
@@ -436,38 +437,30 @@ var queryString = string.substring(0, string.length-1);
                   costEach = costEach * (10 ** 2);//1000
                   //set bought from amt to buy
                   document.getElementById(boughtid).value = amtBuying;
-                  //2000
-                  var total = (amtBuying * costEach);
-                  //total = total *  (10 ** 2);  
-
+                  
+                  var total = (amtBuying * costEach);////2000
+                  
                   alert(total);
+                  //moves decimal left two digits : 20.00
                   var totalWithDecimal = total /   (10 ** 2);
                   tax = .05;
-                  //5
+                  //move decimal right two digits : 5
                   tax = tax * (10 ** 2);
                   //10000
                   taxOfTotal = total * tax;
-
+                  200000
                   total = total * (10 ** 2);
-                  //100
-                  //taxOfTotal = taxOfTotal / (10 ** 2);
+                  
                   alert("problem1");
-                  alert(taxOfTotal); //2990  // 
-                  alert(total);     //59800  // 4
+                  alert(taxOfTotal); 
+                  alert(total);     
 
                   
-                  //2100
+                  //210000
                   total1 = total + taxOfTotal;
-                  alert(total1);
+                  //210000
                   total1copyWithOutDecimal = total1;
-                  alert("total1");
-                  alert(total1);
-                  //total1 = total1 / (10 ** 4);
-                  alert(total1);
-                  //changes number to string with 2 decimal places
-                  alert("fix");
-                  //total1 = total1.toFixed(2);
-                  alert(total1);
+                  
                   /*
                   total1 = 5;
                   total1 = total1.toFixed(2);//5.00
@@ -479,14 +472,14 @@ var queryString = string.substring(0, string.length-1);
                   total1 = total1.toFixed(2);//5.10
                   alert(total1);
                   */
-                  //okay
+
+                  //20.00 : total cost items
                   document.getElementById(totalCostID).value = "$" + totalWithDecimal;
 
 
 
-
+                  //work on grandtotal (here and below):
                   //parsefloat changes string to float
-                  //total1copyWithOutDecimal : tax added to non decimal variable that is total and tax
                   grandTotal = parseFloat(grandTotal) + parseFloat(total1);
                   alert("grandTotal");
                   alert(grandTotal);

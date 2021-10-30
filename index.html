@@ -342,16 +342,16 @@ $(document).ready(function () {
 
 
 	  var val2 = [];
-      if(wasKeys == "yes"){
+      //if(wasKeys == "yes"){
 
-		val2 = setSession(true, val1, string, flag2);
-	  }
+		val2 = setSession(true, val1, string);
+	  //}
 	  //THERE ARNT URLS NOW 
-	  else
-      {
-		val2 = setSession(false, val1, string, flag2);
+	  //else
+      //{
+  	  //val2 = setSession(false, val1, string);
 
-	  }
+	  //}
 
 	  
 		var gflag = val2[0];
@@ -858,15 +858,15 @@ function setSession(areThereUrls, val1, string, flag2)
 {//NO URLS
 
 	//this flag means that this is a display that returned from template2, so is a special condition
-	if(flag2 == "1")
-	{
-		querystring = ("var=" + val1 + "&");
-		//cause a reaction by lieing about this
-		gflag = "isntin";
-		return [gflag, querystring];
-
-	}
-	else
+	//if(flag2 == "1")
+	//{
+	//	querystring = ("var=" + val1 + "&");
+	//	//cause a reaction by lieing about this
+	//	gflag = "isntin";
+	//	return [gflag, querystring];
+	//
+	//}
+	//else
 	{
 	var isfirst = false;
 	var querystring = "";
