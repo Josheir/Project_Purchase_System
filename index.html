@@ -33,6 +33,7 @@
   
 //for returning our of functions - //this is in finalpage.html and index.html
 var MAXRECORDS = 2;
+const MAXKEYWORDS = 2;
 //keep these message boxes: 44 finalpages, 495 index, 163 index
 //first two use const above, and last is in ajaxcall for checking login
 
@@ -40,20 +41,6 @@ var var1 =1;
 var var2 =1;
 var var3 ;
 var3 = var1 + var2;
-
-//alert("at point");
-
-//function getparam(param_name)
-//{
-	//has been a search there is a parameter
-
-	
-//}
-
-//var inputs = form.getElementsByTagName("val");
-//alert(string);
-
-
 
 </script>
     
@@ -166,6 +153,9 @@ $(document).ready(function () {
 		
 		function resetCall()
 		{
+			sessionStorage.setItem("amtOfSelectedRecords", 0);
+
+
 			sessionStorage.clear();
 			var urlValue = "http://localhost/golangproj/index.html";
 			var val1 = sessionStorage.getItem("session_userID");
@@ -188,12 +178,17 @@ $(document).ready(function () {
 		{
 
 			let amt1 = sessionStorage.getItem("amtOfSelectedRecords");
-			let amt1Int = parseInt(amt1);
-			if(amt1Int == 1)
+			if (amt1 != null)
 			{
-				alert("At Order Limit");
+			let gAmt1Int = Number(amt1);
+			//this is the maximum record limit
+			if(gAmt1Int >= 1)
+			{
+				alert("At Record Limit");
 				return(1);
 			}
+			}	
+			
 
 			//alert("ajaxcall");
 			
@@ -339,6 +334,29 @@ $(document).ready(function () {
 		
 	}
 
+////////
+
+
+//storedarray has only the relevant keywords
+
+let amt2 = sessionStorage.getItem("amtOfSelectedRecords");
+let amt2int = Number(amt2);
+if (amt2 == null )
+{
+	sessionStorage.setItem("amtOfSelectedRecords", 1);
+
+}
+else
+{
+	amt2int++;
+	sessionStorage.setItem("amtOfSelectedRecords", amt2int);
+}
+
+
+
+////////
+
+
 
 
 	  var val2 = [];
@@ -447,7 +465,7 @@ $(document).ready(function () {
 				
 				
 
-
+////////
 
 
 				
@@ -999,6 +1017,7 @@ return [item1, ourNewWord, item];
 
 //////
 
+var gKeywordRecordNumber = 0;
 //pressed return to purchase from template2
 function display2(){
 
@@ -1039,6 +1058,10 @@ for(let key of keys) {
 	}
 
   }
+
+
+
+  
   else if(key == "session_userID")
   {
 		var item = sessionStorage.getItem(key);
@@ -1051,6 +1074,12 @@ for(let key of keys) {
   else if(key == "alreadyZero")
   {
 
+  }
+  else if(key == "amtOfSelectdedRecords")
+  {
+	var item = sessionStorage.getItem(key);
+	
+	gKeywordRecordNumber = Number(item);
   }
 
   else
@@ -1138,10 +1167,17 @@ var url = "http://localhost:8080/display2";
 			
 			
 			  
+		
+
 
 
 			  for(var i = 0 ; i < array.length ; i++)
 			  {
+
+				
+				
+
+
 				
 				var val1 = '["' + array[i] +  '"]';
 

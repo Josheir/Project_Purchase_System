@@ -156,7 +156,12 @@ function hideRow(rowId)
 }
 
 
+//checkout pressed from template2
 function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
+
+
+
+
 
   var gtotal = parseFloat(gtotal);
   
@@ -218,7 +223,15 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
          
           continue;
         }
+        if(key =="amtOfSelectedRecords")
+        {
+          counter--;
+         
+          continue;
+        }
 
+
+        
         //if here, is productid and a quantity
         AmountToBuyID = var1 + counter;
         AmountOfCostID = var2 + counter;
@@ -335,6 +348,7 @@ var queryString = string.substring(0, string.length-1);
 
                 
 
+                alert("am here you see it!");
                 window.location.href = "index.html";
             
                 }
