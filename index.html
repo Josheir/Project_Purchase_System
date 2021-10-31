@@ -528,18 +528,8 @@ var gTotalOfPurchases = 0;
 function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 {
 
-	if(val1 = sessionStorage.getItem("numberOfRecords"))
-		{
-		
-		if (val1 == MAXRECORDS)
-		{
-			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
-			return(1);
-		}
 	
-		}
-
-				//alert("should be here");
+				
 
 				var makeYellow = document.getElementById(mainDiv);
 				makeYellow.style["background-color"] = "yellow";
@@ -552,18 +542,15 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				amountInPurchasedField = Number(document.getElementById(quantityID).value);
 				//already purchased
 				amountPurchasedSoFar = Number(document.getElementById(amountPurchasedID).value);
-				//alert("in the amount purchased");
-				//alert(amountPurchasedSoFar);
-				
 				//amount held for subtraction when submit button pressed
 				amountToBePurchased = Number(document.getElementById(amountToPurchaseID).value);
 
-				/////
+				
 
-				if(amountInPurchasedField - amountToBePurchased != 0)
-				{
-					
-				}
+				//if(amountInPurchasedField - amountToBePurchased != 0)
+				//{
+				//	
+				//}
 
 
 				
@@ -614,15 +601,18 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					
 					
 					
-					if(gTotalOfPurchases > 0){
+					//if(gTotalOfPurchases > 0){
                         Number(document.getElementById(amountToPurchaseID).value = 0);
                         
 						
 						//so far, so good is still in database!
 						//amount purchased, quantity, amount to purchase
-						setData(amountPurchasedSoFar, amountInPurchasedField, productID, amountToBePurchased, 0)
+						//setData(amountPurchasedSoFar, amountInPurchasedField, productID, amountToBePurchased, 0)
+						var boole = true;
+						setData(amountToPurchaseID, quantityID, productID,	amountPurchasedID, boole);
+
                         return (1);
-                    }
+                    //}
 
 					
 
@@ -642,123 +632,168 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 	  //numberofrcords is set in logon and should have two new sets in this only fucntion (only)
 	  //in here :  sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
  
-      function  setData(amountPurchasedSoFar, quantityOfProduct, productID, quantityTryingToSet, reduceBool)
+	  //var gLastQuantity = 0
+      //function  setData(amountPurchasedSoFar, quantityOfProduct, productID, quantityTryingToSet, reduceBool)
+	  
+	   //quantityTryingToSet = amounttobepurchasedID//
+	   var boole = true;
+	   var gLastQuant = 0;
+	  function setData (amountToPurchaseID, quantityOfProductID, productID, amountPurchasedID, boole) 
 	  {
-		  	/////
+		  	   //amount purchased
+			  var amountPurchasedSoFar =  document.getElementById(amountPurchasedID).value;
+			   //amount to purchase 
+			  var quantityTryingToSet  = document.getElementById(amountToPurchaseID).value;
 
-			  
-
-				
-			  
-
-
-
-			/////
-			quantityOfProduct = quantityOfProduct - quantityTryingToSet;
+			  var quantityOfProduct  = document.getElementById(quantityOfProductID).value;
 				
 				var firstArray = [];
-				var lastQuant;
+				
 				let val = "";
 				var storedArray = JSON.parse(sessionStorage.getItem("alreadyZero"))
 				
 				let val1 = ""
-				if (storedArray == null)
+				let val1int = 0;
+				let val2int = 0;
+
+				val1 = sessionStorage.getItem("numberOfRecords")
+				if (val1 == "0")
 				{
-					if (quantityOfProduct == 0)
+					if (quantityTryingToSet == 0 && amountPurchasedSoFar == 0)
 					{
 						
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
-						{
-						
-						var varIntVal1 = parseInt(val1);
-						varIntVal1--;
-						
-						if(varIntVal1 < 0)
-						{
-							varIntVal1 = 0;
-						}
-						sessionStorage.setItem("numberOfRecords", varIntVal1);
-						}
-						
+					//	if(val1 = sessionStorage.getItem("numberOfRecords"))
+					//	{
+					//	
+					//	var varIntVal1 = parseInt(val1);
+					//	varIntVal1--;
+					//	
+					//	if(varIntVal1 < 0)
+					//	{
+					//		varIntVal1 = 0;
+					//	}
+					//	sessionStorage.setItem("numberOfRecords", varIntVal1);
+					//	}
+					//	
 					}
 					else
 					{
 						
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
+						//if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
-						var varIntVal1 = parseInt(val1);
+						let varIntVal1 = parseInt(val1);
+						gLastQuant = 1;
+						//gLastQuantity = varIntVal1;
 						varIntVal1++;
+						
 						
 						sessionStorage.setItem("numberOfRecords", varIntVal1);
 						}
 						
 					}
 				
-				}else if (storedArray != null)
-				{
-
-
-
-					var flag1 = false;
-					for (i = 0; i < storedArray.length; ) 
-					{
-
-						
-
-					if(storedArray[i] == productID)
-					{
-						flag1 = true;
-						lastQuant = storedArray[i+1];
-						break;
-					}
-
-					i=i+2;
-					}
-					if(flag1 == false)
-					{
-						lastQuant = -1;
-					}
-					
-					if (lastQuant == 0  && quantityOfProduct != 0 )
-					{
-						
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
-						var varIntVal1 = parseInt(val1);
-						varIntVal1++;
-						sessionStorage.setItem("numberOfRecords", varIntVal1);
-					}
-					
-					else if (lastQuant != 0  && quantityOfProduct == 0 )
-					{
-						
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
-						var varIntVal1 = parseInt(val1);
-						varIntVal1--;
-						sessionStorage.setItem("numberOfRecords", varIntVal1);
-					}
 				}
+				else{
+					
+					//alert("wise1");
+					//console.log(amountPurchasedSoFar + quantityTryingToSet);
+					
+					let val1int = parseInt(amountPurchasedSoFar);
+					let val2int = parseInt(quantityTryingToSet);
 
-				firstArray.push(productID); 
-				firstArray.push(quantityOfProduct); 
-				window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
+					if (gLastQuant == 1  && (val1int + val2int) == 0 )
+					{
+						
+
+						///
+
+						gLastQuant = 0;
+						let  val1a = 0;
+						if(val1a = sessionStorage.getItem("numberOfRecords"))
+						var varIntVal1a = parseInt(val1a);
+						
+						//gLastQuantity = varIntVal1a; 
+						varIntVal1a--;
+						
+						sessionStorage.setItem("numberOfRecords", varIntVal1a);
+
+						////
 
 
 
-				val1 = sessionStorage.getItem("numberOfRecords");
+					}
+					
+					else if (gLastQuant != 0  && (val1int + val2int) != 0)
+					{
+						gLastQuant = 1;
+						let val1a = 0;
+						if(val1a = sessionStorage.getItem("numberOfRecords"))
+						var varIntVal1a = parseInt(val1a);
+						
+						//gLastQuantity = varIntVal1a;
+						varIntVal1a++;
+						
+						sessionStorage.setItem("numberOfRecords", varIntVal1a);
+						
+					}
 				
 
-		/*		
+				val1 = sessionStorage.getItem("numberOfRecords");
+				alert("---------");
+				alert(val1); 
+				//firstArray.push(productID); 
+				//firstArray.push(quantityOfProduct); 
+				//window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
+
+				}
+				val1 = sessionStorage.getItem("numberOfRecords");
+				alert("--+++++-----");
+				alert(val1); 
+
+				//val1 = sessionStorage.getItem("numberOfRecords");
+				
+
+				
 		if(val1 = sessionStorage.getItem("numberOfRecords"))
 		{
 		
-		if (val1 == MAXRECORDS)
+		if (val1 == MAXRECORDS-1)
 		{
+			alert("AT RECORD MAXIMUM, NO MORE RECORDS NEFORE PURCHASE!!!");
+		}
+		else if (val1 >= MAXRECORDS){
+
 			alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
+		
+
+			alert(document.getElementById(quantityOfProductID).value);
+
+			//quantity
+			document.getElementById(quantityOfProductID).value = document.getElementById(quantityOfProductID).value + parseInt(amountPurchasedSoFar);
+			//amount purchased
+			document.getElementById(amountPurchasedID).value =  document.getElementById(amountPurchasedID).value - parseInt(amountPurchasedSoFar);
+			   //amount to purchase 
+			document.getElementById(amountToPurchaseID).value = document.getElementById(amountToPurchaseID) - parseInt(quantityTryingToSet) ;
+			
+			alert(document.getElementById(quantityOfProductID).value);
 			return(1);
+
+		}
+
+
+			//alert(amountPurchasedSoFar);
+			
+			//subtract amountpurchased
+			//subtract quantity
+
+
+
+
+			
 		}
 	
-		}
-		*/		
+		
+				
 
 
 
@@ -804,17 +839,11 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					
 						sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
 
-						//////
-						if(val1 = sessionStorage.getItem("numberOfRecords"))
-						{
 						
-						if (val1 == MAXRECORDS)
-						{
-							alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
-							return(1);
-						}
-					
-						}
+
+
+
+
 
 				
 					}
@@ -827,26 +856,19 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					
 					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
 				
-					if(val1 = sessionStorage.getItem("numberOfRecords"))
-					{
 					
-					if (val1 == MAXRECORDS)
-					{
-						alert("AT RECORD MAXIMUM, YOU MUST REMOVE A RECORD TO RETURN TO PURCHASE!!!!");
-						return(1);
-					}
-				
-					}
 
 
 					
 
 					
 				}
+				}
+			
 				
 
 
-			}
+			
 
 
 
@@ -854,7 +876,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 //thi function checks if a keyword is already used and returns the queystring
 
 //check if keyword exists already
-function setSession(areThereUrls, val1, string, flag2)
+function setSession(areThereUrls, val1, string)
 {//NO URLS
 
 	//this flag means that this is a display that returned from template2, so is a special condition
