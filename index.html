@@ -20,6 +20,9 @@
 
   <script>
 
+///alert("At Record Limit");
+//alert("AT RECORD MAXIMUM, 
+
 	  //753 text message (4)
 
     //alert text : 164 (4), 183
@@ -32,8 +35,8 @@
     
   
 //for returning our of functions - //this is in finalpage.html and index.html
-var MAXRECORDS = 2;
-const MAXKEYWORDS = 2;
+var MAXRECORDS = 4;
+const MAXKEYWORDS = 4;
 //keep these message boxes: 44 finalpages, 495 index, 163 index
 //first two use const above, and last is in ajaxcall for checking login
 
@@ -72,6 +75,37 @@ $(function(){
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var searchterm = urlParams.get('display2');
+
+
+/////////
+let keys = Object.keys(sessionStorage);
+
+for(let key of keys) {
+		//alert(key);
+		
+			
+		
+		if(key != "session_userID")
+        {
+			sessionStorage.removeItem(key);	
+        }
+		
+		
+	}
+	sessionStorage.setItem("numberOfRecords", "0");
+
+
+
+
+////////////
+
+//erase keywords
+
+
+//erase productID
+
+
+
 //alert("search");
 if (searchterm == "1")
 {
@@ -182,9 +216,9 @@ $(document).ready(function () {
 			{
 			let gAmt1Int = Number(amt1);
 			//this is the maximum record limit
-			if(gAmt1Int >= 1)
+			if(gAmt1Int >= 5)
 			{
-				alert("At Record Limit");
+				alert("At Keyword Limit");
 				return(1);
 			}
 			}	
@@ -232,6 +266,10 @@ $(document).ready(function () {
 		if(key ==  "alreadyZero")
 		{
 			
+			continue;
+		}
+		if(key =="amtOfSelectedRecords")
+		{
 			continue;
 		}
 
@@ -872,7 +910,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				{
 
 					
-					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
+					sessionStorage.setItem( parseInt(productID),  parseInt(amountPurchasedSoFar));
 				
 					
 
@@ -1077,9 +1115,9 @@ for(let key of keys) {
   }
   else if(key == "amtOfSelectdedRecords")
   {
-	var item = sessionStorage.getItem(key);
 	
-	gKeywordRecordNumber = Number(item);
+	
+	
   }
 
   else

@@ -22,7 +22,7 @@ import (
 	"net/http"
 
 	"context"
-	//"math"
+	"math"
 
 	//"os"
 	"strconv"
@@ -673,7 +673,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	ID := 0
 	bought := 0
-	numTotal := 0.0
+	//numTotal := 0.0
 
 	for i = 0; i < len(allIds); i++ {
 
@@ -715,9 +715,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		var ProductQuantity int
 
-		var ProductName, ProductCatTitle, ProductCost, TotalCost string
+		var ProductName, ProductCatTitle, ProductCost string
 
 		//jumps past this, first run through
+		//var numTotal = 0
 		for rows.Next() {
 
 			//copies from database row to these variables
@@ -775,56 +776,77 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
 			//quantity
 			//However, whole numner
-			var QuantityFloat float64 = float64(aQuant)
-			//in cents, no decimal
-			ProductCostString := ProductCost
+			//QuantityWholeNumber float64 = float64(aQuant)
 
-			//cents
-			ProductCostFloat, err := strconv.ParseFloat(ProductCostString, 64)
+			var QuantityWholeNumber float64
+			QuantityWholeNumber = float64(aQuant)
+
+			//
+			var ProductCostFloat float64
+			ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
 			if err != nil {
 				fmt.Println(err)
 			}
+			//take away decimal
+			ProductCostFloat = ProductCostFloat * 100
 
-			
+			var total float64
+			total = QuantityWholeNumber * ProductCostFloat
 
-			//cents
-			//ProductCostFloat2 := ProductCostFloat
+			//accumulates////
+			var numTotal float64
 
-			//move decimal
-			//ProductCostFloat = ProductCostFloat / (math.Pow(10, 2))
-			//take care of decimals - ready for display
-			//fmt.Sprintf("%.6f", input_num)
-			//ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat) // = fmt.Sprintf("%f", ProductCostFloat)
-			
+			var GrandTotalFloat float64
+			numTotal = numTotal + total
 
-			//in cents and wholenumber
-			TotalCostFloat := QuantityFloat * ProductCostFloat
+			//numTotal = numTotal * 100
 
-			//cents
-			//TotalCostFloat2 := TotalCostFloat
-			//move decimal
-			//TotalCostFloat = TotalCostFloat / (math.Pow(10, 2))
-			//take care of decimals
-			TotalCost = fmt.Sprintf("%.2f", TotalCostFloat)
+			///////////////
 
-			//cents
-			numTotal = numTotal + TotalCostFloat
+			var tax = 0.05
+			tax = tax * 100
 
-			tax := 0.0
+			GrandTotalFloat = numTotal
+			//tax2 := (numTotal * tax) //     10 * 100
+			GrandTotalFloat = GrandTotalFloat / math.Pow(10, (tax-1)) // * (numTotal);  //29900
+			//GrandTotalFloat = GrandTotalFloat1 + tax;
 
-			//numTotal = numTotal  * .05
-			//this is the tax  amount
-			var GrandTotalString = "this text doesnt display"
-			if i == (len(allIds) - 1) {
-				tax = numTotal * .05
-				//numTotal = numTotal * 100
-				numTotal = numTotal + tax
-
-				//numTotal = numTotal / math.Pow(10, 4)
-				GrandTotalString = fmt.Sprintf("%.2f", numTotal)
+			GrandTotalString := strconv.FormatFloat(numTotal, 'f', -1, 64)
+			var length1 int
+			length1 = len(GrandTotalString)
+			{
+				fmt.Println(length1)
 			}
+			var length1a int
+			fmt.Println(length1a)
+			length1a = length1
+			//var GrandTotalInt int
+			//GrandTotalInt = int(GrandTotalFloat)
+			//GrandTotalFloat = GrandTotalFloat1 + numTotal;
+			//GrandTotalLength := GrandTotalInt / (length1)
 
-			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, TotalCost, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
+			var tax2 float64
+			tax2 = 1
+			tax2 = tax2 * float64(length1a)
+			GrandTotalFloat = GrandTotalFloat * (math.Pow(10, tax2 - 1))
+			//GrandTotalFloat = GrandTotalFloat / 100000
+			//GrandTotalString := fmt.Sprintf("%.2f", GrandTotalFloat)
+
+			///////////////
+
+			///////////////
+
+			//var tax1 = 0.05
+			//tax1 = tax1 * 100
+			//var totalFloat float64
+			total = total / (tax2 * 10) //10005
+			//total = total / 100
+			//total = total + tax1
+			ProductCostString := fmt.Sprintf("%.2f", total)
+
+			/////////////
+
+			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
 

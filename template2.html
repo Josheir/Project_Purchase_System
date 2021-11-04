@@ -71,7 +71,7 @@
  
 <tr id = "{{.RemoveRecordDivID}}">
 
-<td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value =""   type="number" name="" placeholder="" size="8">	</p></center></td>
+<td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value ="{{.Bought}}"   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
 <!-- <td><center>{{.Condition}}  {{.RemoveRecordDivID}}</center> </td>-->
 
@@ -259,6 +259,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         if(item % 1 != 0)
         {
           
+          return(1);
           
         }
 
@@ -306,6 +307,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       
 
       window.location.href = "index.html";
+      alert("++++++++++am here you see it!");
     
     }
       
