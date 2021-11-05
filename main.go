@@ -22,7 +22,7 @@ import (
 	"net/http"
 
 	"context"
-	"math"
+	"math/big"
 
 	//"os"
 	"strconv"
@@ -776,75 +776,60 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
 			//quantity
 			//However, whole numner
-			//QuantityWholeNumber float64 = float64(aQuant)
-
+			var tax = .05
 			var QuantityWholeNumber float64
+			var GrandTotalFloat = 0.0
 			QuantityWholeNumber = float64(aQuant)
 
-			//
 			var ProductCostFloat float64
 			ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
-			if err != nil {
-				fmt.Println(err)
-			}
-			//take away decimal
-			ProductCostFloat = ProductCostFloat * 100
+			fmt.Println(err)
 
-			var total float64
-			total = QuantityWholeNumber * ProductCostFloat
+			n2 := new(big.Int)
+			n3 := new(big.Int)
 
-			//accumulates////
-			var numTotal float64
+			var amount1 = 0.0
+			var amount2 = 0.0
 
-			var GrandTotalFloat float64
-			numTotal = numTotal + total
+			//total product cost without tax
+			amount1 = amount1 + (ProductCostFloat * 100 * QuantityWholeNumber)
+			//var stringamount1 = strconv.FormatFloat(amount1, 'f', -1, 64)
 
-			//numTotal = numTotal * 100
+			//total product cost with tax
+			amount2 = amount2 + (ProductCostFloat * 100 * QuantityWholeNumber * tax)
+			//var stringamount2 = strconv.FormatFloat(amount2, 'f', -1, 64)
 
-			///////////////
+			//without tax//////////
 
-			var tax = 0.05
-			tax = tax * 100
+			str1 := n2.Text(10)
+			result, _ := strconv.ParseFloat(str1, 64)
+			//without tax
+			ProductCostFloat = result + amount1
+			//ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
+			ProductCostString := fmt.Sprintf("%.2f", ProductCostFloat)
+			_, _ = n2.SetString(ProductCostString, 10)
 
-			GrandTotalFloat = numTotal
-			//tax2 := (numTotal * tax) //     10 * 100
-			GrandTotalFloat = GrandTotalFloat / math.Pow(10, (tax-1)) // * (numTotal);  //29900
-			//GrandTotalFloat = GrandTotalFloat1 + tax;
+			/////////
 
-			GrandTotalString := strconv.FormatFloat(numTotal, 'f', -1, 64)
-			var length1 int
-			length1 = len(GrandTotalString)
-			{
-				fmt.Println(length1)
-			}
-			var length1a int
-			fmt.Println(length1a)
-			length1a = length1
-			//var GrandTotalInt int
-			//GrandTotalInt = int(GrandTotalFloat)
-			//GrandTotalFloat = GrandTotalFloat1 + numTotal;
-			//GrandTotalLength := GrandTotalInt / (length1)
+			//with tax for grandtotal accumulation//////////
 
-			var tax2 float64
-			tax2 = 1
-			tax2 = tax2 * float64(length1a)
-			GrandTotalFloat = GrandTotalFloat * (math.Pow(10, tax2 - 1))
-			//GrandTotalFloat = GrandTotalFloat / 100000
-			//GrandTotalString := fmt.Sprintf("%.2f", GrandTotalFloat)
+			str2 := n3.Text(10)
+			result, _ = strconv.ParseFloat(str2, 64)
+			//without tax
+			ProductCostFloat = result + amount2
+			ProductCostString1 := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 
-			///////////////
+			_, _ = n3.SetString(ProductCostString1, 10)
+			//if !ok {
+			//	fmt.Println(ok)
+			//
+			//}
+			GrandTotalFloat = GrandTotalFloat + ProductCostFloat
+			//GrandTotalString :=  strconv.FormatFloat(GrandTotalFloat, 'f', -1, 64)
 
-			///////////////
+			GrandTotalString := fmt.Sprintf("%.2f", GrandTotalFloat)
 
-			//var tax1 = 0.05
-			//tax1 = tax1 * 100
-			//var totalFloat float64
-			total = total / (tax2 * 10) //10005
-			//total = total / 100
-			//total = total + tax1
-			ProductCostString := fmt.Sprintf("%.2f", total)
-
-			/////////////
+			//////////////
 
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
