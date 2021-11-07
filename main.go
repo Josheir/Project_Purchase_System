@@ -779,8 +779,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			var tax = .05
 			var GrandTotalString = ""
 			var QuantityWholeNumber float64
-			var GrandTotalFloat = 0.0
+			//var GrandTotalFloat = 0.0
 			QuantityWholeNumber = float64(aQuant)
+			var ProductCostFloatCollector = 0.0
 
 			var ProductCostFloat float64
 			ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
@@ -804,12 +805,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			str1 := n2.Text(10)
 			result, _ := strconv.ParseFloat(str1, 64)
-			//without tax
+			//without tax, no taxes combined
 			ProductCostFloat = result + amount1
 			//ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 			//ProductCostFloat = 100.2
 			ProductCostFloat = ProductCostFloat / 100
-			ProductCostString := fmt.Sprintf("%.2f", ProductCostFloat)
+			ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
+			//ProductCostString := fmt.Sprintf("%.2f", ProductCostFloat)
 			_, _ = n2.SetString(ProductCostString, 10)
 
 			/////////
@@ -821,20 +823,17 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			str2 := n3.Text(10)
 			//string to float
 			result, _ = strconv.ParseFloat(str2, 64)
-			
+			//no decimals
 			ProductCostFloat = result + amount2
-			ProductCostFloat1 = ProductCostFloat
-			
-			GrandTotalString1 = Float.toString(ProductCostFloat)
-			//with tax
-			ProductCostFloat = ProductCostFloat / 100
-			ProductCostString = ProductCostFloat 
-			GrandTotalString = GrandTotalString + ProductCostFloat
-			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
-			_, _ = n2.SetString(ProductCostString, 10)
+			ProductCostFloatCollector = ProductCostFloatCollector + ProductCostFloat 
+			//ProductCostFloat = ProductCostFloat / 100
+			//ProductCostString = strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 
-			//GrandTotalString := fmt.Sprintf("%.2f", GrandTotalFloat)
+			//10500
+			GrandTotalString = GrandTotalString + strconv.FormatFloat(ProductCostFloatCollector, 'f', -1, 64)
 
+
+			//GrandTotalString
 			//////////////
 
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
