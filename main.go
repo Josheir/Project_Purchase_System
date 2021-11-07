@@ -23,7 +23,7 @@ import (
 
 	"context"
 	"math/big"
-	
+
 	//"os"
 	"strconv"
 	"time"
@@ -698,9 +698,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		//get fields for each product ID
-		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
-			"FROM products WHERE " +
+		//////////////////
+
+		stmt, err := db.Prepare("SELECT count(*) WHERE " +
 			"products.ProductID = ? AND products.ProductStatus = 'ready'")
 
 		if err != nil {
@@ -713,14 +713,44 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
+		var Count int
+
+		for rows.Next() {
+
+			err = rows.Scan(&Count)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		}
+
+		//////////////////
+
+		//get fields for each product ID
+		stmt, err = db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
+			"FROM products WHERE " +
+			"products.ProductID = ? AND products.ProductStatus = 'ready'")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		rows, err = stmt.Query(prodid)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		var ProductQuantity int
 
 		var ProductName, ProductCatTitle, ProductCost string
 
 		//jumps past this, first run through
 		//var numTotal = 0
+		var countCounter = 0
 		for rows.Next() {
 
+			countCounter = countCounter + 1
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
 			if err != nil {
@@ -778,10 +808,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//However, whole numner
 			var tax = .05
 			var GrandTotalString = ""
-			var QuantityWholeNumber float64
-			//var GrandTotalFloat = 0.0
-			QuantityWholeNumber = float64(aQuant)
-			var ProductCostFloatCollector = 0.0
+			var QuantityWholeNumber float64 = float64(aQuant)
 
 			var ProductCostFloat float64
 			ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
@@ -795,47 +822,50 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			//total product cost without tax
 			amount1 = (ProductCostFloat * 100 * QuantityWholeNumber)
-			//var stringamount1 = strconv.FormatFloat(amount1, 'f', -1, 64)
 
 			//total product cost with tax
 			amount2 = (ProductCostFloat*100*QuantityWholeNumber + tax*100*ProductCostFloat*QuantityWholeNumber)
-			//var stringamount2 = strconv.FormatFloat(amount2, 'f', -1, 64)
 
 			//without tax//////////
 
 			str1 := n2.Text(10)
 			result, _ := strconv.ParseFloat(str1, 64)
+
 			//without tax, no taxes combined
 			ProductCostFloat = result + amount1
-			//ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
-			//ProductCostFloat = 100.2
+
 			ProductCostFloat = ProductCostFloat / 100
 			ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
-			//ProductCostString := fmt.Sprintf("%.2f", ProductCostFloat)
+
 			_, _ = n2.SetString(ProductCostString, 10)
 
 			/////////
 
 			//with tax for grandtotal accumulation//////////
 
-
-			//var ProductCostFloat1 = ""
 			str2 := n3.Text(10)
 			//string to float
 			result, _ = strconv.ParseFloat(str2, 64)
 			//no decimals
 			ProductCostFloat = result + amount2
-			ProductCostFloatCollector = ProductCostFloatCollector + ProductCostFloat 
-			//ProductCostFloat = ProductCostFloat / 100
-			//ProductCostString = strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 
-			//10500
-			GrandTotalString = GrandTotalString + strconv.FormatFloat(ProductCostFloatCollector, 'f', -1, 64)
+			ProductCostString = strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 
+			//no decimals - accumulator for grandtotal
+			_, _ = n3.SetString(ProductCostString, 10)
 
-			//GrandTotalString
-			//////////////
+			if Count == countCounter {
 
+				//get accumulated ptoduct cost without decimal
+				str3 := n3.Text(10)
+
+				//str3 to float
+				answer, _ := strconv.ParseFloat(str3, 64)
+				answer = answer / 10
+
+				GrandTotalString = fmt.Sprintf("%.2f", answer)
+
+			}
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
