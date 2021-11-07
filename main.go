@@ -23,7 +23,7 @@ import (
 
 	"context"
 	"math/big"
-
+	
 	//"os"
 	"strconv"
 	"time"
@@ -777,6 +777,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//quantity
 			//However, whole numner
 			var tax = .05
+			var GrandTotalString = ""
 			var QuantityWholeNumber float64
 			var GrandTotalFloat = 0.0
 			QuantityWholeNumber = float64(aQuant)
@@ -792,11 +793,11 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			var amount2 = 0.0
 
 			//total product cost without tax
-			amount1 = amount1 + (ProductCostFloat * 100 * QuantityWholeNumber)
+			amount1 = (ProductCostFloat * 100 * QuantityWholeNumber)
 			//var stringamount1 = strconv.FormatFloat(amount1, 'f', -1, 64)
 
 			//total product cost with tax
-			amount2 = amount2 + (ProductCostFloat * 100 * QuantityWholeNumber * tax)
+			amount2 = (ProductCostFloat*100*QuantityWholeNumber + tax*100*ProductCostFloat*QuantityWholeNumber)
 			//var stringamount2 = strconv.FormatFloat(amount2, 'f', -1, 64)
 
 			//without tax//////////
@@ -806,6 +807,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//without tax
 			ProductCostFloat = result + amount1
 			//ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
+			//ProductCostFloat = 100.2
+			ProductCostFloat = ProductCostFloat / 100
 			ProductCostString := fmt.Sprintf("%.2f", ProductCostFloat)
 			_, _ = n2.SetString(ProductCostString, 10)
 
@@ -813,21 +816,24 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			//with tax for grandtotal accumulation//////////
 
+
+			//var ProductCostFloat1 = ""
 			str2 := n3.Text(10)
+			//string to float
 			result, _ = strconv.ParseFloat(str2, 64)
-			//without tax
+			
 			ProductCostFloat = result + amount2
-			ProductCostString1 := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
+			ProductCostFloat1 = ProductCostFloat
+			
+			GrandTotalString1 = Float.toString(ProductCostFloat)
+			//with tax
+			ProductCostFloat = ProductCostFloat / 100
+			ProductCostString = ProductCostFloat 
+			GrandTotalString = GrandTotalString + ProductCostFloat
+			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
+			_, _ = n2.SetString(ProductCostString, 10)
 
-			_, _ = n3.SetString(ProductCostString1, 10)
-			//if !ok {
-			//	fmt.Println(ok)
-			//
-			//}
-			GrandTotalFloat = GrandTotalFloat + ProductCostFloat
-			//GrandTotalString :=  strconv.FormatFloat(GrandTotalFloat, 'f', -1, 64)
-
-			GrandTotalString := fmt.Sprintf("%.2f", GrandTotalFloat)
+			//GrandTotalString := fmt.Sprintf("%.2f", GrandTotalFloat)
 
 			//////////////
 
