@@ -675,10 +675,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	bought := 0
 	//numTotal := 0.0
 
+	var countCounter = 0
+
 	for i = 0; i < len(allIds); i++ {
 
 		fmt.Println("length")
 		fmt.Println(len(allIds))
+		countCounter = countCounter + 1
 
 		//Condition++
 		Condition2++
@@ -700,7 +703,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		//////////////////
 
-		stmt, err := db.Prepare("SELECT count(*) WHERE " +
+		//get fields for each product ID
+		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
+			"FROM products WHERE " +
 			"products.ProductID = ? AND products.ProductStatus = 'ready'")
 
 		if err != nil {
@@ -713,44 +718,15 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		var Count int
-
-		for rows.Next() {
-
-			err = rows.Scan(&Count)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-		}
-
-		//////////////////
-
-		//get fields for each product ID
-		stmt, err = db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
-			"FROM products WHERE " +
-			"products.ProductID = ? AND products.ProductStatus = 'ready'")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		rows, err = stmt.Query(prodid)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
 		var ProductQuantity int
 
 		var ProductName, ProductCatTitle, ProductCost string
 
 		//jumps past this, first run through
 		//var numTotal = 0
-		var countCounter = 0
+
 		for rows.Next() {
 
-			countCounter = countCounter + 1
 			//copies from database row to these variables
 			err = rows.Scan(&ProductQuantity, &ProductName, &ProductCatTitle, &ProductCost)
 			if err != nil {
@@ -814,21 +790,66 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
 			fmt.Println(err)
 
+			//var test1 = "1" //n4
+			//var test2 = "2"  //n5
 			n2 := new(big.Int)
 			n3 := new(big.Int)
+			//n4 := new(big.Int)
+			//n5 := new(big.Int)
+			/*
+					//1
+					str14 := n4.Text(10)
+					if err1 != nil {
+						fmt.Println(str14)
+					}
+					//2
+					str15 := n5.Text(10)
+					if err1 != nil {
+						fmt.Println(str15)
+					}
+					//1 - n4
+					_, _ = n4.SetString(test1, 10)
+					str14 = n4.Text(10)
+					_, _ = n5.SetString(test2, 10)
+					//2 - n5
+
+					str15 = n5.Text(10)
+
+
+
+					var str1b, str1a, str1c, str1d string
+					n4.Add(n4, n5) // add two
+				    str1c = n4.Text(10) //1
+					n4.Add(n4, n5)
+					str1a = n4.Text(10)//1
+					str1b = n5.Text(10)//2
+					n4.Add(n4, n5) // add two
+
+
+
+					n5.Add(n5, n4) //add one /// 2 to 9
+					str1c = n4.Text(10) //1
+					str1d = n5.Text(10)//2
+					fmt.Println(str1a)
+					fmt.Println(str1b)
+					fmt.Println(str1c)
+					fmt.Println(str1d)
+					//fmt.Println(n4q)
+			*/
 
 			var amount1 = 0.0
 			var amount2 = 0.0
 
 			//total product cost without tax
-			amount1 = (ProductCostFloat * 100 * QuantityWholeNumber)
+			amount1 = (ProductCostFloat * 1000 * QuantityWholeNumber)
 
 			//total product cost with tax
-			amount2 = (ProductCostFloat*100*QuantityWholeNumber + tax*100*ProductCostFloat*QuantityWholeNumber)
+			amount2 = (ProductCostFloat*1000*QuantityWholeNumber + tax*1000*ProductCostFloat*QuantityWholeNumber)
 
 			//without tax//////////
 
 			str1 := n2.Text(10)
+
 			result, _ := strconv.ParseFloat(str1, 64)
 
 			//without tax, no taxes combined
@@ -837,6 +858,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			ProductCostFloat = ProductCostFloat / 100
 			ProductCostString := strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 
+			//decimals
+			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat)
 			_, _ = n2.SetString(ProductCostString, 10)
 
 			/////////
@@ -848,20 +871,23 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			result, _ = strconv.ParseFloat(str2, 64)
 			//no decimals
 			ProductCostFloat = result + amount2
-
+			//ProductCostFloat = ProductCostFloat / 1000
 			ProductCostString = strconv.FormatFloat(ProductCostFloat, 'f', -1, 64)
 
 			//no decimals - accumulator for grandtotal
 			_, _ = n3.SetString(ProductCostString, 10)
 
-			if Count == countCounter {
+			////////////////////////////////
+
+			if countCounter == (len(allIds)) {
+				////////////////////////////////
 
 				//get accumulated ptoduct cost without decimal
 				str3 := n3.Text(10)
 
 				//str3 to float
 				answer, _ := strconv.ParseFloat(str3, 64)
-				answer = answer / 10
+				answer = answer / 1000
 
 				GrandTotalString = fmt.Sprintf("%.2f", answer)
 
