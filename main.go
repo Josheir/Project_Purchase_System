@@ -771,10 +771,17 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-			aQuant, err3 := strconv.Atoi(allQuants[i])
-			if err3 == nil {
-				fmt.Println(var2)
-			}
+
+
+
+			//aQuant, err3 := strconv.Atoi(allQuants[i])
+			//if err3 == nil {
+			//	fmt.Println(var2)
+			//}
+
+
+
+
 
 			//the ideas is to use variables that are whole and not decimals and than move the decimal point at the very end
 			//https://yourbasic.org/golang/round-float-2-decimal-places/
@@ -782,22 +789,62 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
 			//quantity
 			//However, whole numner
-			var tax = .05
-			var GrandTotalString = ""
-			var QuantityWholeNumber float64 = float64(aQuant)
+			
+			//var tax = .05
+			//var GrandTotalString = ""
+			//var QuantityWholeNumber float64 = float64(aQuant)
 
-			var ProductCostFloat float64
-			ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
-			fmt.Println(err)
+			//var ProductCostFloat float64
+			//ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
+			//fmt.Println(err)
 
 			//var test1 = "1" //n4
 			//var test2 = "2"  //n5
+			//n1 := new(big.Int)
 			n2 := new(big.Int)
 			n3 := new(big.Int)
 			//n4 := new(big.Int)
+			//tax = new(big.Int)
+			taxRate := new(big.Int)
+			//productCost
+
+			//n4 := new(big.Int)
 			//n5 := new(big.Int)
+
+			/////////
+			//var laststring = "0"
+			//var string1 = "16000"
+
+			//var Cost
+
+			//first product quantity
+
+			//var productQuantity int
+			//var ProductCostString string
+			//n2, _ = n2.SetString(strconv.Itoa(AmountToBuyID ), 10)
+			n2, _ = n2.SetString((allQuants[j]), 10)
+			//string
+			n3, _ = n3.SetString(ProductCost, 10)
+			taxRate, _ = taxRate.SetString("50", 10)
+			//Quantity times product
+			var firstMult = n2.Mul(n2, n3)
+
+			var val1 = taxRate.Mul(taxRate, firstMult)
+			var val2 = addTax
+			var val3 = devideByRate 
+
+			// upper result + tax
+			var addTax = n2.Add(n2, n2.Mul(taxRate, firstMult))
+
+			var ProductCostString = n2.String()
+			fmt.Println(addTax)
+
+			/////////
+
 			
 
+
+			/*
 			var amount1 = 0.0
 			var amount2 = 0.0
 
@@ -817,7 +864,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			ProductCostFloat = result + amount1
 
 			//last two decimals arn't for keeping -
-			ProductCostString := fmt.Sprintf("%.0f", ProductCostFloat)
+			ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
 			//ProductCostFloat = ProductCostFloat / 1000
 
 			ret1, ok := n2.SetString(ProductCostString, 10)
@@ -831,8 +878,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
 			fmt.Println(ProductCostString)
 			/////////
-
-
 
 			//with tax for grandtotal accumulation//////////
 
@@ -860,20 +905,27 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			////////////////////////////////
 
 
+			*/
+
+
+
+
 
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
 				//get accumulated ptoduct cost without decimal
-				str3 := n3.Text(10)
+				//str3 := n3.Text(10)
 
 				//str3 to float
-				answer, _ := strconv.ParseFloat(str3, 64)
-				answer = answer / 1000
+				//answer, _ := strconv.ParseFloat(str3, 64)
+				//answer = answer / 1000
 
-				GrandTotalString = fmt.Sprintf("%.2f", answer)
+				//GrandTotalString = fmt.Sprintf("%.2f", answer)
 
 			}
+
+			var GrandTotalString = "10000"
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
