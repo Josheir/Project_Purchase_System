@@ -725,7 +725,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		//jumps past this, first run through
 		//var numTotal = 0
 
-		var Result string
+		//	var Result = ""
+
+		//Result = "hello"
 		for rows.Next() {
 
 			//copies from database row to these variables
@@ -733,6 +735,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println(err)
 			}
+
+			//Result = ProductCost
 
 			var j = 0
 			for j = 0; j < len(allIds); j++ {
@@ -772,28 +776,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-			//aQuant, err3 := strconv.Atoi(allQuants[i])
-			//if err3 == nil {
-			//	fmt.Println(var2)
-			//}
-
-			//the ideas is to use variables that are whole and not decimals and than move the decimal point at the very end
-			//https://yourbasic.org/golang/round-float-2-decimal-places/
-			//https://stackoverflow.com/questions/20596428/how-to-represent-currency-in-go
-			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
-			//quantity
-			//However, whole numner
-
-			//var tax = .05
-			//var GrandTotalString = ""
-			//var QuantityWholeNumber float64 = float64(aQuant)
-
-			//var ProductCostFloat float64
-			//ProductCostFloat, err := strconv.ParseFloat(ProductCost, 64)
-			//fmt.Println(err)
-
-			//var test1 = "1" //n4
-			//var test2 = "2"  //n5
+			
 			//n1 := new(big.Int)
 			n2 := new(big.Int)
 			n2a := new(big.Int)
@@ -809,28 +792,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			var ProductCostString string
 
-			//tax = new(big.Int)
-			//taxRate := new(big.Int)
-			//addTax := new(big.Int)
-			//dividebyRate := new(big.Int)
-			//productCost
-
-			//n4 := new(big.Int)
-			//n5 := new(big.Int)
-
-			/////////
-			//var laststring = "0"
-			//var string1 = "16000"
-
-			//var Cost
-
-			//first product quantity
-
-			//var productQuantity int
-			//var ProductCostString string
-			//n2, _ = n2.SetString(strconv.Itoa(AmountToBuyID ), 10)
-
-			////
+			
 
 			//when value is three digits n4 is 50 and n5 is 10000  and n7 is 1000
 			//so when the value is at one digit
@@ -854,10 +816,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			n8, _ = n8.SetString("1000", 10)
 
-			//division
-			//n7, _ = n6.SetString("1000", 10)
-
-			//n5, _ = n5.SetString("50", 10)
+			
 
 			//get cost of all prosucts no tax - 5000
 			var firstMult = n2.Mul(n2, n3)
@@ -868,7 +827,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//get tax times cost of all products - total with tax : 50 * 100 = 5000
 			var withTax = n4.Mul(n2, n4)
 			var withAjustedAmt = n5.Mul(n2, n5)
-			//var withTax1 = n3a.Mul(n3a, n5)
+			
 
 			fmt.Println(withTax)
 			fmt.Println(withAjustedAmt)
@@ -896,27 +855,25 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 				for n = 0; n < len(ProductCostString); n++ {
 
-					//ProductCostString = "0" + "." + ProductCostString
-
-					if n == len(ProductCostString)-1 {
-
-						//	result[n] = "."
-						//	result[n+1] = (ProductCostString[n])
-						//	result[n+2] = string(ProductCostString[n+1])
-						//	break
-
-					} else {
-
-						var strzz string
-						strzz = "string to byte array or slice"
-						// converting and printing Byte array
-
-						strzz1 := ([]byte(Result))
-						fmt.Println(strzz1)
-						fmt.Println(strzz1[1])
-						fmt.Println(strzz)
-
+					bytes1 := ([]byte(ProductCostString))
+					
+					var statement = ""
+					
+					var o = 0
+					for o = 0; o < len(ProductCostString)-2; o++ {
+						statement = statement + string(bytes1[o])
 					}
+					
+					statement = statement + "."
+					
+					fmt.Println(statement)
+
+					for o = len(ProductCostString) - 2; o < len(ProductCostString); o++ {
+						statement = statement + string(bytes1[o])
+					}
+					
+					fmt.Println(statement)
+
 				}
 
 			}
