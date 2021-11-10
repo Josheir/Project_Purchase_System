@@ -804,6 +804,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n5 := new(big.Int)
 			n6 := new(big.Int)
 			n7 := new(big.Int)
+			n8 := new(big.Int)
 
 			var ProductCostString = "12"
 
@@ -827,6 +828,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//var productQuantity int
 			//var ProductCostString string
 			//n2, _ = n2.SetString(strconv.Itoa(AmountToBuyID ), 10)
+
+			////
+
+			//when value is three digits n4 is 50 and n5 is 10000  and n7 is 1000
+			//so when the value is at one digit
+
+			////
 			n2, _ = n2.SetString((allQuants[j]), 10)
 
 			n2a, _ = n2a.SetString((allQuants[j]), 10)
@@ -841,45 +849,37 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n4, _ = n4.SetString("50", 10)
 
 			//increase total cost by
-			n5, _ = n5.SetString("10000", 10)
+			n5, _ = n5.SetString("1000", 10)
+
+			n8, _ = n8.SetString("1000", 10)
 
 			//division
 			//n7, _ = n6.SetString("1000", 10)
-			
-			//n5, _ = n5.SetString("50", 10)
-			  
 
-			
+			//n5, _ = n5.SetString("50", 10)
+
 			//get cost of all prosucts no tax - 5000
 			var firstMult = n2.Mul(n2, n3)
 			//var firstMult1 = n2a.Mul(n2a, n4)
 			fmt.Println(firstMult)
 			//var firstMult1 = firstMult
-			
-			
+
 			//get tax times cost of all products - total with tax : 50 * 100 = 5000
 			var withTax = n4.Mul(n2, n4)
-			var withAjustedAmt = n5.Mul(n2,n5)
+			var withAjustedAmt = n5.Mul(n2, n5)
 			//var withTax1 = n3a.Mul(n3a, n5)
 
 			fmt.Println(withTax)
 			fmt.Println(withAjustedAmt)
 
-
-			
-			//increase total no decimals  100000 + 5000
-			var Add = n6.Add(n5, n4 )
+			//increase total no digits  100000 + 5000
+			var Add = n6.Add(n5, n4)
 			fmt.Println(Add)
 
+			var afterFirstDivision = n7.Div(n6, n8)
 
-
-			var afterfirstDivision = n7.Div(n6, n5)
-
-			fmt.Println(afterfirstDivision)
-
-
-
-
+			ProductCostString = afterFirstDivision.Text(10)
+			fmt.Println(afterFirstDivision)
 
 			//Quantity times product
 			//var addTax = n2.Mul(n2, n3)
@@ -897,68 +897,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			/////////
 
-			/*
-				var amount1 = 0.0
-				var amount2 = 0.0
-
-				//total product cost without tax
-				amount1 = (ProductCostFloat * 1000 * QuantityWholeNumber)
-
-				//total product cost with tax
-				amount2 = (ProductCostFloat*1000*QuantityWholeNumber + tax*1000*ProductCostFloat*QuantityWholeNumber)
-
-				//without tax//////////
-
-				str1 := n2.Text(10)
-
-				result, _ := strconv.ParseFloat(str1, 64)
-
-				//without tax, no taxes combined
-				ProductCostFloat = result + amount1
-
-				//last two decimals arn't for keeping -
-				ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
-				//ProductCostFloat = ProductCostFloat / 1000
-
-				ret1, ok := n2.SetString(ProductCostString, 10)
-				fmt.Println(ok)
-				fmt.Println(ret1)
-				var ProductCostFloat2, err1 = strconv.ParseFloat(ProductCostString, 64)
-				//decimals
-				fmt.Println(ProductCostFloat2)
-				fmt.Println(err1)
-				ProductCostFloat2 = ProductCostFloat2 / 1000
-				ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
-				fmt.Println(ProductCostString)
-				/////////
-
-				//with tax for grandtotal accumulation//////////
-
-				str1 = n3.Text(10)
-
-				result, _ = strconv.ParseFloat(str1, 64)
-
-				//without tax, no taxes combined
-				ProductCostFloat = result + amount2
-
-				//last two decimals arn't for keeping -
-				ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
-				//ProductCostFloat = ProductCostFloat / 1000
-
-				ret1, ok = n3.SetString(ProductCostString, 10)
-
-				fmt.Println(ret1)
-				ProductCostFloat2, err1 = strconv.ParseFloat(ProductCostString, 64)
-				//decimals
-				fmt.Println(ProductCostFloat2)
-				fmt.Println(err1)
-				ProductCostFloat2 = ProductCostFloat2 / 1000
-				ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
-				fmt.Println(ProductCostString)
-				////////////////////////////////
-
-
-			*/
 
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
