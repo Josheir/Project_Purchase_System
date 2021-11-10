@@ -803,7 +803,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//taxrate
 			n5 := new(big.Int)
 			n6 := new(big.Int)
-			//n7 := new(big.Int)
+			n7 := new(big.Int)
 
 			var ProductCostString = "12"
 
@@ -873,9 +873,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 
 
-			//var firstDivision = n2.Div(secondMult, n6)
+			var afterfirstDivision = n7.Div(n6, n5)
 
-			//fmt.Println(firstDivision)
+			fmt.Println(afterfirstDivision)
 
 
 
