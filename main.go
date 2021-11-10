@@ -725,6 +725,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		//jumps past this, first run through
 		//var numTotal = 0
 
+		var Result string
 		for rows.Next() {
 
 			//copies from database row to these variables
@@ -806,7 +807,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n7 := new(big.Int)
 			n8 := new(big.Int)
 
-			var ProductCostString = "12"
+			var ProductCostString string
 
 			//tax = new(big.Int)
 			//taxRate := new(big.Int)
@@ -881,22 +882,44 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			ProductCostString = afterFirstDivision.Text(10)
 			fmt.Println(afterFirstDivision)
 
-			//Quantity times product
-			//var addTax = n2.Mul(n2, n3)
-			//fmt.Println(firstMult)
+			//var string1 = ""
+			//two pennies dispalyed, needs decimal point displayed
+			if len(ProductCostString) == 2 {
 
-			//var val1 = taxRate.Mul(taxRate, firstMult)
-			//val2 := addTax
-			//val3 := divideByRate
+				ProductCostString = "." + ProductCostString
+			} else if len(ProductCostString) == 1 {
 
-			// upper result + tax
-			//var addTax = n2.Add(n2, n2.Mul(taxRate, firstMult))
+				ProductCostString = "0" + "." + ProductCostString
 
-			//var ProductCostString = n2.String()
-			//fmt.Println(addTax)
+			} else {
+				var n = 0
 
-			/////////
+				for n = 0; n < len(ProductCostString); n++ {
 
+					//ProductCostString = "0" + "." + ProductCostString
+
+					if n == len(ProductCostString)-1 {
+
+						//	result[n] = "."
+						//	result[n+1] = (ProductCostString[n])
+						//	result[n+2] = string(ProductCostString[n+1])
+						//	break
+
+					} else {
+
+						var strzz string
+						strzz = "string to byte array or slice"
+						// converting and printing Byte array
+
+						strzz1 := ([]byte(Result))
+						fmt.Println(strzz1)
+						fmt.Println(strzz1[1])
+						fmt.Println(strzz)
+
+					}
+				}
+
+			}
 
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
