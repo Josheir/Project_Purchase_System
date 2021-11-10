@@ -771,17 +771,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-
-
-
 			//aQuant, err3 := strconv.Atoi(allQuants[i])
 			//if err3 == nil {
 			//	fmt.Println(var2)
 			//}
-
-
-
-
 
 			//the ideas is to use variables that are whole and not decimals and than move the decimal point at the very end
 			//https://yourbasic.org/golang/round-float-2-decimal-places/
@@ -789,7 +782,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//https://www.bing.com/search?q=put%20commas%20in%20string%20golang&qs=n&form=QBRE&sp=-1&pq=put%20commas%20in%20string%20golang&sc=0-27&sk=&cvid=D3A2A7E4E0E141BCAA5BA7E7EE279532
 			//quantity
 			//However, whole numner
-			
+
 			//var tax = .05
 			//var GrandTotalString = ""
 			//var QuantityWholeNumber float64 = float64(aQuant)
@@ -802,10 +795,22 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//var test2 = "2"  //n5
 			//n1 := new(big.Int)
 			n2 := new(big.Int)
+			n2a := new(big.Int)
 			n3 := new(big.Int)
-			//n4 := new(big.Int)
+			//n3a := new(big.Int)
+
+			n4 := new(big.Int)
+			//taxrate
+			n5 := new(big.Int)
+			n6 := new(big.Int)
+			//n7 := new(big.Int)
+
+			var ProductCostString = "12"
+
 			//tax = new(big.Int)
-			taxRate := new(big.Int)
+			//taxRate := new(big.Int)
+			//addTax := new(big.Int)
+			//dividebyRate := new(big.Int)
 			//productCost
 
 			//n4 := new(big.Int)
@@ -823,93 +828,137 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//var ProductCostString string
 			//n2, _ = n2.SetString(strconv.Itoa(AmountToBuyID ), 10)
 			n2, _ = n2.SetString((allQuants[j]), 10)
+
+			n2a, _ = n2a.SetString((allQuants[j]), 10)
+
 			//string
 			n3, _ = n3.SetString(ProductCost, 10)
-			taxRate, _ = taxRate.SetString("50", 10)
-			//Quantity times product
-			var firstMult = n2.Mul(n2, n3)
+			//n3a, _ = n3.SetString(ProductCost, 10)
 
-			var val1 = taxRate.Mul(taxRate, firstMult)
-			var val2 = addTax
-			var val3 = devideByRate 
+			//var total
 
-			// upper result + tax
-			var addTax = n2.Add(n2, n2.Mul(taxRate, firstMult))
+			//tax rate
+			n4, _ = n4.SetString("50", 10)
 
-			var ProductCostString = n2.String()
-			fmt.Println(addTax)
+			//increase total cost by
+			n5, _ = n5.SetString("10000", 10)
 
-			/////////
+			//division
+			//n7, _ = n6.SetString("1000", 10)
+			
+			//n5, _ = n5.SetString("50", 10)
+			  
 
 			
+			//get cost of all prosucts no tax - 5000
+			var firstMult = n2.Mul(n2, n3)
+			//var firstMult1 = n2a.Mul(n2a, n4)
+			fmt.Println(firstMult)
+			//var firstMult1 = firstMult
+			
+			
+			//get tax times cost of all products - total with tax : 50 * 100 = 5000
+			var withTax = n4.Mul(n2, n4)
+			var withAjustedAmt = n5.Mul(n2,n5)
+			//var withTax1 = n3a.Mul(n3a, n5)
+
+			fmt.Println(withTax)
+			fmt.Println(withAjustedAmt)
 
 
-			/*
-			var amount1 = 0.0
-			var amount2 = 0.0
+			
+			//increase total no decimals  100000 + 5000
+			var Add = n6.Add(n5, n4 )
+			fmt.Println(Add)
 
-			//total product cost without tax
-			amount1 = (ProductCostFloat * 1000 * QuantityWholeNumber)
 
-			//total product cost with tax
-			amount2 = (ProductCostFloat*1000*QuantityWholeNumber + tax*1000*ProductCostFloat*QuantityWholeNumber)
 
-			//without tax//////////
+			//var firstDivision = n2.Div(secondMult, n6)
 
-			str1 := n2.Text(10)
+			//fmt.Println(firstDivision)
 
-			result, _ := strconv.ParseFloat(str1, 64)
 
-			//without tax, no taxes combined
-			ProductCostFloat = result + amount1
 
-			//last two decimals arn't for keeping -
-			ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
-			//ProductCostFloat = ProductCostFloat / 1000
 
-			ret1, ok := n2.SetString(ProductCostString, 10)
-			fmt.Println(ok)
-			fmt.Println(ret1)
-			var ProductCostFloat2, err1 = strconv.ParseFloat(ProductCostString, 64)
-			//decimals
-			fmt.Println(ProductCostFloat2)
-			fmt.Println(err1)
-			ProductCostFloat2 = ProductCostFloat2 / 1000
-			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
-			fmt.Println(ProductCostString)
+
+			//Quantity times product
+			//var addTax = n2.Mul(n2, n3)
+			//fmt.Println(firstMult)
+
+			//var val1 = taxRate.Mul(taxRate, firstMult)
+			//val2 := addTax
+			//val3 := divideByRate
+
+			// upper result + tax
+			//var addTax = n2.Add(n2, n2.Mul(taxRate, firstMult))
+
+			//var ProductCostString = n2.String()
+			//fmt.Println(addTax)
+
 			/////////
 
-			//with tax for grandtotal accumulation//////////
+			/*
+				var amount1 = 0.0
+				var amount2 = 0.0
 
-			str1 = n3.Text(10)
+				//total product cost without tax
+				amount1 = (ProductCostFloat * 1000 * QuantityWholeNumber)
 
-			result, _ = strconv.ParseFloat(str1, 64)
+				//total product cost with tax
+				amount2 = (ProductCostFloat*1000*QuantityWholeNumber + tax*1000*ProductCostFloat*QuantityWholeNumber)
 
-			//without tax, no taxes combined
-			ProductCostFloat = result + amount2
+				//without tax//////////
 
-			//last two decimals arn't for keeping -
-			ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
-			//ProductCostFloat = ProductCostFloat / 1000
+				str1 := n2.Text(10)
 
-			ret1, ok = n3.SetString(ProductCostString, 10)
+				result, _ := strconv.ParseFloat(str1, 64)
 
-			fmt.Println(ret1)
-			ProductCostFloat2, err1 = strconv.ParseFloat(ProductCostString, 64)
-			//decimals
-			fmt.Println(ProductCostFloat2)
-			fmt.Println(err1)
-			ProductCostFloat2 = ProductCostFloat2 / 1000
-			ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
-			fmt.Println(ProductCostString)
-			////////////////////////////////
+				//without tax, no taxes combined
+				ProductCostFloat = result + amount1
+
+				//last two decimals arn't for keeping -
+				ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
+				//ProductCostFloat = ProductCostFloat / 1000
+
+				ret1, ok := n2.SetString(ProductCostString, 10)
+				fmt.Println(ok)
+				fmt.Println(ret1)
+				var ProductCostFloat2, err1 = strconv.ParseFloat(ProductCostString, 64)
+				//decimals
+				fmt.Println(ProductCostFloat2)
+				fmt.Println(err1)
+				ProductCostFloat2 = ProductCostFloat2 / 1000
+				ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
+				fmt.Println(ProductCostString)
+				/////////
+
+				//with tax for grandtotal accumulation//////////
+
+				str1 = n3.Text(10)
+
+				result, _ = strconv.ParseFloat(str1, 64)
+
+				//without tax, no taxes combined
+				ProductCostFloat = result + amount2
+
+				//last two decimals arn't for keeping -
+				ProductCostString = fmt.Sprintf("%.0f", ProductCostFloat)
+				//ProductCostFloat = ProductCostFloat / 1000
+
+				ret1, ok = n3.SetString(ProductCostString, 10)
+
+				fmt.Println(ret1)
+				ProductCostFloat2, err1 = strconv.ParseFloat(ProductCostString, 64)
+				//decimals
+				fmt.Println(ProductCostFloat2)
+				fmt.Println(err1)
+				ProductCostFloat2 = ProductCostFloat2 / 1000
+				ProductCostString = fmt.Sprintf("%.2f", ProductCostFloat2)
+				fmt.Println(ProductCostString)
+				////////////////////////////////
 
 
 			*/
-
-
-
-
 
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
