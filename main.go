@@ -722,6 +722,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		var ProductName, ProductCatTitle, ProductCost string
 
+		var GrandTotalString = ""
+
 		//jumps past this, first run through
 		//var numTotal = 0
 
@@ -776,7 +778,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-			
 			//n1 := new(big.Int)
 			n2 := new(big.Int)
 			n2a := new(big.Int)
@@ -789,10 +790,11 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n6 := new(big.Int)
 			n7 := new(big.Int)
 			n8 := new(big.Int)
+			//n9ProductCents := new(big.Int)
+			n10 := new(big.Int)
+			n11GrandTotal := new(big.Int)
 
 			var ProductCostString string
-
-			
 
 			//when value is three digits n4 is 50 and n5 is 10000  and n7 is 1000
 			//so when the value is at one digit
@@ -814,9 +816,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//increase total cost by
 			n5, _ = n5.SetString("1000", 10)
 
-			n8, _ = n8.SetString("1000", 10)
-
-			
+			//n8, _ = n8.SetString("1000", 10)
 
 			//get cost of all prosucts no tax - 5000
 			var firstMult = n2.Mul(n2, n3)
@@ -827,7 +827,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//get tax times cost of all products - total with tax : 50 * 100 = 5000
 			var withTax = n4.Mul(n2, n4)
 			var withAjustedAmt = n5.Mul(n2, n5)
-			
 
 			fmt.Println(withTax)
 			fmt.Println(withAjustedAmt)
@@ -838,7 +837,17 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			var afterFirstDivision = n7.Div(n6, n8)
 
+			//amount in pennies, with tax
 			ProductCostString = afterFirstDivision.Text(10)
+
+			var productAmtinCents = ProductCostString
+
+			n10, _ = n8.SetString(productAmtinCents, 10)
+
+			//INCLUDES TAX, HERE?!!!!!!!!!!!!!!!!!!!
+			//n9ProductCents, _ = n9ProductCents.SetString(productAmtinCents, 10)
+			//n9ProductCents.Add(n9ProductCents, n10)
+
 			fmt.Println(afterFirstDivision)
 
 			//var string1 = ""
@@ -850,29 +859,33 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 				ProductCostString = "0" + "." + ProductCostString
 
+				// 3 or more digits in pennies
 			} else {
 				var n = 0
 
 				for n = 0; n < len(ProductCostString); n++ {
 
 					bytes1 := ([]byte(ProductCostString))
-					
+
 					var statement = ""
-					
+
 					var o = 0
 					for o = 0; o < len(ProductCostString)-2; o++ {
 						statement = statement + string(bytes1[o])
 					}
-					
+
+					//adds the decimal
 					statement = statement + "."
-					
+
 					fmt.Println(statement)
 
+					//adds the change
 					for o = len(ProductCostString) - 2; o < len(ProductCostString); o++ {
 						statement = statement + string(bytes1[o])
 					}
-					
+
 					fmt.Println(statement)
+					ProductCostString = (statement)
 
 				}
 
@@ -881,18 +894,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
-				//get accumulated ptoduct cost without decimal
-				//str3 := n3.Text(10)
+				//productAmtinCents
+				n11GrandTotal.Add(n11GrandTotal, n10)
 
-				//str3 to float
-				//answer, _ := strconv.ParseFloat(str3, 64)
-				//answer = answer / 1000
-
-				//GrandTotalString = fmt.Sprintf("%.2f", answer)
+				GrandTotalString = n11GrandTotal.Text(10)
 
 			}
 
-			var GrandTotalString = "10000"
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
 
 		}
