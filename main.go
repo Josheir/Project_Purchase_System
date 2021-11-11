@@ -899,6 +899,49 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 				GrandTotalString = n11GrandTotal.Text(10)
 
+				
+				
+				
+				
+				///////////////
+
+				var n = 0
+
+				for n = 0; n < len(GrandTotalString); n++ {
+
+					bytes1 := ([]byte(GrandTotalString))
+
+					var statement = ""
+
+					var o = 0
+					for o = 0; o < len(GrandTotalString)-2; o++ {
+						statement = statement + string(bytes1[o])
+					}
+
+					//adds the decimal
+					statement = statement + "."
+
+					fmt.Println(statement)
+
+					//adds the change
+					for o = len(GrandTotalString) - 2; o < len(GrandTotalString); o++ {
+						statement = statement + string(bytes1[o])
+					}
+
+					fmt.Println(statement)
+					GrandTotalString = (statement)
+
+				}
+
+
+				//////////////////
+
+
+
+
+
+
+
 			}
 
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
