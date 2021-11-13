@@ -783,6 +783,12 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
+
+
+
+
+
+			
 			//n1 := new(big.Int)
 			n2 := new(big.Int)
 			n2a := new(big.Int)

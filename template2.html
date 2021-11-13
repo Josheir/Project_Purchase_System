@@ -443,14 +443,32 @@ var queryString = string.substring(0, string.length-1);
                   debugger;
                   ////////////
 
+                 
+                  const costEach = BigInt(document.getElementById(costID).value);
+                  const total = BigInt();
+                  const tax = BigInt();
+                  const total1 = BigInt();
+                  const taxOfTotal = BigInt();
+                  const taxOfTotal = BigInt();
+                  const grandTotal = BigInt();
+
+
+
                   //get amount to buy : 2
-                  var amtBuying = document.getElementById(buyThisManyID).value; 
+                  //var amtBuying = document.getElementById(buyThisManyID).value; 
+
+
+
                   //get cost : $10.00
                   var costEach = document.getElementById(costID).value;
                   //remove $ : 10.00
                   costEach = costEach.slice(1); //10.00
                   //move decimal two to right
                   costEach = costEach * (10 ** 2);//1000
+
+
+
+
                   //set bought from amt to buy
                   document.getElementById(boughtid).value = amtBuying;
                   
@@ -477,18 +495,6 @@ var queryString = string.substring(0, string.length-1);
                   //210000
                   total1copyWithOutDecimal = total1;
                   
-                  /*
-                  total1 = 5;
-                  total1 = total1.toFixed(2);//5.00
-                  alert(total1);
-                  total1 = 5.00;
-                  total1 = total1.toFixed(2);//5.00
-                  alert(total1);
-                  total1 = 5.1;
-                  total1 = total1.toFixed(2);//5.10
-                  alert(total1);
-                  */
-
                   //20.00 : total cost items
                   document.getElementById(totalCostID).value = "$" + totalWithDecimal;
 
