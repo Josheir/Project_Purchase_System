@@ -677,6 +677,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	var countCounter = 0
 
+	n11 := new(big.Int)
+	//n12 := new(big.Int)
+
 	for i = 0; i < len(allIds); i++ {
 
 		fmt.Println("length")
@@ -703,6 +706,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		//////////////////
 
+		
 		//get fields for each product ID
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
@@ -730,6 +734,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		//	var Result = ""
 
 		//Result = "hello"
+
 		for rows.Next() {
 
 			//copies from database row to these variables
@@ -787,79 +792,79 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n4 := new(big.Int)
 			//taxrate
 			n5 := new(big.Int)
+			n5a := new(big.Int)
 			n6 := new(big.Int)
 			n7 := new(big.Int)
 			n8 := new(big.Int)
+			
+
 			//n9ProductCents := new(big.Int)
-			n10 := new(big.Int)
+			//n10 := new(big.Int)
+
 			n11GrandTotal := new(big.Int)
 
 			var ProductCostString string
 
-			//when value is three digits n4 is 50 and n5 is 10000  and n7 is 1000
-			//so when the value is at one digit
-
-			////
+			////amount of itmes to purchase
 			n2, _ = n2.SetString((allQuants[j]), 10)
-
+			//amount of items to purchase
 			n2a, _ = n2a.SetString((allQuants[j]), 10)
 
 			//string
 			n3, _ = n3.SetString(ProductCost, 10)
-			//n3a, _ = n3.SetString(ProductCost, 10)
-
-			//var total
 
 			//tax rate
 			n4, _ = n4.SetString("50", 10)
 
 			//increase total cost by
 			n5, _ = n5.SetString("1000", 10)
+			n5a, _ = n5a.SetString("1000", 10)
 
-			//n8, _ = n8.SetString("1000", 10)
-
-			//get cost of all prosucts no tax - 5000
+			//get cost of all prosucts no tax
 			var firstMult = n2.Mul(n2, n3)
-			//var firstMult1 = n2a.Mul(n2a, n4)
+
 			fmt.Println(firstMult)
-			//var firstMult1 = firstMult
 
-			//get tax times cost of all products - total with tax : 50 * 100 = 5000
-			var withTax = n4.Mul(n2, n4)
-			var withAjustedAmt = n5.Mul(n2, n5)
+			//get tax times cost of all products - total with tax : 50 * 100 = 5000, n4 is taxrate
+			n4.Mul(n2, n4)
+			//cost and no tax with 1000 multiplier
+			n5.Mul(n2, n5)
 
-			fmt.Println(withTax)
-			fmt.Println(withAjustedAmt)
+			//fmt.Println(withTax)
+			//fmt.Println(withAjustedAmt)
 
-			//increase total no digits  100000 + 5000
-			var Add = n6.Add(n5, n4)
-			fmt.Println(Add)
+			//total no digits  100000 + 5000
+			n6.Add(n5, n4)
+			//fmt.Println(Add)
 
-			var afterFirstDivision = n7.Div(n6, n8)
+			var afterFirstDivision = n7.Div(n6, n5a)
 
 			//amount in pennies, with tax
 			ProductCostString = afterFirstDivision.Text(10)
 
 			var productAmtinCents = ProductCostString
 
-			n10, _ = n8.SetString(productAmtinCents, 10)
+			//sets n10
+			n8, _ = n8.SetString(productAmtinCents, 10)
 
-			//INCLUDES TAX, HERE?!!!!!!!!!!!!!!!!!!!
-			//n9ProductCents, _ = n9ProductCents.SetString(productAmtinCents, 10)
-			//n9ProductCents.Add(n9ProductCents, n10)
+			n11.Add(n11, n8)
+
+			//n10.Add(n10, n8)
 
 			fmt.Println(afterFirstDivision)
 
-			//var string1 = ""
-			//two pennies dispalyed, needs decimal point displayed
+			var statement = ""
+			//only two pennies dispalyed, needs decimal point displayed
 			if len(ProductCostString) == 2 {
 
 				ProductCostString = "." + ProductCostString
+				//only ones place decimal
 			} else if len(ProductCostString) == 1 {
 
 				ProductCostString = "0" + "." + ProductCostString
 
 				// 3 or more digits in pennies
+
 			} else {
 				var n = 0
 
@@ -867,7 +872,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 					bytes1 := ([]byte(ProductCostString))
 
-					var statement = ""
+					statement = ""
 
 					var o = 0
 					for o = 0; o < len(ProductCostString)-2; o++ {
@@ -885,33 +890,43 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 					}
 
 					fmt.Println(statement)
-					ProductCostString = (statement)
 
 				}
 
+				ProductCostString = statement
 			}
 
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
 				//productAmtinCents
-				n11GrandTotal.Add(n11GrandTotal, n10)
+				n11GrandTotal.Add(n11GrandTotal, n11)
 
 				GrandTotalString = n11GrandTotal.Text(10)
 
-				
-				
-				
-				
-				///////////////
+				/////////////
 
-				var n = 0
+				//only two pennies dispalyed, needs decimal point displayed
+				if len(GrandTotalString) == 2 {
 
-				for n = 0; n < len(GrandTotalString); n++ {
+					GrandTotalString = "." + GrandTotalString
+					//only ones place decimal
+				} else if len(GrandTotalString) == 1 {
+
+					GrandTotalString = "0" + "." + GrandTotalString
+
+					// 3 or more digits in pennies
+				} else {
+
+					///////////////
+
+					//var n = 0
+
+					//for n = 0; n < len(GrandTotalString); n++ {
 
 					bytes1 := ([]byte(GrandTotalString))
 
-					var statement = ""
+					statement = ""
 
 					var o = 0
 					for o = 0; o < len(GrandTotalString)-2; o++ {
@@ -929,18 +944,13 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 					}
 
 					fmt.Println(statement)
+
+					//}
+
 					GrandTotalString = (statement)
 
 				}
-
-
 				//////////////////
-
-
-
-
-
-
 
 			}
 
@@ -1329,7 +1339,7 @@ func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, 
 	var err1 = globt.Execute(*w, templ1)
 
 	if err1 != nil {
-		fmt.Println("---------------")
+		fmt.Println("-----AAAA----------")
 		fmt.Println(err1.Error())
 
 	}

@@ -713,8 +713,11 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				let val2int = 0;
 
 				val1 = sessionStorage.getItem("numberOfRecords")
+
+				alert("starts here");
 				if (val1 == "0")
 				{
+					alert("1");
 					if (quantityTryingToSet == 0 && amountPurchasedSoFar == 0)
 					{
 						
@@ -751,15 +754,20 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				}
 				else{
 					
-					//alert("wise1");
+					alert("wise1");
 					//console.log(amountPurchasedSoFar + quantityTryingToSet);
 					
+					//amount putchased
 					let val1int = parseInt(amountPurchasedSoFar);
-					let val2int = parseInt(quantityTryingToSet);
 
+					//amount to purchase
+					let val2int = parseInt(quantityTryingToSet);
+					alert(val1int);
+					alert(val2int);
+					//if (gLastQuant == 1  && (val1int + val2int) == 0 )
 					if (gLastQuant == 1  && (val1int + val2int) == 0 )
 					{
-						
+						alert("z");
 
 						///
 
@@ -780,7 +788,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					}
 					
 					else if (gLastQuant != 0  && (val1int + val2int) != 0)
-					{
+					{alert("2");
 						gLastQuant = 1;
 						let val1a = 0;
 						if(val1a = sessionStorage.getItem("numberOfRecords"))
@@ -795,7 +803,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 
 				val1 = sessionStorage.getItem("numberOfRecords");
-				alert("---------");
+				alert("------1234---");
 				alert(val1); 
 				//firstArray.push(productID); 
 				//firstArray.push(quantityOfProduct); 
@@ -825,11 +833,11 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 			alert(document.getElementById(quantityOfProductID).value);
 
 			//quantity
-			document.getElementById(quantityOfProductID).value = document.getElementById(quantityOfProductID).value + parseInt(amountPurchasedSoFar);
+			document.getElementById(quantityOfProductID).value = document.getElementById(quantityOfProductID).value + parseInt(amountPurchasedSoFar).value;
 			//amount purchased
-			document.getElementById(amountPurchasedID).value =  document.getElementById(amountPurchasedID).value - parseInt(amountPurchasedSoFar);
+			document.getElementById(amountPurchasedID).value =  document.getElementById(amountPurchasedID).value - parseInt(amountPurchasedSoFar).value;
 			   //amount to purchase 
-			document.getElementById(amountToPurchaseID).value = document.getElementById(amountToPurchaseID) - parseInt(quantityTryingToSet) ;
+			document.getElementById(amountToPurchaseID).value = document.getElementById(amountToPurchaseID).value - parseInt(quantityTryingToSet).value ;
 			
 			alert(document.getElementById(quantityOfProductID).value);
 			return(1);
