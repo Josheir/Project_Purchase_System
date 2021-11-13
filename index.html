@@ -737,7 +737,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					}
 					else
 					{
-						
+						alert("in here");
 						//if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
 						let varIntVal1 = parseInt(val1);
@@ -763,9 +763,17 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//amount to purchase
 					let val2int = parseInt(quantityTryingToSet);
 					alert(val1int);
+					alert(gLastQuant);
 					alert(val2int);
-					//if (gLastQuant == 1  && (val1int + val2int) == 0 )
-					if (gLastQuant == 1  && (val1int + val2int) == 0 )
+					
+
+					//add a negative o positive number to an already present amount purchased that still has quantity
+					if (gLastQuant == 1  && (val1int) != 0 )
+					{
+						alert("y");
+					}
+
+					else if (gLastQuant == 1  && (val1int) == 0 )
 					{
 						alert("z");
 
@@ -786,9 +794,16 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 					}
-					
-					else if (gLastQuant != 0  && (val1int + val2int) != 0)
-					{alert("2");
+					//else if (gLastQuant != 1  && (val1int > 0) != 0){
+					//
+					//
+					//}
+
+
+
+
+					else if (gLastQuant != 1  && (val1int) != 0 )
+					{alert("2_");
 						gLastQuant = 1;
 						let val1a = 0;
 						if(val1a = sessionStorage.getItem("numberOfRecords"))

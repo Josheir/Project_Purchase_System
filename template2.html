@@ -444,23 +444,23 @@ var queryString = string.substring(0, string.length-1);
                   ////////////
 
                  
-                  const costEach = BigInt(document.getElementById(costID).value);
-                  const total = BigInt();
-                  const tax = BigInt();
-                  const total1 = BigInt();
-                  const taxOfTotal = BigInt();
-                  const taxOfTotal = BigInt();
-                  const grandTotal = BigInt();
-
+                  let costEach = BigInt(document.getElementById(costID).value);
+                  let total = BigInt();
+                  let tax = BigInt(5);
+                  let total1 = BigInt();
+                  let taxOfTotal = BigInt();
+                  let taxOfTotal = BigInt();
+                  let grandTotal = BigInt();
+                  let totalWithDecimal = BigInt();
 
 
                   //get amount to buy : 2
-                  //var amtBuying = document.getElementById(buyThisManyID).value; 
+                  var amtBuying = document.getElementById(buyThisManyID).value; 
 
 
 
                   //get cost : $10.00
-                  var costEach = document.getElementById(costID).value;
+                  //var costEach = document.getElementById(costID).value;
                   //remove $ : 10.00
                   costEach = costEach.slice(1); //10.00
                   //move decimal two to right
@@ -469,20 +469,30 @@ var queryString = string.substring(0, string.length-1);
 
 
 
+
                   //set bought from amt to buy
                   document.getElementById(boughtid).value = amtBuying;
                   
-                  var total = (amtBuying * costEach);////2000
+                  //no decimals
+                  total = (amtBuying * costEach);////2000
                   
+
+
+
                   alert(total);
-                  //moves decimal left two digits : 20.00
-                  var totalWithDecimal = total /   (10 ** 2);
-                  tax = .05;
+                  //moves decimal left two digits
+                  //totalWithDecimal = total;// /   (10 ** 2);
+                  
+                  
+                  //tax = .05;
                   //move decimal right two digits : 5
-                  tax = tax * (10 ** 2);
-                  //10000
+                  //tax = tax * (10 ** 2);
+                  
+                  //tax amount
                   taxOfTotal = total * tax;
-                  200000
+
+
+                  //2 extra places becuase tax rate has been moved left two places
                   total = total * (10 ** 2);
                   
                   alert("problem1");
@@ -490,18 +500,26 @@ var queryString = string.substring(0, string.length-1);
                   alert(total);     
 
                   
-                  //210000
+                  //totaled amount without decimals
                   total1 = total + taxOfTotal;
                   //210000
-                  total1copyWithOutDecimal = total1;
+
+
+                  //total1copyWithOutDecimal = total1;
                   
                   //20.00 : total cost items
-                  document.getElementById(totalCostID).value = "$" + totalWithDecimal;
+                  document.getElementById(totalCostID).value = "$" + total / (10**2);
+
+
+
+
 
 
 
                   //work on grandtotal (here and below):
                   //parsefloat changes string to float
+                  
+                  //total2 = with tax, no decimals -  string to decimal
                   grandTotal = parseFloat(grandTotal) + parseFloat(total1);
                   alert("grandTotal");
                   alert(grandTotal);
@@ -514,6 +532,9 @@ var queryString = string.substring(0, string.length-1);
               }//for
                   grandTotal = grandTotal / (10 ** 4);
                   alert(grandTotal);
+
+
+                  //rounds
                   grandTotal = grandTotal.toFixed(2);
                   stringGrandTotal = "Grand Total:  $" + parseFloat(grandTotal);
                   document.getElementById(grandTotalID).value = stringGrandTotal;
