@@ -7,6 +7,10 @@ package main
 //https://stackoverflow.com/questions/37404989/whats-the-difference-between-db-query-and-db-preparestmt-query-in-golang
 //https://golangdocs.com/mysql-golang-crud-example
 
+
+//1279 dispaly2 main.go
+//1634
+//
 import (
 	"database/sql"
 	"encoding/json"
@@ -706,7 +710,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 		//////////////////
 
-		
 		//get fields for each product ID
 		stmt, err := db.Prepare("SELECT products.ProductQuantity,products.ProductName,products.ProductCatTitle, products.ProductCost  " +
 			"FROM products WHERE " +
@@ -783,12 +786,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-
-
-
-
-
-			
 			//n1 := new(big.Int)
 			n2 := new(big.Int)
 			n2a := new(big.Int)
@@ -802,7 +799,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n6 := new(big.Int)
 			n7 := new(big.Int)
 			n8 := new(big.Int)
-			
 
 			//n9ProductCents := new(big.Int)
 			//n10 := new(big.Int)
@@ -860,6 +856,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(afterFirstDivision)
 
 			var statement = ""
+
 			//only two pennies dispalyed, needs decimal point displayed
 			if len(ProductCostString) == 2 {
 
@@ -872,32 +869,28 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				// 3 or more digits in pennies
 
 			} else {
-				var n = 0
+				//var n = 0
 
-				for n = 0; n < len(ProductCostString); n++ {
+				bytes1 := ([]byte(ProductCostString))
 
-					bytes1 := ([]byte(ProductCostString))
+				statement = ""
 
-					statement = ""
-
-					var o = 0
-					for o = 0; o < len(ProductCostString)-2; o++ {
-						statement = statement + string(bytes1[o])
-					}
-
-					//adds the decimal
-					statement = statement + "."
-
-					fmt.Println(statement)
-
-					//adds the change
-					for o = len(ProductCostString) - 2; o < len(ProductCostString); o++ {
-						statement = statement + string(bytes1[o])
-					}
-
-					fmt.Println(statement)
-
+				var o = 0
+				for o = 0; o < len(ProductCostString)-2; o++ {
+					statement = statement + string(bytes1[o])
 				}
+
+				//adds the decimal
+				statement = statement + "."
+
+				fmt.Println(statement)
+
+				//adds the change
+				for o = len(ProductCostString) - 2; o < len(ProductCostString); o++ {
+					statement = statement + string(bytes1[o])
+				}
+
+				fmt.Println(statement)
 
 				ProductCostString = statement
 			}
@@ -1064,7 +1057,7 @@ type forTemplate struct {
 	DescID             string
 	ProductDescription string
 	CostID             string
-	ProductCost        float64
+	ProductCost        string
 	QuantityID         string
 	ProductQuantity    int
 	Key1ID             string
@@ -1257,9 +1250,9 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			recordCounter++
 
 			Condition1++
-			var ProductCost float64
+
 			var ProductQuantity, CondYellow int
-			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string
+			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductCost string
 
 			CondYellow = 0
 			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
@@ -1267,6 +1260,56 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println(err)
 			}
+
+			///////////
+
+			var statement = ""
+			//var ProductCostString = ""
+			//ProductCostString = strconv.FormatFloat(ProductCost, 'f' ,0, 64)
+			//var n = 0
+
+			//////////
+
+			if len(ProductCost) == 2 {
+
+				ProductCost = "." + ProductCost
+				//only ones place decimal
+			} else if len(ProductCost) == 1 {
+
+				ProductCost = "0" + "." + ProductCost
+
+				// 3 or more digits in pennies
+
+			} else {
+
+				//////////
+
+				bytes1 := ([]byte(ProductCost))
+
+				statement = ""
+
+				var o = 0
+				for o = 0; o < len(ProductCost)-2; o++ {
+					statement = statement + string(bytes1[o])
+				}
+
+				//adds the decimal
+				statement = statement + "."
+
+				fmt.Println(statement)
+
+				//adds the change
+				for o = len(ProductCost) - 2; o < len(ProductCost); o++ {
+					statement = statement + string(bytes1[o])
+				}
+
+				fmt.Println(statement)
+
+				ProductCost = statement
+				//ProductCost, err = strconv.ParseFloat(ProductCostString, 64)
+			}
+
+			/////////////
 
 			var i = 0
 
@@ -1312,7 +1355,7 @@ var GlobCounter = -1
 var counter1 = 0
 
 ////////
-func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, CondYellow *int, Link *string, Condition *int, AmountPurchased *int, ProductID *int, ProductCatTitle *string, ProductName *string, ProductDescription *string, ProductCost *float64, ProductQuantity *int,
+func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, CondYellow *int, Link *string, Condition *int, AmountPurchased *int, ProductID *int, ProductCatTitle *string, ProductName *string, ProductDescription *string, ProductCost *string, ProductQuantity *int,
 	gKeyword1 *string, gKeyword2 *string, gKeyword3 *string, ProductFilename *string) {
 	*counter1++
 	//counter1 = 0
@@ -1577,13 +1620,61 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		//marshalFlag = "no"
 		counter1 = counter1 + 1
 		Condition1++
-		var ProductCost float64
+
 		var ProductQuantity, CondYellow int
-		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename string //AmountToPurchaseID, AmountPurchasedID string
+		var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductCost string //AmountToPurchaseID, AmountPurchasedID string
 
 		CondYellow = 0
 		//many prodid, get all the data here...
 		err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
+
+		///////////
+
+		var statement = ""
+
+		//////////
+
+		if len(ProductCost) == 2 {
+
+			ProductCost = "." + ProductCost
+			//only ones place decimal
+		} else if len(ProductCost) == 1 {
+
+			ProductCost = "0" + "." + ProductCost
+
+			// 3 or more digits in pennies
+
+		} else {
+
+			///////////
+
+			bytes1 := ([]byte(ProductCost))
+
+			statement = ""
+
+			var o = 0
+
+			fmt.Println(length)
+			for o = 0; o < len(ProductCost); o++ {
+				statement = statement + string(bytes1[o])
+			}
+
+			//adds the decimal
+			statement = statement + "."
+
+			fmt.Println(statement)
+
+			//adds the change
+			for o = len(ProductCost) - 2; o < len(ProductCost); o++ {
+				statement = statement + string(bytes1[o])
+			}
+
+			fmt.Println(statement)
+
+			ProductCost = statement
+		}
+
+		//////////
 
 		////////////
 
