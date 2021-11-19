@@ -501,113 +501,35 @@ var queryString = string.substring(0, string.length-1);
 
                   //get amount to buy : 2
                   var amtBuying = document.getElementById(buyThisManyID).value; 
-                  //alert(amtBuying);
-
-                  //alert(typeof(amtBuying)); //string (2)
-                  //get cost : $10.00
-                  //var costEach = document.getElementById(costID).value;
-                  //remove $ : 10.00
-                 
+                  
                   //set bought from amt to buy
                   document.getElementById(boughtid).value = (amtBuying);
                  
-                  //no decimals
-
-                  //alert(total);
-                 
-                  //amtBuying = parseInt(amtBuying);
-                  //amtBuying = BigInt(amtBuying);
-                  //alert(typeof(amtBuying));//bigint
-
-                  //alert(typeof(costEach));//bigint
-
+                  
                   total = (BigInt(parseInt(amtBuying)) * BigInt(parseInt(costEach)));////2000
                   
                   
-                  //alert(typeof(total));//bigint
-                 
-                  //alert(typeof(tax));//bigint
-
-                  //alert("here");
-                  //tax amount
-
-                  //alert(taxOfTotal); //0
-                  //alert(total);//210
-                  //alert(tax);//5
 
                   taxOfTotal = (total) * (tax);  //1050   : .105
-                  //alert(taxOfTotal);//bigint  - 1050
-
+                  
                   //2 extra places becuase tax rate has been moved left two places
                   total = total * BigInt(100);
                   
-                  //alert("problem1");
-                       
-                  //alert(total);   //21000
-                  //alert(taxOfTotal); //1050
-                  
                   //totaled amount without decimals
                   total1 = total + taxOfTotal;//22050
-                  //alert(total1);
-
-                  //210000
-
-
-                  //total1copyWithOutDecimal = total1;
                   
-                  //20.00 : total cost items
-
-
-                  //alert("look here");
-                  //alert(total);//21000
-                  //var test1 = (document.getElementById(totalCostID).value);
                  
                   alert("trying"); 
                   alert((total1)); //2100
                   alert((total2));
-                  //alert(sqrt(BigInt(10)));
-                  //total2 = total1 * Math.pow(10,3);
+                  
                   total2 = BigInt.toString(total1);
 
 
                   
                   var total3 = strconv.Atoi(total2);
                   document.getElementById(totalCostID).value = (total3).toFixed(2);
-                  //alert(total2);//21
-
-                  //////
-                  //var statement = "";
-                  //var o = 0;
-
-
-                  /////////
-
-                  /*
-                  if len(total) == 2 {
-
-                  GrandTotalString = "." + GrandTotalString
-                  //only ones place decimal
-                  } else if len(GrandTotalString) == 1 {
-
-                  GrandTotalString = "0" + "." + GrandTotalString
-
-                  // 3 or more digits in pennies
-                  } else {
-                  }
-                  */
-
-
-
-
-                  
-
-
-
-
-                  //alert("stops here");
-                  //alert(typeof(grandTotal));
-                  //alert(typeof(total1));
-                  //grandTotal = parseFloat(grandTotal) + parseFloat(total1);
+                 
                   grandTotal = (grandTotal) + (total1);
 
                   alert("grandTotal");
