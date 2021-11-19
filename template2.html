@@ -17,6 +17,8 @@
 
 
   <script>
+    //a change of gui, such as textbox happens at the end of function or at function failure.
+    //test, "test.html"
     window.sessionStorage
     </script>
 
@@ -87,9 +89,9 @@
   <td> <center><p> <input id = "{{.BoughtID}}" value ="{{.Bought}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
 
   
-  <td> <center><p> <input id = "{{.CostID}}" value ="${{.ProductCost}}"  type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.CostID}}" value ="${{.ProductCost}}"  type="" name="" placeholder="" size="" >	</p></center></td>
 
-  <td> <center><p> <input id = "{{.TotalCostID}}" value = "${{.TotalCost}}"   type="" name="" placeholder="" size="8" readonly >	</p></center></td>
+  <td> <center><p> <input id = "{{.TotalCostID}}" value = "${{.TotalCost}}"   type="" name="" placeholder="" size=""  >	</p></center></td>
 
 
 </tr>
@@ -155,6 +157,30 @@ function hideRow(rowId)
     document.getElementById(rowId).style.display = "none";
 }
 
+
+///////
+
+function sqrt(value) {
+    if (value < 0n) {
+        throw 'square root of negative numbers is not supported'
+    }
+
+    if (value < 2n) {
+        return value;
+    }
+
+    function newtonIteration(n, x0) {
+        const x1 = ((n / x0) + x0) >> 1n;
+        if (x0 === x1 || x0 === (x1 - 1n)) {
+            return x0;
+        }
+        return newtonIteration(n, x1);
+    }
+
+    return newtonIteration(value, 1n);
+}
+
+//////
 
 //checkout pressed from template2
 function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
@@ -375,8 +401,10 @@ var queryString = string.substring(0, string.length-1);
                 if (flag == "enough")
                 {
                   alert("is enough");
-                  window.location.href = "donePurchase.html";
+                  //window.location.href = "donePurchase.html";
                 }
+
+                alert("done purchase");
 
               var lengthOfData = data1.length;
               var grandTotal = 0;
@@ -436,113 +464,186 @@ var queryString = string.substring(0, string.length-1);
                   document.getElementById(boughtid).value = 0;
                   //total cost for productID
                   document.getElementById(totalCostID).value = "$0.00";
+                  alert("here!11");
 
                 }else{
                 
                   //this is the second time I wrote this...
-                  debugger;
+                  //debugger;
                   ////////////
+                  //alert("now");
+                  let val1 = document.getElementById(costID).value;
+                  alert(val1);
 
-                 
-                  let costEach = BigInt(document.getElementById(costID).value);
-                  let total = BigInt();
+                  val1 = val1.slice(1); //10.00
+                  //move decimal two to right
+                  val1 = val1 * (10 ** 2);//1000
+
+                  val1 = parseInt(val1);
+
+
+
+                  
+
+                  let costEach = BigInt(val1);
+                  //alert(costEach);
+                  
+                  let total = BigInt(0);
+                  //alert("1");
                   let tax = BigInt(5);
-                  let total1 = BigInt();
-                  let taxOfTotal = BigInt();
-                  let taxOfTotal = BigInt();
-                  let grandTotal = BigInt();
-                  let totalWithDecimal = BigInt();
-
+                  //alert("1");
+                  let total1 = BigInt(0);
+                  let taxOfTotal = BigInt(0);
+                  
+                  let grandTotal = BigInt(0);
+                  let totalWithDecimal = BigInt(0);
+                  let total2 = BigInt(0);
 
                   //get amount to buy : 2
                   var amtBuying = document.getElementById(buyThisManyID).value; 
+                  //alert(amtBuying);
 
-
-
+                  //alert(typeof(amtBuying)); //string (2)
                   //get cost : $10.00
                   //var costEach = document.getElementById(costID).value;
                   //remove $ : 10.00
-                  costEach = costEach.slice(1); //10.00
-                  //move decimal two to right
-                  costEach = costEach * (10 ** 2);//1000
-
-
-
-
-
+                 
                   //set bought from amt to buy
-                  document.getElementById(boughtid).value = amtBuying;
-                  
+                  document.getElementById(boughtid).value = (amtBuying);
+                 
                   //no decimals
-                  total = (amtBuying * costEach);////2000
-                  
 
+                  //alert(total);
+                 
+                  //amtBuying = parseInt(amtBuying);
+                  //amtBuying = BigInt(amtBuying);
+                  //alert(typeof(amtBuying));//bigint
 
+                  //alert(typeof(costEach));//bigint
 
-                  alert(total);
-                  //moves decimal left two digits
-                  //totalWithDecimal = total;// /   (10 ** 2);
+                  total = (BigInt(parseInt(amtBuying)) * BigInt(parseInt(costEach)));////2000
                   
                   
-                  //tax = .05;
-                  //move decimal right two digits : 5
-                  //tax = tax * (10 ** 2);
-                  
+                  //alert(typeof(total));//bigint
+                 
+                  //alert(typeof(tax));//bigint
+
+                  //alert("here");
                   //tax amount
-                  taxOfTotal = total * tax;
 
+                  //alert(taxOfTotal); //0
+                  //alert(total);//210
+                  //alert(tax);//5
+
+                  taxOfTotal = (total) * (tax);  //1050   : .105
+                  //alert(taxOfTotal);//bigint  - 1050
 
                   //2 extra places becuase tax rate has been moved left two places
-                  total = total * (10 ** 2);
+                  total = total * BigInt(100);
                   
-                  alert("problem1");
-                  alert(taxOfTotal); 
-                  alert(total);     
-
+                  //alert("problem1");
+                       
+                  //alert(total);   //21000
+                  //alert(taxOfTotal); //1050
                   
                   //totaled amount without decimals
-                  total1 = total + taxOfTotal;
+                  total1 = total + taxOfTotal;//22050
+                  //alert(total1);
+
                   //210000
 
 
                   //total1copyWithOutDecimal = total1;
                   
                   //20.00 : total cost items
-                  document.getElementById(totalCostID).value = "$" + total / (10**2);
 
 
+                  //alert("look here");
+                  //alert(total);//21000
+                  //var test1 = (document.getElementById(totalCostID).value);
+                 
+                  alert("trying"); 
+                  alert((total1)); //2100
+                  alert((total2));
+                  //alert(sqrt(BigInt(10)));
+                  //total2 = total1 * Math.pow(10,3);
+                  total2 = BigInt.toString(total1);
 
 
-
-
-
-                  //work on grandtotal (here and below):
-                  //parsefloat changes string to float
                   
-                  //total2 = with tax, no decimals -  string to decimal
-                  grandTotal = parseFloat(grandTotal) + parseFloat(total1);
+                  var total3 = strconv.Atoi(total2);
+                  document.getElementById(totalCostID).value = (total3).toFixed(2);
+                  //alert(total2);//21
+
+                  //////
+                  //var statement = "";
+                  //var o = 0;
+
+
+                  /////////
+
+                  /*
+                  if len(total) == 2 {
+
+                  GrandTotalString = "." + GrandTotalString
+                  //only ones place decimal
+                  } else if len(GrandTotalString) == 1 {
+
+                  GrandTotalString = "0" + "." + GrandTotalString
+
+                  // 3 or more digits in pennies
+                  } else {
+                  }
+                  */
+
+
+
+
+                  
+
+
+
+
+                  //alert("stops here");
+                  //alert(typeof(grandTotal));
+                  //alert(typeof(total1));
+                  //grandTotal = parseFloat(grandTotal) + parseFloat(total1);
+                  grandTotal = (grandTotal) + (total1);
+
                   alert("grandTotal");
-                  alert(grandTotal);
+                  alert(grandTotal);//22050
 
 
 
 
                 
+                
+                
                 }
-              }//for
-                  grandTotal = grandTotal / (10 ** 4);
-                  alert(grandTotal);
 
+                
+              }//for
+                
+              //alert("1");
+                /*
+                  grandTotal = grandTotal / BigInt(10*4);
+                  alert(grandTotal);
+                  mystring = BigInt.toString(grandTotal); 
 
                   //rounds
                   grandTotal = grandTotal.toFixed(2);
+                  alert(grandTotal);
                   stringGrandTotal = "Grand Total:  $" + parseFloat(grandTotal);
-                  document.getElementById(grandTotalID).value = stringGrandTotal;
-                
+                  alert(stringGrandTotal);
+                */
               
-
+                alert("end success function");
             }////sucesss - goto spitback and return values
-});//ajax
+
+           
+            
+
+          });//ajax
 
 }//function
 

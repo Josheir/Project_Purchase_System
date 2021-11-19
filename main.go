@@ -7,9 +7,12 @@ package main
 //https://stackoverflow.com/questions/37404989/whats-the-difference-between-db-query-and-db-preparestmt-query-in-golang
 //https://golangdocs.com/mysql-golang-crud-example
 
-
 //1279 dispaly2 main.go
 //1634
+//
+//        bytes1 := ([]byte(ProductCostString))
+//(2)     bytes1 := ([]byte(ProductCost))
+
 //
 import (
 	"database/sql"
@@ -799,6 +802,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n6 := new(big.Int)
 			n7 := new(big.Int)
 			n8 := new(big.Int)
+			n9 := new(big.Int)
 
 			//n9ProductCents := new(big.Int)
 			//n10 := new(big.Int)
@@ -841,6 +845,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			var afterFirstDivision = n7.Div(n6, n5a)
 
+			n9 = n9.Div(n5, n5a)
+			var forCostEach = n9.Text(10)
+
 			//amount in pennies, with tax
 			ProductCostString = afterFirstDivision.Text(10)
 
@@ -856,6 +863,47 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(afterFirstDivision)
 
 			var statement = ""
+
+			////////////
+
+			if len(forCostEach) == 2 {
+
+				forCostEach = "0." + forCostEach
+				//only ones place decimal
+			} else if len(forCostEach) == 1 {
+
+				forCostEach = "0" + "." + "0" + forCostEach
+
+				// 3 or more digits in pennies
+
+			} else {
+				//var n = 0
+
+				bytes1 := ([]byte(forCostEach))
+
+				statement = ""
+
+				var o = 0
+				for o = 0; o < len(forCostEach)-2; o++ {
+					statement = statement + string(bytes1[o])
+				}
+
+				//adds the decimal
+				statement = statement + "."
+
+				fmt.Println(statement)
+
+				//adds the change
+				for o = len(forCostEach) - 2; o < len(forCostEach); o++ {
+					statement = statement + string(bytes1[o])
+				}
+
+				fmt.Println(statement)
+
+				forCostEach = statement
+			}
+
+			/////////////
 
 			//only two pennies dispalyed, needs decimal point displayed
 			if len(ProductCostString) == 2 {
@@ -953,7 +1001,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, ProductCostString)
+			//var each = n9.Text(10)
+			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, forCostEach)
 
 		}
 
@@ -1272,11 +1321,11 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 			if len(ProductCost) == 2 {
 
-				ProductCost = "." + ProductCost
+				ProductCost = "0." + ProductCost
 				//only ones place decimal
 			} else if len(ProductCost) == 1 {
 
-				ProductCost = "0" + "." + ProductCost
+				ProductCost = "0" + "." + "0" + ProductCost
 
 				// 3 or more digits in pennies
 
@@ -1636,11 +1685,11 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		if len(ProductCost) == 2 {
 
-			ProductCost = "." + ProductCost
+			ProductCost = "0." + ProductCost
 			//only ones place decimal
 		} else if len(ProductCost) == 1 {
 
-			ProductCost = "0" + "." + ProductCost
+			ProductCost = "0" + "." + "0" + ProductCost
 
 			// 3 or more digits in pennies
 
@@ -1655,7 +1704,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			var o = 0
 
 			fmt.Println(length)
-			for o = 0; o < len(ProductCost); o++ {
+			for o = 0; o < len(ProductCost)-2; o++ {
 				statement = statement + string(bytes1[o])
 			}
 
