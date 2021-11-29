@@ -479,11 +479,23 @@ var queryString = string.substring(0, string.length-1);
                   //move decimal two to right
                   val1 = val1 * (10 ** 2);//1000
 
+
+                  //
                   val1 = parseInt(val1);
 
 
 
                   
+                  ////////
+
+                  //get amount to buy : 2
+                  var amtBuying = document.getElementById(buyThisManyID).value; 
+                  
+                  //set bought from amt to buy
+                  document.getElementById(boughtid).value = (amtBuying);
+
+
+                  ///////
 
                   let costEach = BigInt(val1);
                   //alert(costEach);
@@ -499,13 +511,61 @@ var queryString = string.substring(0, string.length-1);
                   let totalWithDecimal = BigInt(0);
                   let total2 = BigInt(0);
 
-                  //get amount to buy : 2
-                  var amtBuying = document.getElementById(buyThisManyID).value; 
+                  let n2 = BigInt(amtBuying);
+                  let n3 = BigInt(val1);
+                  let n4 = BigInt(50);
+                  let n5 = BigInt(1000);
+                  let n5a = BigInt(1000);
+                  let n6 = BigInt(0);
+                  let n7 = BigInt(0);
+                  let n8 = BigInt(0);
+                  let n9 = BigInt(0);
+
                   
-                  //set bought from amt to buy
-                  document.getElementById(boughtid).value = (amtBuying);
                  
+                  ////////
+
+                  debugger;
+                  //product cost times price, no decimals
+                  firstMult = n2 * n3; //
+                 
+                 
+                  //tax times cost of all products
+                  n2 = n2 * n4;  //
+                 //cost with tax times multiplier and no decimals
+                  n5 = n2 * n5; 
                   
+                  //total cost no digits and tax not digits 
+                  n6 = n5 + n4
+                  //division, however there can be extra decimal places so division has remainder
+                  
+
+
+                  //total cost with taxes divided by 1000 
+                  var afterFirstDivision = n6 / n5a;
+                  
+                  
+                  n9 = n5 / n5a;
+                  var forCostEach = BigInt.toString(n9);
+                  //amount of pennies , with tax
+                  ProductCostString = BigInt.toString(afterFirstDivision);
+                  var productAmtinCents = ProductCostString
+                  n8 = productAmtinCents;
+                  n11 = n11 + n8;
+
+
+
+
+                  /////////
+                  
+
+
+
+
+
+
+
+
                   total = (BigInt(parseInt(amtBuying)) * BigInt(parseInt(costEach)));////2000
                   
                   
