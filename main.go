@@ -659,7 +659,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 	}
-
+ 
 	string1 = ""
 
 	db := dbConn()
