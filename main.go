@@ -15,7 +15,7 @@ package main
 //        bytes1 := ([]byte(ProductCostString))
 //(2)     bytes1 := ([]byte(ProductCost))
 
-//
+//test
 import (
 	"database/sql"
 	"encoding/json"
