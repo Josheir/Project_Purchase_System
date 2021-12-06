@@ -121,7 +121,7 @@
 <td><center> </center>  </td>  
 <td><center> </center>  </td>
 <td><center> </center>  </td>  
-<td> <center><p> <input id = "{{.GrandTotalStringID}}" value = "Grand Total: ${{.GrandTotalString}}"   type="" name="" placeholder="test" size="20" readonly >	</p></center></td>
+<td> <center><p> <input id = "{{.GrandTotalStringID}}" value = "Grand Total: ${{.GrandTotalString}}"   type="" name="" placeholder="test" size="40" readonly >	</p></center></td>
  </tr>
 
 </table>
@@ -514,8 +514,8 @@ var queryString = string.substring(0, string.length-1);
                   let n2 = BigInt(amtBuying);
                   let n3 = BigInt(val1);
                   let n4 = BigInt(50);
-                  let n5 = BigInt(1000);
-                  let n5a = BigInt(1000);
+                  let n5 = BigInt (100000000);
+                  let n5a = BigInt(100000000);
                   let n6 = BigInt(0);
                   let n7 = BigInt(0);
                   let n8 = BigInt(0);
@@ -540,33 +540,27 @@ var queryString = string.substring(0, string.length-1);
                   //division, however there can be extra decimal places so division has remainder
                   
 
-
+                  grandTotal = (grandTotal) + (n6);
                   //total cost with taxes divided by 1000 
                   var afterFirstDivision = n6 / n5a;
                   
                   
-                  n9 = n5 / n5a;
-                  var forCostEach = BigInt.toString(n9);
+                 
+                  //var forCostEach = BigInt.toString(n9);
                   //amount of pennies , with tax
                   ProductCostString = BigInt.toString(afterFirstDivision);
                   var productAmtinCents = ProductCostString
-                  n8 = productAmtinCents;
-                  n11 = n11 + n8;
+                  
+                  document.getElementById(totalCostID).value = (productAmtinCents).toFixed(2);
 
 
-
+                  alert("wait here");
 
                   /////////
-                  
-
-
-
-
-
-
-
-
-                  total = (BigInt(parseInt(amtBuying)) * BigInt(parseInt(costEach)));////2000
+              
+              
+                  /*
+                   total = (BigInt(parseInt(amtBuying)) * BigInt(parseInt(costEach)));////2000
                   
                   
 
@@ -595,6 +589,7 @@ var queryString = string.substring(0, string.length-1);
                   alert("grandTotal");
                   alert(grandTotal);//22050
 
+                  */
 
 
 
@@ -607,7 +602,7 @@ var queryString = string.substring(0, string.length-1);
               }//for
                 
               //alert("1");
-                /*
+                
                   grandTotal = grandTotal / BigInt(10*4);
                   alert(grandTotal);
                   mystring = BigInt.toString(grandTotal); 
@@ -617,7 +612,7 @@ var queryString = string.substring(0, string.length-1);
                   alert(grandTotal);
                   stringGrandTotal = "Grand Total:  $" + parseFloat(grandTotal);
                   alert(stringGrandTotal);
-                */
+                
               
                 alert("end success function");
             }////sucesss - goto spitback and return values

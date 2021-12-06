@@ -5,7 +5,7 @@
 				
 
 				
-
+				alert("zzz");
 				//alert(quantityID);
 
 				var makeYellow = document.getElementById(mainDiv);
@@ -85,7 +85,11 @@
 						//alert(amountToBePurchased);
 						
 						//so far, so good is still in database!
-						setData(originalQuantity, productID, amountToBePurchased, 0)
+						//setData(originalQuantity, productID, amountToBePurchased, 0)
+						setData(amountPurchasedSoFar, productID, amountToBePurchased, 0)
+
+
+
                         return (1);
                     }
 
@@ -121,8 +125,9 @@
 
 
 
-
+				alert("000");
 				let keys = Object.keys(sessionStorage);
+				alert(keys);
 				//console.log(keys);
 				for(let key of keys) {
 					//alert("key");
@@ -130,8 +135,12 @@
 					//alert("prodcutid")
 					//alert(productID)
 				
+					alert("here1");
+					alert(key);
 				//total the quantity and overwrite - is already a record
 				if(key == (productID.toString())){
+					alert("here2");
+					alert(key);
 				
 					//alert("in this place");
 					//alert(productID);
@@ -181,7 +190,15 @@
 					//alert("set");
 					//alert(productID);
 					//alert(totalquantity);
-					sessionStorage.setItem(productID, totalquantity);
+					
+					
+
+
+					//sessionStorage.setItem(productID, totalquantity);
+					sessionStorage.setItem(productID, parseInt(quantityTryingToSet));
+					alert("set1");
+					alert(quantityTryingToSet);
+
 					//alert("overwrites")
 					break;
 				
@@ -190,8 +207,16 @@
 				//there is no productID record yet, make one here 
 				if (keyFlag !=  "found")
 				{
-					//alert("new item");
+					
+
+
+
+					//sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
 					sessionStorage.setItem( parseInt(productID),  parseInt(quantityTryingToSet));
+					
+					alert("set2");
+					alert(quantityTryingToSet);
+
 				}
 				
                 

@@ -37,6 +37,8 @@ import (
 	"strconv"
 	"time"
 
+	//"math"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -661,7 +663,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 	}
- 
+
 	string1 = ""
 
 	db := dbConn()
@@ -686,8 +688,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	var countCounter = 0
 
-	n11 := new(big.Int)
+	//n11 := new(big.Int)
 	//n12 := new(big.Int)
+
+	n11GrandTotal := new(big.Int)
 
 	for i = 0; i < len(allIds); i++ {
 
@@ -802,14 +806,12 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n5 := new(big.Int)
 			n5a := new(big.Int)
 			n6 := new(big.Int)
-			n7 := new(big.Int)
+			//n7 := new(big.Int)
 			n8 := new(big.Int)
 			n9 := new(big.Int)
 
 			//n9ProductCents := new(big.Int)
 			//n10 := new(big.Int)
-
-			n11GrandTotal := new(big.Int)
 
 			var ProductCostString string
 
@@ -818,7 +820,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//amount of items to purchase
 			n2a, _ = n2a.SetString((allQuants[j]), 10)
 
-			//string
+			//string - total in pennies
 			n3, _ = n3.SetString(ProductCost, 10)
 
 			//tax rate
@@ -828,46 +830,73 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n5, _ = n5.SetString("1000", 10)
 			n5a, _ = n5a.SetString("1000", 10)
 
-			//get cost of all prosucts no tax
-			var firstMult = n2.Mul(n2, n3)
+			n8, _ = n8.SetString("10000", 10)
+			n2b := n2
+			//total pennies, no tax
+			n2.Mul(n2, n3)
 
-			fmt.Println(firstMult)
-
-			//get tax times cost of all products - total with tax : 50 * 100 = 5000, n4 is taxrate
-			n4.Mul(n2, n4)
-			//cost and no tax with 1000 multiplier
+			//total without tax in pennies times 1000 : 100000
 			n5.Mul(n2, n5)
 
-			//fmt.Println(withTax)
-			//fmt.Println(withAjustedAmt)
+			//tax amount
+			n2a.Mul(n2b, n4)
 
-			//total no digits  100000 + 5000
-			n6.Add(n5, n4)
-			//fmt.Println(Add)
+			//total in pennies not tax
+			//n2.Mul(n2, n3)
 
-			var afterFirstDivision = n7.Div(n6, n5a)
+			//add pennies tax and amount
+			n6.Add(n5, n2a)
 
-			n9 = n9.Div(n5, n5a)
-			var forCostEach = n9.Text(10)
+			///////////
 
-			//amount in pennies, with tax
-			ProductCostString = afterFirstDivision.Text(10)
+			string1 := n6.Text(10)
 
-			var productAmtinCents = ProductCostString
-
-			//sets n10
-			n8, _ = n8.SetString(productAmtinCents, 10)
-
-			n11.Add(n11, n8)
-
-			//n10.Add(n10, n8)
-
-			fmt.Println(afterFirstDivision)
-
-			var statement = ""
+			float1, _ := strconv.ParseFloat(string1, 64)
+			string1 = fmt.Sprintf("%.2f", float1)
+			n9, _ = n8.SetString(string1, 10)
+			//remove any decimal after 2nd decimal
+			n11GrandTotal.Add(n11GrandTotal, n9)
 
 			////////////
 
+			//add total with tax times 1000 to grandtotal
+			//n11GrandTotal.Add(n11GrandTotal, n6)
+
+			//ProductCostString.Exp(ProductCostString, ) ** BigInt
+			//n6.Div(n6, n8)
+
+			//pennies and tax
+			ProductCostString = n6.Text(10)
+
+			forCostEachFloat, _ := strconv.ParseFloat(ProductCostString, 64)
+
+			forCostEachFloat = forCostEachFloat / 100000.0
+
+			//forCostEachFloat = math.Round(forCostEachFloat)
+			ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
+			//forCostEachFloat = forCostEachFloat / 100
+
+			//change float to string - with tax -
+
+			//forCostEachFloat = math.Round(forCostEachFloat)
+			//ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
+
+			///////////
+
+			forCostEach2, _ := strconv.ParseFloat(ProductCost, 64)
+
+			//forCostEach = forCostEach / 1000
+			forCostEach2 = forCostEach2 / 100.0
+
+			//forCostEach3 := math.Round(forCostEach2)
+			forCostEach := fmt.Sprintf("%.2f", forCostEach2)
+
+			//forCostEach := "10000";
+			////////////
+
+			//ProductCostString = forCostEach;
+
+			/*********
 			if len(forCostEach) == 2 {
 
 				forCostEach = "0." + forCostEach
@@ -883,7 +912,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 				bytes1 := ([]byte(forCostEach))
 
-				statement = ""
+				statement := ""
 
 				var o = 0
 				for o = 0; o < len(forCostEach)-2; o++ {
@@ -923,7 +952,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 				bytes1 := ([]byte(ProductCostString))
 
-				statement = ""
+				statement := ""
 
 				var o = 0
 				for o = 0; o < len(ProductCostString)-2; o++ {
@@ -945,61 +974,74 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				ProductCostString = statement
 			}
 
+
+			*/
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
 				//productAmtinCents
-				n11GrandTotal.Add(n11GrandTotal, n11)
+				//n11GrandTotal.Add(n11GrandTotal, n11)
 
-				GrandTotalString = n11GrandTotal.Text(10)
+				//grand total multiplied by 1000 and includes tax in pennies
 
-				/////////////
+				n11GrandTotal := n11GrandTotal.Text(10)
+				//an integer in float
+				n11GrandTotalFloat, _ := strconv.ParseFloat(n11GrandTotal, 64)
+				//estimation here, this was limited
+				n11GrandTotalFloat = n11GrandTotalFloat / 100000.0
+				//n11GrandTotalFloat = n11GrandTotalFloat / 100
+				GrandTotalString = fmt.Sprintf("%.2f", n11GrandTotalFloat)
 
-				//only two pennies dispalyed, needs decimal point displayed
-				if len(GrandTotalString) == 2 {
+				/*
+					/////////////
 
-					GrandTotalString = "." + GrandTotalString
-					//only ones place decimal
-				} else if len(GrandTotalString) == 1 {
+					//only two pennies dispalyed, needs decimal point displayed
+					if len(GrandTotalString) == 2 {
 
-					GrandTotalString = "0" + "." + GrandTotalString
+						GrandTotalString = "." + GrandTotalString
+						//only ones place decimal
+					} else if len(GrandTotalString) == 1 {
 
-					// 3 or more digits in pennies
-				} else {
+						GrandTotalString = "0" + "." + GrandTotalString
 
-					///////////////
+						// 3 or more digits in pennies
+					} else {
 
-					//var n = 0
+						///////////////
 
-					//for n = 0; n < len(GrandTotalString); n++ {
+						//var n = 0
 
-					bytes1 := ([]byte(GrandTotalString))
+						//for n = 0; n < len(GrandTotalString); n++ {
 
-					statement = ""
+						bytes1 := ([]byte(GrandTotalString))
 
-					var o = 0
-					for o = 0; o < len(GrandTotalString)-2; o++ {
-						statement = statement + string(bytes1[o])
+						statement := ""
+
+						var o = 0
+						for o = 0; o < len(GrandTotalString)-2; o++ {
+							statement = statement + string(bytes1[o])
+						}
+
+						//adds the decimal
+						statement = statement + "."
+
+						fmt.Println(statement)
+
+						//adds the change
+						for o = len(GrandTotalString) - 2; o < len(GrandTotalString); o++ {
+							statement = statement + string(bytes1[o])
+						}
+
+						fmt.Println(statement)
+
+						//}
+
+						GrandTotalString = (statement)
+
 					}
+					//////////////////
 
-					//adds the decimal
-					statement = statement + "."
-
-					fmt.Println(statement)
-
-					//adds the change
-					for o = len(GrandTotalString) - 2; o < len(GrandTotalString); o++ {
-						statement = statement + string(bytes1[o])
-					}
-
-					fmt.Println(statement)
-
-					//}
-
-					GrandTotalString = (statement)
-
-				}
-				//////////////////
+				*/
 
 			}
 

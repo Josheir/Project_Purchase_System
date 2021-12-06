@@ -450,6 +450,7 @@ function loadData() {
 
 let keys = Object.keys(sessionStorage);
 var var1 = "hasntBeenHere";
+alert("is here");
 for(let key of keys) {
 
 
@@ -477,11 +478,15 @@ for(let key of keys) {
 		continue;
   }
 
+  alert(key);
   
   
   //check for not an integer
 
   var item = sessionStorage.getItem(key);
+
+alert(item);
+
   //alert("item");
   //alert(item);
   string =  string + "id=" + key + "&quant=" + item + "&";
