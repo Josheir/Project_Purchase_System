@@ -61,7 +61,7 @@
 <th><center>Available</center></th> 
 <th><center>Buying</center></th> 
 <th><center>Cost for Each</center></th> 
-<th><center>Total Cost Items</center></th> 
+<th><center>Total Cost Items With Tax</center></th> 
 
 </tr>
 
@@ -105,6 +105,7 @@
 
 
 {{if(eq .Condition2 -1)}}
+
 <tr>
 <td><center> </center>  </td>
 <td><center> </center>  </td>  
@@ -112,15 +113,7 @@
 <td><center> </center>  </td>  
 <td><center> </center>  </td>
 <td><center> </center>  </td>  
-<td> <center><p> <input id = "" value = "Tax:  .05% "   type="" name="" placeholder="" size="12" readonly >	</p></center></td>
-</tr>
-<tr>
-<td><center> </center>  </td>
-<td><center> </center>  </td>  
-<td><center> </center>  </td>
-<td><center> </center>  </td>  
-<td><center> </center>  </td>
-<td><center> </center>  </td>  
+<td><center> </center>  </td> 
 <td> <center><p> <input id = "{{.GrandTotalStringID}}" value = "Grand Total: ${{.GrandTotalString}}"   type="" name="" placeholder="test" size="40" readonly >	</p></center></td>
  </tr>
 
@@ -342,6 +335,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
 var queryString = string.substring(0, string.length-1);
 
 
+alert("start zzhere");
               $.ajax({
               url: 'http://localhost:8080/spitBackAmounts',
               type: 'GET',
@@ -407,12 +401,19 @@ var queryString = string.substring(0, string.length-1);
                 alert("done purchase");
 
               var lengthOfData = data1.length;
+
+              alert(lengthOfData);
+              console.log(data1);
               var grandTotal = 0;
+              var GrandTotal = BigInt(0);
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
-
-                 
-                  //GTotalWithTax = 0;
+                  
+                 alert("ahere");
+                 alert(i);
+                 alert(lengthOfData); 
+                 alert(typeof(lengthofData))
+                 //GTotalWithTax = 0;
                 
                 var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
@@ -468,10 +469,7 @@ var queryString = string.substring(0, string.length-1);
 
                 }else{
                 
-                  //this is the second time I wrote this...
-                  //debugger;
-                  ////////////
-                  //alert("now");
+                  /*
                   let val1 = document.getElementById(costID).value;
                   alert(val1);
 
@@ -483,9 +481,6 @@ var queryString = string.substring(0, string.length-1);
                   //
                   val1 = parseInt(val1);
 
-
-
-                  
                   ////////
 
                   //get amount to buy : 2
@@ -493,29 +488,17 @@ var queryString = string.substring(0, string.length-1);
                   
                   //set bought from amt to buy
                   document.getElementById(boughtid).value = (amtBuying);
-
+                  */
 
                   ///////
 
-                  let costEach = BigInt(val1);
-                  //alert(costEach);
+                  alert("start debugging");
+                  let n2 = BigInt(0);
+                  let n2a = BigInt(0)
+                  let n3 = BigInt(0);
+                  let n4 = BigInt(0);
+                  let n5 = BigInt (0);
                   
-                  let total = BigInt(0);
-                  //alert("1");
-                  let tax = BigInt(5);
-                  //alert("1");
-                  let total1 = BigInt(0);
-                  let taxOfTotal = BigInt(0);
-                  
-                  let grandTotal = BigInt(0);
-                  let totalWithDecimal = BigInt(0);
-                  let total2 = BigInt(0);
-
-                  let n2 = BigInt(amtBuying);
-                  let n3 = BigInt(val1);
-                  let n4 = BigInt(50);
-                  let n5 = BigInt (100000000);
-                  let n5a = BigInt(100000000);
                   let n6 = BigInt(0);
                   let n7 = BigInt(0);
                   let n8 = BigInt(0);
@@ -524,74 +507,154 @@ var queryString = string.substring(0, string.length-1);
                   
                  
                   ////////
-
                   debugger;
-                  //product cost times price, no decimals
-                  firstMult = n2 * n3; //
+
+                  let ProductCostString = "";
+
+                  alert("alert big debug!")
                  
+                  n2 = document.getElementById(buyThisManyID).value;
+                  //n2a = document.getElementById(buyThisManyID).value;
+                  let var1 =document.getElementById(totalCostID).value;
+                  var1 = var1.substring(1);
+                  //var1 = var1.slice(0, -3);
+                  n3 = var1;
+
+                  
+
+                  n4 = 50;
+                  n5 = 1000;
+                  n5a = 1000;
+                  n8 = 10000;
+
+                  //
+                  let n2b = n2;
+                  
+                  //total pennies, no taax
+                  n2 = n2 * n3;
+                  
+                  
+                  
+                  
+                  
+                  //total with out tax in pennies and multiplied times 1000
+                  n5 = n5 * n2;
+                  
+                  
+                  
+                  
+                  
+                  
+                  //alert("-2");
+                  //alert(n5);  //21000460
+                  
+                  
+                  
+                  //tax amount by how many to buy (amount to buy on table)
+                  //amount to buy * taxrate * 1000
+                  //2 * 50 * 1000 * 
+                  //amt to buy * taxrate * 1000 * totalwithout tax in pennies 
+                  //n2a = n2b*n4*n5a;//         n2b* n4 * n5a;
+                  //alert("-5");
+                  //alert(n2a);  //210040600
+
+
+
+
+
+                  //add pennies and tax and amount
+                  //n6 = n5 + n2a;//
+                  //alert("-6");
+                  //alert(n6);
+                  
+                  
+                  let string1 = (n5).toString();
+                  //alert("string1");
+                  //alert(string1);//
+
+                  
+                  let float1  = parseFloat(string1);
+                  //alert("finish");
+
+                  float1 = float1 / 1000.0;
+                  //alert("-4");//21000.46
+                  //alert(float1);//
+                  string1 = ((float1.toFixed(2)).toString());
                  
-                  //tax times cost of all products
-                  n2 = n2 * n4;  //
-                 //cost with tax times multiplier and no decimals
-                  n5 = n2 * n5; 
-                  
-                  //total cost no digits and tax not digits 
-                  n6 = n5 + n4
-                  //division, however there can be extra decimal places so division has remainder
+                  //alert("-1");
+                  //alert(string1);//21000.46
+                  let string2 = "";
                   
 
-                  grandTotal = (grandTotal) + (n6);
-                  //total cost with taxes divided by 1000 
-                  var afterFirstDivision = n6 / n5a;
-                  
-                  
-                 
-                  //var forCostEach = BigInt.toString(n9);
-                  //amount of pennies , with tax
-                  ProductCostString = BigInt.toString(afterFirstDivision);
-                  var productAmtinCents = ProductCostString
-                  
-                  document.getElementById(totalCostID).value = (productAmtinCents).toFixed(2);
 
 
-                  alert("wait here");
 
-                  /////////
+
+                  
+                  alert("partx");
+                  alert(string1.length);
+                  alert(string1);
+                  for(var j = 0; j < string1.length; j++)
+                  {
+                    if(j == string1.length-3)
+                    {
+                      continue;
+                    }
+                    string2 = string2 + string1[j];
+
+                  }
+
+
+
+
+
+
+
+                  
+                  
+                  alert("apple");
+                  
+                  //alert("0");
+                  //made ready to sum n11grandtotal below allm this
+                  alert(string2);
+
+                  n9 = string2;
+                  alert(GrandTotal);
+                  GrandTotal = GrandTotal + n9;
+                  alert(GrandTotal);//02100046
+
+
+//n6
+
+                  ProductCostString = (n5).toString();
+                  //alert("1");
+                  alert(ProductCostString);//21000460
+
+
+
+                  forCostEachFloat = parseFloat(ProductCostString);
+
+                  forCostEachFloat = forCostEachFloat / 1000.0;
+                  //alert("2");
+                  alert(forCostEachFloat);//2100046
+
+                  
+                  
+                  
+                  ProductCostString = (forCostEachFloat.toFixed(2)).toString();
+                  
+                  ProductCostString = "$" + ProductCostString;
+                  alert("3");
+
+                  alert(ProductCostString);
+
+                  document.getElementById(totalCostID).value = ProductCostString;
+
+
+
+                  
               
-              
-                  /*
-                   total = (BigInt(parseInt(amtBuying)) * BigInt(parseInt(costEach)));////2000
                   
-                  
-
-                  taxOfTotal = (total) * (tax);  //1050   : .105
-                  
-                  //2 extra places becuase tax rate has been moved left two places
-                  total = total * BigInt(100);
-                  
-                  //totaled amount without decimals
-                  total1 = total + taxOfTotal;//22050
-                  
-                 
-                  alert("trying"); 
-                  alert((total1)); //2100
-                  alert((total2));
-                  
-                  total2 = BigInt.toString(total1);
-
-
-                  
-                  var total3 = strconv.Atoi(total2);
-                  document.getElementById(totalCostID).value = (total3).toFixed(2);
-                 
-                  grandTotal = (grandTotal) + (total1);
-
-                  alert("grandTotal");
-                  alert(grandTotal);//22050
-
-                  */
-
-
 
                 
                 
@@ -601,18 +664,21 @@ var queryString = string.substring(0, string.length-1);
                 
               }//for
                 
-              //alert("1");
-                
-                  grandTotal = grandTotal / BigInt(10*4);
-                  alert(grandTotal);
-                  mystring = BigInt.toString(grandTotal); 
+                  alert("GrandTotal");
+                  alert(GrandTotal);//02100046
+                  GrandTotal = GrandTotal / 100;
+                  alert(GrandTotal);
+                  //mystring = BigInt.toString(grandTotal); 
 
                   //rounds
-                  grandTotal = grandTotal.toFixed(2);
-                  alert(grandTotal);
-                  stringGrandTotal = "Grand Total:  $" + parseFloat(grandTotal);
+                  GrandTotal = GrandTotal.toFixed(2);
+                  alert(GrandTotal);
+                  stringGrandTotal = "Grand Total:  $" + parseFloat(GrandTotal);
                   alert(stringGrandTotal);
+                  document.getElementById(GrandTotalStringID).value = stringGrandTotal;
                 
+
+                  
               
                 alert("end success function");
             }////sucesss - goto spitback and return values

@@ -718,10 +718,10 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 				val1 = sessionStorage.getItem("numberOfRecords")
 
-				alert("starts here");
+				//alert("starts here");
 				if (val1 == "0")
 				{
-					alert("1");
+					//alert("1");
 					if (quantityTryingToSet == 0 && amountPurchasedSoFar == 0)
 					{
 						
@@ -741,7 +741,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					}
 					else
 					{
-						alert("in here");
+						//alert("in here");
 						//if(val1 = sessionStorage.getItem("numberOfRecords"))
 						{
 						let varIntVal1 = parseInt(val1);
@@ -758,7 +758,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				}
 				else{
 					
-					alert("wise1");
+					//alert("wise1");
 					//console.log(amountPurchasedSoFar + quantityTryingToSet);
 					
 					//amount putchased
@@ -766,20 +766,20 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 					//amount to purchase
 					let val2int = parseInt(quantityTryingToSet);
-					alert(val1int);
-					alert(gLastQuant);
-					alert(val2int);
+					//alert(val1int);
+					//alert(gLastQuant);
+					//alert(val2int);
 					
 
 					//add a negative o positive number to an already present amount purchased that still has quantity
 					if (gLastQuant == 1  && (val1int) != 0 )
 					{
-						alert("y");
+						//alert("y");
 					}
 
 					else if (gLastQuant == 1  && (val1int) == 0 )
 					{
-						alert("z");
+						//alert("z");
 
 						///
 
@@ -807,7 +807,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 					else if (gLastQuant != 1  && (val1int) != 0 )
-					{alert("2_");
+					{//alert("2_");
 						gLastQuant = 1;
 						let val1a = 0;
 						if(val1a = sessionStorage.getItem("numberOfRecords"))
@@ -822,7 +822,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 
 				val1 = sessionStorage.getItem("numberOfRecords");
-				alert("------1234---");
+				//alert("------1234---");
 				alert(val1); 
 				//firstArray.push(productID); 
 				//firstArray.push(quantityOfProduct); 
@@ -830,7 +830,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 				}
 				val1 = sessionStorage.getItem("numberOfRecords");
-				alert("--+++++-----");
+				//alert("--+++++-----");
 				alert(val1); 
 
 				//val1 = sessionStorage.getItem("numberOfRecords");
@@ -896,9 +896,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 
 				let keys = Object.keys(sessionStorage);
-				alert("start debug");
+				//alert("start debug");
 				for(let key of keys) {
-					alert("start debug2");
+					//alert("start debug2");
 				
 				//total the quantity and overwrite - is already a record
 

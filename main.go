@@ -795,6 +795,23 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
+
+
+			///////////previous attempt
+
+
+
+
+
+
+
+			/////////////////////
+
+
+
+
+
+			///////////////////////////////////////////////////////////////////////////////
 			//n1 := new(big.Int)
 			n2 := new(big.Int)
 			n2a := new(big.Int)
@@ -804,7 +821,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n4 := new(big.Int)
 			//taxrate
 			n5 := new(big.Int)
-			n5a := new(big.Int)
+			//n5a := new(big.Int)
 			n6 := new(big.Int)
 			//n7 := new(big.Int)
 			n8 := new(big.Int)
@@ -828,7 +845,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			//increase total cost by
 			n5, _ = n5.SetString("1000", 10)
-			n5a, _ = n5a.SetString("1000", 10)
+			
 
 			n8, _ = n8.SetString("10000", 10)
 			n2b := n2
@@ -852,8 +869,31 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			string1 := n6.Text(10)
 
 			float1, _ := strconv.ParseFloat(string1, 64)
-			string1 = fmt.Sprintf("%.2f", float1)
-			n9, _ = n8.SetString(string1, 10)
+			float1 = float1 / 100000.0
+			string1 = fmt.Sprintf("%.2f", float1)//34.62
+
+			var i = 0
+			var string2 = ""
+			bytes1 := ([]byte(string1))
+
+			for i = 0 ; i < len(string1) ; i++{
+
+				if i  == len(string1)- 3{
+
+					continue
+				}
+
+				
+				string2 = string2 + string(bytes1[i])
+				
+				
+
+			}
+
+			//num, _ := strconv.ParseFloat(string1, 64)
+			//num = num * 100.0
+			//string2 := fmt.Sprintf("%d", int(num))
+			n9, _ = n8.SetString(string2, 10)
 			//remove any decimal after 2nd decimal
 			n11GrandTotal.Add(n11GrandTotal, n9)
 
@@ -896,86 +936,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			//ProductCostString = forCostEach;
 
-			/*********
-			if len(forCostEach) == 2 {
-
-				forCostEach = "0." + forCostEach
-				//only ones place decimal
-			} else if len(forCostEach) == 1 {
-
-				forCostEach = "0" + "." + "0" + forCostEach
-
-				// 3 or more digits in pennies
-
-			} else {
-				//var n = 0
-
-				bytes1 := ([]byte(forCostEach))
-
-				statement := ""
-
-				var o = 0
-				for o = 0; o < len(forCostEach)-2; o++ {
-					statement = statement + string(bytes1[o])
-				}
-
-				//adds the decimal
-				statement = statement + "."
-
-				fmt.Println(statement)
-
-				//adds the change
-				for o = len(forCostEach) - 2; o < len(forCostEach); o++ {
-					statement = statement + string(bytes1[o])
-				}
-
-				fmt.Println(statement)
-
-				forCostEach = statement
-			}
-
-			/////////////
-
-			//only two pennies dispalyed, needs decimal point displayed
-			if len(ProductCostString) == 2 {
-
-				ProductCostString = "." + ProductCostString
-				//only ones place decimal
-			} else if len(ProductCostString) == 1 {
-
-				ProductCostString = "0" + "." + ProductCostString
-
-				// 3 or more digits in pennies
-
-			} else {
-				//var n = 0
-
-				bytes1 := ([]byte(ProductCostString))
-
-				statement := ""
-
-				var o = 0
-				for o = 0; o < len(ProductCostString)-2; o++ {
-					statement = statement + string(bytes1[o])
-				}
-
-				//adds the decimal
-				statement = statement + "."
-
-				fmt.Println(statement)
-
-				//adds the change
-				for o = len(ProductCostString) - 2; o < len(ProductCostString); o++ {
-					statement = statement + string(bytes1[o])
-				}
-
-				fmt.Println(statement)
-
-				ProductCostString = statement
-			}
-
-
-			*/
+			
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
@@ -988,62 +949,15 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				//an integer in float
 				n11GrandTotalFloat, _ := strconv.ParseFloat(n11GrandTotal, 64)
 				//estimation here, this was limited
-				n11GrandTotalFloat = n11GrandTotalFloat / 100000.0
+				n11GrandTotalFloat = n11GrandTotalFloat / 100.0
 				//n11GrandTotalFloat = n11GrandTotalFloat / 100
 				GrandTotalString = fmt.Sprintf("%.2f", n11GrandTotalFloat)
 
-				/*
-					/////////////
-
-					//only two pennies dispalyed, needs decimal point displayed
-					if len(GrandTotalString) == 2 {
-
-						GrandTotalString = "." + GrandTotalString
-						//only ones place decimal
-					} else if len(GrandTotalString) == 1 {
-
-						GrandTotalString = "0" + "." + GrandTotalString
-
-						// 3 or more digits in pennies
-					} else {
-
-						///////////////
-
-						//var n = 0
-
-						//for n = 0; n < len(GrandTotalString); n++ {
-
-						bytes1 := ([]byte(GrandTotalString))
-
-						statement := ""
-
-						var o = 0
-						for o = 0; o < len(GrandTotalString)-2; o++ {
-							statement = statement + string(bytes1[o])
-						}
-
-						//adds the decimal
-						statement = statement + "."
-
-						fmt.Println(statement)
-
-						//adds the change
-						for o = len(GrandTotalString) - 2; o < len(GrandTotalString); o++ {
-							statement = statement + string(bytes1[o])
-						}
-
-						fmt.Println(statement)
-
-						//}
-
-						GrandTotalString = (statement)
-
-					}
-					//////////////////
-
-				*/
-
+				
 			}
+
+
+			/////////////////////////////////////////////////
 
 			//var each = n9.Text(10)
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, forCostEach)
