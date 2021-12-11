@@ -827,8 +827,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n8 := new(big.Int)
 			n9 := new(big.Int)
 
-			//n9ProductCents := new(big.Int)
-			//n10 := new(big.Int)
+			
 
 			var ProductCostString string
 
@@ -890,20 +889,14 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			//num, _ := strconv.ParseFloat(string1, 64)
-			//num = num * 100.0
-			//string2 := fmt.Sprintf("%d", int(num))
+			
 			n9, _ = n8.SetString(string2, 10)
 			//remove any decimal after 2nd decimal
 			n11GrandTotal.Add(n11GrandTotal, n9)
 
 			////////////
 
-			//add total with tax times 1000 to grandtotal
-			//n11GrandTotal.Add(n11GrandTotal, n6)
-
-			//ProductCostString.Exp(ProductCostString, ) ** BigInt
-			//n6.Div(n6, n8)
+			
 
 			//pennies and tax
 			ProductCostString = n6.Text(10)
@@ -912,39 +905,23 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			forCostEachFloat = forCostEachFloat / 100000.0
 
-			//forCostEachFloat = math.Round(forCostEachFloat)
+			
 			ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
-			//forCostEachFloat = forCostEachFloat / 100
-
-			//change float to string - with tax -
-
-			//forCostEachFloat = math.Round(forCostEachFloat)
-			//ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
-
+			
 			///////////
 
 			forCostEach2, _ := strconv.ParseFloat(ProductCost, 64)
 
-			//forCostEach = forCostEach / 1000
+			
 			forCostEach2 = forCostEach2 / 100.0
 
-			//forCostEach3 := math.Round(forCostEach2)
+			
 			forCostEach := fmt.Sprintf("%.2f", forCostEach2)
 
-			//forCostEach := "10000";
-			////////////
-
-			//ProductCostString = forCostEach;
-
-			
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
-				//productAmtinCents
-				//n11GrandTotal.Add(n11GrandTotal, n11)
-
-				//grand total multiplied by 1000 and includes tax in pennies
-
+				
 				n11GrandTotal := n11GrandTotal.Text(10)
 				//an integer in float
 				n11GrandTotalFloat, _ := strconv.ParseFloat(n11GrandTotal, 64)
@@ -959,7 +936,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			/////////////////////////////////////////////////
 
-			//var each = n9.Text(10)
+			
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, forCostEach)
 
 		}

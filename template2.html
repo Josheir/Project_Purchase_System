@@ -426,14 +426,12 @@ alert("start zzhere");
                 
                 /////////
 
-                //buying
-                //bought1 = document.getElementById(boughtid).value;
-                //bought1 = parseFloat(bought1);
+                
                 
                 bought1 = 1;
                 if(bought1 == 0)// && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
-                  //alert("hide2a");
+                 
                   
                   hideRow(oneDivID1);
                   amtOfHiddenProducts++;
@@ -447,9 +445,6 @@ alert("start zzhere");
                 var str1 = false;
                 str1 = data1[i].IsEnoughQuantity;
 
-                
-                //var num = data1[i].QuantityAvailable;
-                //str2 = num.toString();
                 
                
                 //wasnt enough, so make red
@@ -469,27 +464,7 @@ alert("start zzhere");
 
                 }else{
                 
-                  /*
-                  let val1 = document.getElementById(costID).value;
-                  alert(val1);
-
-                  val1 = val1.slice(1); //10.00
-                  //move decimal two to right
-                  val1 = val1 * (10 ** 2);//1000
-
-
-                  //
-                  val1 = parseInt(val1);
-
-                  ////////
-
-                  //get amount to buy : 2
-                  var amtBuying = document.getElementById(buyThisManyID).value; 
                   
-                  //set bought from amt to buy
-                  document.getElementById(boughtid).value = (amtBuying);
-                  */
-
                   ///////
 
                   alert("start debugging");
@@ -541,33 +516,6 @@ alert("start zzhere");
                   n5 = n5 * n2;
                   
                   
-                  
-                  
-                  
-                  
-                  //alert("-2");
-                  //alert(n5);  //21000460
-                  
-                  
-                  
-                  //tax amount by how many to buy (amount to buy on table)
-                  //amount to buy * taxrate * 1000
-                  //2 * 50 * 1000 * 
-                  //amt to buy * taxrate * 1000 * totalwithout tax in pennies 
-                  //n2a = n2b*n4*n5a;//         n2b* n4 * n5a;
-                  //alert("-5");
-                  //alert(n2a);  //210040600
-
-
-
-
-
-                  //add pennies and tax and amount
-                  //n6 = n5 + n2a;//
-                  //alert("-6");
-                  //alert(n6);
-                  
-                  
                   let string1 = (n5).toString();
                   //alert("string1");
                   //alert(string1);//
@@ -585,12 +533,6 @@ alert("start zzhere");
                   //alert(string1);//21000.46
                   let string2 = "";
                   
-
-
-
-
-
-                  
                   alert("partx");
                   alert(string1.length);
                   alert(string1);
@@ -603,18 +545,9 @@ alert("start zzhere");
                     string2 = string2 + string1[j];
 
                   }
-
-
-
-
-
-
-
-                  
-                  
                   alert("apple");
                   
-                  //alert("0");
+                  
                   //made ready to sum n11grandtotal below allm this
                   alert(string2);
 
@@ -624,7 +557,7 @@ alert("start zzhere");
                   alert(GrandTotal);//02100046
 
 
-//n6
+
 
                   ProductCostString = (n5).toString();
                   //alert("1");
@@ -650,15 +583,6 @@ alert("start zzhere");
 
                   document.getElementById(totalCostID).value = ProductCostString;
 
-
-
-                  
-              
-                  
-
-                
-                
-                
                 }
 
                 
