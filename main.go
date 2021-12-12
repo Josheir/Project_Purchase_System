@@ -1,4 +1,5 @@
 package main
+
 //test
 //repo
 
@@ -795,21 +796,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-
-
 			///////////previous attempt
 
-
-
-
-
-
-
 			/////////////////////
-
-
-
-
 
 			///////////////////////////////////////////////////////////////////////////////
 			//n1 := new(big.Int)
@@ -827,8 +816,6 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			n8 := new(big.Int)
 			n9 := new(big.Int)
 
-			
-
 			var ProductCostString string
 
 			////amount of itmes to purchase
@@ -844,10 +831,22 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			//increase total cost by
 			n5, _ = n5.SetString("1000", 10)
-			
 
 			n8, _ = n8.SetString("10000", 10)
 			n2b := n2
+
+
+
+
+
+
+			//n2.SetString(fmt.Sprintf("%10f", n2.Mul(n2, n3)), 10)
+
+			
+			
+			
+			
+			
 			//total pennies, no tax
 			n2.Mul(n2, n3)
 
@@ -869,34 +868,28 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			float1, _ := strconv.ParseFloat(string1, 64)
 			float1 = float1 / 100000.0
-			string1 = fmt.Sprintf("%.2f", float1)//34.62
+			string1 = fmt.Sprintf("%.2f", float1) //34.62
 
 			var i = 0
 			var string2 = ""
 			bytes1 := ([]byte(string1))
 
-			for i = 0 ; i < len(string1) ; i++{
+			for i = 0; i < len(string1); i++ {
 
-				if i  == len(string1)- 3{
+				if i == len(string1)-3 {
 
 					continue
 				}
 
-				
 				string2 = string2 + string(bytes1[i])
-				
-				
 
 			}
 
-			
 			n9, _ = n8.SetString(string2, 10)
 			//remove any decimal after 2nd decimal
 			n11GrandTotal.Add(n11GrandTotal, n9)
 
 			////////////
-
-			
 
 			//pennies and tax
 			ProductCostString = n6.Text(10)
@@ -905,23 +898,19 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			forCostEachFloat = forCostEachFloat / 100000.0
 
-			
 			ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
-			
+
 			///////////
 
 			forCostEach2, _ := strconv.ParseFloat(ProductCost, 64)
 
-			
 			forCostEach2 = forCostEach2 / 100.0
 
-			
 			forCostEach := fmt.Sprintf("%.2f", forCostEach2)
 
 			if countCounter == (len(allIds)) {
 				////////////////////////////////
 
-				
 				n11GrandTotal := n11GrandTotal.Text(10)
 				//an integer in float
 				n11GrandTotalFloat, _ := strconv.ParseFloat(n11GrandTotal, 64)
@@ -930,13 +919,10 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				//n11GrandTotalFloat = n11GrandTotalFloat / 100
 				GrandTotalString = fmt.Sprintf("%.2f", n11GrandTotalFloat)
 
-				
 			}
-
 
 			/////////////////////////////////////////////////
 
-			
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, forCostEach)
 
 		}

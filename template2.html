@@ -347,6 +347,8 @@ alert("start zzhere");
              
               success: function (data1) {
 
+               
+
                 var flag = "is enough";
 
                 
@@ -405,7 +407,7 @@ alert("start zzhere");
               alert(lengthOfData);
               console.log(data1);
               var grandTotal = 0;
-              var GrandTotal = BigInt(0);
+                let GrandTotal = BigInt(0);
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
                   
@@ -468,112 +470,157 @@ alert("start zzhere");
                   ///////
 
                   alert("start debugging");
-                  let n2 = BigInt(0);
-                  let n2a = BigInt(0)
-                  let n3 = BigInt(0);
-                  let n4 = BigInt(0);
-                  let n5 = BigInt (0);
                   
-                  let n6 = BigInt(0);
+                  
+                  let totalNoTaxTimes1000 = BigInt(0);
+                  let totalNoTaxOne = BigInt(0);
+                  let nba = BigInt(0);
+                  let taxTimes1000 = BigInt(0);
+                  let n3 = BigInt(0);
+                  let tax = BigInt(0);
+                  let thousand = BigInt(0);
+                  let withTaxTimes1000 = BigInt(0);
                   let n7 = BigInt(0);
                   let n8 = BigInt(0);
                   let n9 = BigInt(0);
 
+                  ///let n2b = n2;
+                 
+                  let amountBought = BigInt(0);
+                  //.05
+                  tax = 50;
+                  totalNoTaxTimes1000 = 0;
+                  thousand = 1000;
+                  withTaxTimes1000 = 0;
+
+
+                  ////////////this is when checkout has been pressed from template2
                   
                  
                   ////////
-                  debugger;
+                  //debugger;
 
                   let ProductCostString = "";
 
-                  alert("alert big debug!")
+                  alert("alert big debug!");
                  
-                  n2 = document.getElementById(buyThisManyID).value;
-                  //n2a = document.getElementById(buyThisManyID).value;
-                  let var1 =document.getElementById(totalCostID).value;
-                  var1 = var1.substring(1);
-                  //var1 = var1.slice(0, -3);
-                  n3 = var1;
+                  //integer
+                  //n2 = document.getElementById(buyThisManyID).value;
+                  amountBought = document.getElementById(buyThisManyID).value;
+                  
+                  //total cost decimal tax and pennies - string  $###.##;  has exact 
+                  n3 =document.getElementById(costID).value;
+                  //remove $ sign still has decimal place
+                  n3 = n3.substring(1);
 
-                  
+                  alert("a");//10000.22
 
-                  n4 = 50;
-                  n5 = 1000;
-                  n5a = 1000;
-                  n8 = 10000;
 
-                  //
-                  let n2b = n2;
-                  
-                  //total pennies, no taax
-                  n2 = n2 * n3;
-                  
-                  
-                  
-                  
-                  
-                  //total with out tax in pennies and multiplied times 1000
-                  n5 = n5 * n2;
-                  
-                  
-                  let string1 = (n5).toString();
-                  //alert("string1");
-                  //alert(string1);//
 
+                  var string2a = "";
+                  string1a = n3.toString();
                   
-                  let float1  = parseFloat(string1);
-                  //alert("finish");
-
-                  float1 = float1 / 1000.0;
-                  //alert("-4");//21000.46
-                  //alert(float1);//
-                  string1 = ((float1.toFixed(2)).toString());
-                 
-                  //alert("-1");
-                  //alert(string1);//21000.46
-                  let string2 = "";
-                  
-                  alert("partx");
-                  alert(string1.length);
-                  alert(string1);
-                  for(var j = 0; j < string1.length; j++)
+                  //remove decimal point
+                  for(var j = 0; j < string1a.length; j++)
                   {
-                    if(j == string1.length-3)
+                    if(j == string1a.length-3)
                     {
                       continue;
                     }
-                    string2 = string2 + string1[j];
+                    string2a = string2a + string1a[j];
 
                   }
-                  alert("apple");
+
+
+                  n3 = string2a;
+                  alert(n3); //1000022
                   
+
+
                   
-                  //made ready to sum n11grandtotal below allm this
-                  alert(string2);
 
-                  n9 = string2;
-                  alert(GrandTotal);
-                  GrandTotal = GrandTotal + n9;
-                  alert(GrandTotal);//02100046
+                  //total pennies, no tax
+                  totalNoTaxOne = n3;
+                  alert(totalNoTaxOne);//1000022
+                  //total without tax in pennies times 1000
+                  totalNoTaxTimes1000 = totalNoTaxOne * thousand * amountBought;
+                  alert(totalNoTaxTimes1000);//2000044000
+                  //tax amount - buythismany * cost * 50 * 100
+                  tax = amountBought * totalNoTaxOne * tax / 100;
+                 
+                  
+                  alert("tax");
+                  alert(tax);//100022
+                  alert(totalNoTaxTimes1000);//100002200
 
 
 
 
-                  ProductCostString = (n5).toString();
+                  
+                  //add pennies and tax amount without decimal point
+                  withTaxTimes1000 = totalNoTaxTimes1000 + tax;
+                  alert(withTaxTimes1000);
+
+
+                  //alert(withTaxTimes1000);//201004    2100046200
+
+                  //var string1a = withTaxTimes1000.Text(10);
+
+                  //alert(string1a);
+
+
+
+                  
+                  //remove decimal point
+                  /*
+                  var string2a = "";
+                  string1a = n2.toString();
+                  
+                  //remove decimal point
+                  for(var j = 0; j < string1a.length; j++)
+                  {
+                    if(j == string1a.length-3)
+                    {
+                      continue;
+                    }
+                    string2a = string2a + string1a[j];
+
+                  }
+
+                  n9 = string2a;
+
+                  alert(n9);
+
+                  */
+
+                  //GrandTotal1 = GrandTotal;
+                  alert("changethis");
+                  alert(withTaxTimes1000);//2001044022
+                  GrandTotal = (GrandTotal) + BigInt(parseInt(withTaxTimes1000/1000));
+                  alert("z");
+                  alert(GrandTotal);//2001044
+
+
+                  //total no decimals with 1000 multiplier
+                  ProductCostString = (withTaxTimes1000).toString();
                   //alert("1");
-                  alert(ProductCostString);//21000460
+                  alert(ProductCostString);//200104402
 
 
 
+                  
                   forCostEachFloat = parseFloat(ProductCostString);
 
-                  forCostEachFloat = forCostEachFloat / 1000.0;
+                  //total deimals with changed decimal place
+                  //division by a factor of ten- alters
+                  forCostEachFloat = forCostEachFloat / 100000.0;
                   //alert("2");
-                  alert(forCostEachFloat);//2100046
+                  alert(forCostEachFloat);//20010.4402
 
                   
                   
-                  
+
+                  //main division that will be the only off by a possible cent
                   ProductCostString = (forCostEachFloat.toFixed(2)).toString();
                   
                   ProductCostString = "$" + ProductCostString;
@@ -583,21 +630,32 @@ alert("start zzhere");
 
                   document.getElementById(totalCostID).value = ProductCostString;
 
+
+                  alert("at end");
+                 
+
                 }
 
                 
               }//for
                 
-                  alert("GrandTotal");
-                  alert(GrandTotal);//02100046
-                  GrandTotal = GrandTotal / 100;
-                  alert(GrandTotal);
-                  //mystring = BigInt.toString(grandTotal); 
 
-                  //rounds
-                  GrandTotal = GrandTotal.toFixed(2);
-                  alert(GrandTotal);
-                  stringGrandTotal = "Grand Total:  $" + parseFloat(GrandTotal);
+                  alert("GrandTotal");
+                  alert(GrandTotal);//2001044
+                  //bigint added to above
+                  
+                  
+                  var floatGrandTotal = Number(GrandTotal); 
+                  //doesnt cause estimat problem, power of ten
+                  floatGrandTotal = floatGrandTotal / 100.0;
+                  floatGrandTotal = floatGrandTotal.toFixed(2);
+                  
+                  
+                  alert(floatGrandTotal);
+                  
+                  
+                  //alert(GrandTotal);
+                  stringGrandTotal = "Grand Total:  $" + parseFloat(floatGrandTotal);
                   alert(stringGrandTotal);
                   document.getElementById(GrandTotalStringID).value = stringGrandTotal;
                 
