@@ -545,13 +545,13 @@ alert("start zzhere");
                   //total without tax in pennies times 1000
                   totalNoTaxTimes1000 = totalNoTaxOne * thousand * amountBought;
                   alert(totalNoTaxTimes1000);//2000044000
-                  //tax amount - buythismany * cost * 50 * 100
-                  tax = amountBought * totalNoTaxOne * tax / 100;
+                  //tax amount - buythismany * cost * 50 / 100
+                  tax = amountBought * totalNoTaxOne * tax ;  // was 100  !!!
                  
                   
                   alert("tax");
-                  alert(tax);//100022
-                  alert(totalNoTaxTimes1000);//100002200
+                  alert(tax);//1000022  /////  
+                  alert(totalNoTaxTimes1000);//2000044000  ////
 
 
 
@@ -559,52 +559,23 @@ alert("start zzhere");
                   
                   //add pennies and tax amount without decimal point
                   withTaxTimes1000 = totalNoTaxTimes1000 + tax;
-                  alert(withTaxTimes1000);
-
-
-                  //alert(withTaxTimes1000);//201004    2100046200
-
-                  //var string1a = withTaxTimes1000.Text(10);
-
-                  //alert(string1a);
-
+                  alert(withTaxTimes1000);//2001044022  ///  
 
 
                   
-                  //remove decimal point
-                  /*
-                  var string2a = "";
-                  string1a = n2.toString();
-                  
-                  //remove decimal point
-                  for(var j = 0; j < string1a.length; j++)
-                  {
-                    if(j == string1a.length-3)
-                    {
-                      continue;
-                    }
-                    string2a = string2a + string1a[j];
-
-                  }
-
-                  n9 = string2a;
-
-                  alert(n9);
-
-                  */
 
                   //GrandTotal1 = GrandTotal;
                   alert("changethis");
-                  alert(withTaxTimes1000);//2001044022
+                  alert(withTaxTimes1000);//
                   GrandTotal = (GrandTotal) + BigInt(parseInt(withTaxTimes1000/1000));
                   alert("z");
-                  alert(GrandTotal);//2001044
+                  alert(GrandTotal);//
 
 
                   //total no decimals with 1000 multiplier
                   ProductCostString = (withTaxTimes1000).toString();
                   //alert("1");
-                  alert(ProductCostString);//200104402
+                  alert(ProductCostString);//
 
 
 
@@ -614,8 +585,8 @@ alert("start zzhere");
                   //total deimals with changed decimal place
                   //division by a factor of ten- alters
                   forCostEachFloat = forCostEachFloat / 100000.0;
-                  //alert("2");
-                  alert(forCostEachFloat);//20010.4402
+                  alert("2");
+                  alert(forCostEachFloat);//
 
                   
                   
@@ -624,7 +595,7 @@ alert("start zzhere");
                   ProductCostString = (forCostEachFloat.toFixed(2)).toString();
                   
                   ProductCostString = "$" + ProductCostString;
-                  alert("3");
+                  alert("3"); //$
 
                   alert(ProductCostString);
 
@@ -641,7 +612,7 @@ alert("start zzhere");
                 
 
                   alert("GrandTotal");
-                  alert(GrandTotal);//2001044
+                  alert(GrandTotal);//2001044!
                   //bigint added to above
                   
                   
@@ -651,12 +622,12 @@ alert("start zzhere");
                   floatGrandTotal = floatGrandTotal.toFixed(2);
                   
                   
-                  alert(floatGrandTotal);
+                  alert(floatGrandTotal);//20010.44!
                   
                   
                   //alert(GrandTotal);
                   stringGrandTotal = "Grand Total:  $" + parseFloat(floatGrandTotal);
-                  alert(stringGrandTotal);
+                  alert(stringGrandTotal);//$20010.44!
                   document.getElementById(GrandTotalStringID).value = stringGrandTotal;
                 
 
