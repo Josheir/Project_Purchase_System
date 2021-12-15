@@ -796,106 +796,52 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition2 = -1
 			}
 
-			///////////previous attempt
-
-			/////////////////////
-
 			///////////////////////////////////////////////////////////////////////////////
-			//n1 := new(big.Int)
-			n2 := new(big.Int)
-			n2a := new(big.Int)
-			n3 := new(big.Int)
-			//n3a := new(big.Int)
 
-			n4 := new(big.Int)
-			//taxrate
-			n5 := new(big.Int)
-			//n5a := new(big.Int)
-			n6 := new(big.Int)
-			//n7 := new(big.Int)
-			n8 := new(big.Int)
-			n9 := new(big.Int)
+			quantity := new(big.Int)
+			tax := new(big.Int)
+			tax2 := new(big.Int)
+
+			productCost := new(big.Int)
+
+			thousand := new(big.Int)
+
+			totalNoTaxNo1000 := new(big.Int)
+
+			withTaxTimes1000 := new(big.Int)
 
 			var ProductCostString string
 
 			////amount of itmes to purchase
-			n2, _ = n2.SetString((allQuants[j]), 10)
-			//amount of items to purchase
-			n2a, _ = n2a.SetString((allQuants[j]), 10)
+			quantity, _ = quantity.SetString((allQuants[j]), 10)
 
 			//string - total in pennies
-			n3, _ = n3.SetString(ProductCost, 10)
+			productCost, _ = productCost.SetString(ProductCost, 10)
 
-			//tax rate
-			n4, _ = n4.SetString("50", 10)
+			thousand, _ = thousand.SetString("1000", 10)
+			//tenthousand, _ =hundred.SetString("10000", 10)
 
-			//increase total cost by
-			n5, _ = n5.SetString("1000", 10)
+			tax, _ = tax.SetString("50", 10)
 
-			n8, _ = n8.SetString("10000", 10)
-			n2b := n2
+			//total without tax in pennies times 1000
+			totalNoTaxNo1000.Mul(productCost, thousand)
+			totalNoTaxNo1000.Mul(totalNoTaxNo1000, quantity)
 
+			tax2.Mul(quantity, productCost)
+			tax2.Mul(tax2, tax)
 
+			//add pennies and tax amount without decimal point
+			withTaxTimes1000.Add(totalNoTaxNo1000, tax2)
 
+			n11GrandTotal.Add(n11GrandTotal, withTaxTimes1000)
+			n11GrandTotal.Div(n11GrandTotal, thousand)
 
-
-
-			//n2.SetString(fmt.Sprintf("%10f", n2.Mul(n2, n3)), 10)
-
-			
-			
-			
-			
-			
-			//total pennies, no tax
-			n2.Mul(n2, n3)
-
-			//total without tax in pennies times 1000 : 100000
-			n5.Mul(n2, n5)
-
-			//tax amount
-			n2a.Mul(n2b, n4)
-
-			//total in pennies not tax
-			//n2.Mul(n2, n3)
-
-			//add pennies tax and amount
-			n6.Add(n5, n2a)
-
-			///////////
-
-			string1 := n6.Text(10)
-
-			float1, _ := strconv.ParseFloat(string1, 64)
-			float1 = float1 / 100000.0
-			string1 = fmt.Sprintf("%.2f", float1) //34.62
-
-			var i = 0
-			var string2 = ""
-			bytes1 := ([]byte(string1))
-
-			for i = 0; i < len(string1); i++ {
-
-				if i == len(string1)-3 {
-
-					continue
-				}
-
-				string2 = string2 + string(bytes1[i])
-
-			}
-
-			n9, _ = n8.SetString(string2, 10)
-			//remove any decimal after 2nd decimal
-			n11GrandTotal.Add(n11GrandTotal, n9)
-
-			////////////
-
-			//pennies and tax
-			ProductCostString = n6.Text(10)
+			//total no decimals with 1000 multiplier
+			ProductCostString = withTaxTimes1000.Text(10)
 
 			forCostEachFloat, _ := strconv.ParseFloat(ProductCostString, 64)
 
+			//total deimals with changed decimal place
 			forCostEachFloat = forCostEachFloat / 100000.0
 
 			ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
@@ -912,11 +858,11 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				////////////////////////////////
 
 				n11GrandTotal := n11GrandTotal.Text(10)
-				//an integer in float
+
 				n11GrandTotalFloat, _ := strconv.ParseFloat(n11GrandTotal, 64)
-				//estimation here, this was limited
+
 				n11GrandTotalFloat = n11GrandTotalFloat / 100.0
-				//n11GrandTotalFloat = n11GrandTotalFloat / 100
+
 				GrandTotalString = fmt.Sprintf("%.2f", n11GrandTotalFloat)
 
 			}

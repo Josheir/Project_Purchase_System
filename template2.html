@@ -545,13 +545,23 @@ alert("start zzhere");
                   //total without tax in pennies times 1000
                   totalNoTaxTimes1000 = totalNoTaxOne * thousand * amountBought;
                   alert(totalNoTaxTimes1000);//2000044000
-                  //tax amount - buythismany * cost * 50 / 100
-                  tax = amountBought * totalNoTaxOne * tax ;  // was 100  !!!
+
+
+
+
+
+
+                  
+                  tax = amountBought * totalNoTaxOne * tax ;  // was 100
                  
                   
-                  alert("tax");
-                  alert(tax);//1000022  /////  
-                  alert(totalNoTaxTimes1000);//2000044000  ////
+                  //alert("tax");
+                  //alert(tax);//
+                  //alert(totalNoTaxTimes1000);//
+
+
+
+
 
 
 
@@ -559,22 +569,24 @@ alert("start zzhere");
                   
                   //add pennies and tax amount without decimal point
                   withTaxTimes1000 = totalNoTaxTimes1000 + tax;
-                  alert(withTaxTimes1000);//2001044022  ///  
+                  //alert(withTaxTimes1000);//  
+
+
+
 
 
                   
 
-                  //GrandTotal1 = GrandTotal;
-                  alert("changethis");
-                  alert(withTaxTimes1000);//
-                  GrandTotal = (GrandTotal) + BigInt(parseInt(withTaxTimes1000/1000));
+                  
+                  //GrandTotal = (GrandTotal) + BigInt(parseInt(withTaxTimes1000/1000));
+                  GrandTotal = (GrandTotal) + (withTaxTimes1000/1000);
                   alert("z");
                   alert(GrandTotal);//
 
 
                   //total no decimals with 1000 multiplier
                   ProductCostString = (withTaxTimes1000).toString();
-                  //alert("1");
+                  
                   alert(ProductCostString);//
 
 
@@ -583,7 +595,7 @@ alert("start zzhere");
                   forCostEachFloat = parseFloat(ProductCostString);
 
                   //total deimals with changed decimal place
-                  //division by a factor of ten- alters
+                  
                   forCostEachFloat = forCostEachFloat / 100000.0;
                   alert("2");
                   alert(forCostEachFloat);//
@@ -617,7 +629,7 @@ alert("start zzhere");
                   
                   
                   var floatGrandTotal = Number(GrandTotal); 
-                  //doesnt cause estimat problem, power of ten
+                 
                   floatGrandTotal = floatGrandTotal / 100.0;
                   floatGrandTotal = floatGrandTotal.toFixed(2);
                   
@@ -625,7 +637,7 @@ alert("start zzhere");
                   alert(floatGrandTotal);//20010.44!
                   
                   
-                  //alert(GrandTotal);
+                 
                   stringGrandTotal = "Grand Total:  $" + parseFloat(floatGrandTotal);
                   alert(stringGrandTotal);//$20010.44!
                   document.getElementById(GrandTotalStringID).value = stringGrandTotal;
