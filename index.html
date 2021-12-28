@@ -14,7 +14,20 @@
 
 
 <body>
+<script type="text/javascript" src="script.js"></script><script type="text/javascript" src="script.js"></script>	
 
+<style>
+	
+
+	.form {
+    
+    
+    width: 68%;
+	margin: 0 auto; 
+   
+}
+
+</style>
 	
 
 
@@ -213,6 +226,7 @@ $(document).ready(function () {
 		//pushed search (button 6) display1
 		function ajaxCall( flag2)
 		{
+			//alert("z1");
 
 			let amt1 = sessionStorage.getItem("amtOfSelectedRecords");
 			if (amt1 != null)
@@ -297,7 +311,7 @@ $(document).ready(function () {
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
-		if (key != "session_userID" && key != "keywords" && key != "numberOfRecords" && key != "alreadyZero" ) 
+		if (key != "session_userID" && key != "keywords" && key != "numberOfRecords" && key != "alreadyZero" && key != "amtOfSelectedRecords") 
 		{
 
 			
@@ -360,12 +374,17 @@ $(document).ready(function () {
 		//cehck for duplicates
 		storedArray = JSON.parse(sessionStorage.getItem("keywords"));
 
+		//alert("storeddarray0");
+		//alert(storedArray);
+
 		if(storedArray)
 		{
 		for(var i = 0; i < storedArray.length ; i++)
 		{
 		if (storedArray[i] == val1)
 		{
+			//alert("storeddarray");
+			//alert(storedArray[i]);
 			
 			return(-1);
 		}
@@ -376,7 +395,7 @@ $(document).ready(function () {
 	}
 
 ////////
-
+//alert("is it getting here");
 
 //storedarray has only the relevant keywords
 
@@ -394,28 +413,20 @@ else
 }
 
 
-
+//alert("1");
 ////////
 
 
 
 
 	  var val2 = [];
-      //if(wasKeys == "yes"){
-
+     
 		val2 = setSession(true, val1, string);
-	  //}
-	  //THERE ARNT URLS NOW 
-	  //else
-      //{
-  	  //val2 = setSession(false, val1, string);
-
-	  //}
-
 	  
+	  //alert("2");
 		var gflag = val2[0];
 		var querystring = val2[1] + string;
-	  	
+	  //alert("3");
 		
 		var url = "";
 		
@@ -431,6 +442,8 @@ else
 	  
 	 
 
+	  alert("querystringzz");
+	  alert(querystring);
 
 
 
@@ -1042,6 +1055,7 @@ function setSession(areThereUrls, val1, string)
 			
 		}
 
+		alert("querystring1");
 		alert(querystring);
 		
 		}
@@ -1050,6 +1064,7 @@ function setSession(areThereUrls, val1, string)
 			querystring = ("var=" + val1 + "&");
 		}
 	
+		alert("querystring2");
 		alert(querystring);
 	
 	return [gflag, querystring];
@@ -1089,11 +1104,13 @@ var gKeywordRecordNumber = 0;
 //pressed return to purchase from template2
 function display2(){
 
-	alert("check if getting here before panid");
+	debugger;
+
+alert("check if getting here before panid");
 
 var querystring = "";
 
-let keys = Object.keys(sessionStorage);
+
 
 
 var counter = -1;
@@ -1103,9 +1120,16 @@ alert("A4") ;
 
 var gflag1 = 0;
 var gcounter1 = 0;
+alert("A5") ;
+let keys = Object.keys(sessionStorage);
 
 
+
+alert("A6") ;
 for(let key of keys) {
+
+	alert("getthis");
+	alert(key);
 
  if(key == "keywords")
   {
@@ -1174,15 +1198,23 @@ for(let key of keys) {
   } 
 
 }
+
+//no id quant
 if (gflag1 == 0)
 {
-	return(1);
+	alert("gflag1 - should be, all sessionlevelvariables were erased...");
+	//return(1);
 }
 if (gflag1 == 4)
 {
+	alert("gflag4");
 	return(1);
 }
 
+
+
+alert("now");
+alert(querystring)
 
 
 // 8237 characters tested:

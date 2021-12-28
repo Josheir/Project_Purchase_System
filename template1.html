@@ -4,109 +4,114 @@
 		
 	  
 
-			<div>
+
+	
 		
-			{{if(eq .Condition 1)}}
+	  
 
-			
-			<div id = "{{.Link}}"><b>&nbsp&nbsp&nbsp&nbspThis section is for the keyword : {{.Link}}.</b></div><br>
-
-			{{end}}
-
-			
-			<iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
-
-			{{if(eq .CondYellow 1)}}
-			<div id = "{{.MainDivID}}" style="background-color:#FFFF00" >
-			{{else}}
-			<div id = "{{.MainDivID}}">
-			{{end}}
-
-			
-			
-			<div class="row" > 
-			<div class="col">
-			 <p id = "">product id   : {{.ProductID}} </p> 
-			
+			<div class = "form">
 		
-
-      		<form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="/updateForm/?idproducts={{.ProductID}}">
-			<h4><center><p id = "">Image</p></center></h4>
-
-
-			<center><img  height="100" width="100"  src= "/golangproj/uploads/{{.ProductFilename}}" alt="no product image"></center> 
-
-			</div>
-
-			<div class="col">
-			<h4><center><p id =""  >Title</p></center></h4>
-
-			<center><p><input id = "{{.TitleID}}" value = "{{.ProductName}}{{.ProductDescription}}" type="text" name="title" placeholder="" readonly></p></center>
-			</div>
-
-			<div class="col">
-
-			<h4><center><p id = "">Desc</p></center></h4>
-
-			<center><textarea wrap id = "{{.DescID}}"   value = "{{.ProductDescription}}"  type="text" rows="5" cols="34" readonly></textarea></center>
-			</div>
-
-			<div class="col">" 
-			<h4><center><p id = "" >Cost</p></center></h4>
-			<center><p>	<input id = "{{.CostID}}" value =    "${{.ProductCost}}"     type="text" name="title" placeholder="" readonly>		</p></center>
-		
-			</div>
-			</div>
-			<div class="row">
-			<div class="col">
-			
-			<h4><center><p id = "" >Quantity</p></center></h4>
-			<center><p> <input id = "{{.QuantityID}}" value =  "{{.ProductQuantity}}"  type="number" name="title" placeholder="" readonly>	</p></center>
-			</div>
-			
-			<div class="col">
-
-			
+				{{if(eq .Condition 1)}}
+	
 				
-			<h4><center><p id = "" >Keyword 1</p></center></h4>
-			<center><p>	<input id = "{{.Key1ID}}" value = "{{.GKeyword1}}" type="text" name="title" placeholder="" readonly>		</p></center>
-
-			</div>
-
-			<div class="col">
-			<h4><center><p id = "" >Keyword 2</p></center></h4>
-			<center><p>	<input id = "{{.Key2ID}}" value = "{{.GKeyword2}}" type="text" name="title" placeholder="" readonly>		</p></center>
-
-			</div>
-
-			<div class="col">
-			<h4><center><p id = "" >Keyword 3</p></center></h4>
-			<center><p>	<input id =   "{{.Key3ID}}"  value = "{{.GKeyword3}}" type="text" name="{{.Key3ID}}" placeholder="" readonly> 	</p></center>
-			</div>
-			</div>
-			<div class="row">
-			<div class="col">
+				<div id = "{{.Link}}"><b>This section is for the keyword : {{.Link}}.</b></div><br>
+	
+				{{end}}
+	
+				
+				<iframe class = "" id="upload_target" name="upload_target"  style="width:0;height:0;border:0px solid #fff;"></iframe> 	
+	
+				{{if(eq .CondYellow 1)}}
+				<div id = "{{.MainDivID}}" style="background-color:#FFFF00" >
+				{{else}}
+				<div id = "{{.MainDivID}}">
+				{{end}}
+	
+				
+				
+				<div class="row" > 
+				<div class="col">
+				 <p id = "">product id   : {{.ProductID}} </p> 
+				
 			
-			<h4><center><p id = "" >Amount purchased</p></center></h4>
-			<center><p><input id = "{{.AmountPurchasedID}}" value = "{{.AmountPurchased}}" type="number" name="title" placeholder="999" readonly ></p></center>
-
-			<h4><center><p id = "" >Amount to purchase</p></center></h4>
-			<center><p><input id = "{{.AmountToPurchaseID}}" value = 0 type="number" name="title" placeholder="" ></p></center>
-			</div>
-		    </div>
-			<div class="row">
-			<div class="col">
+	
+				  <form target = "upload_target"  enctype="multipart/form-data" method = "GET" action="/updateForm/?idproducts={{.ProductID}}">
+				<h4><center><p id = "">Image</p></center></h4>
+	
+	
+				<center><img  height="100" width="100"  src= "/golangproj/uploads/{{.ProductFilename}}" alt="no product image"></center> 
+	
+				</div>
+	
+				<div class="col">
+				<h4><center><p id =""  >Title</p></center></h4>
+	
+				<center><p><input id = "{{.TitleID}}" value = "{{.ProductName}}{{.ProductDescription}}" type="text" name="title" placeholder="" readonly></p></center>
+				</div>
+	
+				<div class="col">
+	
+				<h4><center><p id = "">Desc</p></center></h4>
+	
+				<center><textarea wrap id = "{{.DescID}}"   value = "{{.ProductDescription}}"  type="text" rows="5" cols="34" readonly></textarea></center>
+				</div>
+	
+				<div class="col">" 
+				<h4><center><p id = "" >Cost</p></center></h4>
+				<center><p>	<input id = "{{.CostID}}" value =    "${{.ProductCost}}"     type="text" name="title" placeholder="" readonly>		</p></center>
 			
-			<center><button onclick="changeFields('{{.MainDivID}}', Number('{{.ProductQuantity}}'), Number('{{.ProductID}}') , '{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
-			
-			</div>
-			</div>
-			</div>
-		    </div>
-			</div>
-			
-			
-			
-			
-
-            
+				</div>
+				</div>
+				<div class="row">
+				<div class="col">
+				
+				<h4><center><p id = "" >Quantity</p></center></h4>
+				<center><p> <input id = "{{.QuantityID}}" value =  "{{.ProductQuantity}}"  type="number" name="title" placeholder="" readonly>	</p></center>
+				</div>
+				
+				<div class="col">
+	
+				
+					
+				<h4><center><p id = "" >Keyword 1</p></center></h4>
+				<center><p>	<input id = "{{.Key1ID}}" value = "{{.GKeyword1}}" type="text" name="title" placeholder="" readonly>		</p></center>
+	
+				</div>
+	
+				<div class="col">
+				<h4><center><p id = "" >Keyword 2</p></center></h4>
+				<center><p>	<input id = "{{.Key2ID}}" value = "{{.GKeyword2}}" type="text" name="title" placeholder="" readonly>		</p></center>
+	
+				</div>
+	
+				<div class="col">
+				<h4><center><p id = "" >Keyword 3</p></center></h4>
+				<center><p>	<input id =   "{{.Key3ID}}"  value = "{{.GKeyword3}}" type="text" name="{{.Key3ID}}" placeholder="" readonly> 	</p></center>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col">
+				
+				<h4><center><p id = "" >Amount purchased</p></center></h4>
+				<center><p><input id = "{{.AmountPurchasedID}}" value = "{{.AmountPurchased}}" type="number" name="title" placeholder="999" readonly ></p></center>
+	
+				<h4><center><p id = "" >Amount to purchase</p></center></h4>
+				<center><p><input id = "{{.AmountToPurchaseID}}" value = 0 type="number" name="title" placeholder="" ></p></center>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col">
+				
+				<center><button onclick="changeFields('{{.MainDivID}}', Number('{{.ProductQuantity}}'), Number('{{.ProductID}}') , '{{.QuantityID}}', '{{.AmountPurchasedID}}', '{{.AmountToPurchaseID}}' )">submit</button></center>
+				
+				</div>
+				</div>
+				</div>
+				</div>
+				</div>
+				
+				
+				
+				
+	
+				

@@ -325,17 +325,32 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     {
       
 
+      //window.location.href = "index.html";
+      //window.location = "https://localhost/golangproj/index.html?display2=1";
+
+      alert("a1");
+      var sessID = sessionStorage.getItem("session_userID");
+      sessionStorage.clear();
+      sessionStorage.setItem("session_userID", sessID);
+      sessionStorage.setItem("numberOfRecords", "0");
+
+
+
+      alert("aaa");
       window.location.href = "index.html";
+      return(1);
+      
       alert("++++++++++am here you see it!");
     
     }
       
-    string = string + "userid=" + sessionStorage.getItem("session_userID");
+    string = string + "userid=1&";//sessionStorage.getItem("session_userID");
 
 var queryString = string.substring(0, string.length-1);
 
 
 alert("start zzhere");
+alert(queryString);
               $.ajax({
               url: 'http://localhost:8080/spitBackAmounts',
               type: 'GET',
@@ -346,7 +361,7 @@ alert("start zzhere");
               crossDomain: true,
              
               success: function (data1) {
-
+                alert("testthis");
                
 
                 var flag = "is enough";
@@ -372,14 +387,17 @@ alert("start zzhere");
 
                 
 
-                alert("am here you see it!");
+                alert("am here you see it! - look at this!");
                 window.location.href = "index.html";
+                return(1);
+                //window.location.href = "index.html";
             
                 }
 
                       
                         
                 var flag = "enough";
+                alert("enough start");
                 for (var i = 0; i< data1.length ;i++)
                 {
 
@@ -389,6 +407,7 @@ alert("start zzhere");
                 {
               
                 flag = "not enough";
+                alert("is not enough");
                
                 }
 
@@ -397,7 +416,8 @@ alert("start zzhere");
                 if (flag == "enough")
                 {
                   alert("is enough");
-                  //window.location.href = "donePurchase.html";
+                  window.location.href = "donePurchase.html";
+                  return(1);
                 }
 
                 alert("done purchase");
@@ -408,6 +428,7 @@ alert("start zzhere");
               console.log(data1);
               var grandTotal = 0;
                 let GrandTotal = BigInt(0);
+                let GrandTotalDiv = BigInt(0);
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
                   
@@ -454,6 +475,10 @@ alert("start zzhere");
                 {  
                   debugger;
 
+                  var avail = (document.getElementById(availableID).value);
+                  document.getElementById(buyThisManyID).value = 0;
+                  document.getElementById(availableID).value = (parseInt(avail) + parseInt(bought));
+                  
                   document.getElementById(availableID).style.color = 'red';
                   
                   //amount to buy
@@ -575,19 +600,37 @@ alert("start zzhere");
 
 
 
+
+
+
+
                   
 
                   
                   //GrandTotal = (GrandTotal) + BigInt(parseInt(withTaxTimes1000/1000));
-                  GrandTotal = (GrandTotal) + (withTaxTimes1000/1000);
+
+
+                  GrandTotalDiv = BigInt(parseInt(withTaxTimes1000/1000));
+                  GrandTotal = (GrandTotal) + BigInt(GrandTotalDiv);
                   alert("z");
                   alert(GrandTotal);//
 
 
                   //total no decimals with 1000 multiplier
-                  ProductCostString = (withTaxTimes1000).toString();
-                  
+
+
+                  //ProductCostString = (withTaxTimes1000).toString();
+                  GrandTotalDiv = GrandTotalDiv * BigInt(1000);
+                   ProductCostString = (GrandTotalDiv).toString();
+
+
                   alert(ProductCostString);//
+
+
+
+
+
+
 
 
 

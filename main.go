@@ -1,22 +1,5 @@
 package main
 
-//test
-//repo
-
-//https://github.com/go-session/session
-
-//https://stackoverflow.com/questions/32087233/how-does-mysql-handle-concurrent-inserts
-//http://go-database-sql.org/prepared.html
-//https://stackoverflow.com/questions/37404989/whats-the-difference-between-db-query-and-db-preparestmt-query-in-golang
-//https://golangdocs.com/mysql-golang-crud-example
-
-//1279 dispaly2 main.go
-//1634
-//
-//        bytes1 := ([]byte(ProductCostString))
-//(2)     bytes1 := ([]byte(ProductCost))
-
-//test//test//test
 import (
 	"database/sql"
 	"encoding/json"
@@ -42,6 +25,37 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+/*import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"net/http"
+	"strconv"
+	"text/template"
+	"time"
+)
+*/
+
+//test
+//repo
+
+//https://github.com/go-session/session
+
+//https://stackoverflow.com/questions/32087233/how-does-mysql-handle-concurrent-inserts
+//http://go-database-sql.org/prepared.html
+//https://stackoverflow.com/questions/37404989/whats-the-difference-between-db-query-and-db-preparestmt-query-in-golang
+//https://golangdocs.com/mysql-golang-crud-example
+
+//1279 dispaly2 main.go
+//1634
+//
+//        bytes1 := ([]byte(ProductCostString))
+//(2)     bytes1 := ([]byte(ProductCost))
+
+//test//test//test
 
 var globaltest = 0
 
@@ -79,6 +93,7 @@ type Product1 struct {
 
 //spit back to last html page
 type Product2 struct {
+	quantPurchasing   int
 	ID                int
 	QuantityAvailable int
 	IsEnoughQuantity  bool
@@ -215,11 +230,12 @@ type Product3 struct {
 	Quant int
 }
 
-func makeListForLastpageA(enough bool, id int, quant int) {
+func makeListForLastpageA(amtPurchased int, enough bool, id int, quant int) {
 
 	//to spit back to html
 	prod := Product2{
 
+		quantPurchasing:   amtPurchased,
 		IsEnoughQuantity:  enough,
 		QuantityAvailable: quant,
 		ID:                id,
@@ -449,7 +465,74 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	var enough bool = false
 
 	var k = 0
+
+	////////////////
+
+	//var quantPurchased = 0
+	var updatesAndSelects = "yes"
+
 	for k = 0; k < len(allIds); k++ {
+
+		enough = false
+
+		//////
+		//thisProductID, _ = strconv.Atoi(allIds[k])
+
+		//val1, err1 := strconv.Atoi(allIds[k])
+		//if err1 != nil {
+		//	fmt.Println(err)
+		//}
+
+		//////
+
+		//too do this better combine both queries - taking to long, so kept it!
+		enough = false
+		//one record gets quantity using productID and is "ready"
+		stmt, err := db.Prepare("SELECT products.ProductQuantity FROM products WHERE products.ProductID = ? AND products.ProductStatus = 'ready'")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		rows, err := stmt.Query(allIds[k])
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		//runs one time
+		for rows.Next() {
+
+			//database held this
+			err = rows.Scan(&prodQuant)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			quantPurchased, err := strconv.Atoi(allQuants[k])
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//avoids all updates and selects
+			if quantPurchased > prodQuant {
+				updatesAndSelects = "no"
+				break
+
+			}
+
+		} //for
+	}
+
+	var aRecordWasCreated = "no"
+	///////////////////
+
+	for k = 0; k < len(allIds); k++ {
+
+		/////
+
+		//////
 
 		tx, err := db.Begin()
 		if err != nil {
@@ -486,6 +569,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//runs one time
 		for rows.Next() {
 
+			///////
+
+			///////
+
 			//database held this
 			err = rows.Scan(&prodQuant)
 
@@ -498,17 +585,25 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 
+			////////
+
+			//if quantPurchasing == 0{
+			//	continue
+			//}
+
+			/////////
+
 			//not enough in database
 			if prodQuant-quantPurchasing < 0 {
 				enough = false
-				makeListForLastpageA(enough, (val1), quantPurchasing)
+				makeListForLastpageA(quantPurchasing, enough, (val1), quantPurchasing)
 				continue
 
 			} else {
 				enough = true
 			}
 			// val2 is int id
-			makeListForLastpageA(enough, (val1), quantPurchasing)
+			makeListForLastpageA(quantPurchasing, enough, (val1), quantPurchasing)
 
 		}
 
@@ -518,6 +613,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
+
+		//in here, is no quantities greater than there criteria
 
 		//this gets the record for update
 
@@ -540,80 +637,105 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ProductID = thisProductID
+		//ProductQuantity is amount in database
+		//intquant is amount purchasing
 		var thisQuant = ProductQuantity - intQuant
-		if thisQuant > 0 {
-			//updates productid fields to its quantity minus int-quant from above
-			_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, ProductID)
-			if err != nil {
-				fmt.Println(err)
-			}
 
-			datetime := time.Now()
+		//if avoidUpdatesAndSelects == "no"  ||
+		// is procuct and not much more asked for than available
+		//if quantity asking for is zero or is way to much, dont do transaction
+		//instead zero valuable will be hidden and larger number will be set to zero and still displayed by template2
 
-			//var id1 = 0
+		//quantPurchased > prodQuant
+		//productquant is amount in database, aleady checked : is enough for purchase
 
-			var productQuant int64
-			var order_ID int64
+		//if thisQuant > 0 && intQuant < ProductQuantity && intQuant > 0  && updatesAndSelects == "yes" {
+		if thisQuant > 0 && intQuant > 0 && updatesAndSelects == "yes" {
 
-			//check if there is an order id created for the product record, if there isn't than create the order table
+			{
 
-			//err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
-			//if err != nil {
-			//	fmt.Println(err)
-			//}
+				aRecordWasCreated = "yes"
 
-			//no order id stored in product record so create both
-			//if err == sql.ErrNoRows {
+				//if thisQuant > 0 &&  intQuant < ProductQuantity{
 
-			//if !haveWrittenOrder {
+				//updates productid fields to its quantity minus int-quant from above
+				_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, ProductID)
+				if err != nil {
+					fmt.Println(err)
+				}
 
-			//gets orderid for insert product, is zero if no order record
-			res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
+				datetime := time.Now()
 
-			if err != nil {
-				fmt.Println(err)
-			}
+				//var id1 = 0
 
-			order_ID, err = res.LastInsertId()
+				var productQuant int64
+				var order_ID int64
 
-			if err != nil {
-				fmt.Println(err)
-			}
+				//check if there is an order id created for the product record, if there isn't than create the order table
 
-			//lastID++
+				//err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
+				//if err != nil {
+				//	fmt.Println(err)
+				//}
 
-			//haveWrittenOrder = true
-			//}
+				//no order id stored in product record so create both
+				//if err == sql.ErrNoRows {
 
-			//also need to create a new product table because there is no order record, so there is no orderid
+				//if !haveWrittenOrder {
 
-			//create a purchased record
-			ProductStatus = "purchased"
-			_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
+				//gets orderid for insert product, is zero if no order record
+				res, err := tx.ExecContext(ctx, "INSERT INTO orders (OrderDate) values(?)", datetime)
 
-			if err != nil {
-				fmt.Println(err)
-			}
+				if err != nil {
+					fmt.Println(err)
+				}
 
-			//there is an order id in product so there is a product order table too... they are created together, so update this instead of create it
-			//} else {
-			//
-			//	//update product with status of purchased from product table:  original quantity + intQuant
-			//	//productquant is quantity of product
-			//	//intquant is database quantity taken from the allquant array
-			//	_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
-			//	if err != nil {
-			//		fmt.Println(err)
-			//	}
-			//
-			//}
+				order_ID, err = res.LastInsertId()
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//lastID++
+
+				//haveWrittenOrder = true
+				//}
+
+				//also need to create a new product table because there is no order record, so there is no orderid
+
+				//create a purchased record
+				ProductStatus = "purchased"
+				_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				//there is an order id in product so there is a product order table too... they are created together, so update this instead of create it
+				//} else {
+				//
+				//	//update product with status of purchased from product table:  original quantity + intQuant
+				//	//productquant is quantity of product
+				//	//intquant is database quantity taken from the allquant array
+				//	_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
+				//	if err != nil {
+				//		fmt.Println(err)
+				//	}
+				//
+				//}
+
+			} //for
 
 		}
-		//for
 
-		err5 := tx.Commit()
-		if err5 != nil {
-			fmt.Println(err5)
+		//updatesAndSelects
+		if aRecordWasCreated == "yes" {
+
+			err5 := tx.Commit()
+			if err5 != nil {
+				fmt.Println(err5)
+			}
+
 		}
 
 		//if !didRollback {
@@ -693,6 +815,8 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//n12 := new(big.Int)
 
 	n11GrandTotal := new(big.Int)
+	GrandTotalDiv := new(big.Int)
+	n11GrandTotal, _ = n11GrandTotal.SetString("0", 10)
 
 	for i = 0; i < len(allIds); i++ {
 
@@ -833,11 +957,17 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//add pennies and tax amount without decimal point
 			withTaxTimes1000.Add(totalNoTaxNo1000, tax2)
 
-			n11GrandTotal.Add(n11GrandTotal, withTaxTimes1000)
-			n11GrandTotal.Div(n11GrandTotal, thousand)
+			GrandTotalDiv.Div(withTaxTimes1000, thousand)
+			n11GrandTotal.Add((n11GrandTotal), (GrandTotalDiv))
+
+			//n11GrandTotal.Div(n11GrandTotal, thousand)
 
 			//total no decimals with 1000 multiplier
-			ProductCostString = withTaxTimes1000.Text(10)
+
+			GrandTotalDiv.Mul(GrandTotalDiv, thousand)
+			//totals:
+			//ProductCostString = withTaxTimes1000.Text(10)
+			ProductCostString = GrandTotalDiv.Text(10)
 
 			forCostEachFloat, _ := strconv.ParseFloat(ProductCostString, 64)
 
@@ -1355,9 +1485,9 @@ type Display3 struct {
 
 //////////
 
-var savedProductIDs []int
-
 func display1(w http.ResponseWriter, r *http.Request) {
+
+	var savedProductIDs []int
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
