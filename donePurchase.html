@@ -25,7 +25,13 @@
         $(document).ready(function () {
         $('#button1').click(function () {
 
-            window.location.href = "index.html";
+        var sessID = sessionStorage.getItem("session_userID");
+        sessionStorage.clear();
+        sessionStorage.setItem("session_userID", sessID);
+        sessionStorage.setItem("numberOfRecords", "0");
+
+        window.location.href = "index.html";
+        return(1);
      
         });
     });
