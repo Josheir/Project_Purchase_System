@@ -57,6 +57,9 @@ import (
 
 //test//test//test
 
+//one of these also in display2, check this
+var savedProductIDs []int
+
 var globaltest = 0
 
 var globalFlagisVariable = "no"
@@ -1487,7 +1490,7 @@ type Display3 struct {
 
 func display1(w http.ResponseWriter, r *http.Request) {
 
-	var savedProductIDs []int
+	//var savedProductIDs []int
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -1501,6 +1504,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err1)
 	}
 
+	//determined by max products allowed for
+	//var toAppend [10]string
 	var ProdID []string
 	var keyTotalAmountBought []string
 	var key1 []string
@@ -1533,80 +1538,51 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	// 13, 11, 13, 12
 	length = len(r.Form["id"])
+
+	//var j = 0
 	if length > 0 {
+
+		/////////
+
+		ProdID = append(ProdID, []string{r.Form["id"][i]}...)
+		keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
+
+	}
+	//////////
+	/*
+
+		for j = 0; j < (length); j++ {
+			toAppend[j] = "yes"
+
+		}
+
+		for j = 0; j < (length); j++ {
+			for i = 0; i < (length); i++ {
+
+				//if appended structure has data
+				if r.Form["id"][i] == ProdID[j] {
+					toAppend[i] = "no"
+
+				}
+
+			}
+		}
 
 		for i = 0; i < (length); i++ {
 
-			ProdID = append(ProdID, []string{r.Form["id"][i]}...)
-			keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
+			if toAppend[i] == "no" {
 
+			} else {
+				ProdID = append(ProdID, []string{r.Form["id"][i]}...)
+				keyTotalAmountBought = append(keyTotalAmountBought, []string{r.Form["quant"][i]}...)
+			}
 		}
 
-	} else {
-
-	}
+	}*/
 
 	//////
-
-	/*
-		c := json.NewDecoder(r.Body)
-		var err81 = c.Decode(&myArray)
-		if err81 != nil {
-			fmt.Println(err81)
-			fmt.Println(c)
-			fmt.Println(myArray)
-
-		}
-	*/
-
-	//////
-
-	/*
-		entireArray := display6{}
-		//c := json.NewDecoder(r.Body)
-
-		body, readErr := ioutil.ReadAll(r.Body)
-		if readErr != nil {
-			fmt.Println(readErr)
-			fmt.Println(body)
-		}
-		fmt.Println(body)
-	*/
-
-	/*
-		c = json.NewDecoder(r.Body)
-		var err80 = c.Decode(&entireArray)
-		if err80 != nil {
-			//fmt.Println(err80)
-			//fmt.Println(c)
-			//fmt.Println(myArray[0].Quant)
-
-		}
-	*/
-	/*
-		r.ParseForm()
-		var body1 string
-		for key, _ := range r.Form {
-			body1 = string(key)
-			fmt.Println(body1)
-			fmt.Println(string(body1))
-			break
-		}
-
-	*/
-
-	/*
-
-		array := r.Form["var"]
-		fmt.Println(array)
-
-		var a = r.FormValue("var")
-		fmt.Println(a)
-		queries := r.URL.Query()
-		fmt.Println(queries)
-
-	*/
 
 	var val1 = ""
 	val1 = UserIDstring[0]
@@ -1633,6 +1609,16 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("in display 1")
 
 	db := dbConn()
+
+	////////
+
+	//stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +
+	//		"products.ProductDescription, products.ProductCost, products.ProductQuantity, products.ProductCatTitle , products.ProductFilename " +
+	//		"FROM products WHERE " +
+	//		"((products.ProductKeyWord1 = ?) OR " +
+	//		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
+
+	/////////
 
 	//selects many productid
 	stmt, err := db.Prepare("SELECT products.ProductKeyword1, products.ProductKeyword2, products.ProductKeyword3, products.ProductName, products.ProductID, " +

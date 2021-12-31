@@ -194,6 +194,7 @@ $(document).ready(function () {
 		
 		var array = [];
 		var storedArray  = [];
+		var productIDArray = [];
 		
 		var globtest = 0;
 
@@ -226,7 +227,7 @@ $(document).ready(function () {
 		//pushed search (button 6) display1
 		function ajaxCall( flag2)
 		{
-			//alert("z1");
+			alert("z1");
 
 			let amt1 = sessionStorage.getItem("amtOfSelectedRecords");
 			if (amt1 != null)
@@ -269,9 +270,9 @@ $(document).ready(function () {
 
 		var val1 = "";
 		
-		//alert("keys -A");
+		alert("keys -A");
 		for(let key of keys) {
-		//alert(key);
+		alert(key);
 			
 		
 
@@ -315,7 +316,47 @@ $(document).ready(function () {
 		{
 
 			
-			//ajax("got in here!");
+			
+			alert("is here....!");
+			///////////////////
+
+			/*
+			//var item = sessionStorage.getItem(key);
+
+
+			//cehck for duplicates
+			productIDArray = JSON.parse(sessionStorage.getItem(key));
+
+			alert("is in new functionality");
+			var counter = 0;
+			if(productIDArray)
+			{
+			for(var i = 0; i < productIDArray.length ; i++)
+			{
+			if (productIDArray[i] == key)
+			{
+				counter = counter + 1;
+				
+				alert("duplicate product");
+				if(counter > 1)
+				{
+					continue;
+				}
+			}
+
+
+			}
+
+			}
+
+
+			*/
+
+
+
+			////////////////////
+
+
 			
 			var item = sessionStorage.getItem(key);
 			
@@ -354,6 +395,9 @@ $(document).ready(function () {
 
 	}
 		
+
+		alert("here");
+		alert(string);
 		var val1 = document.getElementById("search").value;
 
 	  //alert("val1");
@@ -393,6 +437,24 @@ $(document).ready(function () {
 		}
 		
 	}
+
+	//////////////
+
+
+
+
+
+
+
+
+
+	///////////////
+
+
+
+
+
+
 
 ////////
 //alert("is it getting here");
