@@ -24,11 +24,11 @@
         
         $(document).ready(function () {
         $('#button1').click(function () {
-
-        var sessID = sessionStorage.getItem("session_userID");
+        // set up session level variables leaving sessionUserID and numberofrecordschosen
+        var sessID = sessionStorage.getItem("sessionUserID");
         sessionStorage.clear();
-        sessionStorage.setItem("session_userID", sessID);
-        sessionStorage.setItem("numberOfRecords", "0");
+        sessionStorage.setItem("sessionUserID", sessID);
+        sessionStorage.setItem("numberOfRecordsChosen", "0");
 
         window.location.href = "index.html";
         return(1);

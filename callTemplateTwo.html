@@ -21,7 +21,7 @@
   <input type="hidden" id="val" name="val" value="1">
   <div id = "removeButton">
   <div id = "displayMessage"></div>
-<center><input   id="button1" onclick = "CallIndex()"  type="submit" value="Return to Original Order"/></center>
+<center><input   id="button1" onclick = "restoreOriginalOrder()"  type="submit" value="Return to Original Order"/></center>
 </div>
 
 
@@ -34,13 +34,13 @@
 
 window.sessionStorage
 
-//this is in finalpage.html and index.html
+//this is in callTemplateTwo.html and index.html
 var MAXRECORDS = 20
 
-function CallIndex()
+function restoreOriginalOrder()
 {
 	
-	//if(val1 = sessionStorage.getItem("numberOfRecords"))
+	//if(val1 = sessionStorage.getItem("numberOfRecordsChosen"))
 	//{
 	//	
 	//	if (val1 == MAXRECORDS)
@@ -50,8 +50,8 @@ function CallIndex()
 	//	}
 	//}
 
-	//alert("callindex");
-	window.location.href = "index.html?display2=1";
+	//alert("restoreOriginalOrder");
+	window.location.href = "index.html?displayOrdersTemplateAgain=1";
 	return(1);
 
 }
@@ -67,8 +67,8 @@ loadData();
 });
 
 /*
-      //pressed return to order near checkout to display2
-        function display2(){
+      //pressed return to order near checkout to displayOrdersTemplateAgain
+        function displayOrdersTemplateAgain(){
 
 			alert("zzzzzzzzzznot here i hope");
         var querystring = "";
@@ -105,7 +105,7 @@ loadData();
             //alert(item);
 
           }
-          else if(key == "session_userID")
+          else if(key == "sessionUserID")
           {
 			var item = sessionStorage.getItem(key);
 			querystring += "uid=" + item + "&"
@@ -113,14 +113,14 @@ loadData();
           else
           {
             var item = sessionStorage.getItem(key);
-            querystring += "id=" + key + "&quant=" + item + "&";
+            querystring += "id=" + key + "&amtTryingToPurchase" + item + "&";
           } 
 
         }
 
         querystring += "numofkeywords=" + counter+1 + "&";
 
-        var url = "http://localhost:8080/display2";
+        var url = "http://localhost:8080/displayOrdersTemplateAgain";
         //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
 
@@ -138,7 +138,7 @@ loadData();
 
                     var retVals = [];
                     
-                    retVals = deriveKeywordFromResult(result);
+                    retVals = forBuildingHTML(result);
                     
                     //final keyword
                     var item1 = retVals[0];  
@@ -157,7 +157,7 @@ loadData();
 
                       //ourNewWord = ourNewWord.replaceAll(val1 , '');
 
-                      //retVals = deriveKeywordFromResult(ourNewWord);
+                      //retVals = forBuildingHTML(ourNewWord);
 
                       //document.getElementById('removeMe').innerHTML   = retVals[1];
                       
@@ -173,7 +173,7 @@ loadData();
 
                         ourNewWord = ourNewWord.replace(val1 , '');
 
-                        retVals = deriveKeywordFromResult(ourNewWord);
+                        retVals = forBuildingHTML(ourNewWord);
 
                         document.getElementById('removeMe').innerHTML   = retVals[1];
 
@@ -188,7 +188,7 @@ loadData();
                       document.getElementById('buttonHere').innerHTML   =
                        " <input   id='button'  type='button' value='checkout'/> " +
                        "<input   name = 'search' type='text' id='search' name='search' placeholder= 'apple1' value='apple2'/>" +
-                       "<input   id='button6' onclick = 'ajaxCall(\"0\")' type='button' value='Search'/> ";
+                       "<input   id='button6' onclick = 'displayFromSearch(\"0\")' type='button' value='Search'/> ";
 
 
                       
@@ -205,7 +205,7 @@ loadData();
 	*/
 
     ///////////////
-    //function ajaxCall(flag)
+    //function displayFromSearch(flag)
     //{
     //  alert("made it here, 183");
     //}
@@ -216,7 +216,7 @@ loadData();
     //////////////////
 		/*
       	//flag2 set with a 1 means came from template2 and is returning to old keyword
-		function ajaxCall( flag2)
+		function displayFromSearch( flag2)
 		{
 
 			alert("zzzzzzzzzz");
@@ -239,18 +239,18 @@ loadData();
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
-		if (key != "session_userID" && key != "keywords" && key  != "alreadyZero" && key !=  "numberOfRecords") 
+		if (key != "sessionUserID" && key != "keywords" && key  != "alreadyZero" && key !=  "numberOfRecordsChosen") 
 		{
 			//alert("number here");
 			var item = sessionStorage.getItem(key);
 			
-       		string =  string + "id=" + key + "&quant=" + item + "&";
+       		string =  string + "id=" + key + "&amtTryingToPurchase" + item + "&";
   
        		wasKeys = "yes";
 			   
 		}
 		
-		else if(key == "session_userID")
+		else if(key == "sessionUserID")
         {
 			//alert("session here");
 			var item = sessionStorage.getItem(key);
@@ -311,12 +311,12 @@ loadData();
 	  var val2 = [];
       if(wasKeys == "yes"){
 
-		val2 = setSession(true, val1, string, flag2);
+		val2 = DoesKeywordAlreadyExist(true, val1, string, flag2);
 	  }
 	  //THERE ARNT URLS NOW 
 	  else
       {
-		val2 = setSession(false, val1, string, flag2);
+		val2 = DoesKeywordAlreadyExist(false, val1, string, flag2);
 
 	  }
 	  //alert("val2");
@@ -367,8 +367,8 @@ loadData();
 				//alert(result)
 
 				var retVals = [];
-				//item1, ourNewWord = deriveKeywordFromResult(result);
-				retVals = deriveKeywordFromResult(result);
+				//item1, ourNewWord = forBuildingHTML(result);
+				retVals = forBuildingHTML(result);
 				
 				var item1 = retVals[0];  
 				var ourNewWord = retVals[1]; 
@@ -439,10 +439,12 @@ loadData();
 //checkout button pressed, so is here!
 //data is here by sessionstorage
 //send it to purge which calls template with data
-var gFlag1 = 0;
+
+//restoring past order screen
+var gFlagIsSomeRecords = false;
 var queryString= ""; 
 
-//calls template2
+//calls template2, load ProductID/amount of quantity purchasing
 function loadData() {
  
 //alert("is it getting here");
@@ -457,7 +459,7 @@ for(let key of keys) {
 
   //alert("keys hereaaa");
   //alert(key);
-  if(key == "session_userID")
+  if(key == "sessionUserID")
   {
     continue;
   }
@@ -465,16 +467,16 @@ for(let key of keys) {
   {
 		continue;
   }
-  else if(key == "numberOfRecords")
+  else if(key == "numberOfRecordsChosen")
   {
 		continue;
   }
-  else if(key == "alreadyZero")
-  {
-		continue;
-  }
+  //else if(key == "alreadyZero")
+  //{
+//		continue;
+//  }
 
-  else if(key == "amtOfSelectedRecords")
+  else if(key == "amtOfKeywords")
   {
 		continue;
   }
@@ -490,10 +492,10 @@ for(let key of keys) {
 
   //alert("item");
   //alert(item);
-  string =  string + "id=" + key + "&quant=" + item + "&";
+  string =  string + "id=" + key + "&amtTryingToPurchase" + item + "&";
   //alert(string);
   
-  var1 = "hasBeenHere";
+  gFlagIsSomeRecords = true;
   
 }
 
@@ -501,9 +503,9 @@ for(let key of keys) {
 
 
 //not any  ids and quants
-if(var1 == "hasntBeenHere")
-  {
-	  //if checkout has no quant... than here setsession checkout to removeKeyword
+//if(var1 == "hasntBeenHere")
+//  {
+	  //if checkout has no quant... than here DoesKeywordAlreadyExist checkout to removeKeyword
 	  //if search pressed get checkout from session
 	  //and remove keyword
 	 
@@ -511,7 +513,7 @@ if(var1 == "hasntBeenHere")
 	  //var val1 = document.getElementById(dispalyMessage).value;
 	  //document.getElementById("displayMessage").innerHTML = "No products were selected!";
 	
-	  gFlag1 = 1;
+//	  gFlagIsSomeRecords = true;
 	  //var storedArray = [];
 	  //sessionStorage.setItem("checkoutPressed", "pressed");
 	 
@@ -522,29 +524,29 @@ if(var1 == "hasntBeenHere")
 
 	
     //alert("no!");
-    //window.location.href = "index.html?display2=1&";
+    //window.location.href = "index.html?displayOrdersTemplateAgain=1&";
     //return(1);
-  }
+ // }
 
   //alert("queryString0");
   //alert(gFlag1);
-//goes backwards and last entered writes over
-if(gFlag1 == 0)
+//overWrites"&
+if(gFlagIsSomeRecords == true)
 {
 	queryString = string.substring(0, string.length-1);
 	alert("queryString100");
 	alert(queryString);
 }
-else
-{
+//else
+//{
 	//alert("queryString2");
 	//queryString = "";
-}
+//}
 
 /////alert("queryString");
 //alert(queryString);
 
-var url = "http://localhost:8080/template2";
+var url = "http://localhost:8080/cartTemplate";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
 
@@ -564,11 +566,14 @@ var url = "http://localhost:8080/template2";
                     async:false,
                     success: function (data1) {
 						//alert("I am here");
-                      alert(data1);
+                      //fix this, here
+						alert(data1);
 					  val1 = data1;
-                      if (gFlag1 == 1)
+                      if (!gFlagIsSomeRecords)
 					  {
 						  val1 = "<br><center><h3>No Products Were Selected Yet!</center><br></h3>";
+						  
+
 						  val1 = val1 + data1;
 						  $('#div1').html(val1);
 					  }
@@ -582,7 +587,7 @@ var url = "http://localhost:8080/template2";
 }
   
 /*  
-function deriveKeywordFromResult(result)
+function forBuildingHTML(result)
 {
 
 				
@@ -612,7 +617,7 @@ return [item1, ourNewWord, item];
 
   //returns querystring
 //thi function checks if a keyword is already used and returns the queystring
-function setSession(areThereUrls, val1, string, flag2)
+function DoesKeywordAlreadyExist(areThereUrls, val1, string, flag2)
 {//NO URLS
 
 	//this flag means that this is a display that returned from template2, so is a special condition
@@ -713,7 +718,7 @@ function setSession(areThereUrls, val1, string, flag2)
   */
 
   /*
-function deriveKeywordFromResult(result)
+function forBuildingHTML(result)
 {
 
 				

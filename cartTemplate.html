@@ -217,7 +217,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     //each iteration is one purchase
     for(let key of keys) {
         counter++;
-        if(key =="session_userID")
+        if(key =="sessionUserID")
         {
           counter--;
          
@@ -230,19 +230,19 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
           
           continue;
         }
-        if(key =="numberOfRecords")
+        if(key =="numberOfRecordsChosen")
         {
           counter--;
          
           continue;
         }
-        if(key =="alreadyZero")
-        {
-          counter--;
-         
-          continue;
-        }
-        if(key =="amtOfSelectedRecords")
+        //if(key =="alreadyZero")
+        //{
+        //  counter--;
+        // 
+        //  continue;
+        //}
+        if(key =="amtOfKeywords")
         {
           counter--;
          
@@ -315,7 +315,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
         }
 
         //quant is amount trying to buy
-        string =  string + "id=" + key + "&quant=" + item + "&";
+        string =  string + "id=" + key + "&amtTryingToPurchase" + item + "&";
                 
     }
 
@@ -326,13 +326,13 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       
 
       //window.location.href = "index.html";
-      //window.location = "https://localhost/golangproj/index.html?display2=1";
+      //window.location = "https://localhost/golangproj/index.html?displayOrdersTemplateAgain=1";
 
       alert("a1");
-      var sessID = sessionStorage.getItem("session_userID");
+      var sessID = sessionStorage.getItem("sessionUserID");
       sessionStorage.clear();
-      sessionStorage.setItem("session_userID", sessID);
-      sessionStorage.setItem("numberOfRecords", "0");
+      sessionStorage.setItem("sessionUserID", sessID);
+      sessionStorage.setItem("numberOfRecordsChosen", "0");
 
 
 
@@ -344,7 +344,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     
     }
       
-    string = string + "userid=1&";//sessionStorage.getItem("session_userID");
+    string = string + "userid=1&";//sessionStorage.getItem("sessionUserID");
 
 var queryString = string.substring(0, string.length-1);
 
@@ -352,7 +352,7 @@ var queryString = string.substring(0, string.length-1);
 alert("start zzhere");
 alert(queryString);
               $.ajax({
-              url: 'http://localhost:8080/spitBackAmounts',
+              url: 'http://localhost:8080/sendBackNewCartData',
               type: 'GET',
               dataType: 'json',
               
@@ -373,7 +373,7 @@ alert(queryString);
        
                     alert("keys here...");
                     alert(key);
-                  if(key =="session_userID")
+                  if(key =="sessionUserID")
                   {
                     continue;
                   }

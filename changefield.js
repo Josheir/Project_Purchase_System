@@ -1,6 +1,6 @@
 
 			//template number one presses this and changes values in quantity and amount purchased
-			function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
+			function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
 				
 
@@ -85,8 +85,8 @@
 						//alert(amountToBePurchased);
 						
 						//so far, so good is still in database!
-						//setData(originalQuantity, productID, amountToBePurchased, 0)
-						setData(amountPurchasedSoFar, productID, amountToBePurchased, 0)
+						//SetDataFromOrderTemplateOnSubmit(originalQuantity, productID, amountToBePurchased, 0)
+						SetDataFromOrderTemplateOnSubmit(amountPurchasedSoFar, productID, amountToBePurchased, 0)
 
 
 
@@ -107,7 +107,7 @@
 
 
       //called from checkout button to setitem for template2 to use
-      function  setData(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
+      function  SetDataFromOrderTemplateOnSubmit(quantityOfProduct, productID, quantityTryingToSet, reduceBool)
 			{
 				//if(firstTime == "yes")
 				//{
@@ -144,7 +144,7 @@
 				
 					//alert("in this place");
 					//alert(productID);
-					//alert("setdata");
+					//alert("SetDataFromOrderTemplateOnSubmit");
 					keyFlag = "found";
 					//sofar
 					//alert(sessionStorage.getItem(key));
