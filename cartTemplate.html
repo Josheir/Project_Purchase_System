@@ -47,6 +47,7 @@
 <div id = "buttonHere"></div>
 <div id = "removeMe">
 {{range .}}
+<!-- display heading with this condition-->
 {{if(eq .Condition 1)}}
 
 
@@ -96,15 +97,16 @@
 
 </tr>
 
-<tr id="row2" style="display: none;">
-  <td colspan="2">Secret row, spooky</td>
-</tr>
+
+
 
 
 
 
 
 {{if(eq .Condition2 -1)}}
+
+<!--dispaly totals when condition is -1-->
 
 <tr>
 <td><center> </center>  </td>
@@ -137,7 +139,7 @@
 
 
   
-  
+//fix this, here
 function changeColorToBlack(AmountToBuyID)
 {
   document.getElementById(AmountToBuyID).style.color = "black";
@@ -152,7 +154,7 @@ function hideRow(rowId)
 
 
 ///////
-
+/*
 function sqrt(value) {
     if (value < 0n) {
         throw 'square root of negative numbers is not supported'
@@ -172,7 +174,7 @@ function sqrt(value) {
 
     return newtonIteration(value, 1n);
 }
-
+*/
 //////
 
 //checkout pressed from template2
@@ -185,6 +187,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   var gtotal = parseFloat(gtotal);
   
 
+  //leading letter for ids that are used in cart template
   var val1 = "";
   
   var var1 = "A";
@@ -209,7 +212,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
   var bought = 0;
   
     
-    var flag = "isNotNegValue";
+    var flagToReturnOut = false;
     let keys = Object.keys(sessionStorage);
     
     var amtOfHiddenProducts = 0;
@@ -298,29 +301,29 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
           
           var str2 = amtInBuyBox.toString();
          
-          flag = "isNegValue";
+          flagToReturnOut= true;
         }
         else if (isNaN(item ))
         {
           
           var str2 = amtInBuyBox.toString();
          
-          flag = "isNegValue";
+          flagToReturnOut= true;
         }
 
         
-        if (flag == "isNegValue")
+        if (flagToReturnOut == true)
         {
           return;
         }
 
-        //quant is amount trying to buy
+        //id and amount trying to buy
         string =  string + "id=" + key + "&amtTryingToPurchase" + item + "&";
                 
     }
 
     
-    
+    //fix this, here
     if (amtOfHiddenProducts == (counter + 1))
     {
       
@@ -329,6 +332,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       //window.location = "https://localhost/golangproj/index.html?displayOrdersTemplateAgain=1";
 
       alert("a1");
+      //reset sessio variables because goint baack to index
       var sessID = sessionStorage.getItem("sessionUserID");
       sessionStorage.clear();
       sessionStorage.setItem("sessionUserID", sessID);
@@ -343,12 +347,13 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
       alert("++++++++++am here you see it!");
     
     }
-      
+    //build string
     string = string + "userid=1&";//sessionStorage.getItem("sessionUserID");
 
+    //removed &
 var queryString = string.substring(0, string.length-1);
 
-
+let flagisEnoughProduct = true;
 alert("start zzhere");
 alert(queryString);
               $.ajax({
@@ -364,26 +369,26 @@ alert(queryString);
                 alert("testthis");
                
 
-                var flag = "is enough";
+                //let enoughFlag = true;
 
-                
+                //no records
                 if(data1.length == null){
 
-                  for(let key of keys) {
-       
-                    alert("keys here...");
-                    alert(key);
-                  if(key =="sessionUserID")
-                  {
-                    continue;
-                  }
-                  else
-                  {
+                  //for(let key of keys) {
+       //
+         //           alert("keys here...");
+           //         alert(key);
+             //     if(key =="sessionUserID")
+               //   {
+                 //   continue;
+                  //}
+                  //else
+                  //{
                     
                       
 
-                  }
-                }
+                  //}
+                //}
 
                 
 
@@ -396,7 +401,7 @@ alert(queryString);
 
                       
                         
-                var flag = "enough";
+                //var flag = "enough";
                 alert("enough start");
                 for (var i = 0; i< data1.length ;i++)
                 {
@@ -406,29 +411,38 @@ alert(queryString);
                 if(data1[i].IsEnoughQuantity == false)
                 {
               
-                flag = "not enough";
-                alert("is not enough");
+                  flagisEnoughProduct = false;
+                  break;
+                //flag = "not enough";
+                //alert("is not enough");
                
                 }
 
                 }
 
-                if (flag == "enough")
+                if (flagisEnoughProduct == true)
                 {
                   alert("is enough");
                   window.location.href = "donePurchase.html";
                   return(1);
                 }
 
+
+                //if here, there is at least one record that doesnt have enough product
                 alert("done purchase");
 
+                //fix this, here
               var lengthOfData = data1.length;
 
               alert(lengthOfData);
               console.log(data1);
-              var grandTotal = 0;
+
+
+                var grandTotal = 0;
+                //initalize big ints for money system
                 let GrandTotal = BigInt(0);
                 let GrandTotalDiv = BigInt(0);
+                //from jquery call to main.go functino:sendbackcartdata
                 for(var i = 0; i<(lengthOfData) ; i++)
                 {
                   
@@ -438,13 +452,14 @@ alert(queryString);
                  alert(typeof(lengthofData))
                  //GTotalWithTax = 0;
                 
+                 //for ids of carttemplate's ids
                 var boughtid = "B" + i; 
                 var buyThisManyID = "A" + i;
                 var availableID =  "D" + i;
                 var costID = "C" + i;
                 var totalCostID = "TC" + i;
                 var GrandTotalStringID = "GT" + i;
-                var oneDivID1 =  "V" + i;
+                var mainDivID =  "V" + i;
                 
                 
                 /////////
@@ -452,11 +467,12 @@ alert(queryString);
                 
                 
                 bought1 = 1;
+                //hide any line with a zero for buying
                 if(bought1 == 0)// && (amtBuying1 == "" || (isNaN(amtBuying1)) ))
                 {
                  
                   
-                  hideRow(oneDivID1);
+                  hideRow(mainDivID);
                   amtOfHiddenProducts++;
                   
                 }
@@ -465,16 +481,17 @@ alert(queryString);
 
                 /////////
              
-                var str1 = false;
-                str1 = data1[i].IsEnoughQuantity;
+                var isEnoughQuantity = false;
+                //still in loop
+                isEnoughQuantity = data1[i].IsEnoughQuantity;
 
                 
                
                 //wasnt enough, so make red
-                if (str1 == false)
+                if (isEnoughQuantity == false)
                 {  
-                  debugger;
-
+                  //debugger;
+                  //change settings of cart template if the current record doesn't have enough product in db for request 
                   var avail = (document.getElementById(availableID).value);
                   document.getElementById(buyThisManyID).value = 0;
                   document.getElementById(availableID).value = (parseInt(avail) + parseInt(bought));
@@ -496,12 +513,13 @@ alert(queryString);
 
                   alert("start debugging");
                   
-                  
+                  //money, id is big ints hold only pennies so that there is less estimation problems, 
+                  //although not perfect money is calculated the same again and again
                   let totalNoTaxTimes1000 = BigInt(0);
                   let totalNoTaxOne = BigInt(0);
                   let nba = BigInt(0);
                   let taxTimes1000 = BigInt(0);
-                  let n3 = BigInt(0);
+                  let becomePenniesTotalOfOneProductlNoTax = BigInt(0);
                   let tax = BigInt(0);
                   let thousand = BigInt(0);
                   let withTaxTimes1000 = BigInt(0);
@@ -531,12 +549,13 @@ alert(queryString);
                  
                   //integer
                   //n2 = document.getElementById(buyThisManyID).value;
+                  //fix this, here
                   amountBought = document.getElementById(buyThisManyID).value;
                   
                   //total cost decimal tax and pennies - string  $###.##;  has exact 
-                  n3 =document.getElementById(costID).value;
+                  becomePenniesTotalOfOneProductlNoTax =document.getElementById(costID).value;
                   //remove $ sign still has decimal place
-                  n3 = n3.substring(1);
+                  becomePenniesTotalOfOneProductlNoTax = becomePenniesTotalOfOneProductlNoTax.substring(1);
 
                   alert("a");//10000.22
 
@@ -557,7 +576,7 @@ alert(queryString);
                   }
 
 
-                  n3 = string2a;
+                  becomePenniesTotalOfOneProductlNoTax = string2a;
                   alert(n3); //1000022
                   
 
@@ -565,7 +584,7 @@ alert(queryString);
                   
 
                   //total pennies, no tax
-                  totalNoTaxOne = n3;
+                  totalNoTaxOne = becomePenniesTotalOfOneProductlNoTax;
                   alert(totalNoTaxOne);//1000022
                   //total without tax in pennies times 1000
                   totalNoTaxTimes1000 = totalNoTaxOne * thousand * amountBought;
@@ -634,7 +653,7 @@ alert(queryString);
 
 
 
-                  
+                  //for chnanging template cartTemplate
                   forCostEachFloat = parseFloat(ProductCostString);
 
                   //total deimals with changed decimal place
@@ -680,7 +699,7 @@ alert(queryString);
                   alert(floatGrandTotal);//20010.44!
                   
                   
-                 
+                 //for updating cart template
                   stringGrandTotal = "Grand Total:  $" + parseFloat(floatGrandTotal);
                   alert(stringGrandTotal);//$20010.44!
                   document.getElementById(GrandTotalStringID).value = stringGrandTotal;
