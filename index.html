@@ -33,28 +33,12 @@
 
   <script>
 
-//a change of gui, such as textbox happens at the end of function or at function failure.
-//test, "test.html"
 
-///alert("At Record Limit");
-//alert("AT RECORD MAXIMUM, 
-
-	  //753 text message (4)
-
-    //alert text : 164 (4), 183
 	window.sessionStorage
 
-	//all keywords need to  be filled out! to make search product work
 	
-
-    //https://stackoverflow.com/questions/4187146/truncate-number-to-two-decimal-places-without-rounding
-    
-  
-//for returning our of functions - //this is in finalpage.html and index.html
 var MAXRECORDS = 4;
 const MAXKEYWORDS = 4;
-//keep these message boxes: 44 finalpages, 495 index, 163 index
-//first two use const above, and last is in ajaxcall for checking login
 
 var var1 =1;
 var var2 =1;
@@ -65,7 +49,7 @@ var3 = var1 + var2;
     
       <input   id="button7"  type="button" value="checkout"/>
       <input   name = "search" type="text" id="search" name="search" placeholder= "apple4" value="apple4"/>
-      <input   id="button6" onclick = "ajaxCall('0')" type="button" value="Search"/>
+      <input   id="button6" onclick = "displayFromSearch('0')" type="button" value="Search"/>
 	  <input   id="button8" onclick = "resetCall()" type="button" value="Reset"/>
 
 
@@ -84,13 +68,14 @@ var3 = var1 + var2;
       
 <script>
 
-//loads ajax on page start
+
 $(function(){
 
-//alert("stop here");	
+
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-var searchterm = urlParams.get('display2');
+//fix this, here
+var searchterm = urlParams.get('displayOrdersTemplateAgain');
 
 
 /////////
@@ -108,7 +93,7 @@ for(let key of keys) {
 		
 		
 	}
-	sessionStorage.setItem("numberOfRecords", "0");
+	sessionStorage.setItem("numberOfRecordsChosen", "0");
 
 
 
@@ -126,8 +111,8 @@ for(let key of keys) {
 if (searchterm == "1")
 {
 	//alert("made it");
-	display2();
-	//ajaxCall('0');
+	displayOrdersTemplateAgain();
+	//displayFromSearch('0');
 }
 
 return(1);
@@ -140,14 +125,14 @@ return(1);
 });
 
 
-var array1 = [];
-function insert(pid, quantLeft) {
-    array1.push({
-        pid: pid,
-        quant: quant,
-       
-    });        
-}
+//var array1 = [];
+//function insert(pid, quantLeft) {
+//    array1.push({
+//        pid: pid,
+//        quant: quant,
+//       
+//    });        
+//}
 
 
 
@@ -202,12 +187,14 @@ $(document).ready(function () {
 		///////////
 
 		
+		//pudhed reset button in index
 		function resetCall()
 		{
-			sessionStorage.setItem("amtOfSelectedRecords", 0);
+			//sessionStorage.setItem("amtOfKeywords", 0);
 
 
-			sessionStorage.clear();
+			//sessionStorage.clear();
+			//program reprints search box and buttons
 			var urlValue = "http://localhost/golangproj/index.html";
 			var val1 = sessionStorage.getItem("session_userID");
 			
@@ -225,11 +212,12 @@ $(document).ready(function () {
 
 
 		//pushed search (button 6) display1
-		function ajaxCall( flag2)
+		function displayFromSearch( flag2)
 		{
-			alert("z1");
+			//alert("z1");
 
-			let amt1 = sessionStorage.getItem("amtOfSelectedRecords");
+			//keeeps track of keywords displaying, only so many allowed
+			let amt1 = sessionStorage.getItem("amtOfKeywords");
 			if (amt1 != null)
 			{
 			let gAmt1Int = Number(amt1);
@@ -242,11 +230,11 @@ $(document).ready(function () {
 			}	
 			
 
-			//alert("ajaxcall");
+			//alert("displayFromSearch");
 			
 
 			//alert("keys -A");
-		
+		//check for login
 		var getUser = sessionStorage.getItem("session_userID");
 		
 		if (getUser == null)
@@ -257,7 +245,7 @@ $(document).ready(function () {
 
 
 	  
-
+		// fix this, here
 		var reloadFlag = 1;
 		
 		var querystring = "";
@@ -268,25 +256,27 @@ $(document).ready(function () {
         let keys = Object.keys(sessionStorage);
 
 
-		var val1 = "";
+		var searchWord = "";
 		
 		alert("keys -A");
+
+		//build query fo main.go display of order template
 		for(let key of keys) {
 		alert(key);
 			
 		
 
-		if(key ==  "numberOfRecords")
+		if(key ==  "numberOfRecordsChosen")
 		{
 			
 			continue;
 		}
-		if(key ==  "alreadyZero")
-		{
-			
-			continue;
-		}
-		if(key =="amtOfSelectedRecords")
+		//if(key ==  "alreadyZero")
+		//{
+	//		
+	//		continue;
+	//	}
+		if(key =="amtOfKeywords")
 		{
 			continue;
 		}
@@ -312,7 +302,7 @@ $(document).ready(function () {
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
-		if (key != "session_userID" && key != "keywords" && key != "numberOfRecords" && key != "alreadyZero" && key != "amtOfSelectedRecords") 
+		if (key != "session_userID" && key != "keywords" && key != "numberOfRecordsChosen" && key != "amtOfKeywords") 
 		{
 
 			
@@ -361,7 +351,7 @@ $(document).ready(function () {
 			var item = sessionStorage.getItem(key);
 			
 			
-       		string =  string + "id=" + key + "&quant=" + item + "&";
+       		string =  string + "id=" + key + "&amtTryingToPurchase" + item + "&";
 			
 			
 			reloadFlag = 0;
@@ -382,7 +372,7 @@ $(document).ready(function () {
 		}
 
  	// keyword checked below after ajax
-	}
+	}  //for keyword loop
 
 
 
@@ -398,24 +388,25 @@ $(document).ready(function () {
 
 		alert("here");
 		alert(string);
-		var val1 = document.getElementById("search").value;
+		//from index top gui
+		var searchWord = document.getElementById("search").value;
 
-	  //alert("val1");
-	  //alert(val1);
+	  //alert("searchWord");
+	  //alert(searchWord);
 		
 
 
 	  //check if this keyword has any records, already have these records needs to be consideree
 	  //return yes or no to include  this in keyword list
 	  
-	  if(val1 == "" )
+	  if(searchWord == "" )
 	  {
 			return(1);
 	  }
 
 	  
 
-		//cehck for duplicates
+		//cehck for duplicates if so returns out
 		storedArray = JSON.parse(sessionStorage.getItem("keywords"));
 
 		//alert("storeddarray0");
@@ -425,7 +416,7 @@ $(document).ready(function () {
 		{
 		for(var i = 0; i < storedArray.length ; i++)
 		{
-		if (storedArray[i] == val1)
+		if (storedArray[i] == searchWord)
 		{
 			//alert("storeddarray");
 			//alert(storedArray[i]);
@@ -461,17 +452,18 @@ $(document).ready(function () {
 
 //storedarray has only the relevant keywords
 
-let amt2 = sessionStorage.getItem("amtOfSelectedRecords");
+//a new keyword, update here
+let amt2 = sessionStorage.getItem("amtOfKeywords");
 let amt2int = Number(amt2);
 if (amt2 == null )
 {
-	sessionStorage.setItem("amtOfSelectedRecords", 1);
+	sessionStorage.setItem("amtOfKeywords", 1);
 
 }
 else
 {
 	amt2int++;
-	sessionStorage.setItem("amtOfSelectedRecords", amt2int);
+	sessionStorage.setItem("amtOfKeywords", amt2int);
 }
 
 
@@ -483,7 +475,8 @@ else
 
 	  var val2 = [];
      
-		val2 = setSession(true, val1, string);
+	  //returns flag if already a keyword and the string that is and the built query 
+		val2 = DoesKeywordAlreadyExist(true, searchWord, string);
 	  
 	  //alert("2");
 		var gflag = val2[0];
@@ -521,10 +514,10 @@ else
 
 			 //alert("query1");
 			 //alert(querystring);
-				//val1 = "here";
+				//searchWord = "here";
 				var b = 0;
 			 $.ajax({
-                url: "http://localhost:8080/display",
+                url: "http://localhost:8080/displayOrderFormFromTemplate",
                 type: 'POST',
                 dataType: 'html',
                 data: querystring,
@@ -542,12 +535,12 @@ else
 			 //alert(querystring);
 					
 
-				ourNewWord2 = result;
+				//ourNewWord2 = result;
 
 				
 
 				
-                var result1 = "";
+                //var result1 = "";
 				let keys = Object.keys(sessionStorage);
 
 				
@@ -561,8 +554,10 @@ else
 
 
 				
-				retVals = deriveKeywordFromResult(result, val1);
+				retVals = forBuildingHTML(result, searchWord);
 				
+				
+				//fix this, here
 				var item1 = retVals[0];  
 				
 				var ourNewWord2 = retVals[1]; //
@@ -591,8 +586,8 @@ else
 
 
 				////////////
-				
-				result1a = "<a href='#" + val1 + "'>" + val1 + "</a><br>";
+				//displays link for every grouping by product group to go there
+				result1a = "<a href='#" + searchWord + "'>" + searchWord + "</a><br>";
 				
 				
 				document.getElementById('buttons').innerHTML   += result1a;
@@ -616,12 +611,12 @@ else
 
   
 
-  //checkout button
+  //checkout button from top of index file
   $(document).ready(function () {
       $('#button7').click(function () {
               
 
-             window.location.href = "finalpage.html";
+             window.location.href = "callTemplateTwo.html";
 
               
               
@@ -658,9 +653,19 @@ xhr.send(formdata);
 var gTotalOfPurchases = 0;
 
 //template number one presses submit this and changes values in quantity and amount purchased
-//needs to reduce numberofrecords by one when changed to zero first time
+//needs to reduce numberOfRecordsChosen by one when changed to zero first time
 //template1, enters a zero...
-function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
+
+
+
+//////////////////////////////////////
+
+//THERE COULD BE MISTAKES IN NEXT TWO FUNCTIONS
+
+///////////////////////////////////////
+
+//on submit, updates the individual printed interface from same template1
+function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, amountPurchasedID, amountPurchasingID, amountToPurchaseID)
 {
 
 	
@@ -668,15 +673,17 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 				var makeYellow = document.getElementById(mainDiv);
 				makeYellow.style["background-color"] = "yellow";
+				
+				
 				var amountToBePurchased  = 0;
 				var  amountInPurchasedField = 0;
-				var amountPurchasedSoFar = 0;
+				var amountPurchasedToDeductFromToPurchase = 0;
 				var value1 = 0;
 				var value2 = 0;
 				//total of product with server
-				amountInPurchasedField = Number(document.getElementById(quantityID).value);
+				amountInPurchasedField = Number(document.getElementById(amountPurchasedID).value);
 				//already purchased
-				amountPurchasedSoFar = Number(document.getElementById(amountPurchasedID).value);
+				amountPurchasedToDeductFromToPurchase = Number(document.getElementById(amountPurchasingID).value);
 				//amount held for subtraction when submit button pressed
 				amountToBePurchased = Number(document.getElementById(amountToPurchaseID).value);
 
@@ -700,7 +707,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					value1 = Number(document.getElementById(amountToPurchaseID).value); 
 					
 					//value2 = amountopurchase + amountpurchaseedsofar
-					value2  = parseInt(value1) + parseInt(amountPurchasedSoFar);
+					value2  = parseInt(value1) + parseInt(amountPurchasedToDeductFromToPurchase);
 					if(value2 < 0)
 					{
 						Number(document.getElementById(amountToPurchaseID).value = 0);
@@ -709,12 +716,12 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					
 					
 					//puts total in here
-					Number(document.getElementById(amountPurchasedID).value = value2) ;
+					Number(document.getElementById(amountPurchasingID).value = value2) ;
 					
 					if(value1 > 0){
 
 						
-						Number(document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased)) ;
+						Number(document.getElementById(amountPurchasedID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased)) ;
 					}else if (value1 == 0)
 					{
 						
@@ -722,9 +729,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 					//negative value for amount to purchase
 					//value
-					else if ( (parseInt(amountPurchasedSoFar) + parseInt(value1)) > -1){
+					else if ( (parseInt(amountPurchasedToDeductFromToPurchase) + parseInt(value1)) > -1){
 						
-						Number(document.getElementById(quantityID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased)) ;
+						Number(document.getElementById(amountPurchasedID).value = parseInt(amountInPurchasedField) - parseInt(amountToBePurchased)) ;
 						
 						Number(document.getElementById(amountToPurchaseID).value = 0);
 					}
@@ -742,9 +749,9 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 						
 						//so far, so good is still in database!
 						//amount purchased, quantity, amount to purchase
-						//setData(amountPurchasedSoFar, amountInPurchasedField, productID, amountToBePurchased, 0)
+						//SetDataFromOrderTemplateOnSubmit(amountPurchasedToDeductFromToPurchase, amountInPurchasedField, productID, amountToBePurchased, 0)
 						var boole = true;
-						setData(amountToPurchaseID, quantityID, productID,	amountPurchasedID, boole);
+						SetDataFromOrderTemplateOnSubmit(amountToPurchaseID, amountPurchasedID, productID,	amountPurchasingID, boole);
 
                         return (1);
                     //}
@@ -763,44 +770,47 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 			var alreadyZeroArray = [];
-      //called from changefields because of submit button for display1
+      //called from submitChangesOnOrderTemplates because of submit button for display1
 	  //numberofrcords is set in logon and should have two new sets in this only fucntion (only)
 	  //in here :  sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
  
 	  //var gLastQuantity = 0
-      //function  setData(amountPurchasedSoFar, quantityOfProduct, productID, quantityTryingToSet, reduceBool)
+      //function  SetDataFromOrderTemplateOnSubmit(amountPurchasedToDeductFromToPurchase, quantityOfProduct, productID, amountToPurchase, reduceBool)
 	  
-	   //quantityTryingToSet = amounttobepurchasedID//
+	   //amountToPurchase = amounttobepurchasedID//
 	   var boole = true;
-	   var gLastQuant = 0;
-	  function setData (amountToPurchaseID, quantityOfProductID, productID, amountPurchasedID, boole) 
+	  
+	   //deals with to many records
+	  function SetDataFromOrderTemplateOnSubmit (amountToPurchaseID, quantityOfProductID, productID, amountPurchasedID, boole) 
 	  {
+
+			  var gLastQuant = false;
 		  	   //amount purchased
-			  var amountPurchasedSoFar =  document.getElementById(amountPurchasedID).value;
+			  var amountPurchasedToDeductFromToPurchase =  document.getElementById(amountPurchasedID).value;
 			   //amount to purchase 
-			  var quantityTryingToSet  = document.getElementById(amountToPurchaseID).value;
+			  var amountToPurchase  = document.getElementById(amountToPurchaseID).value;
 
 			  var quantityOfProduct  = document.getElementById(quantityOfProductID).value;
 				
 				var firstArray = [];
 				
 				let val = "";
-				var storedArray = JSON.parse(sessionStorage.getItem("alreadyZero"))
+				//var storedArray = JSON.parse(sessionStorage.getItem("alreadyZero"))
 				
 				let val1 = ""
 				let val1int = 0;
 				let val2int = 0;
 
-				val1 = sessionStorage.getItem("numberOfRecords")
+				val1 = sessionStorage.getItem("numberOfRecordsChosen")
 
 				//alert("starts here");
 				if (val1 == "0")
 				{
 					//alert("1");
-					if (quantityTryingToSet == 0 && amountPurchasedSoFar == 0)
+					if (amountToPurchase == 0 && amountPurchasedToDeductFromToPurchase == 0)
 					{
 						
-					//	if(val1 = sessionStorage.getItem("numberOfRecords"))
+					//	if(val1 = sessionStorage.getItem("numberOfRecordsChosen"))
 					//	{
 					//	
 					//	var varIntVal1 = parseInt(val1);
@@ -810,23 +820,24 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					//	{
 					//		varIntVal1 = 0;
 					//	}
-					//	sessionStorage.setItem("numberOfRecords", varIntVal1);
+					//	sessionStorage.setItem("numberOfRecordsChosen", varIntVal1);
 					//	}
 					//	
 					}
 					else
 					{
 						//alert("in here");
-						//if(val1 = sessionStorage.getItem("numberOfRecords"))
-						{
+						//if(val1 = sessionStorage.getItem("numberOfRecordsChosen"))
+						//{
+						//is either amoutnttopurchase or amountpurchasedtodeductfromthepurchase
 						let varIntVal1 = parseInt(val1);
-						gLastQuant = 1;
+						gLastQuant = true;
 						//gLastQuantity = varIntVal1;
 						varIntVal1++;
 						
 						
-						sessionStorage.setItem("numberOfRecords", varIntVal1);
-						}
+						sessionStorage.setItem("numberOfRecordsChosen", varIntVal1);
+						//}
 						
 					}
 				
@@ -834,39 +845,40 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				else{
 					
 					//alert("wise1");
-					//console.log(amountPurchasedSoFar + quantityTryingToSet);
+					//console.log(amountPurchasedToDeductFromToPurchase + amountToPurchase);
 					
 					//amount putchased
-					let val1int = parseInt(amountPurchasedSoFar);
+					let val1int = parseInt(amountPurchasedToDeductFromToPurchase);
 
 					//amount to purchase
-					let val2int = parseInt(quantityTryingToSet);
+					let val2int = parseInt(amountToPurchase);
 					//alert(val1int);
 					//alert(gLastQuant);
 					//alert(val2int);
 					
 
-					//add a negative o positive number to an already present amount purchased that still has quantity
-					if (gLastQuant == 1  && (val1int) != 0 )
+					////is either amoutnttopurchase or amountpurchasedtodeductfromthepurchase  && !!!!
+					if (gLastQuant == true  && (val1int) != 0 )
 					{
 						//alert("y");
 					}
 
-					else if (gLastQuant == 1  && (val1int) == 0 )
+					else if (gLastQuant == true  && (val1int) == 0 )
 					{
 						//alert("z");
 
 						///
 
-						gLastQuant = 0;
+						//gLastQuant = 0;
+						//fix this, here...two
 						let  val1a = 0;
-						if(val1a = sessionStorage.getItem("numberOfRecords"))
+						if(val1a = sessionStorage.getItem("numberOfRecordsChosen"))
 						var varIntVal1a = parseInt(val1a);
 						
 						//gLastQuantity = varIntVal1a; 
 						varIntVal1a--;
 						
-						sessionStorage.setItem("numberOfRecords", varIntVal1a);
+						sessionStorage.setItem("numberOfRecordsChosen", varIntVal1a);
 
 						////
 
@@ -881,22 +893,23 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 
 
 
-					else if (gLastQuant != 1  && (val1int) != 0 )
+					else if (gLastQuant == false  && (val1int) != 0 )
 					{//alert("2_");
-						gLastQuant = 1;
+						//gLastQuant = 1;
 						let val1a = 0;
-						if(val1a = sessionStorage.getItem("numberOfRecords"))
+						if(val1a = sessionStorage.getItem("numberOfRecordsChosen"))
 						var varIntVal1a = parseInt(val1a);
 						
 						//gLastQuantity = varIntVal1a;
 						varIntVal1a++;
 						
-						sessionStorage.setItem("numberOfRecords", varIntVal1a);
+						sessionStorage.setItem("numberOfRecordsChosen", varIntVal1a);
 						
 					}
 				
 
-				val1 = sessionStorage.getItem("numberOfRecords");
+					//fix this, here
+				val1 = sessionStorage.getItem("numberOfRecordsChosen");
 				//alert("------1234---");
 				alert(val1); 
 				//firstArray.push(productID); 
@@ -904,15 +917,15 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				//window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
 
 				}
-				val1 = sessionStorage.getItem("numberOfRecords");
+				val1 = sessionStorage.getItem("numberOfRecordsChosen");
 				//alert("--+++++-----");
 				alert(val1); 
 
-				//val1 = sessionStorage.getItem("numberOfRecords");
+				//val1 = sessionStorage.getItem("numberOfRecordsChosen");
 				
 
-				
-		if(val1 == sessionStorage.getItem("numberOfRecords"))
+		//updates everything for to many records
+		if(val1 == sessionStorage.getItem("numberOfRecordsChosen"))
 		{
 		
 		if (val1 == MAXRECORDS-1)
@@ -927,11 +940,11 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 			alert(document.getElementById(quantityOfProductID).value);
 
 			//quantity
-			document.getElementById(quantityOfProductID).value = document.getElementById(quantityOfProductID).value + parseInt(amountPurchasedSoFar).value;
+			document.getElementById(quantityOfProductID).value = document.getElementById(quantityOfProductID).value + parseInt(amountPurchasedToDeductFromToPurchase).value;
 			//amount purchased
-			document.getElementById(amountPurchasedID).value =  document.getElementById(amountPurchasedID).value - parseInt(amountPurchasedSoFar).value;
+			document.getElementById(amountPurchasedID).value =  document.getElementById(amountPurchasedID).value - parseInt(amountPurchasedToDeductFromToPurchase).value;
 			   //amount to purchase 
-			document.getElementById(amountToPurchaseID).value = document.getElementById(amountToPurchaseID).value - parseInt(quantityTryingToSet).value ;
+			document.getElementById(amountToPurchaseID).value = document.getElementById(amountToPurchaseID).value - parseInt(amountToPurchase).value ;
 			
 			alert(document.getElementById(quantityOfProductID).value);
 			return(1);
@@ -939,7 +952,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 		}
 
 
-			//alert(amountPurchasedSoFar);
+			//alert(amountPurchasedToDeduct);
 			
 			//subtract amountpurchased
 			//subtract quantity
@@ -977,7 +990,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				
 				//total the quantity and overwrite - is already a record
 
-				
+				//is a productid record with an amount to buy
 				if(key == (productID.toString())){
 				
 					
@@ -989,7 +1002,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					
 					totalquantity = 0;
 					
-						totalquantity = parseInt(bought) + parseInt(quantityTryingToSet);
+					totalquantity = parseInt(bought) + parseInt(amountToPurchase);
 						
 					
 								
@@ -997,7 +1010,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 					sessionStorage.removeItem(productID);
 					
 						//sessionStorage.setItem(parseInt(productID), parseInt(totalquantity));
-						sessionStorage.setItem(parseInt(productID), parseInt(amountPurchasedSoFar));
+					sessionStorage.setItem(parseInt(productID), parseInt(amountPurchasedToDeduct));
 
 						
 
@@ -1010,12 +1023,13 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 				}//keys for
 
 				
+				//is a productId record with a amount to buy
 				if (keyFlag !=  "found")
 				{
 
 					
-					//sessionStorage.setItem( parseInt(productID),  parseInt(amountPurchasedSoFar));
-					sessionStorage.setItem( parseInt(productID),  parseInt(amountPurchasedSoFar));
+					//sessionStorage.setItem( parseInt(productID),  parseInt(amountPurchasedToDeduct));
+					sessionStorage.setItem( parseInt(productID),  parseInt(amountPurchasedToDeduct));
 				
 					
 
@@ -1037,7 +1051,7 @@ function changeFields(mainDiv, originalQuantity, productID, quantityID, amountPu
 //thi function checks if a keyword is already used and returns the queystring
 
 //check if keyword exists already
-function setSession(areThereUrls, val1, string)
+function DoesKeywordAlreadyExist(areThereUrls, val1, string)
 {//NO URLS
 
 	//this flag means that this is a display that returned from template2, so is a special condition
@@ -1135,8 +1149,8 @@ function setSession(areThereUrls, val1, string)
 
 
 
-
-function deriveKeywordFromResult(result, val1)
+//fix this, here   
+function forBuildingHTML(result, val1)
 {
 				var item1 = val1
 				var item = '"' + val1 + '"';
@@ -1164,11 +1178,11 @@ return [item1, ourNewWord, item];
 
 var gKeywordRecordNumber = 0;
 //pressed return to purchase from template2
-function display2(){
+function displayOrdersTemplateAgain(){
 
 	debugger;
 
-alert("check if getting here before panid");
+//alert("check if getting here before panid");
 
 var querystring = "";
 
@@ -1221,14 +1235,14 @@ for(let key of keys) {
 		var item = sessionStorage.getItem(key);
 		querystring += "uid=" + item + "&";
   }
-  else if(key == "numberOfRecords")
+  else if(key == "numberOfRecordsChosen")
   {
 
   }
-  else if(key == "alreadyZero")
-  {
-
-  }
+  //else if(key == "alreadyZero")
+  //{
+//
+ // }
   else if(key == "amtOfSelectdedRecords")
   {
 	
@@ -1236,6 +1250,7 @@ for(let key of keys) {
 	
   }
 
+  //product id with amount to purchase
   else
   {
 	var val1 = "";
@@ -1249,17 +1264,17 @@ for(let key of keys) {
 	else{
 
 		
-
+		//is a poduct or are products
 		gflag1 = 1;
 		alert("A5") ;
 		
-			querystring += "id=" + key + "&quant=" + item + "&";
+			querystring += "id=" + key + "&amtTryingToPurchase" + item + "&";
 		
 	}
 	
   } 
 
-}
+}// end key loop
 
 //no id quant
 if (gflag1 == 0)
@@ -1267,11 +1282,11 @@ if (gflag1 == 0)
 	alert("gflag1 - should be, all sessionlevelvariables were erased...");
 	//return(1);
 }
-if (gflag1 == 4)
-{
-	alert("gflag4");
-	return(1);
-}
+//if (gflag1 == 4)
+//{
+//	alert("gflag4");
+//	return(1);
+//}
 
 
 
@@ -1289,7 +1304,8 @@ querystring = "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb"
 /////////
 
 
-var url = "http://localhost:8080/display2";
+//fix this, here
+var url = "http://localhost:8080/displayOrdersTemplateAgain";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
 
@@ -1314,9 +1330,9 @@ var url = "http://localhost:8080/display2";
 
 			var retVals = [];
 			
-			retVals = deriveKeywordFromResult(result);
+			retVals = forBuildingHTML(result);
 			
-			
+			//fix this, here
 			var item1 = retVals[0];  
 			
 			var ourNewWord = retVals[1]; 
@@ -1333,6 +1349,8 @@ var url = "http://localhost:8080/display2";
 
 
 
+
+				//removes [var here],  builds secon cart template html, draws links to different keyword categories
 			  for(var i = 0 ; i < array.length ; i++)
 			  {
 
@@ -1345,12 +1363,14 @@ var url = "http://localhost:8080/display2";
 
 				ourNewWord = ourNewWord.replace(val1 , '');
 
-				retVals = deriveKeywordFromResult(ourNewWord);
-
+				retVals = forBuildingHTML(ourNewWord);
+				//fix this, here
 				var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
+
+				//positioning div at top of page
 				document.getElementById('buttons').innerHTML   += result1a;
 			  }
-
+			  //positioning div at top of page
 			  document.getElementById('templateOneHere').innerHTML   += ourNewWord;
 			 
 			}

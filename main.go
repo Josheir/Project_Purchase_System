@@ -57,13 +57,15 @@ import (
 
 //test//test//test
 
-//one of these also in display2, check this
+//one of these also in displayOrdersTemplateAgain, check this
 var savedProductIDs []int
 
-var globaltest = 0
+//var globaltest = 0
 
-var globalFlagisVariable = "no"
+//var globalFlagisVariable = "no"
+//
 
+//passed to an html file
 type product struct {
 	ProductQuantity int
 	ProductName     string
@@ -71,7 +73,8 @@ type product struct {
 	ProductCost     int
 }
 
-type Product1 struct {
+//for template two
+type template2Struct struct {
 	CondYellow         int
 	ProductIDID        string
 	RemoveRecordDivID  string
@@ -111,48 +114,49 @@ type User1 struct {
 }
 
 //used in createtemplate2
-var ProductList = []Product1{}
+var ProductListForCartTemplate = []template2Struct{}
 
 //var ProductList2 = []Product2{}
 
 //used in spitback
-var ProductList2A = []Product2{}
+var ProductUpdateCart = []Product2{}
 var User = []User1{}
 
 //https://www.bing.com/videos/search?q=youtbe+golang+template&refig=e742578f4d004a2b8a5bd1f28849eb0f&ru=%2fsearch%3fq%3dyoutbe%2bgolang%2btemplate%26form%3dANNTH1%26refig%3de742578f4d004a2b8a5bd1f28849eb0f&view=detail&mmscn=vwrc&mid=BD040005A2743ACB801ABD040005A2743ACB801A&FORM=WRVORC
 var globt *template.Template
-var globKeyword = ""
+
+//var globKeyword = ""
 var Test = 1
 
 var ProductID = 0
 
-type Rectangle struct {
-	Length  int
-	breadth int
-	color   string
-}
+//type Rectangle struct {
+//	Length  int
+//	breadth int
+//	color   string
+//}
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
 
-var string1 = ""
+//var string1 = ""
 
 type App struct {
 	Name string
 }
 
-var tpl *template.Template
+//var tpl *template.Template
 
-type employee struct {
-	gKeyword1           string
-	gKeyword2           string
-	gKeyword3           string
-	ProductName         string
-	ProductID           int
-	ProductdDescription string
-	ProductCost         int
-	ProductQuantity     int
-	ProductCatTitle     string
-}
+//type employee struct {
+//	gKeyword1           string
+//	gKeyword2           string
+//	gKeyword3           string
+//	ProductName         string
+//	ProductID           int
+//	ProductdDescription string
+//	ProductCost         int
+//	ProductQuantity     int
+//	ProductCatTitle     string
+//}
 
 //prod := Product2{
 //
@@ -184,6 +188,7 @@ func dbConn() (db *sql.DB) {
 	return db
 }
 
+/*
 // USD represents US dollar amount in terms of cents
 type USD int64
 
@@ -216,24 +221,24 @@ func ToUSD(f float64) USD {
 }
 
 //////////
-
+*/
 //https://www.bing.com/search?q=receiver%20int%20golang&qs=n&form=QBRE&sp=-1&pq=receiver%20int%20golang&sc=0-19&sk=&cvid=14C3226BD73C46F09A57AA46291441EA
-func addElement(var1 int, var2 string, var3 string, var4 int) {
-
-	var element product
-	element.ProductQuantity = var1
-	element.ProductName = var2
-	element.ProductCatTitle = var3
-	element.ProductCost = var4
-
-}
+//func addElement(var1 int, var2 string, var3 string, var4 int) {
+//
+//	var element product
+//	element.ProductQuantity = var1
+//	element.ProductName = var2
+//	element.ProductCatTitle = var3
+//	element.ProductCost = var4
+//
+//}
 
 type Product3 struct {
 	ID    int
 	Quant int
 }
 
-func makeListForLastpageA(amtPurchased int, enough bool, id int, quant int) {
+func makeListForHTML(amtPurchased int, enough bool, id int, quant int) {
 
 	//to spit back to html
 	prod := Product2{
@@ -244,7 +249,7 @@ func makeListForLastpageA(amtPurchased int, enough bool, id int, quant int) {
 		ID:                id,
 	}
 	//list to spit back to html for rewriting all the quant
-	ProductList2A = append(ProductList2A, prod)
+	ProductUpdateCart = append(ProductUpdateCart, prod)
 }
 
 //this last page is where the data is spat back to html to note any database changes that cause purchase impossible
@@ -260,7 +265,7 @@ func makeListForLastpageA(amtPurchased int, enough bool, id int, quant int) {
 //	ProductList2 = append(ProductList2, prod)
 //}
 
-var orderid1 = 100
+//var orderid1 = 100
 
 //https://www.geeksforgeeks.org/how-to-get-current-time-in-golang/
 func processLogin(w http.ResponseWriter, r *http.Request) {
@@ -269,7 +274,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
-	globaltest++
+	//globaltest++
 
 	/*
 		err = r.ParseForm()
@@ -293,6 +298,8 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	//query := r.URL.Query()
 
 	//userid, present := query["userid"]
+
+	//gets this info from login.html
 	userid := r.Form["userid"][0]
 
 	//if !present || len(userid) == 0 {
@@ -300,7 +307,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	//string to int
-	userid1, err := (strconv.Atoi(userid))
+	useridInt, err := (strconv.Atoi(userid))
 
 	if err != nil {
 		fmt.Fprint(w, err)
@@ -311,6 +318,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 	//if !present || len(pass) == 0 {
 	//	fmt.Println("filters not present")
 	//}
+	//gets from login.html
 	pass := r.Form["pass"][0]
 
 	db := dbConn()
@@ -321,7 +329,8 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err)
 	}
 
-	rows, err := stmt.Query(userid1)
+	//substituted with ?
+	rows, err := stmt.Query(useridInt)
 
 	if err != nil {
 		fmt.Fprint(w, err)
@@ -331,6 +340,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 
+		//stores password in here from database
 		err = rows.Scan(&PasswordID)
 		if err != nil {
 			fmt.Println(err)
@@ -348,7 +358,8 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 
 		var UserID = 1
 		//var userID = 1
-		//DOES THIS PRODUCT RECORD ALREADY EXIST
+		//if a user is reloging in than delete all the savedtext
+		//fix this, here
 		stmt, err := db.Prepare("DELETE FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {
@@ -372,7 +383,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		passFlag = "password wrong"
 	}
 
-	MakeUser(passFlag, userid1)
+	MakeUser(passFlag, useridInt)
 
 	json.NewEncoder(w).Encode(User)
 
@@ -384,14 +395,14 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 /////////////////////////////////////////
 ////////////////////////////////////////
 
-func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
+func sendBackNewCartData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
 	ctx := context.Background()
-	ProductList2A = nil
+	ProductUpdateCart = nil
 
 	/////////
 
@@ -402,8 +413,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	var i = 0
 
-	var allIds []string
-	var allQuants []string
+	var allProductIds []string
+	var allPurchaseAmounts []string
 	//var userID1 []string
 
 	var length = len(r.Form["userid"])
@@ -418,14 +429,15 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	} else {
 
 	}
+	//product and purchase amount
 
 	length = len(r.Form["id"])
 	if length > 0 {
 
 		for i = 0; i < (length); i++ {
 
-			allIds = append(allIds, []string{r.Form["id"][i]}...)
-			allQuants = append(allQuants, []string{r.Form["quant"][i]}...)
+			allProductIds = append(allProductIds, []string{r.Form["id"][i]}...)
+			allPurchaseAmounts = append(allPurchaseAmounts, []string{r.Form["quant"][i]}...)
 
 		}
 
@@ -437,15 +449,15 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 	/*query := r.URL.Query()
 
-	allIds, present := query["id"]
+	allProductIds, present := query["id"]
 
-	if !present || len(allIds) == 0 {
+	if !present || len(allProductIds) == 0 {
 		fmt.Println("filters not present")
 	}
 
-	allQuants, present := query["quant"]
+	allPurchaseAmounts, present := query["quant"]
 	//in template 2 bought column
-	if !present || len(allQuants) == 0 {
+	if !present || len(allPurchaseAmounts) == 0 {
 		fmt.Println("filters not present")
 	}
 
@@ -463,7 +475,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	//var haveWrittenOrder bool = false
 	//var j = 0
 	//quant trying to buy
-	var prodQuant int
+	var prodDBAmount int
 
 	var enough bool = false
 
@@ -472,16 +484,16 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 	////////////////
 
 	//var quantPurchased = 0
-	var updatesAndSelects = "yes"
+	var doUpdatesAndSelects = true
 
-	for k = 0; k < len(allIds); k++ {
+	for k = 0; k < len(allProductIds); k++ {
 
 		enough = false
 
 		//////
-		//thisProductID, _ = strconv.Atoi(allIds[k])
+		//thisProductID, _ = strconv.Atoi(allProductIds[k])
 
-		//val1, err1 := strconv.Atoi(allIds[k])
+		//val1, err1 := strconv.Atoi(allProductIds[k])
 		//if err1 != nil {
 		//	fmt.Println(err)
 		//}
@@ -497,7 +509,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		rows, err := stmt.Query(allIds[k])
+		//subsdtitute this for ?
+		rows, err := stmt.Query(allProductIds[k])
 
 		if err != nil {
 			fmt.Println(err)
@@ -506,21 +519,22 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//runs one time
 		for rows.Next() {
 
-			//database held this
-			err = rows.Scan(&prodQuant)
+			//put quantity from dbase into here
+			err = rows.Scan(&prodDBAmount)
 
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			quantPurchased, err := strconv.Atoi(allQuants[k])
+			//convert to string
+			quantPurchased, err := strconv.Atoi(allPurchaseAmounts[k])
 			if err != nil {
 				fmt.Println(err)
 			}
 
 			//avoids all updates and selects
-			if quantPurchased > prodQuant {
-				updatesAndSelects = "no"
+			if quantPurchased > prodDBAmount {
+				doUpdatesAndSelects = false
 				break
 
 			}
@@ -528,10 +542,10 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		} //for
 	}
 
-	var aRecordWasCreated = "no"
+	var aRecordWasCreated = false
 	///////////////////
 
-	for k = 0; k < len(allIds); k++ {
+	for k = 0; k < len(allProductIds); k++ {
 
 		/////
 
@@ -545,12 +559,12 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		enough = false
 
 		//////
-		thisProductID, _ = strconv.Atoi(allIds[k])
+		thisProductID, _ = strconv.Atoi(allProductIds[k])
 
-		val1, err1 := strconv.Atoi(allIds[k])
-		if err1 != nil {
-			fmt.Println(err)
-		}
+		//val1, err1 := strconv.Atoi(allProductIds[k])
+		//if err1 != nil {
+		//	fmt.Println(err)
+		//}
 
 		//////
 
@@ -563,7 +577,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		rows, err := stmt.Query(allIds[k])
+		// substitute with productID
+		rows, err := stmt.Query(allProductIds[k])
 
 		if err != nil {
 			fmt.Println(err)
@@ -576,14 +591,15 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 			///////
 
-			//database held this
-			err = rows.Scan(&prodQuant)
+			//amount from database goes here
+			err = rows.Scan(&prodDBAmount)
 
 			if err != nil {
 				fmt.Println(err)
 			}
 
-			quantPurchasing, err := strconv.Atoi(allQuants[k])
+			//makes it a string
+			quantPurchasing, err := strconv.Atoi(allPurchaseAmounts[k])
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -597,22 +613,24 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			/////////
 
 			//not enough in database
-			if prodQuant-quantPurchasing < 0 {
+			if prodDBAmount-quantPurchasing < 0 {
 				enough = false
-				makeListForLastpageA(quantPurchasing, enough, (val1), quantPurchasing)
+				//for when passing data back to html
+				makeListForHTML(quantPurchasing, enough, (thisProductID), quantPurchasing)
 				continue
 
 			} else {
 				enough = true
 			}
 			// val2 is int id
-			makeListForLastpageA(quantPurchasing, enough, (val1), quantPurchasing)
+			makeListForHTML(quantPurchasing, enough, (thisProductID), quantPurchasing)
 
 		}
 
 		//////********************************/////
 
-		intQuant, err := strconv.Atoi(allQuants[k])
+		//to string
+		currentPurchase, err := strconv.Atoi(allPurchaseAmounts[k])
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -631,7 +649,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//gets all the fields of data from  a particular productid and ready status, so that an update may happen
 		//checked at beginnnig if this exists
 		//get all attributes to update with
-		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allIds[k]).Scan(
+		err = tx.QueryRowContext(ctx, "SELECT * FROM products WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", allProductIds[k]).Scan(
 			&ProductFilename, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &gKeyword1, &gKeyword2, &gKeyword3, &CustomerID,
 			&OrderID, &ProductStatus, &AdminID, &ProductID, &ID)
 
@@ -639,30 +657,35 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		ProductID = thisProductID
+		//ProductID = thisProductID
 		//ProductQuantity is amount in database
 		//intquant is amount purchasing
-		var thisQuant = ProductQuantity - intQuant
+
+		//any product left, if so, this much
+		var quantLeft = ProductQuantity - currentPurchase
 
 		//if avoidUpdatesAndSelects == "no"  ||
 		// is procuct and not much more asked for than available
 		//if quantity asking for is zero or is way to much, dont do transaction
 		//instead zero valuable will be hidden and larger number will be set to zero and still displayed by template2
 
-		//quantPurchased > prodQuant
+		//quantPurchased > prodDBAmount
 		//productquant is amount in database, aleady checked : is enough for purchase
 
-		//if thisQuant > 0 && intQuant < ProductQuantity && intQuant > 0  && updatesAndSelects == "yes" {
-		if thisQuant > 0 && intQuant > 0 && updatesAndSelects == "yes" {
+		//if thisQuant > 0 && intQuant < ProductQuantity && intQuant > 0  && doUpdatesAndSelects == "yes" {
+
+		//checks if database is altered
+		//fix this, here
+		if quantLeft > 0 && currentPurchase > 0 && doUpdatesAndSelects == true {
 
 			{
 
-				aRecordWasCreated = "yes"
+				aRecordWasCreated = true
 
 				//if thisQuant > 0 &&  intQuant < ProductQuantity{
 
-				//updates productid fields to its quantity minus int-quant from above
-				_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", thisQuant, ProductID)
+				//updates productid fields to its quantity left
+				_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ? WHERE products.ProductID = ? and products.ProductStatus = 'ready' ", quantLeft, thisProductID)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -671,12 +694,12 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 				//var id1 = 0
 
-				var productQuant int64
-				var order_ID int64
+				//var productQuant int64
+				var currentOrder_ID int64
 
 				//check if there is an order id created for the product record, if there isn't than create the order table
 
-				//err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allIds[j]).Scan(&id1, &productQuant)
+				//err = tx.QueryRowContext(ctx, "SELECT products.OrderID, products.ProductQuantity  FROM products WHERE products.ProductID =  ? and  products.ProductStatus = 'purchased'", allProductIds[j]).Scan(&id1, &productQuant)
 				//if err != nil {
 				//	fmt.Println(err)
 				//}
@@ -693,7 +716,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 					fmt.Println(err)
 				}
 
-				order_ID, err = res.LastInsertId()
+				//checks for id of last record
+				currentOrder_ID, err = res.LastInsertId()
 
 				if err != nil {
 					fmt.Println(err)
@@ -708,7 +732,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 				//create a purchased record
 				ProductStatus = "purchased"
-				_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost, (int64(intQuant) + productQuant), ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, order_ID, ProductStatus, AdminID, ProductID)
+				_, err = tx.ExecContext(ctx, "INSERT INTO products (ProductFilename, ProductName, ProductDescription, ProductCost, ProductQuantity, ProductCatTitle,ProductKeyword1,ProductKeyword2 , ProductKeyword3, CustomerID, OrderID, ProductStatus, AdminID, ProductID) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", ProductFilename, ProductName, ProductDescription, ProductCost /*(*/, int64(quantLeft) /*+ productQuant)*/, ProductCatTitle, gKeyword1, gKeyword2, gKeyword3, CustomerID, currentOrder_ID, ProductStatus, AdminID, ProductID)
 
 				if err != nil {
 					fmt.Println(err)
@@ -720,7 +744,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 				//	//update product with status of purchased from product table:  original quantity + intQuant
 				//	//productquant is quantity of product
 				//	//intquant is database quantity taken from the allquant array
-				//	_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allIds[j])
+				//	_, err = tx.ExecContext(ctx, "Update products SET ProductQuantity = ?, OrderID = ?  WHERE products.ProductID = ? and products.ProductStatus = 'purchased' ", (int64(intQuant) + productQuant), int64(order_ID), allProductIds[j])
 				//	if err != nil {
 				//		fmt.Println(err)
 				//	}
@@ -731,8 +755,8 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		//updatesAndSelects
-		if aRecordWasCreated == "yes" {
+		//doUpdatesAndSelects
+		if aRecordWasCreated == true {
 
 			err5 := tx.Commit()
 			if err5 != nil {
@@ -745,7 +769,7 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 		//json.NewEncoder(w).Encode(ProductList2A)
 	} // k
 
-	json.NewEncoder(w).Encode(ProductList2A)
+	json.NewEncoder(w).Encode(ProductUpdateCart)
 
 }
 
@@ -757,9 +781,9 @@ func spitBackAmounts(w http.ResponseWriter, r *http.Request) {
 
 var Condition = 0
 
-func createTemplate2(w http.ResponseWriter, r *http.Request) {
+func createCartTemplate(w http.ResponseWriter, r *http.Request) {
 
-	ProductList = nil
+	ProductListForCartTemplate = nil
 
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -772,17 +796,18 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err1)
 	}
 
-	var allIds []string
-	var allQuants []string
+	var allProductIds []string
+	var allPurchaseAmounts []string
 
 	var i = 0
 	length := len(r.Form["id"])
 	if length > 0 {
 
+		//save query into arrays
 		for i = 0; i < (length); i++ {
 
-			allIds = append(allIds, []string{r.Form["id"][i]}...)
-			allQuants = append(allQuants, []string{r.Form["quant"][i]}...)
+			allProductIds = append(allProductIds, []string{r.Form["id"][i]}...)
+			allPurchaseAmounts = append(allPurchaseAmounts, []string{r.Form["quant"][i]}...)
 
 		}
 
@@ -790,7 +815,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	string1 = ""
+	//string1 = ""
 
 	db := dbConn()
 
@@ -804,8 +829,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	var var8 = "P"
 
 	i = 0
-
+	//if condition = 1, than put headings on the cart template
 	Condition++
+	//if condition2 = -1, display money totals on buttom of cart template
 	var Condition2 = 0
 
 	ID := 0
@@ -817,14 +843,21 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	//n11 := new(big.Int)
 	//n12 := new(big.Int)
 
-	n11GrandTotal := new(big.Int)
+	//below are big ints for the totaling on bottom of cart template
+	GrandTotal := new(big.Int)
 	GrandTotalDiv := new(big.Int)
-	n11GrandTotal, _ = n11GrandTotal.SetString("0", 10)
+	GrandTotal, _ = GrandTotal.SetString("0", 10)
 
-	for i = 0; i < len(allIds); i++ {
+	/////////////////////////////
+
+	//LEFT OFF HERE!!!
+
+	/////////////////////////////
+
+	for i = 0; i < len(allProductIds); i++ {
 
 		fmt.Println("length")
-		fmt.Println(len(allIds))
+		fmt.Println(len(allProductIds))
 		countCounter = countCounter + 1
 
 		//Condition++
@@ -840,7 +873,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 		ProductIDID := var8 + (strconv.Itoa(i))
 		//ID := var8 + (strconv.Itoa(i))
 
-		var prodid, err = (strconv.Atoi(allIds[i]))
+		var prodid, err = (strconv.Atoi(allProductIds[i]))
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -886,20 +919,20 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//Result = ProductCost
 
 			var j = 0
-			for j = 0; j < len(allIds); j++ {
+			for j = 0; j < len(allProductIds); j++ {
 
-				bought, err = (strconv.Atoi(allQuants[j]))
+				bought, err = (strconv.Atoi(allPurchaseAmounts[j]))
 				if err != nil {
 					fmt.Println(err)
 				}
 
-				ID, err = strconv.Atoi(allIds[j])
+				ID, err = strconv.Atoi(allProductIds[j])
 				if err != nil {
 					fmt.Println(err)
 				}
 
 				//?????????????
-				//there is boutght total that goes with this id
+				//
 				if prodid == ID {
 
 					//subtract bought from quantity
@@ -918,13 +951,15 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 				Condition = 0
 
 			}
-			//if on last record by keyword, do whatever this condition does
-			if i == (len(allIds) - 1) {
+			//if on last record by keyword, display  money totals
+			if i == (len(allProductIds) - 1) {
 				Condition2 = -1
 			}
 
 			///////////////////////////////////////////////////////////////////////////////
 
+			//Using Big to do money system, the idea is to store as cents in a bigint and than
+			//move the decimal place after calculations are done
 			quantity := new(big.Int)
 			tax := new(big.Int)
 			tax2 := new(big.Int)
@@ -940,7 +975,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			var ProductCostString string
 
 			////amount of itmes to purchase
-			quantity, _ = quantity.SetString((allQuants[j]), 10)
+			quantity, _ = quantity.SetString((allPurchaseAmounts[j]), 10)
 
 			//string - total in pennies
 			productCost, _ = productCost.SetString(ProductCost, 10)
@@ -961,7 +996,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			withTaxTimes1000.Add(totalNoTaxNo1000, tax2)
 
 			GrandTotalDiv.Div(withTaxTimes1000, thousand)
-			n11GrandTotal.Add((n11GrandTotal), (GrandTotalDiv))
+			GrandTotal.Add((GrandTotal), (GrandTotalDiv))
 
 			//n11GrandTotal.Div(n11GrandTotal, thousand)
 
@@ -977,6 +1012,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			//total deimals with changed decimal place
 			forCostEachFloat = forCostEachFloat / 100000.0
 
+			//make a string with two deciaml places
 			ProductCostString = fmt.Sprintf("%.2f", forCostEachFloat)
 
 			///////////
@@ -987,12 +1023,12 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 			forCostEach := fmt.Sprintf("%.2f", forCostEach2)
 
-			if countCounter == (len(allIds)) {
+			if countCounter == (len(allProductIds)) {
 				////////////////////////////////
 
-				n11GrandTotal := n11GrandTotal.Text(10)
+				GrandTotalText := GrandTotal.Text(10)
 
-				n11GrandTotalFloat, _ := strconv.ParseFloat(n11GrandTotal, 64)
+				n11GrandTotalFloat, _ := strconv.ParseFloat(GrandTotalText, 64)
 
 				n11GrandTotalFloat = n11GrandTotalFloat / 100.0
 
@@ -1001,7 +1037,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 			}
 
 			/////////////////////////////////////////////////
-
+			//this function populates a template2struct variable and appends it to productListForCartTemplate
 			addProduct(ProductIDID, RemoveRecordDivID, GrandTotalStringID, GrandTotalString, BoughtID, bought, ProductCostString, TotalCostID, ProductQuantity, CostID, AmountToBuyID, Condition, Condition2, prodid, ProductQuantity, ProductName, DivID, ProductCatTitle, forCostEach)
 
 		}
@@ -1009,9 +1045,9 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 	} //for next loop
 
 	//https://stackoverflow.com/questions/24755509/using-conditions-inside-templates
-	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/template2.html"))
+	globt = template.Must(template.ParseFiles("C:/wamp64/www/golangproj/cartTemplate.html"))
 
-	err1 = globt.Execute(w, ProductList)
+	err1 = globt.Execute(w, ProductListForCartTemplate)
 
 	if err1 != nil {
 
@@ -1023,7 +1059,7 @@ func createTemplate2(w http.ResponseWriter, r *http.Request) {
 
 func addProduct(productidid string, removerecorddivID string, totalID string, total string, boughtid string, bought int, totalcost string, totalcostid string, ProductQuantity int, costid string, amountid string, condition int, condition2 int, prodid int, quant int, name string, div string, cat string, cost string) {
 
-	prod := Product1{
+	prod := template2Struct{
 		ProductIDID:        productidid,
 		RemoveRecordDivID:  removerecorddivID,
 		GrandTotalStringID: totalID,
@@ -1046,8 +1082,8 @@ func addProduct(productidid string, removerecorddivID string, totalID string, to
 	flag := "nonefound"
 
 	//could be done better, if time allows
-	for i := 0; i < len(ProductList); i++ {
-		if (ProductList[i].ProductID) == prodid {
+	for i := 0; i < len(ProductListForCartTemplate); i++ {
+		if (ProductListForCartTemplate[i].ProductID) == prodid {
 
 			//ProductList[i].ProductQuantity = ProductQuantity
 			//ProductList[i].Bought = bought
@@ -1061,15 +1097,15 @@ func addProduct(productidid string, removerecorddivID string, totalID string, to
 
 	if flag != "found" {
 
-		ProductList = append(ProductList, prod)
+		ProductListForCartTemplate = append(ProductListForCartTemplate, prod)
 		//globalFlagisVariable = "yes"
 	}
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println("Rrrrrrraarg ")
-}
+//func indexHandler(w http.ResponseWriter, r *http.Request) {
+//
+//	fmt.Println("Rrrrrrraarg ")
+//}
 
 ////////example:
 /*
@@ -1121,14 +1157,14 @@ type forTemplate struct {
 	MainDivID          string
 }
 
-type Name struct {
-	FName string
-	LName string
-}
+//type Name struct {
+//	FName string
+//	LName string
+//}
 
-type VAR1 struct {
-	Var1 string
-}
+//type VAR1 struct {
+//	Var1 string
+//}
 
 //var templ1 = forTemplate{str3, var18, var2, var3, var4, var5, var6, var7, str4, var9, str2, var11, var12, var13, var14, var15, var16}
 
@@ -1165,10 +1201,10 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 
 */
 
-//this function displays all the keywords in the url, these records are the records already been displayed in display1
-func display2(w http.ResponseWriter, r *http.Request) {
+//this function displays all the keywords in the url, these records are the records already been displayed in displayOrdersTemplate
+func displayOrdersTemplateAgain(w http.ResponseWriter, r *http.Request) {
 
-	GlobCounter++
+	//GlobCounter++
 
 	/////////
 
@@ -1181,38 +1217,39 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	var ProdID []string
 	var keyTotalAmountBought []string
-	var key1 []string
-	var UserIDstring []string
+	var keyword []string
+	//var UserIDstring []string
 
 	var i = 0
 
 	var length = len(r.Form["uid"])
 
-	if length > 0 {
-		for i = 0; i < (length); i++ {
-
-			UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
-
-		}
-
-	} else {
-
-	}
+	//if length > 0 {
+	//	for i = 0; i < (length); i++ {
+	//
+	//		UserIDstring = append(UserIDstring, []string{r.Form["uid"][i]}...)
+	//
+	//	}
+	//
+	//} else {
+	//
+	//}
 	//var is keyword
 	//16900
 	length = len(r.Form["var"])
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			key1 = append(key1, []string{r.Form["var"][i]}...)
+			keyword = append(keyword, []string{r.Form["var"][i]}...)
 		}
 
-		var themaxlength = len(key1)
+		var themaxlength = len(keyword)
 		fmt.Println(themaxlength)
 
-	} else {
-
 	}
+	// else {
+	//
+	//	}
 
 	length = len(r.Form["id"])
 	if length > 0 {
@@ -1224,9 +1261,10 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-	} else {
-
 	}
+	//else {
+
+	//}
 
 	//UID, err := strconv.Atoi(UserIDstring[0])
 	//if err != nil {
@@ -1235,9 +1273,9 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	var savedProductIDs []int
 
-	globKeyword := key1[0]
+	globKeyword := keyword[0]
 
-	string1 = ""
+	//string1 = ""
 
 	fmt.Println("in display 2")
 
@@ -1245,13 +1283,13 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 	var m = 0
 
-	var recordCounter = 0
-	for m = 0; m < len(key1); m++ {
+	//var recordCounter = 0
+	for m = 0; m < len(keyword); m++ {
 
-		recordCounter = 0
+		//recordCounter = 0
 		//////////
 
-		globKeyword = key1[m]
+		globKeyword = keyword[m]
 
 		//get records that use keywords
 
@@ -1279,6 +1317,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 			/////////////
 
+			//if productID is already accounted for by another keyword go to beginning of for and try nex ProductID
 			var j = 0
 			for j = 0; j < len(savedProductIDs); j++ {
 				//record exists already
@@ -1296,14 +1335,15 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			savedProductIDs = append(savedProductIDs, ProductID)
 			/////////////
 
-			recordCounter++
-
+			//recordCounter++
+			//for headers of table in cart template
 			Condition1++
 
 			var ProductQuantity, CondYellow int
 			var gKeyword1, gKeyword2, gKeyword3, ProductName, ProductDescription, ProductCatTitle, ProductFilename, ProductCost string
 
 			CondYellow = 0
+			//fill these variable with database entries
 			err = rows.Scan(&gKeyword1, &gKeyword2, &gKeyword3, &ProductName, &ProductID, &ProductDescription, &ProductCost, &ProductQuantity, &ProductCatTitle, &ProductFilename)
 
 			if err != nil {
@@ -1319,6 +1359,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 			//////////
 
+			//fix money amounts for different cases
 			if len(ProductCost) == 2 {
 
 				ProductCost = "0." + ProductCost
@@ -1365,16 +1406,16 @@ func display2(w http.ResponseWriter, r *http.Request) {
 			counter1 = counter1 + 1
 
 			var prodBoughtInt = 0
-			//if finds a record that aleady exists as a passed in url parameter, than create the template with the value and continue the main for.
 
 			var AmountPurchased = 0
+
 			for i = 0; i < len(ProdID); i++ {
 
 				prodID, err := strconv.Atoi(ProdID[i])
 				if err != nil {
 					fmt.Println(err)
 				}
-
+				//if database productID matches query passed in, than make record yellow and up to date
 				if prodID == ProductID {
 
 					CondYellow = 1
@@ -1388,7 +1429,7 @@ func display2(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 			}
-
+			//display orders template again
 			sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 				&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
 
@@ -1400,10 +1441,10 @@ func display2(w http.ResponseWriter, r *http.Request) {
 
 /////////
 
-var GlobCounter = -1
+//var GlobCounter = -1
 var counter1 = 0
 
-////////
+////////send to cart template
 func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, CondYellow *int, Link *string, Condition *int, AmountPurchased *int, ProductID *int, ProductCatTitle *string, ProductName *string, ProductDescription *string, ProductCost *string, ProductQuantity *int,
 	gKeyword1 *string, gKeyword2 *string, gKeyword3 *string, ProductFilename *string) {
 	*counter1++
@@ -1453,6 +1494,7 @@ func sendToTemplate(globKeyword *string, counter1 *int, w *http.ResponseWriter, 
 //records to be displayed after the execution at end.
 
 //this function is used when search is pressed in the index.html
+/*
 type geoData struct {
 	Var   []string
 	Id    []int
@@ -1474,10 +1516,10 @@ type display5 struct {
 	Quant string `json:"quant"`
 	Uid   string `json:"uid"`
 }
-
-type Display3 struct {
-	Var int `json:"var"`
-}
+*/
+//type Display3 struct {
+//	Var int `json:"var"`
+//}
 
 ///////////
 //	ProdID, present3 := query["id"]
@@ -1488,7 +1530,7 @@ type Display3 struct {
 
 //////////
 
-func display1(w http.ResponseWriter, r *http.Request) {
+func displayOrdersTemplate(w http.ResponseWriter, r *http.Request) {
 
 	//var savedProductIDs []int
 
@@ -1508,7 +1550,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	//var toAppend [10]string
 	var ProdID []string
 	var keyTotalAmountBought []string
-	var key1 []string
+	var keyword []string
 	var UserIDstring []string
 
 	var i = 0
@@ -1530,7 +1572,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 	if length > 0 {
 		for i = 0; i < (length); i++ {
 
-			key1 = append(key1, []string{r.Form["var"][i]}...)
+			keyword = append(keyword, []string{r.Form["var"][i]}...)
 
 		}
 
@@ -1602,9 +1644,9 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	globKeyword := key1[0]
+	globKeyword := keyword[0]
 
-	string1 = ""
+	//string1 = ""
 
 	fmt.Println("in display 1")
 
@@ -1626,9 +1668,9 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		"FROM products WHERE " +
 		"((products.ProductKeyWord1 = ?) OR " +
 		"(products.ProductKeyWord2 = ?) OR (products.ProductKeyWord3 = ? )) AND products.ProductStatus = 'ready'")
-	if err != nil {
-
-	}
+	//if err != nil {
+	//
+	//	}
 
 	rows, err := stmt.Query(globKeyword, globKeyword, globKeyword)
 
@@ -1666,6 +1708,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		//////////
 
+		//add zeros for samaller numbers
 		if len(ProductCost) == 2 {
 
 			ProductCost = "0." + ProductCost
@@ -1678,7 +1721,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 
-			///////////
+			///////////set product cost up
 
 			bytes1 := ([]byte(ProductCost))
 
@@ -1733,6 +1776,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 		prodBoughtInt := 0
 
 		var AmountPurchased = 0
+
+		//set amountPurchased
 		for i = 0; i < len(ProdID); i++ {
 
 			///
@@ -1745,6 +1790,7 @@ func display1(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(prodIDInt)
 			}
 
+			//prodidint is from query, productdID is from database
 			if ProductID == prodIDInt {
 				if err != nil {
 					//fmt.Println(ProdIDStr)
@@ -1762,6 +1808,8 @@ func display1(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
+		//send to twmplate that displays orders
+		//fix this, here
 		counter1++
 		sendToTemplate(&globKeyword, &counter1, &w, &CondYellow, &Link, &Condition1, &AmountPurchased, &ProductID, &ProductCatTitle, &ProductName, &ProductDescription, &ProductCost, &ProductQuantity,
 			&gKeyword1, &gKeyword2, &gKeyword3, &ProductFilename)
@@ -1834,9 +1882,10 @@ func main() {
 	//button3 - just read session for right now
 	//one.HandleFunc("/getMessages", getMessages)
 
-	one.HandleFunc("/display", display1)
+	//second parameter is function in main.go
+	one.HandleFunc("/displayOrderFormFromTemplate", displayOrdersTemplate)
 
-	one.HandleFunc("/display2", display2)
+	one.HandleFunc("/displayOrdersTemplateAgain", displayOrdersTemplateAgain)
 
 	//one.HandleFunc("/HelloWorld", HelloWorld)
 	one.HandleFunc("/processLogin", processLogin)
@@ -1844,8 +1893,8 @@ func main() {
 	//two := http.NewServeMux()
 
 	//
-	one.HandleFunc("/template2", createTemplate2)
-	one.HandleFunc("/spitBackAmounts", spitBackAmounts)
+	one.HandleFunc("/cartTemplate", createCartTemplate)
+	one.HandleFunc("/spitBackAmounts", sendBackNewCartData)
 
 	http.ListenAndServe(":8080", one)
 
