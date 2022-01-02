@@ -16,7 +16,7 @@
 
 <body>
 
-    
+    <!--login gui-->
     <input   name = "pass" type="pass" id="pass" name="" placeholder= "password" value="password"/>
     <input   name = "userid" type="text" id="userid" name="userid" placeholder= "userid" value="1"/>
     <input   type = "button" id="button1"  value="login"/>
@@ -34,6 +34,7 @@ var userid = "";
         $('#button1').click(function () {
 
 
+          //get user data after login button is pressed
             var pass = document.getElementById("pass").value;
             
             userid = document.getElementById("userid").value;
@@ -53,7 +54,7 @@ var userid = "";
                 success: function (result) {
 
                   
-                  
+                  //set session level variables if password is correct
                   if (result[0].Text == "password correct")
                   {
                     
@@ -68,6 +69,7 @@ var userid = "";
 
 
                   }
+                  //wrong password, reloads page
                   else
                   {
                     window.location.href = "login.html";
