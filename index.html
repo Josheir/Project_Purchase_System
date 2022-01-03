@@ -212,7 +212,7 @@ $(document).ready(function () {
 
 
 		//pushed search (button 6) display1
-		function displayFromSearch( flag2)
+		function displayFromSearch( )
 		{
 			//alert("z1");
 
@@ -476,7 +476,7 @@ else
 	  var val2 = [];
      
 	  //returns flag if already a keyword and the string that is and the built query 
-		val2 = DoesKeywordAlreadyExist(true, searchWord, string);
+		val2 = DoesKeywordAlreadyExist(searchWord, string);
 	  
 	  //alert("2");
 		var gflag = val2[0];
@@ -665,7 +665,9 @@ var gTotalOfPurchases = 0;
 ///////////////////////////////////////
 
 //on submit, updates the individual printed interface from same template1
-function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, amountPurchasedID, amountPurchasingID, amountToPurchaseID)
+
+
+function submitChangesOnOrderTemplates(mainDiv, productID, amountPurchasedID, amountPurchasingID, amountToPurchaseID)
 {
 
 	
@@ -750,8 +752,8 @@ function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, amo
 						//so far, so good is still in database!
 						//amount purchased, quantity, amount to purchase
 						//SetDataFromOrderTemplateOnSubmit(amountPurchasedToDeductFromToPurchase, amountInPurchasedField, productID, amountToBePurchased, 0)
-						var boole = true;
-						SetDataFromOrderTemplateOnSubmit(amountToPurchaseID, amountPurchasedID, productID,	amountPurchasingID, boole);
+						//var boole = true;
+						SetDataFromOrderTemplateOnSubmit(amountToPurchaseID, amountPurchasedID, productID,	amountPurchasingID);
 
                         return (1);
                     //}
@@ -778,10 +780,10 @@ function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, amo
       //function  SetDataFromOrderTemplateOnSubmit(amountPurchasedToDeductFromToPurchase, quantityOfProduct, productID, amountToPurchase, reduceBool)
 	  
 	   //amountToPurchase = amounttobepurchasedID//
-	   var boole = true;
+	   //var boole = true;
 	  
 	   //deals with to many records
-	  function SetDataFromOrderTemplateOnSubmit (amountToPurchaseID, quantityOfProductID, productID, amountPurchasedID, boole) 
+	  function SetDataFromOrderTemplateOnSubmit (amountToPurchaseID, quantityOfProductID, productID, amountPurchasedID) 
 	  {
 
 			  var gLastQuant = false;
@@ -1051,7 +1053,7 @@ function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, amo
 //thi function checks if a keyword is already used and returns the queystring
 
 //check if keyword exists already
-function DoesKeywordAlreadyExist(areThereUrls, val1, string)
+function DoesKeywordAlreadyExist( searchword, string)
 {//NO URLS
 
 	//this flag means that this is a display that returned from template2, so is a special condition
@@ -1075,7 +1077,7 @@ function DoesKeywordAlreadyExist(areThereUrls, val1, string)
 
 		//if no keywords than set search word as keyword. This is a list of keywords 
 		//so that the searhwords cant be used more than once 
-		var storedArray2 = [val1];
+		var storedArray2 = [searchword];
 		var storedArray = [];
 		//alert("arethere");
 		//alert(val1);
@@ -1097,7 +1099,7 @@ function DoesKeywordAlreadyExist(areThereUrls, val1, string)
 		for (i = 0; i < storedArray.length; i++) {
 
 			
-			if (storedArray[i] == val1 && isfirst == false)
+			if (storedArray[i] == searchword && isfirst == false)
 			{
 				gflag = "isin"
 				break;
@@ -1113,23 +1115,23 @@ function DoesKeywordAlreadyExist(areThereUrls, val1, string)
 		
 			if(isfirst == false)
 			{
-			storedArray.push(val1);	
+			storedArray.push(searchword);	
 			sessionStorage.setItem("keywords", JSON.stringify(storedArray));
 			}
 
 		
 		
-		if (areThereUrls)
-		{
-			querystring = ("var=" + val1 + "&");
+		//if (areThereUrls)
+		//{
+			querystring = ("var=" + searchword + "&");
 			
-		}
-		else
-		{
+		//}
+		//else
+		//{
 
-			querystring = ("var=" + val1 + "&");
+		//	querystring = ("var=" + val1 + "&");
 			
-		}
+		//}
 
 		alert("querystring1");
 		alert(querystring);
@@ -1137,7 +1139,7 @@ function DoesKeywordAlreadyExist(areThereUrls, val1, string)
 		}
 		else if(isfirst == true)
 		{
-			querystring = ("var=" + val1 + "&");
+			querystring = ("var=" + searchword + "&");
 		}
 	
 		alert("querystring2");
@@ -1152,7 +1154,7 @@ function DoesKeywordAlreadyExist(areThereUrls, val1, string)
 //fix this, here   
 function forBuildingHTML(result, val1)
 {
-				var item1 = val1
+				//var item1 = val1
 				var item = '"' + val1 + '"';
 				
 				var ourNewWord = "";
@@ -1162,10 +1164,10 @@ function forBuildingHTML(result, val1)
 				ourNewWord = result.replace(item2, '');
 				
 
-				var string = typeof(item1);
+				//var string = typeof(item1);
 				
-				var x = typeof(item1);  // string
-				var y = typeof(string);	//string
+				//var x = typeof(item1);  // string
+				//var y = typeof(string);	//string
 				
 				
 				
@@ -1329,14 +1331,14 @@ var url = "http://localhost:8080/displayOrdersTemplateAgain";
 
 
 			var retVals = [];
-			
+			//fix this, here :  two variables
 			retVals = forBuildingHTML(result);
 			
 			//fix this, here
-			var item1 = retVals[0];  
+			//var item1 = retVals[0];  
 			
 			var ourNewWord = retVals[1]; 
-			var item = retVals[2];
+			//var item = retVals[2];
 			
 			alert("derived here");
 			alert(ourNewWord);
@@ -1362,7 +1364,7 @@ var url = "http://localhost:8080/displayOrdersTemplateAgain";
 				var val1 = '["' + array[i] +  '"]';
 
 				ourNewWord = ourNewWord.replace(val1 , '');
-
+				//fix this, here
 				retVals = forBuildingHTML(ourNewWord);
 				//fix this, here
 				var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
