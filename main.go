@@ -359,7 +359,7 @@ func processLogin(w http.ResponseWriter, r *http.Request) {
 		var UserID = 1
 		//var userID = 1
 		//if a user is reloging in than delete all the savedtext
-		//fix this, here
+
 		stmt, err := db.Prepare("DELETE FROM savedtext WHERE savedtext.UserID = ?")
 
 		if err != nil {

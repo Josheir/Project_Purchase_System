@@ -74,7 +74,7 @@
  
 <tr id = "{{.RemoveRecordDivID}}">
 
-<td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"  onclick= "changeColorToBlack('{{.AmountToBuyID}}')"    value ="{{.Bought}}"   type="number" name="" placeholder="" size="8">	</p></center></td>
+<td  > <center><p > <input  class = "V0"  id = "{{.AmountToBuyID}}"   value ="{{.Bought}}"   type="number" name="" placeholder="" size="8">	</p></center></td>
 			
 <!-- <td><center>{{.Condition}}  {{.RemoveRecordDivID}}</center> </td>-->
 
@@ -139,13 +139,13 @@
 
 
   
-//fix this, here
-function changeColorToBlack(AmountToBuyID)
-{
-  document.getElementById(AmountToBuyID).style.color = "black";
-  document.getElementById(AmountToBuyID).value = "";
- 
-}
+
+//function changeColorToBlack(AmountToBuyID)
+//{
+//  document.getElementById(AmountToBuyID).style.color = "black";
+//  document.getElementById(AmountToBuyID).value = "";
+// 
+//}
 
 function hideRow(rowId)
 {
@@ -323,7 +323,7 @@ function checkAllAvailableProducts(quantity, gtotal, grandTotalID){
     }
 
     
-    //fix this, here
+    //all products are hidden, so do this
     if (amtOfHiddenProducts == (counter + 1))
     {
       

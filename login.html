@@ -19,7 +19,7 @@
     <!--login gui-->
     <input   name = "pass" type="pass" id="pass" name="" placeholder= "password" value="password"/>
     <input   name = "userid" type="text" id="userid" name="userid" placeholder= "userid" value="1"/>
-    <input   type = "button" id="button1"  value="login"/>
+    <input   type = "button" id="button1"  value="login!"/>
    
 
 
@@ -53,7 +53,10 @@ var userid = "";
                 //crossDomain: true,
                 success: function (result) {
 
-                  
+                  alert("pass");
+                  alert(result[0].Text);
+                    alert(result[0].UserID);
+                    console.log(result[0].UserID);
                   //set session level variables if password is correct
                   if (result[0].Text == "password correct")
                   {

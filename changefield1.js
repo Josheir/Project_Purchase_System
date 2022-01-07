@@ -1,4 +1,4 @@
-
+/*
 			//template number one presses this and changes values in quantity and amount purchased
 			function submitChangesOnOrderTemplates(mainDiv, originalQuantity, productID, quantityID, amountPurchasedID, amountToPurchaseID)
 			{
@@ -221,4 +221,4 @@
 				
                 
 
-			}
+			}*/

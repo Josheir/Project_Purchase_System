@@ -566,7 +566,7 @@ var url = "http://localhost:8080/cartTemplate";
                     async:false,
                     success: function (data1) {
 						//alert("I am here");
-                      //fix this, here
+                      
 						alert(data1);
 					  val1 = data1;
                       if (!gFlagIsSomeRecords)
@@ -578,7 +578,7 @@ var url = "http://localhost:8080/cartTemplate";
 						  $('#div1').html(val1);
 					  }
 					  else
-					  {
+					  {//data1 is the html for cart template
                       $('#div1').html(data1);
 					  }
                    

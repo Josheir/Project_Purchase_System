@@ -1,3 +1,5 @@
+
+  <!DOCTYPE html>
 <html>
 
   <head>
@@ -9,7 +11,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-  <!DOCTYPE html>
 </head>  
 
 
@@ -48,7 +49,7 @@ var3 = var1 + var2;
 </script>
     
       <input   id="button7"  type="button" value="checkout"/>
-      <input   name = "search" type="text" id="search" name="search" placeholder= "apple4" value="apple4"/>
+      <input   name = "search" type="text" id="search" name="search" placeholder= "apple99" value="apple99"/>
       <input   id="button6" onclick = "displayFromSearch('0')" type="button" value="Search"/>
 	  <input   id="button8" onclick = "resetCall()" type="button" value="Reset"/>
 
@@ -86,7 +87,7 @@ for(let key of keys) {
 		
 			
 		
-		if(key != "session_userID")
+		if(key != "sessionUserID")
         {
 			sessionStorage.removeItem(key);	
         }
@@ -196,10 +197,10 @@ $(document).ready(function () {
 			//sessionStorage.clear();
 			//program reprints search box and buttons
 			var urlValue = "http://localhost/golangproj/index.html";
-			var val1 = sessionStorage.getItem("session_userID");
+			var val1 = sessionStorage.getItem("sessionUserID");
 			
 			sessionStorage.clear();
-			sessionStorage.setItem("session_userID", val1);
+			sessionStorage.setItem("sessionUserID", val1);
 			
 			window.location.assign(urlValue);
 			
@@ -235,7 +236,10 @@ $(document).ready(function () {
 
 			//alert("keys -A");
 		//check for login
-		var getUser = sessionStorage.getItem("session_userID");
+		alert("sess");
+	
+		var getUser = sessionStorage.getItem("sessionUserID");
+		alert(getUser);
 		
 		if (getUser == null)
 		{
@@ -302,7 +306,7 @@ $(document).ready(function () {
 		var keyAsInt =  parseInt(key); 
 		//alert(typeof keyAsInt);
 		//console.log(keyAsInt);
-		if (key != "session_userID" && key != "keywords" && key != "numberOfRecordsChosen" && key != "amtOfKeywords") 
+		if (key != "sessionUserID" && key != "keywords" && key != "numberOfRecordsChosen" && key != "amtOfKeywords") 
 		{
 
 			
@@ -360,7 +364,7 @@ $(document).ready(function () {
 			   
 		}
 		
-		else if(key == "session_userID")
+		else if(key == "sessionUserID")
         {
 			//alert("session here");
 			var item = sessionStorage.getItem(key);
@@ -571,7 +575,7 @@ else
 				
 
 				
-				
+				//fix this, here
 				var val1a = '"' + item1 +  '"';   
 				
 				
@@ -845,6 +849,8 @@ function submitChangesOnOrderTemplates(mainDiv, productID, amountPurchasedID, am
 				
 				}
 				else{
+
+					//are records chosen
 					
 					//alert("wise1");
 					//console.log(amountPurchasedToDeductFromToPurchase + amountToPurchase);
@@ -865,6 +871,7 @@ function submitChangesOnOrderTemplates(mainDiv, productID, amountPurchasedID, am
 						//alert("y");
 					}
 
+					//val1int = 0, no 
 					else if (gLastQuant == true  && (val1int) == 0 )
 					{
 						//alert("z");
@@ -872,7 +879,7 @@ function submitChangesOnOrderTemplates(mainDiv, productID, amountPurchasedID, am
 						///
 
 						//gLastQuant = 0;
-						//fix this, here...two
+						
 						let  val1a = 0;
 						if(val1a = sessionStorage.getItem("numberOfRecordsChosen"))
 						var varIntVal1a = parseInt(val1a);
@@ -910,15 +917,15 @@ function submitChangesOnOrderTemplates(mainDiv, productID, amountPurchasedID, am
 					}
 				
 
-					//fix this, here
-				val1 = sessionStorage.getItem("numberOfRecordsChosen");
+					
+				//val1 = sessionStorage.getItem("numberOfRecordsChosen");
 				//alert("------1234---");
-				alert(val1); 
+				//alert(val1); 
 				//firstArray.push(productID); 
 				//firstArray.push(quantityOfProduct); 
 				//window.sessionStorage.setItem("alreadyZero", JSON.stringify(firstArray));
 
-				}
+				}//else
 				val1 = sessionStorage.getItem("numberOfRecordsChosen");
 				//alert("--+++++-----");
 				alert(val1); 
@@ -1154,7 +1161,7 @@ function DoesKeywordAlreadyExist( searchword, string)
 //fix this, here   
 function forBuildingHTML(result, val1)
 {
-				//var item1 = val1
+				var item1 = val1
 				var item = '"' + val1 + '"';
 				
 				var ourNewWord = "";
@@ -1232,7 +1239,7 @@ for(let key of keys) {
 
 
   
-  else if(key == "session_userID")
+  else if(key == "sessionUserID")
   {
 		var item = sessionStorage.getItem(key);
 		querystring += "uid=" + item + "&";
@@ -1306,7 +1313,7 @@ querystring = "var=" + "aaaaaaaaaa" + "bbbbbbbbbb" + "aaaaaaaaaa" + "bbbbbbbbbb"
 /////////
 
 
-//fix this, here
+
 var url = "http://localhost:8080/displayOrdersTemplateAgain";
 //var queryString = "user_name=jerry&password=666666&user_name=marry&password=11111";
 
@@ -1332,7 +1339,9 @@ var url = "http://localhost:8080/displayOrdersTemplateAgain";
 
 			var retVals = [];
 			//fix this, here :  two variables
-			retVals = forBuildingHTML(result);
+			var tempstringfortesting = "banana";
+			//result is html of displaying orders again (after cartTemplate)
+			retVals = forBuildingHTML(result , tempstringfortesting);
 			
 			//fix this, here
 			//var item1 = retVals[0];  
@@ -1363,10 +1372,11 @@ var url = "http://localhost:8080/displayOrdersTemplateAgain";
 				
 				var val1 = '["' + array[i] +  '"]';
 
+				//html
 				ourNewWord = ourNewWord.replace(val1 , '');
 				//fix this, here
 				retVals = forBuildingHTML(ourNewWord);
-				//fix this, here
+				//create link to each keyword start
 				var result1a = "<a href='#" + array[i] + "'>" + array[i] + "</a><br>";
 
 				//positioning div at top of page
